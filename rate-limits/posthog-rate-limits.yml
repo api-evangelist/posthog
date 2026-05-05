@@ -1,0 +1,37 @@
+specification: API Commons Rate Limits
+specificationVersion: '0.1'
+schema: https://raw.githubusercontent.com/api-evangelist/interface-research/main/schema/api-commons.yml#/$defs/RateLimits
+provider: PostHog
+providerId: posthog
+created: '2026-05-04'
+modified: '2026-05-04'
+reconciled: true
+tags:
+  - Rate Limiting
+  - Analytics
+description: PostHog ingestion and query API rate limits per project.
+sources:
+  - https://posthog.com/pricing
+  - https://posthog.com/docs/api
+headers:
+  retryAfter: Retry-After
+responseCodes:
+  throttled: 429
+limits:
+  - name: Capture API
+    scope: project
+    metric: events_per_second
+    limit: high (auto-scales)
+  - name: Query API (HogQL)
+    scope: user
+    metric: concurrent
+    limit: 5
+  - name: Decide API (flags)
+    scope: project
+    metric: requests_per_second
+    limit: scales with plan
+  - name: Public API
+    scope: user
+    metric: requests_per_minute
+    limit: 240
+    timeFrame: minute
