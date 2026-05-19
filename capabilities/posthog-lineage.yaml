@@ -1,0 +1,70 @@
+naftiko: 1.0.0-alpha2
+info:
+  label: PostHog API — lineage
+  description: 'PostHog API — lineage. 1 operations. Lead operation: lineage. Self-contained Naftiko capability covering one
+    Posthog business surface.'
+  tags:
+  - Posthog
+  - lineage
+  created: '2026-05-19'
+  modified: '2026-05-19'
+binds:
+- namespace: env
+  keys:
+    POSTHOG_API_KEY: POSTHOG_API_KEY
+capability:
+  consumes:
+  - type: http
+    namespace: posthog-lineage
+    baseUri: ''
+    description: PostHog API — lineage business capability. Self-contained, no shared references.
+    resources:
+    - name: api-environments-project_id-lineage-get_upstream
+      path: /api/environments/{project_id}/lineage/get_upstream/
+      operations:
+      - name: lineagegetupstreamretrieve
+        method: GET
+        description: ''
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+    authentication:
+      type: bearer
+      token: '{{env.POSTHOG_API_KEY}}'
+  exposes:
+  - type: rest
+    namespace: posthog-lineage-rest
+    port: 8080
+    description: REST adapter for PostHog API — lineage. One Spectral-compliant resource per consumed operation, prefixed
+      with /v1.
+    resources:
+    - path: /v1/api/environments/{project-id}/lineage/get-upstream
+      name: api-environments-project-id-lineage-get-upstream
+      description: REST surface for api-environments-project_id-lineage-get_upstream.
+      operations:
+      - method: GET
+        name: lineagegetupstreamretrieve
+        description: lineagegetupstreamretrieve
+        call: posthog-lineage.lineagegetupstreamretrieve
+        outputParameters:
+        - type: object
+          mapping: $.
+  - type: mcp
+    namespace: posthog-lineage-mcp
+    port: 9090
+    transport: http
+    description: MCP adapter for PostHog API — lineage. One tool per consumed operation, routed inline through this capability's
+      consumes block.
+    tools:
+    - name: lineagegetupstreamretrieve
+      description: lineagegetupstreamretrieve
+      hints:
+        readOnly: true
+        destructive: false
+        idempotent: true
+      call: posthog-lineage.lineagegetupstreamretrieve
+      outputParameters:
+      - type: object
+        mapping: $.

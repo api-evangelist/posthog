@@ -1,0 +1,246 @@
+naftiko: 1.0.0-alpha2
+info:
+  label: PostHog API — event_schemas
+  description: 'PostHog API — event_schemas. 5 operations. Lead operation: event_schemas. Self-contained Naftiko capability
+    covering one Posthog business surface.'
+  tags:
+  - Posthog
+  - event_schemas
+  created: '2026-05-19'
+  modified: '2026-05-19'
+binds:
+- namespace: env
+  keys:
+    POSTHOG_API_KEY: POSTHOG_API_KEY
+capability:
+  consumes:
+  - type: http
+    namespace: posthog-event-schemas
+    baseUri: ''
+    description: PostHog API — event_schemas business capability. Self-contained, no shared references.
+    resources:
+    - name: api-projects-project_id-event_schemas
+      path: /api/projects/{project_id}/event_schemas/
+      operations:
+      - name: eventschemaslist
+        method: GET
+        description: ''
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: limit
+          in: query
+          type: integer
+          description: Number of results to return per page.
+        - name: offset
+          in: query
+          type: integer
+          description: The initial index from which to return the results.
+      - name: eventschemascreate
+        method: POST
+        description: ''
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: body
+          in: body
+          type: object
+          description: Request body (JSON).
+          required: true
+    - name: api-projects-project_id-event_schemas-id
+      path: /api/projects/{project_id}/event_schemas/{id}/
+      operations:
+      - name: eventschemasupdate
+        method: PUT
+        description: ''
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: id
+          in: path
+          type: string
+          description: A UUID string identifying this event schema.
+          required: true
+        - name: body
+          in: body
+          type: object
+          description: Request body (JSON).
+          required: true
+      - name: eventschemaspartialupdate
+        method: PATCH
+        description: ''
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: id
+          in: path
+          type: string
+          description: A UUID string identifying this event schema.
+          required: true
+        - name: body
+          in: body
+          type: object
+          description: Request body (JSON).
+          required: false
+      - name: eventschemasdestroy
+        method: DELETE
+        description: ''
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: id
+          in: path
+          type: string
+          description: A UUID string identifying this event schema.
+          required: true
+    authentication:
+      type: bearer
+      token: '{{env.POSTHOG_API_KEY}}'
+  exposes:
+  - type: rest
+    namespace: posthog-event-schemas-rest
+    port: 8080
+    description: REST adapter for PostHog API — event_schemas. One Spectral-compliant resource per consumed operation, prefixed
+      with /v1.
+    resources:
+    - path: /v1/api/projects/{project-id}/event-schemas
+      name: api-projects-project-id-event-schemas
+      description: REST surface for api-projects-project_id-event_schemas.
+      operations:
+      - method: GET
+        name: eventschemaslist
+        description: eventschemaslist
+        call: posthog-event-schemas.eventschemaslist
+        with:
+          limit: rest.limit
+          offset: rest.offset
+        outputParameters:
+        - type: object
+          mapping: $.
+      - method: POST
+        name: eventschemascreate
+        description: eventschemascreate
+        call: posthog-event-schemas.eventschemascreate
+        with:
+          body: rest.body
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /v1/api/projects/{project-id}/event-schemas/{id}
+      name: api-projects-project-id-event-schemas-id
+      description: REST surface for api-projects-project_id-event_schemas-id.
+      operations:
+      - method: PUT
+        name: eventschemasupdate
+        description: eventschemasupdate
+        call: posthog-event-schemas.eventschemasupdate
+        with:
+          id: rest.id
+          body: rest.body
+        outputParameters:
+        - type: object
+          mapping: $.
+      - method: PATCH
+        name: eventschemaspartialupdate
+        description: eventschemaspartialupdate
+        call: posthog-event-schemas.eventschemaspartialupdate
+        with:
+          id: rest.id
+          body: rest.body
+        outputParameters:
+        - type: object
+          mapping: $.
+      - method: DELETE
+        name: eventschemasdestroy
+        description: eventschemasdestroy
+        call: posthog-event-schemas.eventschemasdestroy
+        with:
+          id: rest.id
+        outputParameters:
+        - type: object
+          mapping: $.
+  - type: mcp
+    namespace: posthog-event-schemas-mcp
+    port: 9090
+    transport: http
+    description: MCP adapter for PostHog API — event_schemas. One tool per consumed operation, routed inline through this
+      capability's consumes block.
+    tools:
+    - name: eventschemaslist
+      description: eventschemaslist
+      hints:
+        readOnly: true
+        destructive: false
+        idempotent: true
+      call: posthog-event-schemas.eventschemaslist
+      with:
+        limit: tools.limit
+        offset: tools.offset
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: eventschemascreate
+      description: eventschemascreate
+      hints:
+        readOnly: false
+        destructive: false
+        idempotent: false
+      call: posthog-event-schemas.eventschemascreate
+      with:
+        body: tools.body
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: eventschemasupdate
+      description: eventschemasupdate
+      hints:
+        readOnly: false
+        destructive: false
+        idempotent: true
+      call: posthog-event-schemas.eventschemasupdate
+      with:
+        id: tools.id
+        body: tools.body
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: eventschemaspartialupdate
+      description: eventschemaspartialupdate
+      hints:
+        readOnly: false
+        destructive: false
+        idempotent: true
+      call: posthog-event-schemas.eventschemaspartialupdate
+      with:
+        id: tools.id
+        body: tools.body
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: eventschemasdestroy
+      description: eventschemasdestroy
+      hints:
+        readOnly: false
+        destructive: true
+        idempotent: true
+      call: posthog-event-schemas.eventschemasdestroy
+      with:
+        id: tools.id
+      outputParameters:
+      - type: object
+        mapping: $.

@@ -1,0 +1,2047 @@
+naftiko: 1.0.0-alpha2
+info:
+  label: PostHog API — tasks
+  description: 'PostHog API — tasks. 41 operations. Lead operation: List tasks. Self-contained Naftiko capability covering
+    one Posthog business surface.'
+  tags:
+  - Posthog
+  - tasks
+  created: '2026-05-19'
+  modified: '2026-05-19'
+binds:
+- namespace: env
+  keys:
+    POSTHOG_API_KEY: POSTHOG_API_KEY
+capability:
+  consumes:
+  - type: http
+    namespace: posthog-tasks
+    baseUri: ''
+    description: PostHog API — tasks business capability. Self-contained, no shared references.
+    resources:
+    - name: api-projects-project_id-tasks
+      path: /api/projects/{project_id}/tasks/
+      operations:
+      - name: taskslist
+        method: GET
+        description: List tasks
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: created_by
+          in: query
+          type: integer
+          description: Filter by creator user ID
+        - name: internal
+          in: query
+          type: boolean
+          description: When true, list internal tasks instead of user-facing ones. Honored only in debug environments; ignored
+            in production. Defaults to excluding internal tasks.
+        - name: limit
+          in: query
+          type: integer
+          description: Number of results to return per page.
+        - name: offset
+          in: query
+          type: integer
+          description: The initial index from which to return the results.
+        - name: organization
+          in: query
+          type: string
+          description: Filter by repository organization
+        - name: origin_product
+          in: query
+          type: string
+          description: Filter by origin product
+        - name: repository
+          in: query
+          type: string
+          description: Filter by repository name (can include org/repo format)
+        - name: search
+          in: query
+          type: string
+          description: Case-insensitive substring search over task title and description. A numeric value also matches the
+            task number. An empty value disables the filter.
+        - name: stage
+          in: query
+          type: string
+          description: Filter by task run stage
+        - name: status
+          in: query
+          type: string
+          description: Filter tasks by the status of their most recent run.
+      - name: taskslist
+        method: GET
+        description: List tasks
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: created_by
+          in: query
+          type: integer
+          description: Filter by creator user ID
+        - name: internal
+          in: query
+          type: boolean
+          description: When true, list internal tasks instead of user-facing ones. Honored only in debug environments; ignored
+            in production. Defaults to excluding internal tasks.
+        - name: limit
+          in: query
+          type: integer
+          description: Number of results to return per page.
+        - name: offset
+          in: query
+          type: integer
+          description: The initial index from which to return the results.
+        - name: organization
+          in: query
+          type: string
+          description: Filter by repository organization
+        - name: origin_product
+          in: query
+          type: string
+          description: Filter by origin product
+        - name: repository
+          in: query
+          type: string
+          description: Filter by repository name (can include org/repo format)
+        - name: search
+          in: query
+          type: string
+          description: Case-insensitive substring search over task title and description. A numeric value also matches the
+            task number. An empty value disables the filter.
+        - name: stage
+          in: query
+          type: string
+          description: Filter by task run stage
+        - name: status
+          in: query
+          type: string
+          description: Filter tasks by the status of their most recent run.
+      - name: taskscreate
+        method: POST
+        description: API for managing tasks within a project. Tasks represent units of work to be performed by an agent.
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: body
+          in: body
+          type: object
+          description: Request body (JSON).
+          required: false
+      - name: taskscreate
+        method: POST
+        description: API for managing tasks within a project. Tasks represent units of work to be performed by an agent.
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: body
+          in: body
+          type: object
+          description: Request body (JSON).
+          required: false
+    - name: api-projects-project_id-tasks-repositories
+      path: /api/projects/{project_id}/tasks/repositories/
+      operations:
+      - name: tasksrepositoriesretrieve
+        method: GET
+        description: List distinct task repositories
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+      - name: tasksrepositoriesretrieve
+        method: GET
+        description: List distinct task repositories
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+    - name: api-projects-project_id-tasks-repository_readiness
+      path: /api/projects/{project_id}/tasks/repository_readiness/
+      operations:
+      - name: tasksrepositoryreadinessretrieve
+        method: GET
+        description: Get repository readiness
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: refresh
+          in: query
+          type: boolean
+        - name: repository
+          in: query
+          type: string
+          description: Repository in org/repo format
+          required: true
+        - name: window_days
+          in: query
+          type: integer
+      - name: tasksrepositoryreadinessretrieve
+        method: GET
+        description: Get repository readiness
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: refresh
+          in: query
+          type: boolean
+        - name: repository
+          in: query
+          type: string
+          description: Repository in org/repo format
+          required: true
+        - name: window_days
+          in: query
+          type: integer
+    - name: api-projects-project_id-tasks-id
+      path: /api/projects/{project_id}/tasks/{id}/
+      operations:
+      - name: tasksretrieve
+        method: GET
+        description: API for managing tasks within a project. Tasks represent units of work to be performed by an agent.
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: id
+          in: path
+          type: string
+          description: A UUID string identifying this task.
+          required: true
+      - name: tasksretrieve
+        method: GET
+        description: API for managing tasks within a project. Tasks represent units of work to be performed by an agent.
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: id
+          in: path
+          type: string
+          description: A UUID string identifying this task.
+          required: true
+      - name: tasksupdate
+        method: PUT
+        description: API for managing tasks within a project. Tasks represent units of work to be performed by an agent.
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: id
+          in: path
+          type: string
+          description: A UUID string identifying this task.
+          required: true
+        - name: body
+          in: body
+          type: object
+          description: Request body (JSON).
+          required: false
+      - name: tasksupdate
+        method: PUT
+        description: API for managing tasks within a project. Tasks represent units of work to be performed by an agent.
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: id
+          in: path
+          type: string
+          description: A UUID string identifying this task.
+          required: true
+        - name: body
+          in: body
+          type: object
+          description: Request body (JSON).
+          required: false
+      - name: taskspartialupdate
+        method: PATCH
+        description: API for managing tasks within a project. Tasks represent units of work to be performed by an agent.
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: id
+          in: path
+          type: string
+          description: A UUID string identifying this task.
+          required: true
+        - name: body
+          in: body
+          type: object
+          description: Request body (JSON).
+          required: false
+      - name: taskspartialupdate
+        method: PATCH
+        description: API for managing tasks within a project. Tasks represent units of work to be performed by an agent.
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: id
+          in: path
+          type: string
+          description: A UUID string identifying this task.
+          required: true
+        - name: body
+          in: body
+          type: object
+          description: Request body (JSON).
+          required: false
+      - name: tasksdestroy
+        method: DELETE
+        description: API for managing tasks within a project. Tasks represent units of work to be performed by an agent.
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: id
+          in: path
+          type: string
+          description: A UUID string identifying this task.
+          required: true
+      - name: tasksdestroy
+        method: DELETE
+        description: API for managing tasks within a project. Tasks represent units of work to be performed by an agent.
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: id
+          in: path
+          type: string
+          description: A UUID string identifying this task.
+          required: true
+    - name: api-projects-project_id-tasks-id-run
+      path: /api/projects/{project_id}/tasks/{id}/run/
+      operations:
+      - name: tasksruncreate
+        method: POST
+        description: Run task
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: id
+          in: path
+          type: string
+          description: A UUID string identifying this task.
+          required: true
+        - name: body
+          in: body
+          type: object
+          description: Request body (JSON).
+          required: false
+      - name: tasksruncreate
+        method: POST
+        description: Run task
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: id
+          in: path
+          type: string
+          description: A UUID string identifying this task.
+          required: true
+        - name: body
+          in: body
+          type: object
+          description: Request body (JSON).
+          required: false
+    - name: api-projects-project_id-tasks-id-staged_artifacts-finalize_upload
+      path: /api/projects/{project_id}/tasks/{id}/staged_artifacts/finalize_upload/
+      operations:
+      - name: tasksstagedartifactsfinalizeuploadcreate
+        method: POST
+        description: Finalize staged direct uploads for task attachments
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: id
+          in: path
+          type: string
+          description: A UUID string identifying this task.
+          required: true
+        - name: body
+          in: body
+          type: object
+          description: Request body (JSON).
+          required: true
+      - name: tasksstagedartifactsfinalizeuploadcreate
+        method: POST
+        description: Finalize staged direct uploads for task attachments
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: id
+          in: path
+          type: string
+          description: A UUID string identifying this task.
+          required: true
+        - name: body
+          in: body
+          type: object
+          description: Request body (JSON).
+          required: true
+    - name: api-projects-project_id-tasks-id-staged_artifacts-prepare_upload
+      path: /api/projects/{project_id}/tasks/{id}/staged_artifacts/prepare_upload/
+      operations:
+      - name: tasksstagedartifactsprepareuploadcreate
+        method: POST
+        description: Prepare staged direct uploads for task attachments
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: id
+          in: path
+          type: string
+          description: A UUID string identifying this task.
+          required: true
+        - name: body
+          in: body
+          type: object
+          description: Request body (JSON).
+          required: true
+      - name: tasksstagedartifactsprepareuploadcreate
+        method: POST
+        description: Prepare staged direct uploads for task attachments
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: id
+          in: path
+          type: string
+          description: A UUID string identifying this task.
+          required: true
+        - name: body
+          in: body
+          type: object
+          description: Request body (JSON).
+          required: true
+    - name: api-projects-project_id-tasks-task_id-runs
+      path: /api/projects/{project_id}/tasks/{task_id}/runs/
+      operations:
+      - name: tasksrunslist
+        method: GET
+        description: List task runs
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: limit
+          in: query
+          type: integer
+          description: Number of results to return per page.
+        - name: offset
+          in: query
+          type: integer
+          description: The initial index from which to return the results.
+        - name: task_id
+          in: path
+          type: string
+          required: true
+      - name: tasksrunscreate
+        method: POST
+        description: Create task run
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: task_id
+          in: path
+          type: string
+          required: true
+        - name: body
+          in: body
+          type: object
+          description: Request body (JSON).
+          required: false
+    - name: api-projects-project_id-tasks-task_id-runs-id
+      path: /api/projects/{project_id}/tasks/{task_id}/runs/{id}/
+      operations:
+      - name: tasksrunsretrieve
+        method: GET
+        description: API for managing task runs. Each run represents an execution of a task.
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: id
+          in: path
+          type: string
+          description: A UUID string identifying this task run.
+          required: true
+        - name: task_id
+          in: path
+          type: string
+          required: true
+      - name: tasksrunspartialupdate
+        method: PATCH
+        description: Update task run
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: id
+          in: path
+          type: string
+          description: A UUID string identifying this task run.
+          required: true
+        - name: task_id
+          in: path
+          type: string
+          required: true
+        - name: body
+          in: body
+          type: object
+          description: Request body (JSON).
+          required: false
+    - name: api-projects-project_id-tasks-task_id-runs-id-append_log
+      path: /api/projects/{project_id}/tasks/{task_id}/runs/{id}/append_log/
+      operations:
+      - name: tasksrunsappendlogcreate
+        method: POST
+        description: Append log entries
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: id
+          in: path
+          type: string
+          description: A UUID string identifying this task run.
+          required: true
+        - name: task_id
+          in: path
+          type: string
+          required: true
+        - name: body
+          in: body
+          type: object
+          description: Request body (JSON).
+          required: true
+    - name: api-projects-project_id-tasks-task_id-runs-id-artifacts
+      path: /api/projects/{project_id}/tasks/{task_id}/runs/{id}/artifacts/
+      operations:
+      - name: tasksrunsartifactscreate
+        method: POST
+        description: Upload artifacts for a task run
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: id
+          in: path
+          type: string
+          description: A UUID string identifying this task run.
+          required: true
+        - name: task_id
+          in: path
+          type: string
+          required: true
+        - name: body
+          in: body
+          type: object
+          description: Request body (JSON).
+          required: true
+    - name: api-projects-project_id-tasks-task_id-runs-id-artifacts-download
+      path: /api/projects/{project_id}/tasks/{task_id}/runs/{id}/artifacts/download/
+      operations:
+      - name: tasksrunsartifactsdownloadcreate
+        method: POST
+        description: Download an artifact through the backend
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: id
+          in: path
+          type: string
+          description: A UUID string identifying this task run.
+          required: true
+        - name: task_id
+          in: path
+          type: string
+          required: true
+        - name: body
+          in: body
+          type: object
+          description: Request body (JSON).
+          required: true
+    - name: api-projects-project_id-tasks-task_id-runs-id-artifacts-finalize_upload
+      path: /api/projects/{project_id}/tasks/{task_id}/runs/{id}/artifacts/finalize_upload/
+      operations:
+      - name: tasksrunsartifactsfinalizeuploadcreate
+        method: POST
+        description: Finalize direct uploads for task run artifacts
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: id
+          in: path
+          type: string
+          description: A UUID string identifying this task run.
+          required: true
+        - name: task_id
+          in: path
+          type: string
+          required: true
+        - name: body
+          in: body
+          type: object
+          description: Request body (JSON).
+          required: true
+    - name: api-projects-project_id-tasks-task_id-runs-id-artifacts-prepare_upload
+      path: /api/projects/{project_id}/tasks/{task_id}/runs/{id}/artifacts/prepare_upload/
+      operations:
+      - name: tasksrunsartifactsprepareuploadcreate
+        method: POST
+        description: Prepare direct uploads for task run artifacts
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: id
+          in: path
+          type: string
+          description: A UUID string identifying this task run.
+          required: true
+        - name: task_id
+          in: path
+          type: string
+          required: true
+        - name: body
+          in: body
+          type: object
+          description: Request body (JSON).
+          required: true
+    - name: api-projects-project_id-tasks-task_id-runs-id-artifacts-presign
+      path: /api/projects/{project_id}/tasks/{task_id}/runs/{id}/artifacts/presign/
+      operations:
+      - name: tasksrunsartifactspresigncreate
+        method: POST
+        description: Generate presigned URL for an artifact
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: id
+          in: path
+          type: string
+          description: A UUID string identifying this task run.
+          required: true
+        - name: task_id
+          in: path
+          type: string
+          required: true
+        - name: body
+          in: body
+          type: object
+          description: Request body (JSON).
+          required: true
+    - name: api-projects-project_id-tasks-task_id-runs-id-command
+      path: /api/projects/{project_id}/tasks/{task_id}/runs/{id}/command/
+      operations:
+      - name: tasksrunscommandcreate
+        method: POST
+        description: Send command to agent server
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: id
+          in: path
+          type: string
+          description: A UUID string identifying this task run.
+          required: true
+        - name: task_id
+          in: path
+          type: string
+          required: true
+        - name: body
+          in: body
+          type: object
+          description: Request body (JSON).
+          required: true
+    - name: api-projects-project_id-tasks-task_id-runs-id-connection_token
+      path: /api/projects/{project_id}/tasks/{task_id}/runs/{id}/connection_token/
+      operations:
+      - name: tasksrunsconnectiontokenretrieve
+        method: GET
+        description: Get sandbox connection token
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: id
+          in: path
+          type: string
+          description: A UUID string identifying this task run.
+          required: true
+        - name: task_id
+          in: path
+          type: string
+          required: true
+    - name: api-projects-project_id-tasks-task_id-runs-id-logs
+      path: /api/projects/{project_id}/tasks/{task_id}/runs/{id}/logs/
+      operations:
+      - name: tasksrunslogsretrieve
+        method: GET
+        description: Get task run logs
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: id
+          in: path
+          type: string
+          description: A UUID string identifying this task run.
+          required: true
+        - name: task_id
+          in: path
+          type: string
+          required: true
+    - name: api-projects-project_id-tasks-task_id-runs-id-relay_message
+      path: /api/projects/{project_id}/tasks/{task_id}/runs/{id}/relay_message/
+      operations:
+      - name: tasksrunsrelaymessagecreate
+        method: POST
+        description: Relay run message to Slack
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: id
+          in: path
+          type: string
+          description: A UUID string identifying this task run.
+          required: true
+        - name: task_id
+          in: path
+          type: string
+          required: true
+        - name: body
+          in: body
+          type: object
+          description: Request body (JSON).
+          required: true
+    - name: api-projects-project_id-tasks-task_id-runs-id-resume_in_cloud
+      path: /api/projects/{project_id}/tasks/{task_id}/runs/{id}/resume_in_cloud/
+      operations:
+      - name: tasksrunsresumeincloudcreate
+        method: POST
+        description: Resume task run in cloud
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: id
+          in: path
+          type: string
+          description: A UUID string identifying this task run.
+          required: true
+        - name: task_id
+          in: path
+          type: string
+          required: true
+    - name: api-projects-project_id-tasks-task_id-runs-id-session_logs
+      path: /api/projects/{project_id}/tasks/{task_id}/runs/{id}/session_logs/
+      operations:
+      - name: tasksrunssessionlogsretrieve
+        method: GET
+        description: Get filtered task run session logs
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: after
+          in: query
+          type: string
+          description: Only return events after this ISO8601 timestamp
+        - name: event_types
+          in: query
+          type: string
+          description: Comma-separated list of event types to include
+        - name: exclude_types
+          in: query
+          type: string
+          description: Comma-separated list of event types to exclude
+        - name: id
+          in: path
+          type: string
+          description: A UUID string identifying this task run.
+          required: true
+        - name: limit
+          in: query
+          type: integer
+          description: Maximum number of entries to return (default 1000, max 5000)
+        - name: offset
+          in: query
+          type: integer
+          description: Zero-based offset into the filtered log entries
+        - name: task_id
+          in: path
+          type: string
+          required: true
+    - name: api-projects-project_id-tasks-task_id-runs-id-set_output
+      path: /api/projects/{project_id}/tasks/{task_id}/runs/{id}/set_output/
+      operations:
+      - name: tasksrunssetoutputpartialupdate
+        method: PATCH
+        description: Set run output
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: id
+          in: path
+          type: string
+          description: A UUID string identifying this task run.
+          required: true
+        - name: task_id
+          in: path
+          type: string
+          required: true
+        - name: body
+          in: body
+          type: object
+          description: Request body (JSON).
+          required: false
+    - name: api-projects-project_id-tasks-task_id-runs-id-start
+      path: /api/projects/{project_id}/tasks/{task_id}/runs/{id}/start/
+      operations:
+      - name: tasksrunsstartcreate
+        method: POST
+        description: Start task run
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: id
+          in: path
+          type: string
+          description: A UUID string identifying this task run.
+          required: true
+        - name: task_id
+          in: path
+          type: string
+          required: true
+        - name: body
+          in: body
+          type: object
+          description: Request body (JSON).
+          required: false
+    - name: api-projects-project_id-tasks-task_id-runs-id-stream
+      path: /api/projects/{project_id}/tasks/{task_id}/runs/{id}/stream/
+      operations:
+      - name: tasksrunsstreamretrieve
+        method: GET
+        description: API for managing task runs. Each run represents an execution of a task.
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: id
+          in: path
+          type: string
+          description: A UUID string identifying this task run.
+          required: true
+        - name: task_id
+          in: path
+          type: string
+          required: true
+    authentication:
+      type: bearer
+      token: '{{env.POSTHOG_API_KEY}}'
+  exposes:
+  - type: rest
+    namespace: posthog-tasks-rest
+    port: 8080
+    description: REST adapter for PostHog API — tasks. One Spectral-compliant resource per consumed operation, prefixed with
+      /v1.
+    resources:
+    - path: /v1/api/projects/{project-id}/tasks
+      name: api-projects-project-id-tasks
+      description: REST surface for api-projects-project_id-tasks.
+      operations:
+      - method: GET
+        name: taskslist
+        description: List tasks
+        call: posthog-tasks.taskslist
+        with:
+          created_by: rest.created_by
+          internal: rest.internal
+          limit: rest.limit
+          offset: rest.offset
+          organization: rest.organization
+          origin_product: rest.origin_product
+          repository: rest.repository
+          search: rest.search
+          stage: rest.stage
+          status: rest.status
+        outputParameters:
+        - type: object
+          mapping: $.
+      - method: GET
+        name: taskslist
+        description: List tasks
+        call: posthog-tasks.taskslist
+        with:
+          created_by: rest.created_by
+          internal: rest.internal
+          limit: rest.limit
+          offset: rest.offset
+          organization: rest.organization
+          origin_product: rest.origin_product
+          repository: rest.repository
+          search: rest.search
+          stage: rest.stage
+          status: rest.status
+        outputParameters:
+        - type: object
+          mapping: $.
+      - method: POST
+        name: taskscreate
+        description: API for managing tasks within a project. Tasks represent units of work to be performed by an agent.
+        call: posthog-tasks.taskscreate
+        with:
+          body: rest.body
+        outputParameters:
+        - type: object
+          mapping: $.
+      - method: POST
+        name: taskscreate
+        description: API for managing tasks within a project. Tasks represent units of work to be performed by an agent.
+        call: posthog-tasks.taskscreate
+        with:
+          body: rest.body
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /v1/api/projects/{project-id}/tasks/repositories
+      name: api-projects-project-id-tasks-repositories
+      description: REST surface for api-projects-project_id-tasks-repositories.
+      operations:
+      - method: GET
+        name: tasksrepositoriesretrieve
+        description: List distinct task repositories
+        call: posthog-tasks.tasksrepositoriesretrieve
+        outputParameters:
+        - type: object
+          mapping: $.
+      - method: GET
+        name: tasksrepositoriesretrieve
+        description: List distinct task repositories
+        call: posthog-tasks.tasksrepositoriesretrieve
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /v1/api/projects/{project-id}/tasks/repository-readiness
+      name: api-projects-project-id-tasks-repository-readiness
+      description: REST surface for api-projects-project_id-tasks-repository_readiness.
+      operations:
+      - method: GET
+        name: tasksrepositoryreadinessretrieve
+        description: Get repository readiness
+        call: posthog-tasks.tasksrepositoryreadinessretrieve
+        with:
+          refresh: rest.refresh
+          repository: rest.repository
+          window_days: rest.window_days
+        outputParameters:
+        - type: object
+          mapping: $.
+      - method: GET
+        name: tasksrepositoryreadinessretrieve
+        description: Get repository readiness
+        call: posthog-tasks.tasksrepositoryreadinessretrieve
+        with:
+          refresh: rest.refresh
+          repository: rest.repository
+          window_days: rest.window_days
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /v1/api/projects/{project-id}/tasks/{id}
+      name: api-projects-project-id-tasks-id
+      description: REST surface for api-projects-project_id-tasks-id.
+      operations:
+      - method: GET
+        name: tasksretrieve
+        description: API for managing tasks within a project. Tasks represent units of work to be performed by an agent.
+        call: posthog-tasks.tasksretrieve
+        with:
+          id: rest.id
+        outputParameters:
+        - type: object
+          mapping: $.
+      - method: GET
+        name: tasksretrieve
+        description: API for managing tasks within a project. Tasks represent units of work to be performed by an agent.
+        call: posthog-tasks.tasksretrieve
+        with:
+          id: rest.id
+        outputParameters:
+        - type: object
+          mapping: $.
+      - method: PUT
+        name: tasksupdate
+        description: API for managing tasks within a project. Tasks represent units of work to be performed by an agent.
+        call: posthog-tasks.tasksupdate
+        with:
+          id: rest.id
+          body: rest.body
+        outputParameters:
+        - type: object
+          mapping: $.
+      - method: PUT
+        name: tasksupdate
+        description: API for managing tasks within a project. Tasks represent units of work to be performed by an agent.
+        call: posthog-tasks.tasksupdate
+        with:
+          id: rest.id
+          body: rest.body
+        outputParameters:
+        - type: object
+          mapping: $.
+      - method: PATCH
+        name: taskspartialupdate
+        description: API for managing tasks within a project. Tasks represent units of work to be performed by an agent.
+        call: posthog-tasks.taskspartialupdate
+        with:
+          id: rest.id
+          body: rest.body
+        outputParameters:
+        - type: object
+          mapping: $.
+      - method: PATCH
+        name: taskspartialupdate
+        description: API for managing tasks within a project. Tasks represent units of work to be performed by an agent.
+        call: posthog-tasks.taskspartialupdate
+        with:
+          id: rest.id
+          body: rest.body
+        outputParameters:
+        - type: object
+          mapping: $.
+      - method: DELETE
+        name: tasksdestroy
+        description: API for managing tasks within a project. Tasks represent units of work to be performed by an agent.
+        call: posthog-tasks.tasksdestroy
+        with:
+          id: rest.id
+        outputParameters:
+        - type: object
+          mapping: $.
+      - method: DELETE
+        name: tasksdestroy
+        description: API for managing tasks within a project. Tasks represent units of work to be performed by an agent.
+        call: posthog-tasks.tasksdestroy
+        with:
+          id: rest.id
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /v1/api/projects/{project-id}/tasks/{id}/run
+      name: api-projects-project-id-tasks-id-run
+      description: REST surface for api-projects-project_id-tasks-id-run.
+      operations:
+      - method: POST
+        name: tasksruncreate
+        description: Run task
+        call: posthog-tasks.tasksruncreate
+        with:
+          id: rest.id
+          body: rest.body
+        outputParameters:
+        - type: object
+          mapping: $.
+      - method: POST
+        name: tasksruncreate
+        description: Run task
+        call: posthog-tasks.tasksruncreate
+        with:
+          id: rest.id
+          body: rest.body
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /v1/api/projects/{project-id}/tasks/{id}/staged-artifacts/finalize-upload
+      name: api-projects-project-id-tasks-id-staged-artifacts-finalize-upload
+      description: REST surface for api-projects-project_id-tasks-id-staged_artifacts-finalize_upload.
+      operations:
+      - method: POST
+        name: tasksstagedartifactsfinalizeuploadcreate
+        description: Finalize staged direct uploads for task attachments
+        call: posthog-tasks.tasksstagedartifactsfinalizeuploadcreate
+        with:
+          id: rest.id
+          body: rest.body
+        outputParameters:
+        - type: object
+          mapping: $.
+      - method: POST
+        name: tasksstagedartifactsfinalizeuploadcreate
+        description: Finalize staged direct uploads for task attachments
+        call: posthog-tasks.tasksstagedartifactsfinalizeuploadcreate
+        with:
+          id: rest.id
+          body: rest.body
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /v1/api/projects/{project-id}/tasks/{id}/staged-artifacts/prepare-upload
+      name: api-projects-project-id-tasks-id-staged-artifacts-prepare-upload
+      description: REST surface for api-projects-project_id-tasks-id-staged_artifacts-prepare_upload.
+      operations:
+      - method: POST
+        name: tasksstagedartifactsprepareuploadcreate
+        description: Prepare staged direct uploads for task attachments
+        call: posthog-tasks.tasksstagedartifactsprepareuploadcreate
+        with:
+          id: rest.id
+          body: rest.body
+        outputParameters:
+        - type: object
+          mapping: $.
+      - method: POST
+        name: tasksstagedartifactsprepareuploadcreate
+        description: Prepare staged direct uploads for task attachments
+        call: posthog-tasks.tasksstagedartifactsprepareuploadcreate
+        with:
+          id: rest.id
+          body: rest.body
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /v1/api/projects/{project-id}/tasks/{task-id}/runs
+      name: api-projects-project-id-tasks-task-id-runs
+      description: REST surface for api-projects-project_id-tasks-task_id-runs.
+      operations:
+      - method: GET
+        name: tasksrunslist
+        description: List task runs
+        call: posthog-tasks.tasksrunslist
+        with:
+          limit: rest.limit
+          offset: rest.offset
+          task_id: rest.task_id
+        outputParameters:
+        - type: object
+          mapping: $.
+      - method: POST
+        name: tasksrunscreate
+        description: Create task run
+        call: posthog-tasks.tasksrunscreate
+        with:
+          task_id: rest.task_id
+          body: rest.body
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /v1/api/projects/{project-id}/tasks/{task-id}/runs/{id}
+      name: api-projects-project-id-tasks-task-id-runs-id
+      description: REST surface for api-projects-project_id-tasks-task_id-runs-id.
+      operations:
+      - method: GET
+        name: tasksrunsretrieve
+        description: API for managing task runs. Each run represents an execution of a task.
+        call: posthog-tasks.tasksrunsretrieve
+        with:
+          id: rest.id
+          task_id: rest.task_id
+        outputParameters:
+        - type: object
+          mapping: $.
+      - method: PATCH
+        name: tasksrunspartialupdate
+        description: Update task run
+        call: posthog-tasks.tasksrunspartialupdate
+        with:
+          id: rest.id
+          task_id: rest.task_id
+          body: rest.body
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /v1/api/projects/{project-id}/tasks/{task-id}/runs/{id}/append-log
+      name: api-projects-project-id-tasks-task-id-runs-id-append-log
+      description: REST surface for api-projects-project_id-tasks-task_id-runs-id-append_log.
+      operations:
+      - method: POST
+        name: tasksrunsappendlogcreate
+        description: Append log entries
+        call: posthog-tasks.tasksrunsappendlogcreate
+        with:
+          id: rest.id
+          task_id: rest.task_id
+          body: rest.body
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /v1/api/projects/{project-id}/tasks/{task-id}/runs/{id}/artifacts
+      name: api-projects-project-id-tasks-task-id-runs-id-artifacts
+      description: REST surface for api-projects-project_id-tasks-task_id-runs-id-artifacts.
+      operations:
+      - method: POST
+        name: tasksrunsartifactscreate
+        description: Upload artifacts for a task run
+        call: posthog-tasks.tasksrunsartifactscreate
+        with:
+          id: rest.id
+          task_id: rest.task_id
+          body: rest.body
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /v1/api/projects/{project-id}/tasks/{task-id}/runs/{id}/artifacts/download
+      name: api-projects-project-id-tasks-task-id-runs-id-artifacts-download
+      description: REST surface for api-projects-project_id-tasks-task_id-runs-id-artifacts-download.
+      operations:
+      - method: POST
+        name: tasksrunsartifactsdownloadcreate
+        description: Download an artifact through the backend
+        call: posthog-tasks.tasksrunsartifactsdownloadcreate
+        with:
+          id: rest.id
+          task_id: rest.task_id
+          body: rest.body
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /v1/api/projects/{project-id}/tasks/{task-id}/runs/{id}/artifacts/finalize-upload
+      name: api-projects-project-id-tasks-task-id-runs-id-artifacts-finalize-upload
+      description: REST surface for api-projects-project_id-tasks-task_id-runs-id-artifacts-finalize_upload.
+      operations:
+      - method: POST
+        name: tasksrunsartifactsfinalizeuploadcreate
+        description: Finalize direct uploads for task run artifacts
+        call: posthog-tasks.tasksrunsartifactsfinalizeuploadcreate
+        with:
+          id: rest.id
+          task_id: rest.task_id
+          body: rest.body
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /v1/api/projects/{project-id}/tasks/{task-id}/runs/{id}/artifacts/prepare-upload
+      name: api-projects-project-id-tasks-task-id-runs-id-artifacts-prepare-upload
+      description: REST surface for api-projects-project_id-tasks-task_id-runs-id-artifacts-prepare_upload.
+      operations:
+      - method: POST
+        name: tasksrunsartifactsprepareuploadcreate
+        description: Prepare direct uploads for task run artifacts
+        call: posthog-tasks.tasksrunsartifactsprepareuploadcreate
+        with:
+          id: rest.id
+          task_id: rest.task_id
+          body: rest.body
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /v1/api/projects/{project-id}/tasks/{task-id}/runs/{id}/artifacts/presign
+      name: api-projects-project-id-tasks-task-id-runs-id-artifacts-presign
+      description: REST surface for api-projects-project_id-tasks-task_id-runs-id-artifacts-presign.
+      operations:
+      - method: POST
+        name: tasksrunsartifactspresigncreate
+        description: Generate presigned URL for an artifact
+        call: posthog-tasks.tasksrunsartifactspresigncreate
+        with:
+          id: rest.id
+          task_id: rest.task_id
+          body: rest.body
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /v1/api/projects/{project-id}/tasks/{task-id}/runs/{id}/command
+      name: api-projects-project-id-tasks-task-id-runs-id-command
+      description: REST surface for api-projects-project_id-tasks-task_id-runs-id-command.
+      operations:
+      - method: POST
+        name: tasksrunscommandcreate
+        description: Send command to agent server
+        call: posthog-tasks.tasksrunscommandcreate
+        with:
+          id: rest.id
+          task_id: rest.task_id
+          body: rest.body
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /v1/api/projects/{project-id}/tasks/{task-id}/runs/{id}/connection-token
+      name: api-projects-project-id-tasks-task-id-runs-id-connection-token
+      description: REST surface for api-projects-project_id-tasks-task_id-runs-id-connection_token.
+      operations:
+      - method: GET
+        name: tasksrunsconnectiontokenretrieve
+        description: Get sandbox connection token
+        call: posthog-tasks.tasksrunsconnectiontokenretrieve
+        with:
+          id: rest.id
+          task_id: rest.task_id
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /v1/api/projects/{project-id}/tasks/{task-id}/runs/{id}/logs
+      name: api-projects-project-id-tasks-task-id-runs-id-logs
+      description: REST surface for api-projects-project_id-tasks-task_id-runs-id-logs.
+      operations:
+      - method: GET
+        name: tasksrunslogsretrieve
+        description: Get task run logs
+        call: posthog-tasks.tasksrunslogsretrieve
+        with:
+          id: rest.id
+          task_id: rest.task_id
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /v1/api/projects/{project-id}/tasks/{task-id}/runs/{id}/relay-message
+      name: api-projects-project-id-tasks-task-id-runs-id-relay-message
+      description: REST surface for api-projects-project_id-tasks-task_id-runs-id-relay_message.
+      operations:
+      - method: POST
+        name: tasksrunsrelaymessagecreate
+        description: Relay run message to Slack
+        call: posthog-tasks.tasksrunsrelaymessagecreate
+        with:
+          id: rest.id
+          task_id: rest.task_id
+          body: rest.body
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /v1/api/projects/{project-id}/tasks/{task-id}/runs/{id}/resume-in-cloud
+      name: api-projects-project-id-tasks-task-id-runs-id-resume-in-cloud
+      description: REST surface for api-projects-project_id-tasks-task_id-runs-id-resume_in_cloud.
+      operations:
+      - method: POST
+        name: tasksrunsresumeincloudcreate
+        description: Resume task run in cloud
+        call: posthog-tasks.tasksrunsresumeincloudcreate
+        with:
+          id: rest.id
+          task_id: rest.task_id
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /v1/api/projects/{project-id}/tasks/{task-id}/runs/{id}/session-logs
+      name: api-projects-project-id-tasks-task-id-runs-id-session-logs
+      description: REST surface for api-projects-project_id-tasks-task_id-runs-id-session_logs.
+      operations:
+      - method: GET
+        name: tasksrunssessionlogsretrieve
+        description: Get filtered task run session logs
+        call: posthog-tasks.tasksrunssessionlogsretrieve
+        with:
+          after: rest.after
+          event_types: rest.event_types
+          exclude_types: rest.exclude_types
+          id: rest.id
+          limit: rest.limit
+          offset: rest.offset
+          task_id: rest.task_id
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /v1/api/projects/{project-id}/tasks/{task-id}/runs/{id}/set-output
+      name: api-projects-project-id-tasks-task-id-runs-id-set-output
+      description: REST surface for api-projects-project_id-tasks-task_id-runs-id-set_output.
+      operations:
+      - method: PATCH
+        name: tasksrunssetoutputpartialupdate
+        description: Set run output
+        call: posthog-tasks.tasksrunssetoutputpartialupdate
+        with:
+          id: rest.id
+          task_id: rest.task_id
+          body: rest.body
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /v1/api/projects/{project-id}/tasks/{task-id}/runs/{id}/start
+      name: api-projects-project-id-tasks-task-id-runs-id-start
+      description: REST surface for api-projects-project_id-tasks-task_id-runs-id-start.
+      operations:
+      - method: POST
+        name: tasksrunsstartcreate
+        description: Start task run
+        call: posthog-tasks.tasksrunsstartcreate
+        with:
+          id: rest.id
+          task_id: rest.task_id
+          body: rest.body
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /v1/api/projects/{project-id}/tasks/{task-id}/runs/{id}/stream
+      name: api-projects-project-id-tasks-task-id-runs-id-stream
+      description: REST surface for api-projects-project_id-tasks-task_id-runs-id-stream.
+      operations:
+      - method: GET
+        name: tasksrunsstreamretrieve
+        description: API for managing task runs. Each run represents an execution of a task.
+        call: posthog-tasks.tasksrunsstreamretrieve
+        with:
+          id: rest.id
+          task_id: rest.task_id
+        outputParameters:
+        - type: object
+          mapping: $.
+  - type: mcp
+    namespace: posthog-tasks-mcp
+    port: 9090
+    transport: http
+    description: MCP adapter for PostHog API — tasks. One tool per consumed operation, routed inline through this capability's
+      consumes block.
+    tools:
+    - name: list-tasks
+      description: List tasks
+      hints:
+        readOnly: true
+        destructive: false
+        idempotent: true
+      call: posthog-tasks.taskslist
+      with:
+        created_by: tools.created_by
+        internal: tools.internal
+        limit: tools.limit
+        offset: tools.offset
+        organization: tools.organization
+        origin_product: tools.origin_product
+        repository: tools.repository
+        search: tools.search
+        stage: tools.stage
+        status: tools.status
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: list-tasks-2
+      description: List tasks
+      hints:
+        readOnly: true
+        destructive: false
+        idempotent: true
+      call: posthog-tasks.taskslist
+      with:
+        created_by: tools.created_by
+        internal: tools.internal
+        limit: tools.limit
+        offset: tools.offset
+        organization: tools.organization
+        origin_product: tools.origin_product
+        repository: tools.repository
+        search: tools.search
+        stage: tools.stage
+        status: tools.status
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: api-managing-tasks-within-project
+      description: API for managing tasks within a project. Tasks represent units of work to be performed by an agent.
+      hints:
+        readOnly: false
+        destructive: false
+        idempotent: false
+      call: posthog-tasks.taskscreate
+      with:
+        body: tools.body
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: api-managing-tasks-within-project-2
+      description: API for managing tasks within a project. Tasks represent units of work to be performed by an agent.
+      hints:
+        readOnly: false
+        destructive: false
+        idempotent: false
+      call: posthog-tasks.taskscreate
+      with:
+        body: tools.body
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: list-distinct-task-repositories
+      description: List distinct task repositories
+      hints:
+        readOnly: true
+        destructive: false
+        idempotent: true
+      call: posthog-tasks.tasksrepositoriesretrieve
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: list-distinct-task-repositories-2
+      description: List distinct task repositories
+      hints:
+        readOnly: true
+        destructive: false
+        idempotent: true
+      call: posthog-tasks.tasksrepositoriesretrieve
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: get-repository-readiness
+      description: Get repository readiness
+      hints:
+        readOnly: true
+        destructive: false
+        idempotent: true
+      call: posthog-tasks.tasksrepositoryreadinessretrieve
+      with:
+        refresh: tools.refresh
+        repository: tools.repository
+        window_days: tools.window_days
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: get-repository-readiness-2
+      description: Get repository readiness
+      hints:
+        readOnly: true
+        destructive: false
+        idempotent: true
+      call: posthog-tasks.tasksrepositoryreadinessretrieve
+      with:
+        refresh: tools.refresh
+        repository: tools.repository
+        window_days: tools.window_days
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: api-managing-tasks-within-project-3
+      description: API for managing tasks within a project. Tasks represent units of work to be performed by an agent.
+      hints:
+        readOnly: true
+        destructive: false
+        idempotent: true
+      call: posthog-tasks.tasksretrieve
+      with:
+        id: tools.id
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: api-managing-tasks-within-project-4
+      description: API for managing tasks within a project. Tasks represent units of work to be performed by an agent.
+      hints:
+        readOnly: true
+        destructive: false
+        idempotent: true
+      call: posthog-tasks.tasksretrieve
+      with:
+        id: tools.id
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: api-managing-tasks-within-project-5
+      description: API for managing tasks within a project. Tasks represent units of work to be performed by an agent.
+      hints:
+        readOnly: false
+        destructive: false
+        idempotent: true
+      call: posthog-tasks.tasksupdate
+      with:
+        id: tools.id
+        body: tools.body
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: api-managing-tasks-within-project-6
+      description: API for managing tasks within a project. Tasks represent units of work to be performed by an agent.
+      hints:
+        readOnly: false
+        destructive: false
+        idempotent: true
+      call: posthog-tasks.tasksupdate
+      with:
+        id: tools.id
+        body: tools.body
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: api-managing-tasks-within-project-7
+      description: API for managing tasks within a project. Tasks represent units of work to be performed by an agent.
+      hints:
+        readOnly: false
+        destructive: false
+        idempotent: true
+      call: posthog-tasks.taskspartialupdate
+      with:
+        id: tools.id
+        body: tools.body
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: api-managing-tasks-within-project-8
+      description: API for managing tasks within a project. Tasks represent units of work to be performed by an agent.
+      hints:
+        readOnly: false
+        destructive: false
+        idempotent: true
+      call: posthog-tasks.taskspartialupdate
+      with:
+        id: tools.id
+        body: tools.body
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: api-managing-tasks-within-project-9
+      description: API for managing tasks within a project. Tasks represent units of work to be performed by an agent.
+      hints:
+        readOnly: false
+        destructive: true
+        idempotent: true
+      call: posthog-tasks.tasksdestroy
+      with:
+        id: tools.id
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: api-managing-tasks-within-project-10
+      description: API for managing tasks within a project. Tasks represent units of work to be performed by an agent.
+      hints:
+        readOnly: false
+        destructive: true
+        idempotent: true
+      call: posthog-tasks.tasksdestroy
+      with:
+        id: tools.id
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: run-task
+      description: Run task
+      hints:
+        readOnly: false
+        destructive: false
+        idempotent: false
+      call: posthog-tasks.tasksruncreate
+      with:
+        id: tools.id
+        body: tools.body
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: run-task-2
+      description: Run task
+      hints:
+        readOnly: false
+        destructive: false
+        idempotent: false
+      call: posthog-tasks.tasksruncreate
+      with:
+        id: tools.id
+        body: tools.body
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: finalize-staged-direct-uploads-task
+      description: Finalize staged direct uploads for task attachments
+      hints:
+        readOnly: false
+        destructive: false
+        idempotent: false
+      call: posthog-tasks.tasksstagedartifactsfinalizeuploadcreate
+      with:
+        id: tools.id
+        body: tools.body
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: finalize-staged-direct-uploads-task-2
+      description: Finalize staged direct uploads for task attachments
+      hints:
+        readOnly: false
+        destructive: false
+        idempotent: false
+      call: posthog-tasks.tasksstagedartifactsfinalizeuploadcreate
+      with:
+        id: tools.id
+        body: tools.body
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: prepare-staged-direct-uploads-task
+      description: Prepare staged direct uploads for task attachments
+      hints:
+        readOnly: false
+        destructive: false
+        idempotent: false
+      call: posthog-tasks.tasksstagedartifactsprepareuploadcreate
+      with:
+        id: tools.id
+        body: tools.body
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: prepare-staged-direct-uploads-task-2
+      description: Prepare staged direct uploads for task attachments
+      hints:
+        readOnly: false
+        destructive: false
+        idempotent: false
+      call: posthog-tasks.tasksstagedartifactsprepareuploadcreate
+      with:
+        id: tools.id
+        body: tools.body
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: list-task-runs
+      description: List task runs
+      hints:
+        readOnly: true
+        destructive: false
+        idempotent: true
+      call: posthog-tasks.tasksrunslist
+      with:
+        limit: tools.limit
+        offset: tools.offset
+        task_id: tools.task_id
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: create-task-run
+      description: Create task run
+      hints:
+        readOnly: false
+        destructive: false
+        idempotent: false
+      call: posthog-tasks.tasksrunscreate
+      with:
+        task_id: tools.task_id
+        body: tools.body
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: api-managing-task-runs-each
+      description: API for managing task runs. Each run represents an execution of a task.
+      hints:
+        readOnly: true
+        destructive: false
+        idempotent: true
+      call: posthog-tasks.tasksrunsretrieve
+      with:
+        id: tools.id
+        task_id: tools.task_id
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: update-task-run
+      description: Update task run
+      hints:
+        readOnly: false
+        destructive: false
+        idempotent: true
+      call: posthog-tasks.tasksrunspartialupdate
+      with:
+        id: tools.id
+        task_id: tools.task_id
+        body: tools.body
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: append-log-entries
+      description: Append log entries
+      hints:
+        readOnly: false
+        destructive: false
+        idempotent: false
+      call: posthog-tasks.tasksrunsappendlogcreate
+      with:
+        id: tools.id
+        task_id: tools.task_id
+        body: tools.body
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: upload-artifacts-task-run
+      description: Upload artifacts for a task run
+      hints:
+        readOnly: false
+        destructive: false
+        idempotent: false
+      call: posthog-tasks.tasksrunsartifactscreate
+      with:
+        id: tools.id
+        task_id: tools.task_id
+        body: tools.body
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: download-artifact-through-backend
+      description: Download an artifact through the backend
+      hints:
+        readOnly: false
+        destructive: false
+        idempotent: false
+      call: posthog-tasks.tasksrunsartifactsdownloadcreate
+      with:
+        id: tools.id
+        task_id: tools.task_id
+        body: tools.body
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: finalize-direct-uploads-task-run
+      description: Finalize direct uploads for task run artifacts
+      hints:
+        readOnly: false
+        destructive: false
+        idempotent: false
+      call: posthog-tasks.tasksrunsartifactsfinalizeuploadcreate
+      with:
+        id: tools.id
+        task_id: tools.task_id
+        body: tools.body
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: prepare-direct-uploads-task-run
+      description: Prepare direct uploads for task run artifacts
+      hints:
+        readOnly: false
+        destructive: false
+        idempotent: false
+      call: posthog-tasks.tasksrunsartifactsprepareuploadcreate
+      with:
+        id: tools.id
+        task_id: tools.task_id
+        body: tools.body
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: generate-presigned-url-artifact
+      description: Generate presigned URL for an artifact
+      hints:
+        readOnly: false
+        destructive: false
+        idempotent: false
+      call: posthog-tasks.tasksrunsartifactspresigncreate
+      with:
+        id: tools.id
+        task_id: tools.task_id
+        body: tools.body
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: send-command-agent-server
+      description: Send command to agent server
+      hints:
+        readOnly: false
+        destructive: false
+        idempotent: false
+      call: posthog-tasks.tasksrunscommandcreate
+      with:
+        id: tools.id
+        task_id: tools.task_id
+        body: tools.body
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: get-sandbox-connection-token
+      description: Get sandbox connection token
+      hints:
+        readOnly: true
+        destructive: false
+        idempotent: true
+      call: posthog-tasks.tasksrunsconnectiontokenretrieve
+      with:
+        id: tools.id
+        task_id: tools.task_id
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: get-task-run-logs
+      description: Get task run logs
+      hints:
+        readOnly: true
+        destructive: false
+        idempotent: true
+      call: posthog-tasks.tasksrunslogsretrieve
+      with:
+        id: tools.id
+        task_id: tools.task_id
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: relay-run-message-slack
+      description: Relay run message to Slack
+      hints:
+        readOnly: false
+        destructive: false
+        idempotent: false
+      call: posthog-tasks.tasksrunsrelaymessagecreate
+      with:
+        id: tools.id
+        task_id: tools.task_id
+        body: tools.body
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: resume-task-run-cloud
+      description: Resume task run in cloud
+      hints:
+        readOnly: false
+        destructive: false
+        idempotent: false
+      call: posthog-tasks.tasksrunsresumeincloudcreate
+      with:
+        id: tools.id
+        task_id: tools.task_id
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: get-filtered-task-run-session
+      description: Get filtered task run session logs
+      hints:
+        readOnly: true
+        destructive: false
+        idempotent: true
+      call: posthog-tasks.tasksrunssessionlogsretrieve
+      with:
+        after: tools.after
+        event_types: tools.event_types
+        exclude_types: tools.exclude_types
+        id: tools.id
+        limit: tools.limit
+        offset: tools.offset
+        task_id: tools.task_id
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: set-run-output
+      description: Set run output
+      hints:
+        readOnly: false
+        destructive: false
+        idempotent: true
+      call: posthog-tasks.tasksrunssetoutputpartialupdate
+      with:
+        id: tools.id
+        task_id: tools.task_id
+        body: tools.body
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: start-task-run
+      description: Start task run
+      hints:
+        readOnly: false
+        destructive: false
+        idempotent: false
+      call: posthog-tasks.tasksrunsstartcreate
+      with:
+        id: tools.id
+        task_id: tools.task_id
+        body: tools.body
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: api-managing-task-runs-each-2
+      description: API for managing task runs. Each run represents an execution of a task.
+      hints:
+        readOnly: true
+        destructive: false
+        idempotent: true
+      call: posthog-tasks.tasksrunsstreamretrieve
+      with:
+        id: tools.id
+        task_id: tools.task_id
+      outputParameters:
+      - type: object
+        mapping: $.

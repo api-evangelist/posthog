@@ -1,0 +1,545 @@
+naftiko: 1.0.0-alpha2
+info:
+  label: PostHog API — event_definitions
+  description: 'PostHog API — event_definitions. 13 operations. Lead operation: event_definitions. Self-contained Naftiko
+    capability covering one Posthog business surface.'
+  tags:
+  - Posthog
+  - event_definitions
+  created: '2026-05-19'
+  modified: '2026-05-19'
+binds:
+- namespace: env
+  keys:
+    POSTHOG_API_KEY: POSTHOG_API_KEY
+capability:
+  consumes:
+  - type: http
+    namespace: posthog-event-definitions
+    baseUri: ''
+    description: PostHog API — event_definitions business capability. Self-contained, no shared references.
+    resources:
+    - name: api-projects-project_id-event_definitions
+      path: /api/projects/{project_id}/event_definitions/
+      operations:
+      - name: eventdefinitionslist
+        method: GET
+        description: ''
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: limit
+          in: query
+          type: integer
+          description: Number of results to return per page.
+        - name: offset
+          in: query
+          type: integer
+          description: The initial index from which to return the results.
+      - name: eventdefinitionscreate
+        method: POST
+        description: ''
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: body
+          in: body
+          type: object
+          description: Request body (JSON).
+          required: true
+    - name: api-projects-project_id-event_definitions-bulk_update_tags
+      path: /api/projects/{project_id}/event_definitions/bulk_update_tags/
+      operations:
+      - name: eventdefinitionsbulkupdatetagscreate
+        method: POST
+        description: Bulk update tags on multiple objects.
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: body
+          in: body
+          type: object
+          description: Request body (JSON).
+          required: true
+    - name: api-projects-project_id-event_definitions-by_name
+      path: /api/projects/{project_id}/event_definitions/by_name/
+      operations:
+      - name: eventdefinitionsbynameretrieve
+        method: GET
+        description: Get event definition by exact name
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: name
+          in: query
+          type: string
+          description: The exact event name to look up
+          required: true
+    - name: api-projects-project_id-event_definitions-golang
+      path: /api/projects/{project_id}/event_definitions/golang/
+      operations:
+      - name: eventdefinitionsgolangretrieve
+        method: GET
+        description: ''
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+    - name: api-projects-project_id-event_definitions-promoted_properties
+      path: /api/projects/{project_id}/event_definitions/promoted_properties/
+      operations:
+      - name: eventdefinitionspromotedpropertiesretrieve
+        method: GET
+        description: Resolve team-configured promoted properties for event definitions.
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: names
+          in: query
+          type: array
+          description: 'Optional: restrict the response to these event names. Repeat the parameter for multiple names (e.g.
+            `?names=a&names=b`). When omitted, returns every team-config'
+    - name: api-projects-project_id-event_definitions-python
+      path: /api/projects/{project_id}/event_definitions/python/
+      operations:
+      - name: eventdefinitionspythonretrieve
+        method: GET
+        description: ''
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+    - name: api-projects-project_id-event_definitions-typescript
+      path: /api/projects/{project_id}/event_definitions/typescript/
+      operations:
+      - name: eventdefinitionstypescriptretrieve
+        method: GET
+        description: ''
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+    - name: api-projects-project_id-event_definitions-id
+      path: /api/projects/{project_id}/event_definitions/{id}/
+      operations:
+      - name: eventdefinitionsretrieve
+        method: GET
+        description: ''
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: id
+          in: path
+          type: string
+          description: A UUID string identifying this event definition.
+          required: true
+      - name: eventdefinitionsupdate
+        method: PUT
+        description: ''
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: id
+          in: path
+          type: string
+          description: A UUID string identifying this event definition.
+          required: true
+        - name: body
+          in: body
+          type: object
+          description: Request body (JSON).
+          required: true
+      - name: eventdefinitionspartialupdate
+        method: PATCH
+        description: ''
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: id
+          in: path
+          type: string
+          description: A UUID string identifying this event definition.
+          required: true
+        - name: body
+          in: body
+          type: object
+          description: Request body (JSON).
+          required: false
+      - name: eventdefinitionsdestroy
+        method: DELETE
+        description: ''
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: id
+          in: path
+          type: string
+          description: A UUID string identifying this event definition.
+          required: true
+    - name: api-projects-project_id-event_definitions-id-metrics
+      path: /api/projects/{project_id}/event_definitions/{id}/metrics/
+      operations:
+      - name: eventdefinitionsmetricsretrieve
+        method: GET
+        description: ''
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: id
+          in: path
+          type: string
+          description: A UUID string identifying this event definition.
+          required: true
+    authentication:
+      type: bearer
+      token: '{{env.POSTHOG_API_KEY}}'
+  exposes:
+  - type: rest
+    namespace: posthog-event-definitions-rest
+    port: 8080
+    description: REST adapter for PostHog API — event_definitions. One Spectral-compliant resource per consumed operation,
+      prefixed with /v1.
+    resources:
+    - path: /v1/api/projects/{project-id}/event-definitions
+      name: api-projects-project-id-event-definitions
+      description: REST surface for api-projects-project_id-event_definitions.
+      operations:
+      - method: GET
+        name: eventdefinitionslist
+        description: eventdefinitionslist
+        call: posthog-event-definitions.eventdefinitionslist
+        with:
+          limit: rest.limit
+          offset: rest.offset
+        outputParameters:
+        - type: object
+          mapping: $.
+      - method: POST
+        name: eventdefinitionscreate
+        description: eventdefinitionscreate
+        call: posthog-event-definitions.eventdefinitionscreate
+        with:
+          body: rest.body
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /v1/api/projects/{project-id}/event-definitions/bulk-update-tags
+      name: api-projects-project-id-event-definitions-bulk-update-tags
+      description: REST surface for api-projects-project_id-event_definitions-bulk_update_tags.
+      operations:
+      - method: POST
+        name: eventdefinitionsbulkupdatetagscreate
+        description: Bulk update tags on multiple objects.
+        call: posthog-event-definitions.eventdefinitionsbulkupdatetagscreate
+        with:
+          body: rest.body
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /v1/api/projects/{project-id}/event-definitions/by-name
+      name: api-projects-project-id-event-definitions-by-name
+      description: REST surface for api-projects-project_id-event_definitions-by_name.
+      operations:
+      - method: GET
+        name: eventdefinitionsbynameretrieve
+        description: Get event definition by exact name
+        call: posthog-event-definitions.eventdefinitionsbynameretrieve
+        with:
+          name: rest.name
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /v1/api/projects/{project-id}/event-definitions/golang
+      name: api-projects-project-id-event-definitions-golang
+      description: REST surface for api-projects-project_id-event_definitions-golang.
+      operations:
+      - method: GET
+        name: eventdefinitionsgolangretrieve
+        description: eventdefinitionsgolangretrieve
+        call: posthog-event-definitions.eventdefinitionsgolangretrieve
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /v1/api/projects/{project-id}/event-definitions/promoted-properties
+      name: api-projects-project-id-event-definitions-promoted-properties
+      description: REST surface for api-projects-project_id-event_definitions-promoted_properties.
+      operations:
+      - method: GET
+        name: eventdefinitionspromotedpropertiesretrieve
+        description: Resolve team-configured promoted properties for event definitions.
+        call: posthog-event-definitions.eventdefinitionspromotedpropertiesretrieve
+        with:
+          names: rest.names
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /v1/api/projects/{project-id}/event-definitions/python
+      name: api-projects-project-id-event-definitions-python
+      description: REST surface for api-projects-project_id-event_definitions-python.
+      operations:
+      - method: GET
+        name: eventdefinitionspythonretrieve
+        description: eventdefinitionspythonretrieve
+        call: posthog-event-definitions.eventdefinitionspythonretrieve
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /v1/api/projects/{project-id}/event-definitions/typescript
+      name: api-projects-project-id-event-definitions-typescript
+      description: REST surface for api-projects-project_id-event_definitions-typescript.
+      operations:
+      - method: GET
+        name: eventdefinitionstypescriptretrieve
+        description: eventdefinitionstypescriptretrieve
+        call: posthog-event-definitions.eventdefinitionstypescriptretrieve
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /v1/api/projects/{project-id}/event-definitions/{id}
+      name: api-projects-project-id-event-definitions-id
+      description: REST surface for api-projects-project_id-event_definitions-id.
+      operations:
+      - method: GET
+        name: eventdefinitionsretrieve
+        description: eventdefinitionsretrieve
+        call: posthog-event-definitions.eventdefinitionsretrieve
+        with:
+          id: rest.id
+        outputParameters:
+        - type: object
+          mapping: $.
+      - method: PUT
+        name: eventdefinitionsupdate
+        description: eventdefinitionsupdate
+        call: posthog-event-definitions.eventdefinitionsupdate
+        with:
+          id: rest.id
+          body: rest.body
+        outputParameters:
+        - type: object
+          mapping: $.
+      - method: PATCH
+        name: eventdefinitionspartialupdate
+        description: eventdefinitionspartialupdate
+        call: posthog-event-definitions.eventdefinitionspartialupdate
+        with:
+          id: rest.id
+          body: rest.body
+        outputParameters:
+        - type: object
+          mapping: $.
+      - method: DELETE
+        name: eventdefinitionsdestroy
+        description: eventdefinitionsdestroy
+        call: posthog-event-definitions.eventdefinitionsdestroy
+        with:
+          id: rest.id
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /v1/api/projects/{project-id}/event-definitions/{id}/metrics
+      name: api-projects-project-id-event-definitions-id-metrics
+      description: REST surface for api-projects-project_id-event_definitions-id-metrics.
+      operations:
+      - method: GET
+        name: eventdefinitionsmetricsretrieve
+        description: eventdefinitionsmetricsretrieve
+        call: posthog-event-definitions.eventdefinitionsmetricsretrieve
+        with:
+          id: rest.id
+        outputParameters:
+        - type: object
+          mapping: $.
+  - type: mcp
+    namespace: posthog-event-definitions-mcp
+    port: 9090
+    transport: http
+    description: MCP adapter for PostHog API — event_definitions. One tool per consumed operation, routed inline through this
+      capability's consumes block.
+    tools:
+    - name: eventdefinitionslist
+      description: eventdefinitionslist
+      hints:
+        readOnly: true
+        destructive: false
+        idempotent: true
+      call: posthog-event-definitions.eventdefinitionslist
+      with:
+        limit: tools.limit
+        offset: tools.offset
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: eventdefinitionscreate
+      description: eventdefinitionscreate
+      hints:
+        readOnly: false
+        destructive: false
+        idempotent: false
+      call: posthog-event-definitions.eventdefinitionscreate
+      with:
+        body: tools.body
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: bulk-update-tags-multiple-objects
+      description: Bulk update tags on multiple objects.
+      hints:
+        readOnly: false
+        destructive: false
+        idempotent: false
+      call: posthog-event-definitions.eventdefinitionsbulkupdatetagscreate
+      with:
+        body: tools.body
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: get-event-definition-exact-name
+      description: Get event definition by exact name
+      hints:
+        readOnly: true
+        destructive: false
+        idempotent: true
+      call: posthog-event-definitions.eventdefinitionsbynameretrieve
+      with:
+        name: tools.name
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: eventdefinitionsgolangretrieve
+      description: eventdefinitionsgolangretrieve
+      hints:
+        readOnly: true
+        destructive: false
+        idempotent: true
+      call: posthog-event-definitions.eventdefinitionsgolangretrieve
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: resolve-team-configured-promoted-properties
+      description: Resolve team-configured promoted properties for event definitions.
+      hints:
+        readOnly: true
+        destructive: false
+        idempotent: true
+      call: posthog-event-definitions.eventdefinitionspromotedpropertiesretrieve
+      with:
+        names: tools.names
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: eventdefinitionspythonretrieve
+      description: eventdefinitionspythonretrieve
+      hints:
+        readOnly: true
+        destructive: false
+        idempotent: true
+      call: posthog-event-definitions.eventdefinitionspythonretrieve
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: eventdefinitionstypescriptretrieve
+      description: eventdefinitionstypescriptretrieve
+      hints:
+        readOnly: true
+        destructive: false
+        idempotent: true
+      call: posthog-event-definitions.eventdefinitionstypescriptretrieve
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: eventdefinitionsretrieve
+      description: eventdefinitionsretrieve
+      hints:
+        readOnly: true
+        destructive: false
+        idempotent: true
+      call: posthog-event-definitions.eventdefinitionsretrieve
+      with:
+        id: tools.id
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: eventdefinitionsupdate
+      description: eventdefinitionsupdate
+      hints:
+        readOnly: false
+        destructive: false
+        idempotent: true
+      call: posthog-event-definitions.eventdefinitionsupdate
+      with:
+        id: tools.id
+        body: tools.body
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: eventdefinitionspartialupdate
+      description: eventdefinitionspartialupdate
+      hints:
+        readOnly: false
+        destructive: false
+        idempotent: true
+      call: posthog-event-definitions.eventdefinitionspartialupdate
+      with:
+        id: tools.id
+        body: tools.body
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: eventdefinitionsdestroy
+      description: eventdefinitionsdestroy
+      hints:
+        readOnly: false
+        destructive: true
+        idempotent: true
+      call: posthog-event-definitions.eventdefinitionsdestroy
+      with:
+        id: tools.id
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: eventdefinitionsmetricsretrieve
+      description: eventdefinitionsmetricsretrieve
+      hints:
+        readOnly: true
+        destructive: false
+        idempotent: true
+      call: posthog-event-definitions.eventdefinitionsmetricsretrieve
+      with:
+        id: tools.id
+      outputParameters:
+      - type: object
+        mapping: $.

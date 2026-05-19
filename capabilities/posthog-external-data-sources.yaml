@@ -1,0 +1,1828 @@
+naftiko: 1.0.0-alpha2
+info:
+  label: PostHog API — external_data_sources
+  description: 'PostHog API — external_data_sources. 40 operations. Lead operation: external_data_sources. Self-contained
+    Naftiko capability covering one Posthog business surface.'
+  tags:
+  - Posthog
+  - external_data_sources
+  created: '2026-05-19'
+  modified: '2026-05-19'
+binds:
+- namespace: env
+  keys:
+    POSTHOG_API_KEY: POSTHOG_API_KEY
+capability:
+  consumes:
+  - type: http
+    namespace: posthog-external-data-sources
+    baseUri: ''
+    description: PostHog API — external_data_sources business capability. Self-contained, no shared references.
+    resources:
+    - name: api-environments-environment_id-external_data_sources
+      path: /api/environments/{environment_id}/external_data_sources/
+      operations:
+      - name: environmentsexternaldatasourceslist
+        method: GET
+        description: Create, Read, Update and Delete External data Sources.
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: limit
+          in: query
+          type: integer
+          description: Number of results to return per page.
+        - name: offset
+          in: query
+          type: integer
+          description: The initial index from which to return the results.
+        - name: search
+          in: query
+          type: string
+          description: A search term.
+      - name: environmentsexternaldatasourcescreate
+        method: POST
+        description: Create, Read, Update and Delete External data Sources.
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: body
+          in: body
+          type: object
+          description: Request body (JSON).
+          required: true
+    - name: api-environments-environment_id-external_data_sources-check_cdc_prerequisites
+      path: /api/environments/{environment_id}/external_data_sources/check_cdc_prerequisites/
+      operations:
+      - name: environmentsexternaldatasourcescheckcdcprerequisitescreate
+        method: POST
+        description: Validate CDC prerequisites against a live Postgres connection.
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+    - name: api-environments-environment_id-external_data_sources-connections
+      path: /api/environments/{environment_id}/external_data_sources/connections/
+      operations:
+      - name: environmentsexternaldatasourcesconnectionslist
+        method: GET
+        description: Create, Read, Update and Delete External data Sources.
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: limit
+          in: query
+          type: integer
+          description: Number of results to return per page.
+        - name: offset
+          in: query
+          type: integer
+          description: The initial index from which to return the results.
+        - name: search
+          in: query
+          type: string
+          description: A search term.
+    - name: api-environments-environment_id-external_data_sources-database_schema
+      path: /api/environments/{environment_id}/external_data_sources/database_schema/
+      operations:
+      - name: environmentsexternaldatasourcesdatabaseschemacreate
+        method: POST
+        description: Create, Read, Update and Delete External data Sources.
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: body
+          in: body
+          type: object
+          description: Request body (JSON).
+          required: true
+    - name: api-environments-environment_id-external_data_sources-source_prefix
+      path: /api/environments/{environment_id}/external_data_sources/source_prefix/
+      operations:
+      - name: environmentsexternaldatasourcessourceprefixcreate
+        method: POST
+        description: Create, Read, Update and Delete External data Sources.
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: body
+          in: body
+          type: object
+          description: Request body (JSON).
+          required: true
+    - name: api-environments-environment_id-external_data_sources-wizard
+      path: /api/environments/{environment_id}/external_data_sources/wizard/
+      operations:
+      - name: environmentsexternaldatasourceswizardretrieve
+        method: GET
+        description: Create, Read, Update and Delete External data Sources.
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+    - name: api-environments-environment_id-external_data_sources-id
+      path: /api/environments/{environment_id}/external_data_sources/{id}/
+      operations:
+      - name: environmentsexternaldatasourcesretrieve
+        method: GET
+        description: Create, Read, Update and Delete External data Sources.
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: id
+          in: path
+          type: string
+          description: A UUID string identifying this external data source.
+          required: true
+      - name: environmentsexternaldatasourcesupdate
+        method: PUT
+        description: Create, Read, Update and Delete External data Sources.
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: id
+          in: path
+          type: string
+          description: A UUID string identifying this external data source.
+          required: true
+        - name: body
+          in: body
+          type: object
+          description: Request body (JSON).
+          required: true
+      - name: environmentsexternaldatasourcespartialupdate
+        method: PATCH
+        description: Create, Read, Update and Delete External data Sources.
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: id
+          in: path
+          type: string
+          description: A UUID string identifying this external data source.
+          required: true
+        - name: body
+          in: body
+          type: object
+          description: Request body (JSON).
+          required: false
+      - name: environmentsexternaldatasourcesdestroy
+        method: DELETE
+        description: Create, Read, Update and Delete External data Sources.
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: id
+          in: path
+          type: string
+          description: A UUID string identifying this external data source.
+          required: true
+    - name: api-environments-environment_id-external_data_sources-id-bulk_update_schemas
+      path: /api/environments/{environment_id}/external_data_sources/{id}/bulk_update_schemas/
+      operations:
+      - name: environmentsexternaldatasourcesbulkupdateschemaspartialupdate
+        method: PATCH
+        description: Create, Read, Update and Delete External data Sources.
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: id
+          in: path
+          type: string
+          description: A UUID string identifying this external data source.
+          required: true
+        - name: limit
+          in: query
+          type: integer
+          description: Number of results to return per page.
+        - name: offset
+          in: query
+          type: integer
+          description: The initial index from which to return the results.
+        - name: search
+          in: query
+          type: string
+          description: A search term.
+        - name: body
+          in: body
+          type: object
+          description: Request body (JSON).
+          required: false
+    - name: api-environments-environment_id-external_data_sources-id-create_webhook
+      path: /api/environments/{environment_id}/external_data_sources/{id}/create_webhook/
+      operations:
+      - name: environmentsexternaldatasourcescreatewebhookcreate
+        method: POST
+        description: Create, Read, Update and Delete External data Sources.
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: id
+          in: path
+          type: string
+          description: A UUID string identifying this external data source.
+          required: true
+        - name: body
+          in: body
+          type: object
+          description: Request body (JSON).
+          required: true
+    - name: api-environments-environment_id-external_data_sources-id-delete_webhook
+      path: /api/environments/{environment_id}/external_data_sources/{id}/delete_webhook/
+      operations:
+      - name: environmentsexternaldatasourcesdeletewebhookcreate
+        method: POST
+        description: Create, Read, Update and Delete External data Sources.
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: id
+          in: path
+          type: string
+          description: A UUID string identifying this external data source.
+          required: true
+        - name: body
+          in: body
+          type: object
+          description: Request body (JSON).
+          required: true
+    - name: api-environments-environment_id-external_data_sources-id-jobs
+      path: /api/environments/{environment_id}/external_data_sources/{id}/jobs/
+      operations:
+      - name: environmentsexternaldatasourcesjobsretrieve
+        method: GET
+        description: Create, Read, Update and Delete External data Sources.
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: id
+          in: path
+          type: string
+          description: A UUID string identifying this external data source.
+          required: true
+    - name: api-environments-environment_id-external_data_sources-id-refresh_schemas
+      path: /api/environments/{environment_id}/external_data_sources/{id}/refresh_schemas/
+      operations:
+      - name: environmentsexternaldatasourcesrefreshschemascreate
+        method: POST
+        description: Fetch current schema/table list from the source and create any new ExternalDataSchema rows (no data sync).
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: id
+          in: path
+          type: string
+          description: A UUID string identifying this external data source.
+          required: true
+        - name: body
+          in: body
+          type: object
+          description: Request body (JSON).
+          required: true
+    - name: api-environments-environment_id-external_data_sources-id-reload
+      path: /api/environments/{environment_id}/external_data_sources/{id}/reload/
+      operations:
+      - name: environmentsexternaldatasourcesreloadcreate
+        method: POST
+        description: Create, Read, Update and Delete External data Sources.
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: id
+          in: path
+          type: string
+          description: A UUID string identifying this external data source.
+          required: true
+        - name: body
+          in: body
+          type: object
+          description: Request body (JSON).
+          required: true
+    - name: api-environments-environment_id-external_data_sources-id-revenue_analytics_confi
+      path: /api/environments/{environment_id}/external_data_sources/{id}/revenue_analytics_config/
+      operations:
+      - name: environmentsexternaldatasourcesrevenueanalyticsconfigpartialupdate
+        method: PATCH
+        description: Update the revenue analytics configuration and return the full external data source.
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: id
+          in: path
+          type: string
+          description: A UUID string identifying this external data source.
+          required: true
+        - name: body
+          in: body
+          type: object
+          description: Request body (JSON).
+          required: false
+    - name: api-environments-environment_id-external_data_sources-id-update_webhook_inputs
+      path: /api/environments/{environment_id}/external_data_sources/{id}/update_webhook_inputs/
+      operations:
+      - name: environmentsexternaldatasourcesupdatewebhookinputscreate
+        method: POST
+        description: Create, Read, Update and Delete External data Sources.
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: id
+          in: path
+          type: string
+          description: A UUID string identifying this external data source.
+          required: true
+        - name: body
+          in: body
+          type: object
+          description: Request body (JSON).
+          required: true
+    - name: api-environments-environment_id-external_data_sources-id-webhook_info
+      path: /api/environments/{environment_id}/external_data_sources/{id}/webhook_info/
+      operations:
+      - name: environmentsexternaldatasourceswebhookinforetrieve
+        method: GET
+        description: Create, Read, Update and Delete External data Sources.
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: id
+          in: path
+          type: string
+          description: A UUID string identifying this external data source.
+          required: true
+    - name: api-projects-project_id-external_data_sources
+      path: /api/projects/{project_id}/external_data_sources/
+      operations:
+      - name: externaldatasourceslist
+        method: GET
+        description: Create, Read, Update and Delete External data Sources.
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: limit
+          in: query
+          type: integer
+          description: Number of results to return per page.
+        - name: offset
+          in: query
+          type: integer
+          description: The initial index from which to return the results.
+        - name: search
+          in: query
+          type: string
+          description: A search term.
+      - name: externaldatasourcescreate
+        method: POST
+        description: Create, Read, Update and Delete External data Sources.
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: body
+          in: body
+          type: object
+          description: Request body (JSON).
+          required: true
+    - name: api-projects-project_id-external_data_sources-check_cdc_prerequisites
+      path: /api/projects/{project_id}/external_data_sources/check_cdc_prerequisites/
+      operations:
+      - name: externaldatasourcescheckcdcprerequisitescreate
+        method: POST
+        description: Validate CDC prerequisites against a live Postgres connection.
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+    - name: api-projects-project_id-external_data_sources-connections
+      path: /api/projects/{project_id}/external_data_sources/connections/
+      operations:
+      - name: externaldatasourcesconnectionslist
+        method: GET
+        description: Create, Read, Update and Delete External data Sources.
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: limit
+          in: query
+          type: integer
+          description: Number of results to return per page.
+        - name: offset
+          in: query
+          type: integer
+          description: The initial index from which to return the results.
+        - name: search
+          in: query
+          type: string
+          description: A search term.
+    - name: api-projects-project_id-external_data_sources-database_schema
+      path: /api/projects/{project_id}/external_data_sources/database_schema/
+      operations:
+      - name: externaldatasourcesdatabaseschemacreate
+        method: POST
+        description: Create, Read, Update and Delete External data Sources.
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: body
+          in: body
+          type: object
+          description: Request body (JSON).
+          required: true
+    - name: api-projects-project_id-external_data_sources-source_prefix
+      path: /api/projects/{project_id}/external_data_sources/source_prefix/
+      operations:
+      - name: externaldatasourcessourceprefixcreate
+        method: POST
+        description: Create, Read, Update and Delete External data Sources.
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: body
+          in: body
+          type: object
+          description: Request body (JSON).
+          required: true
+    - name: api-projects-project_id-external_data_sources-wizard
+      path: /api/projects/{project_id}/external_data_sources/wizard/
+      operations:
+      - name: externaldatasourceswizardretrieve
+        method: GET
+        description: Create, Read, Update and Delete External data Sources.
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+    - name: api-projects-project_id-external_data_sources-id
+      path: /api/projects/{project_id}/external_data_sources/{id}/
+      operations:
+      - name: externaldatasourcesretrieve
+        method: GET
+        description: Create, Read, Update and Delete External data Sources.
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: id
+          in: path
+          type: string
+          description: A UUID string identifying this external data source.
+          required: true
+      - name: externaldatasourcesupdate
+        method: PUT
+        description: Create, Read, Update and Delete External data Sources.
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: id
+          in: path
+          type: string
+          description: A UUID string identifying this external data source.
+          required: true
+        - name: body
+          in: body
+          type: object
+          description: Request body (JSON).
+          required: true
+      - name: externaldatasourcespartialupdate
+        method: PATCH
+        description: Create, Read, Update and Delete External data Sources.
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: id
+          in: path
+          type: string
+          description: A UUID string identifying this external data source.
+          required: true
+        - name: body
+          in: body
+          type: object
+          description: Request body (JSON).
+          required: false
+      - name: externaldatasourcesdestroy
+        method: DELETE
+        description: Create, Read, Update and Delete External data Sources.
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: id
+          in: path
+          type: string
+          description: A UUID string identifying this external data source.
+          required: true
+    - name: api-projects-project_id-external_data_sources-id-bulk_update_schemas
+      path: /api/projects/{project_id}/external_data_sources/{id}/bulk_update_schemas/
+      operations:
+      - name: externaldatasourcesbulkupdateschemaspartialupdate
+        method: PATCH
+        description: Create, Read, Update and Delete External data Sources.
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: id
+          in: path
+          type: string
+          description: A UUID string identifying this external data source.
+          required: true
+        - name: limit
+          in: query
+          type: integer
+          description: Number of results to return per page.
+        - name: offset
+          in: query
+          type: integer
+          description: The initial index from which to return the results.
+        - name: search
+          in: query
+          type: string
+          description: A search term.
+        - name: body
+          in: body
+          type: object
+          description: Request body (JSON).
+          required: false
+    - name: api-projects-project_id-external_data_sources-id-create_webhook
+      path: /api/projects/{project_id}/external_data_sources/{id}/create_webhook/
+      operations:
+      - name: externaldatasourcescreatewebhookcreate
+        method: POST
+        description: Create, Read, Update and Delete External data Sources.
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: id
+          in: path
+          type: string
+          description: A UUID string identifying this external data source.
+          required: true
+        - name: body
+          in: body
+          type: object
+          description: Request body (JSON).
+          required: true
+    - name: api-projects-project_id-external_data_sources-id-delete_webhook
+      path: /api/projects/{project_id}/external_data_sources/{id}/delete_webhook/
+      operations:
+      - name: externaldatasourcesdeletewebhookcreate
+        method: POST
+        description: Create, Read, Update and Delete External data Sources.
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: id
+          in: path
+          type: string
+          description: A UUID string identifying this external data source.
+          required: true
+        - name: body
+          in: body
+          type: object
+          description: Request body (JSON).
+          required: true
+    - name: api-projects-project_id-external_data_sources-id-jobs
+      path: /api/projects/{project_id}/external_data_sources/{id}/jobs/
+      operations:
+      - name: externaldatasourcesjobsretrieve
+        method: GET
+        description: Create, Read, Update and Delete External data Sources.
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: id
+          in: path
+          type: string
+          description: A UUID string identifying this external data source.
+          required: true
+    - name: api-projects-project_id-external_data_sources-id-refresh_schemas
+      path: /api/projects/{project_id}/external_data_sources/{id}/refresh_schemas/
+      operations:
+      - name: externaldatasourcesrefreshschemascreate
+        method: POST
+        description: Fetch current schema/table list from the source and create any new ExternalDataSchema rows (no data sync).
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: id
+          in: path
+          type: string
+          description: A UUID string identifying this external data source.
+          required: true
+        - name: body
+          in: body
+          type: object
+          description: Request body (JSON).
+          required: true
+    - name: api-projects-project_id-external_data_sources-id-reload
+      path: /api/projects/{project_id}/external_data_sources/{id}/reload/
+      operations:
+      - name: externaldatasourcesreloadcreate
+        method: POST
+        description: Create, Read, Update and Delete External data Sources.
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: id
+          in: path
+          type: string
+          description: A UUID string identifying this external data source.
+          required: true
+        - name: body
+          in: body
+          type: object
+          description: Request body (JSON).
+          required: true
+    - name: api-projects-project_id-external_data_sources-id-revenue_analytics_config
+      path: /api/projects/{project_id}/external_data_sources/{id}/revenue_analytics_config/
+      operations:
+      - name: externaldatasourcesrevenueanalyticsconfigpartialupdate
+        method: PATCH
+        description: Update the revenue analytics configuration and return the full external data source.
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: id
+          in: path
+          type: string
+          description: A UUID string identifying this external data source.
+          required: true
+        - name: body
+          in: body
+          type: object
+          description: Request body (JSON).
+          required: false
+    - name: api-projects-project_id-external_data_sources-id-update_webhook_inputs
+      path: /api/projects/{project_id}/external_data_sources/{id}/update_webhook_inputs/
+      operations:
+      - name: externaldatasourcesupdatewebhookinputscreate
+        method: POST
+        description: Create, Read, Update and Delete External data Sources.
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: id
+          in: path
+          type: string
+          description: A UUID string identifying this external data source.
+          required: true
+        - name: body
+          in: body
+          type: object
+          description: Request body (JSON).
+          required: true
+    - name: api-projects-project_id-external_data_sources-id-webhook_info
+      path: /api/projects/{project_id}/external_data_sources/{id}/webhook_info/
+      operations:
+      - name: externaldatasourceswebhookinforetrieve
+        method: GET
+        description: Create, Read, Update and Delete External data Sources.
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: id
+          in: path
+          type: string
+          description: A UUID string identifying this external data source.
+          required: true
+    authentication:
+      type: bearer
+      token: '{{env.POSTHOG_API_KEY}}'
+  exposes:
+  - type: rest
+    namespace: posthog-external-data-sources-rest
+    port: 8080
+    description: REST adapter for PostHog API — external_data_sources. One Spectral-compliant resource per consumed operation,
+      prefixed with /v1.
+    resources:
+    - path: /v1/api/environments/{environment-id}/external-data-sources
+      name: api-environments-environment-id-external-data-sources
+      description: REST surface for api-environments-environment_id-external_data_sources.
+      operations:
+      - method: GET
+        name: environmentsexternaldatasourceslist
+        description: Create, Read, Update and Delete External data Sources.
+        call: posthog-external-data-sources.environmentsexternaldatasourceslist
+        with:
+          limit: rest.limit
+          offset: rest.offset
+          search: rest.search
+        outputParameters:
+        - type: object
+          mapping: $.
+      - method: POST
+        name: environmentsexternaldatasourcescreate
+        description: Create, Read, Update and Delete External data Sources.
+        call: posthog-external-data-sources.environmentsexternaldatasourcescreate
+        with:
+          body: rest.body
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /v1/api/environments/{environment-id}/external-data-sources/check-cdc-prerequisites
+      name: api-environments-environment-id-external-data-sources-check-cdc-prerequisites
+      description: REST surface for api-environments-environment_id-external_data_sources-check_cdc_prerequisites.
+      operations:
+      - method: POST
+        name: environmentsexternaldatasourcescheckcdcprerequisitescreate
+        description: Validate CDC prerequisites against a live Postgres connection.
+        call: posthog-external-data-sources.environmentsexternaldatasourcescheckcdcprerequisitescreate
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /v1/api/environments/{environment-id}/external-data-sources/connections
+      name: api-environments-environment-id-external-data-sources-connections
+      description: REST surface for api-environments-environment_id-external_data_sources-connections.
+      operations:
+      - method: GET
+        name: environmentsexternaldatasourcesconnectionslist
+        description: Create, Read, Update and Delete External data Sources.
+        call: posthog-external-data-sources.environmentsexternaldatasourcesconnectionslist
+        with:
+          limit: rest.limit
+          offset: rest.offset
+          search: rest.search
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /v1/api/environments/{environment-id}/external-data-sources/database-schema
+      name: api-environments-environment-id-external-data-sources-database-schema
+      description: REST surface for api-environments-environment_id-external_data_sources-database_schema.
+      operations:
+      - method: POST
+        name: environmentsexternaldatasourcesdatabaseschemacreate
+        description: Create, Read, Update and Delete External data Sources.
+        call: posthog-external-data-sources.environmentsexternaldatasourcesdatabaseschemacreate
+        with:
+          body: rest.body
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /v1/api/environments/{environment-id}/external-data-sources/source-prefix
+      name: api-environments-environment-id-external-data-sources-source-prefix
+      description: REST surface for api-environments-environment_id-external_data_sources-source_prefix.
+      operations:
+      - method: POST
+        name: environmentsexternaldatasourcessourceprefixcreate
+        description: Create, Read, Update and Delete External data Sources.
+        call: posthog-external-data-sources.environmentsexternaldatasourcessourceprefixcreate
+        with:
+          body: rest.body
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /v1/api/environments/{environment-id}/external-data-sources/wizard
+      name: api-environments-environment-id-external-data-sources-wizard
+      description: REST surface for api-environments-environment_id-external_data_sources-wizard.
+      operations:
+      - method: GET
+        name: environmentsexternaldatasourceswizardretrieve
+        description: Create, Read, Update and Delete External data Sources.
+        call: posthog-external-data-sources.environmentsexternaldatasourceswizardretrieve
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /v1/api/environments/{environment-id}/external-data-sources/{id}
+      name: api-environments-environment-id-external-data-sources-id
+      description: REST surface for api-environments-environment_id-external_data_sources-id.
+      operations:
+      - method: GET
+        name: environmentsexternaldatasourcesretrieve
+        description: Create, Read, Update and Delete External data Sources.
+        call: posthog-external-data-sources.environmentsexternaldatasourcesretrieve
+        with:
+          id: rest.id
+        outputParameters:
+        - type: object
+          mapping: $.
+      - method: PUT
+        name: environmentsexternaldatasourcesupdate
+        description: Create, Read, Update and Delete External data Sources.
+        call: posthog-external-data-sources.environmentsexternaldatasourcesupdate
+        with:
+          id: rest.id
+          body: rest.body
+        outputParameters:
+        - type: object
+          mapping: $.
+      - method: PATCH
+        name: environmentsexternaldatasourcespartialupdate
+        description: Create, Read, Update and Delete External data Sources.
+        call: posthog-external-data-sources.environmentsexternaldatasourcespartialupdate
+        with:
+          id: rest.id
+          body: rest.body
+        outputParameters:
+        - type: object
+          mapping: $.
+      - method: DELETE
+        name: environmentsexternaldatasourcesdestroy
+        description: Create, Read, Update and Delete External data Sources.
+        call: posthog-external-data-sources.environmentsexternaldatasourcesdestroy
+        with:
+          id: rest.id
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /v1/api/environments/{environment-id}/external-data-sources/{id}/bulk-update-schemas
+      name: api-environments-environment-id-external-data-sources-id-bulk-update-schemas
+      description: REST surface for api-environments-environment_id-external_data_sources-id-bulk_update_schemas.
+      operations:
+      - method: PATCH
+        name: environmentsexternaldatasourcesbulkupdateschemaspartialupdate
+        description: Create, Read, Update and Delete External data Sources.
+        call: posthog-external-data-sources.environmentsexternaldatasourcesbulkupdateschemaspartialupdate
+        with:
+          id: rest.id
+          limit: rest.limit
+          offset: rest.offset
+          search: rest.search
+          body: rest.body
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /v1/api/environments/{environment-id}/external-data-sources/{id}/create-webhook
+      name: api-environments-environment-id-external-data-sources-id-create-webhook
+      description: REST surface for api-environments-environment_id-external_data_sources-id-create_webhook.
+      operations:
+      - method: POST
+        name: environmentsexternaldatasourcescreatewebhookcreate
+        description: Create, Read, Update and Delete External data Sources.
+        call: posthog-external-data-sources.environmentsexternaldatasourcescreatewebhookcreate
+        with:
+          id: rest.id
+          body: rest.body
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /v1/api/environments/{environment-id}/external-data-sources/{id}/delete-webhook
+      name: api-environments-environment-id-external-data-sources-id-delete-webhook
+      description: REST surface for api-environments-environment_id-external_data_sources-id-delete_webhook.
+      operations:
+      - method: POST
+        name: environmentsexternaldatasourcesdeletewebhookcreate
+        description: Create, Read, Update and Delete External data Sources.
+        call: posthog-external-data-sources.environmentsexternaldatasourcesdeletewebhookcreate
+        with:
+          id: rest.id
+          body: rest.body
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /v1/api/environments/{environment-id}/external-data-sources/{id}/jobs
+      name: api-environments-environment-id-external-data-sources-id-jobs
+      description: REST surface for api-environments-environment_id-external_data_sources-id-jobs.
+      operations:
+      - method: GET
+        name: environmentsexternaldatasourcesjobsretrieve
+        description: Create, Read, Update and Delete External data Sources.
+        call: posthog-external-data-sources.environmentsexternaldatasourcesjobsretrieve
+        with:
+          id: rest.id
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /v1/api/environments/{environment-id}/external-data-sources/{id}/refresh-schemas
+      name: api-environments-environment-id-external-data-sources-id-refresh-schemas
+      description: REST surface for api-environments-environment_id-external_data_sources-id-refresh_schemas.
+      operations:
+      - method: POST
+        name: environmentsexternaldatasourcesrefreshschemascreate
+        description: Fetch current schema/table list from the source and create any new ExternalDataSchema rows (no data sync).
+        call: posthog-external-data-sources.environmentsexternaldatasourcesrefreshschemascreate
+        with:
+          id: rest.id
+          body: rest.body
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /v1/api/environments/{environment-id}/external-data-sources/{id}/reload
+      name: api-environments-environment-id-external-data-sources-id-reload
+      description: REST surface for api-environments-environment_id-external_data_sources-id-reload.
+      operations:
+      - method: POST
+        name: environmentsexternaldatasourcesreloadcreate
+        description: Create, Read, Update and Delete External data Sources.
+        call: posthog-external-data-sources.environmentsexternaldatasourcesreloadcreate
+        with:
+          id: rest.id
+          body: rest.body
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /v1/api/environments/{environment-id}/external-data-sources/{id}/revenue-analytics-config
+      name: api-environments-environment-id-external-data-sources-id-revenue-analytics-confi
+      description: REST surface for api-environments-environment_id-external_data_sources-id-revenue_analytics_confi.
+      operations:
+      - method: PATCH
+        name: environmentsexternaldatasourcesrevenueanalyticsconfigpartialupdate
+        description: Update the revenue analytics configuration and return the full external data source.
+        call: posthog-external-data-sources.environmentsexternaldatasourcesrevenueanalyticsconfigpartialupdate
+        with:
+          id: rest.id
+          body: rest.body
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /v1/api/environments/{environment-id}/external-data-sources/{id}/update-webhook-inputs
+      name: api-environments-environment-id-external-data-sources-id-update-webhook-inputs
+      description: REST surface for api-environments-environment_id-external_data_sources-id-update_webhook_inputs.
+      operations:
+      - method: POST
+        name: environmentsexternaldatasourcesupdatewebhookinputscreate
+        description: Create, Read, Update and Delete External data Sources.
+        call: posthog-external-data-sources.environmentsexternaldatasourcesupdatewebhookinputscreate
+        with:
+          id: rest.id
+          body: rest.body
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /v1/api/environments/{environment-id}/external-data-sources/{id}/webhook-info
+      name: api-environments-environment-id-external-data-sources-id-webhook-info
+      description: REST surface for api-environments-environment_id-external_data_sources-id-webhook_info.
+      operations:
+      - method: GET
+        name: environmentsexternaldatasourceswebhookinforetrieve
+        description: Create, Read, Update and Delete External data Sources.
+        call: posthog-external-data-sources.environmentsexternaldatasourceswebhookinforetrieve
+        with:
+          id: rest.id
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /v1/api/projects/{project-id}/external-data-sources
+      name: api-projects-project-id-external-data-sources
+      description: REST surface for api-projects-project_id-external_data_sources.
+      operations:
+      - method: GET
+        name: externaldatasourceslist
+        description: Create, Read, Update and Delete External data Sources.
+        call: posthog-external-data-sources.externaldatasourceslist
+        with:
+          limit: rest.limit
+          offset: rest.offset
+          search: rest.search
+        outputParameters:
+        - type: object
+          mapping: $.
+      - method: POST
+        name: externaldatasourcescreate
+        description: Create, Read, Update and Delete External data Sources.
+        call: posthog-external-data-sources.externaldatasourcescreate
+        with:
+          body: rest.body
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /v1/api/projects/{project-id}/external-data-sources/check-cdc-prerequisites
+      name: api-projects-project-id-external-data-sources-check-cdc-prerequisites
+      description: REST surface for api-projects-project_id-external_data_sources-check_cdc_prerequisites.
+      operations:
+      - method: POST
+        name: externaldatasourcescheckcdcprerequisitescreate
+        description: Validate CDC prerequisites against a live Postgres connection.
+        call: posthog-external-data-sources.externaldatasourcescheckcdcprerequisitescreate
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /v1/api/projects/{project-id}/external-data-sources/connections
+      name: api-projects-project-id-external-data-sources-connections
+      description: REST surface for api-projects-project_id-external_data_sources-connections.
+      operations:
+      - method: GET
+        name: externaldatasourcesconnectionslist
+        description: Create, Read, Update and Delete External data Sources.
+        call: posthog-external-data-sources.externaldatasourcesconnectionslist
+        with:
+          limit: rest.limit
+          offset: rest.offset
+          search: rest.search
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /v1/api/projects/{project-id}/external-data-sources/database-schema
+      name: api-projects-project-id-external-data-sources-database-schema
+      description: REST surface for api-projects-project_id-external_data_sources-database_schema.
+      operations:
+      - method: POST
+        name: externaldatasourcesdatabaseschemacreate
+        description: Create, Read, Update and Delete External data Sources.
+        call: posthog-external-data-sources.externaldatasourcesdatabaseschemacreate
+        with:
+          body: rest.body
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /v1/api/projects/{project-id}/external-data-sources/source-prefix
+      name: api-projects-project-id-external-data-sources-source-prefix
+      description: REST surface for api-projects-project_id-external_data_sources-source_prefix.
+      operations:
+      - method: POST
+        name: externaldatasourcessourceprefixcreate
+        description: Create, Read, Update and Delete External data Sources.
+        call: posthog-external-data-sources.externaldatasourcessourceprefixcreate
+        with:
+          body: rest.body
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /v1/api/projects/{project-id}/external-data-sources/wizard
+      name: api-projects-project-id-external-data-sources-wizard
+      description: REST surface for api-projects-project_id-external_data_sources-wizard.
+      operations:
+      - method: GET
+        name: externaldatasourceswizardretrieve
+        description: Create, Read, Update and Delete External data Sources.
+        call: posthog-external-data-sources.externaldatasourceswizardretrieve
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /v1/api/projects/{project-id}/external-data-sources/{id}
+      name: api-projects-project-id-external-data-sources-id
+      description: REST surface for api-projects-project_id-external_data_sources-id.
+      operations:
+      - method: GET
+        name: externaldatasourcesretrieve
+        description: Create, Read, Update and Delete External data Sources.
+        call: posthog-external-data-sources.externaldatasourcesretrieve
+        with:
+          id: rest.id
+        outputParameters:
+        - type: object
+          mapping: $.
+      - method: PUT
+        name: externaldatasourcesupdate
+        description: Create, Read, Update and Delete External data Sources.
+        call: posthog-external-data-sources.externaldatasourcesupdate
+        with:
+          id: rest.id
+          body: rest.body
+        outputParameters:
+        - type: object
+          mapping: $.
+      - method: PATCH
+        name: externaldatasourcespartialupdate
+        description: Create, Read, Update and Delete External data Sources.
+        call: posthog-external-data-sources.externaldatasourcespartialupdate
+        with:
+          id: rest.id
+          body: rest.body
+        outputParameters:
+        - type: object
+          mapping: $.
+      - method: DELETE
+        name: externaldatasourcesdestroy
+        description: Create, Read, Update and Delete External data Sources.
+        call: posthog-external-data-sources.externaldatasourcesdestroy
+        with:
+          id: rest.id
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /v1/api/projects/{project-id}/external-data-sources/{id}/bulk-update-schemas
+      name: api-projects-project-id-external-data-sources-id-bulk-update-schemas
+      description: REST surface for api-projects-project_id-external_data_sources-id-bulk_update_schemas.
+      operations:
+      - method: PATCH
+        name: externaldatasourcesbulkupdateschemaspartialupdate
+        description: Create, Read, Update and Delete External data Sources.
+        call: posthog-external-data-sources.externaldatasourcesbulkupdateschemaspartialupdate
+        with:
+          id: rest.id
+          limit: rest.limit
+          offset: rest.offset
+          search: rest.search
+          body: rest.body
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /v1/api/projects/{project-id}/external-data-sources/{id}/create-webhook
+      name: api-projects-project-id-external-data-sources-id-create-webhook
+      description: REST surface for api-projects-project_id-external_data_sources-id-create_webhook.
+      operations:
+      - method: POST
+        name: externaldatasourcescreatewebhookcreate
+        description: Create, Read, Update and Delete External data Sources.
+        call: posthog-external-data-sources.externaldatasourcescreatewebhookcreate
+        with:
+          id: rest.id
+          body: rest.body
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /v1/api/projects/{project-id}/external-data-sources/{id}/delete-webhook
+      name: api-projects-project-id-external-data-sources-id-delete-webhook
+      description: REST surface for api-projects-project_id-external_data_sources-id-delete_webhook.
+      operations:
+      - method: POST
+        name: externaldatasourcesdeletewebhookcreate
+        description: Create, Read, Update and Delete External data Sources.
+        call: posthog-external-data-sources.externaldatasourcesdeletewebhookcreate
+        with:
+          id: rest.id
+          body: rest.body
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /v1/api/projects/{project-id}/external-data-sources/{id}/jobs
+      name: api-projects-project-id-external-data-sources-id-jobs
+      description: REST surface for api-projects-project_id-external_data_sources-id-jobs.
+      operations:
+      - method: GET
+        name: externaldatasourcesjobsretrieve
+        description: Create, Read, Update and Delete External data Sources.
+        call: posthog-external-data-sources.externaldatasourcesjobsretrieve
+        with:
+          id: rest.id
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /v1/api/projects/{project-id}/external-data-sources/{id}/refresh-schemas
+      name: api-projects-project-id-external-data-sources-id-refresh-schemas
+      description: REST surface for api-projects-project_id-external_data_sources-id-refresh_schemas.
+      operations:
+      - method: POST
+        name: externaldatasourcesrefreshschemascreate
+        description: Fetch current schema/table list from the source and create any new ExternalDataSchema rows (no data sync).
+        call: posthog-external-data-sources.externaldatasourcesrefreshschemascreate
+        with:
+          id: rest.id
+          body: rest.body
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /v1/api/projects/{project-id}/external-data-sources/{id}/reload
+      name: api-projects-project-id-external-data-sources-id-reload
+      description: REST surface for api-projects-project_id-external_data_sources-id-reload.
+      operations:
+      - method: POST
+        name: externaldatasourcesreloadcreate
+        description: Create, Read, Update and Delete External data Sources.
+        call: posthog-external-data-sources.externaldatasourcesreloadcreate
+        with:
+          id: rest.id
+          body: rest.body
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /v1/api/projects/{project-id}/external-data-sources/{id}/revenue-analytics-config
+      name: api-projects-project-id-external-data-sources-id-revenue-analytics-config
+      description: REST surface for api-projects-project_id-external_data_sources-id-revenue_analytics_config.
+      operations:
+      - method: PATCH
+        name: externaldatasourcesrevenueanalyticsconfigpartialupdate
+        description: Update the revenue analytics configuration and return the full external data source.
+        call: posthog-external-data-sources.externaldatasourcesrevenueanalyticsconfigpartialupdate
+        with:
+          id: rest.id
+          body: rest.body
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /v1/api/projects/{project-id}/external-data-sources/{id}/update-webhook-inputs
+      name: api-projects-project-id-external-data-sources-id-update-webhook-inputs
+      description: REST surface for api-projects-project_id-external_data_sources-id-update_webhook_inputs.
+      operations:
+      - method: POST
+        name: externaldatasourcesupdatewebhookinputscreate
+        description: Create, Read, Update and Delete External data Sources.
+        call: posthog-external-data-sources.externaldatasourcesupdatewebhookinputscreate
+        with:
+          id: rest.id
+          body: rest.body
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /v1/api/projects/{project-id}/external-data-sources/{id}/webhook-info
+      name: api-projects-project-id-external-data-sources-id-webhook-info
+      description: REST surface for api-projects-project_id-external_data_sources-id-webhook_info.
+      operations:
+      - method: GET
+        name: externaldatasourceswebhookinforetrieve
+        description: Create, Read, Update and Delete External data Sources.
+        call: posthog-external-data-sources.externaldatasourceswebhookinforetrieve
+        with:
+          id: rest.id
+        outputParameters:
+        - type: object
+          mapping: $.
+  - type: mcp
+    namespace: posthog-external-data-sources-mcp
+    port: 9090
+    transport: http
+    description: MCP adapter for PostHog API — external_data_sources. One tool per consumed operation, routed inline through
+      this capability's consumes block.
+    tools:
+    - name: create-read-update-and-delete
+      description: Create, Read, Update and Delete External data Sources.
+      hints:
+        readOnly: true
+        destructive: false
+        idempotent: true
+      call: posthog-external-data-sources.environmentsexternaldatasourceslist
+      with:
+        limit: tools.limit
+        offset: tools.offset
+        search: tools.search
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: create-read-update-and-delete-2
+      description: Create, Read, Update and Delete External data Sources.
+      hints:
+        readOnly: false
+        destructive: false
+        idempotent: false
+      call: posthog-external-data-sources.environmentsexternaldatasourcescreate
+      with:
+        body: tools.body
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: validate-cdc-prerequisites-against-live
+      description: Validate CDC prerequisites against a live Postgres connection.
+      hints:
+        readOnly: true
+        destructive: false
+        idempotent: false
+      call: posthog-external-data-sources.environmentsexternaldatasourcescheckcdcprerequisitescreate
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: create-read-update-and-delete-3
+      description: Create, Read, Update and Delete External data Sources.
+      hints:
+        readOnly: true
+        destructive: false
+        idempotent: true
+      call: posthog-external-data-sources.environmentsexternaldatasourcesconnectionslist
+      with:
+        limit: tools.limit
+        offset: tools.offset
+        search: tools.search
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: create-read-update-and-delete-4
+      description: Create, Read, Update and Delete External data Sources.
+      hints:
+        readOnly: false
+        destructive: false
+        idempotent: false
+      call: posthog-external-data-sources.environmentsexternaldatasourcesdatabaseschemacreate
+      with:
+        body: tools.body
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: create-read-update-and-delete-5
+      description: Create, Read, Update and Delete External data Sources.
+      hints:
+        readOnly: false
+        destructive: false
+        idempotent: false
+      call: posthog-external-data-sources.environmentsexternaldatasourcessourceprefixcreate
+      with:
+        body: tools.body
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: create-read-update-and-delete-6
+      description: Create, Read, Update and Delete External data Sources.
+      hints:
+        readOnly: true
+        destructive: false
+        idempotent: true
+      call: posthog-external-data-sources.environmentsexternaldatasourceswizardretrieve
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: create-read-update-and-delete-7
+      description: Create, Read, Update and Delete External data Sources.
+      hints:
+        readOnly: true
+        destructive: false
+        idempotent: true
+      call: posthog-external-data-sources.environmentsexternaldatasourcesretrieve
+      with:
+        id: tools.id
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: create-read-update-and-delete-8
+      description: Create, Read, Update and Delete External data Sources.
+      hints:
+        readOnly: false
+        destructive: false
+        idempotent: true
+      call: posthog-external-data-sources.environmentsexternaldatasourcesupdate
+      with:
+        id: tools.id
+        body: tools.body
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: create-read-update-and-delete-9
+      description: Create, Read, Update and Delete External data Sources.
+      hints:
+        readOnly: false
+        destructive: false
+        idempotent: true
+      call: posthog-external-data-sources.environmentsexternaldatasourcespartialupdate
+      with:
+        id: tools.id
+        body: tools.body
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: create-read-update-and-delete-10
+      description: Create, Read, Update and Delete External data Sources.
+      hints:
+        readOnly: false
+        destructive: true
+        idempotent: true
+      call: posthog-external-data-sources.environmentsexternaldatasourcesdestroy
+      with:
+        id: tools.id
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: create-read-update-and-delete-11
+      description: Create, Read, Update and Delete External data Sources.
+      hints:
+        readOnly: false
+        destructive: false
+        idempotent: true
+      call: posthog-external-data-sources.environmentsexternaldatasourcesbulkupdateschemaspartialupdate
+      with:
+        id: tools.id
+        limit: tools.limit
+        offset: tools.offset
+        search: tools.search
+        body: tools.body
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: create-read-update-and-delete-12
+      description: Create, Read, Update and Delete External data Sources.
+      hints:
+        readOnly: false
+        destructive: false
+        idempotent: false
+      call: posthog-external-data-sources.environmentsexternaldatasourcescreatewebhookcreate
+      with:
+        id: tools.id
+        body: tools.body
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: create-read-update-and-delete-13
+      description: Create, Read, Update and Delete External data Sources.
+      hints:
+        readOnly: false
+        destructive: false
+        idempotent: false
+      call: posthog-external-data-sources.environmentsexternaldatasourcesdeletewebhookcreate
+      with:
+        id: tools.id
+        body: tools.body
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: create-read-update-and-delete-14
+      description: Create, Read, Update and Delete External data Sources.
+      hints:
+        readOnly: true
+        destructive: false
+        idempotent: true
+      call: posthog-external-data-sources.environmentsexternaldatasourcesjobsretrieve
+      with:
+        id: tools.id
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: fetch-current-schema-table-list
+      description: Fetch current schema/table list from the source and create any new ExternalDataSchema rows (no data sync).
+      hints:
+        readOnly: true
+        destructive: false
+        idempotent: false
+      call: posthog-external-data-sources.environmentsexternaldatasourcesrefreshschemascreate
+      with:
+        id: tools.id
+        body: tools.body
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: create-read-update-and-delete-15
+      description: Create, Read, Update and Delete External data Sources.
+      hints:
+        readOnly: false
+        destructive: false
+        idempotent: false
+      call: posthog-external-data-sources.environmentsexternaldatasourcesreloadcreate
+      with:
+        id: tools.id
+        body: tools.body
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: update-revenue-analytics-configuration-and
+      description: Update the revenue analytics configuration and return the full external data source.
+      hints:
+        readOnly: false
+        destructive: false
+        idempotent: true
+      call: posthog-external-data-sources.environmentsexternaldatasourcesrevenueanalyticsconfigpartialupdate
+      with:
+        id: tools.id
+        body: tools.body
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: create-read-update-and-delete-16
+      description: Create, Read, Update and Delete External data Sources.
+      hints:
+        readOnly: false
+        destructive: false
+        idempotent: false
+      call: posthog-external-data-sources.environmentsexternaldatasourcesupdatewebhookinputscreate
+      with:
+        id: tools.id
+        body: tools.body
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: create-read-update-and-delete-17
+      description: Create, Read, Update and Delete External data Sources.
+      hints:
+        readOnly: true
+        destructive: false
+        idempotent: true
+      call: posthog-external-data-sources.environmentsexternaldatasourceswebhookinforetrieve
+      with:
+        id: tools.id
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: create-read-update-and-delete-18
+      description: Create, Read, Update and Delete External data Sources.
+      hints:
+        readOnly: true
+        destructive: false
+        idempotent: true
+      call: posthog-external-data-sources.externaldatasourceslist
+      with:
+        limit: tools.limit
+        offset: tools.offset
+        search: tools.search
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: create-read-update-and-delete-19
+      description: Create, Read, Update and Delete External data Sources.
+      hints:
+        readOnly: false
+        destructive: false
+        idempotent: false
+      call: posthog-external-data-sources.externaldatasourcescreate
+      with:
+        body: tools.body
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: validate-cdc-prerequisites-against-live-2
+      description: Validate CDC prerequisites against a live Postgres connection.
+      hints:
+        readOnly: true
+        destructive: false
+        idempotent: false
+      call: posthog-external-data-sources.externaldatasourcescheckcdcprerequisitescreate
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: create-read-update-and-delete-20
+      description: Create, Read, Update and Delete External data Sources.
+      hints:
+        readOnly: true
+        destructive: false
+        idempotent: true
+      call: posthog-external-data-sources.externaldatasourcesconnectionslist
+      with:
+        limit: tools.limit
+        offset: tools.offset
+        search: tools.search
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: create-read-update-and-delete-21
+      description: Create, Read, Update and Delete External data Sources.
+      hints:
+        readOnly: false
+        destructive: false
+        idempotent: false
+      call: posthog-external-data-sources.externaldatasourcesdatabaseschemacreate
+      with:
+        body: tools.body
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: create-read-update-and-delete-22
+      description: Create, Read, Update and Delete External data Sources.
+      hints:
+        readOnly: false
+        destructive: false
+        idempotent: false
+      call: posthog-external-data-sources.externaldatasourcessourceprefixcreate
+      with:
+        body: tools.body
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: create-read-update-and-delete-23
+      description: Create, Read, Update and Delete External data Sources.
+      hints:
+        readOnly: true
+        destructive: false
+        idempotent: true
+      call: posthog-external-data-sources.externaldatasourceswizardretrieve
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: create-read-update-and-delete-24
+      description: Create, Read, Update and Delete External data Sources.
+      hints:
+        readOnly: true
+        destructive: false
+        idempotent: true
+      call: posthog-external-data-sources.externaldatasourcesretrieve
+      with:
+        id: tools.id
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: create-read-update-and-delete-25
+      description: Create, Read, Update and Delete External data Sources.
+      hints:
+        readOnly: false
+        destructive: false
+        idempotent: true
+      call: posthog-external-data-sources.externaldatasourcesupdate
+      with:
+        id: tools.id
+        body: tools.body
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: create-read-update-and-delete-26
+      description: Create, Read, Update and Delete External data Sources.
+      hints:
+        readOnly: false
+        destructive: false
+        idempotent: true
+      call: posthog-external-data-sources.externaldatasourcespartialupdate
+      with:
+        id: tools.id
+        body: tools.body
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: create-read-update-and-delete-27
+      description: Create, Read, Update and Delete External data Sources.
+      hints:
+        readOnly: false
+        destructive: true
+        idempotent: true
+      call: posthog-external-data-sources.externaldatasourcesdestroy
+      with:
+        id: tools.id
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: create-read-update-and-delete-28
+      description: Create, Read, Update and Delete External data Sources.
+      hints:
+        readOnly: false
+        destructive: false
+        idempotent: true
+      call: posthog-external-data-sources.externaldatasourcesbulkupdateschemaspartialupdate
+      with:
+        id: tools.id
+        limit: tools.limit
+        offset: tools.offset
+        search: tools.search
+        body: tools.body
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: create-read-update-and-delete-29
+      description: Create, Read, Update and Delete External data Sources.
+      hints:
+        readOnly: false
+        destructive: false
+        idempotent: false
+      call: posthog-external-data-sources.externaldatasourcescreatewebhookcreate
+      with:
+        id: tools.id
+        body: tools.body
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: create-read-update-and-delete-30
+      description: Create, Read, Update and Delete External data Sources.
+      hints:
+        readOnly: false
+        destructive: false
+        idempotent: false
+      call: posthog-external-data-sources.externaldatasourcesdeletewebhookcreate
+      with:
+        id: tools.id
+        body: tools.body
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: create-read-update-and-delete-31
+      description: Create, Read, Update and Delete External data Sources.
+      hints:
+        readOnly: true
+        destructive: false
+        idempotent: true
+      call: posthog-external-data-sources.externaldatasourcesjobsretrieve
+      with:
+        id: tools.id
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: fetch-current-schema-table-list-2
+      description: Fetch current schema/table list from the source and create any new ExternalDataSchema rows (no data sync).
+      hints:
+        readOnly: true
+        destructive: false
+        idempotent: false
+      call: posthog-external-data-sources.externaldatasourcesrefreshschemascreate
+      with:
+        id: tools.id
+        body: tools.body
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: create-read-update-and-delete-32
+      description: Create, Read, Update and Delete External data Sources.
+      hints:
+        readOnly: false
+        destructive: false
+        idempotent: false
+      call: posthog-external-data-sources.externaldatasourcesreloadcreate
+      with:
+        id: tools.id
+        body: tools.body
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: update-revenue-analytics-configuration-and-2
+      description: Update the revenue analytics configuration and return the full external data source.
+      hints:
+        readOnly: false
+        destructive: false
+        idempotent: true
+      call: posthog-external-data-sources.externaldatasourcesrevenueanalyticsconfigpartialupdate
+      with:
+        id: tools.id
+        body: tools.body
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: create-read-update-and-delete-33
+      description: Create, Read, Update and Delete External data Sources.
+      hints:
+        readOnly: false
+        destructive: false
+        idempotent: false
+      call: posthog-external-data-sources.externaldatasourcesupdatewebhookinputscreate
+      with:
+        id: tools.id
+        body: tools.body
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: create-read-update-and-delete-34
+      description: Create, Read, Update and Delete External data Sources.
+      hints:
+        readOnly: true
+        destructive: false
+        idempotent: true
+      call: posthog-external-data-sources.externaldatasourceswebhookinforetrieve
+      with:
+        id: tools.id
+      outputParameters:
+      - type: object
+        mapping: $.

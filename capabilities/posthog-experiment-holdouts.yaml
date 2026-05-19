@@ -1,0 +1,281 @@
+naftiko: 1.0.0-alpha2
+info:
+  label: PostHog API — experiment_holdouts
+  description: 'PostHog API — experiment_holdouts. 6 operations. Lead operation: experiment_holdouts. Self-contained Naftiko
+    capability covering one Posthog business surface.'
+  tags:
+  - Posthog
+  - experiment_holdouts
+  created: '2026-05-19'
+  modified: '2026-05-19'
+binds:
+- namespace: env
+  keys:
+    POSTHOG_API_KEY: POSTHOG_API_KEY
+capability:
+  consumes:
+  - type: http
+    namespace: posthog-experiment-holdouts
+    baseUri: ''
+    description: PostHog API — experiment_holdouts business capability. Self-contained, no shared references.
+    resources:
+    - name: api-projects-project_id-experiment_holdouts
+      path: /api/projects/{project_id}/experiment_holdouts/
+      operations:
+      - name: experimentholdoutslist
+        method: GET
+        description: ''
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: limit
+          in: query
+          type: integer
+          description: Number of results to return per page.
+        - name: offset
+          in: query
+          type: integer
+          description: The initial index from which to return the results.
+      - name: experimentholdoutscreate
+        method: POST
+        description: ''
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: body
+          in: body
+          type: object
+          description: Request body (JSON).
+          required: true
+    - name: api-projects-project_id-experiment_holdouts-id
+      path: /api/projects/{project_id}/experiment_holdouts/{id}/
+      operations:
+      - name: experimentholdoutsretrieve
+        method: GET
+        description: ''
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: id
+          in: path
+          type: integer
+          description: A unique integer value identifying this experiment holdout.
+          required: true
+      - name: experimentholdoutsupdate
+        method: PUT
+        description: ''
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: id
+          in: path
+          type: integer
+          description: A unique integer value identifying this experiment holdout.
+          required: true
+        - name: body
+          in: body
+          type: object
+          description: Request body (JSON).
+          required: true
+      - name: experimentholdoutspartialupdate
+        method: PATCH
+        description: ''
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: id
+          in: path
+          type: integer
+          description: A unique integer value identifying this experiment holdout.
+          required: true
+        - name: body
+          in: body
+          type: object
+          description: Request body (JSON).
+          required: false
+      - name: experimentholdoutsdestroy
+        method: DELETE
+        description: ''
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: id
+          in: path
+          type: integer
+          description: A unique integer value identifying this experiment holdout.
+          required: true
+    authentication:
+      type: bearer
+      token: '{{env.POSTHOG_API_KEY}}'
+  exposes:
+  - type: rest
+    namespace: posthog-experiment-holdouts-rest
+    port: 8080
+    description: REST adapter for PostHog API — experiment_holdouts. One Spectral-compliant resource per consumed operation,
+      prefixed with /v1.
+    resources:
+    - path: /v1/api/projects/{project-id}/experiment-holdouts
+      name: api-projects-project-id-experiment-holdouts
+      description: REST surface for api-projects-project_id-experiment_holdouts.
+      operations:
+      - method: GET
+        name: experimentholdoutslist
+        description: experimentholdoutslist
+        call: posthog-experiment-holdouts.experimentholdoutslist
+        with:
+          limit: rest.limit
+          offset: rest.offset
+        outputParameters:
+        - type: object
+          mapping: $.
+      - method: POST
+        name: experimentholdoutscreate
+        description: experimentholdoutscreate
+        call: posthog-experiment-holdouts.experimentholdoutscreate
+        with:
+          body: rest.body
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /v1/api/projects/{project-id}/experiment-holdouts/{id}
+      name: api-projects-project-id-experiment-holdouts-id
+      description: REST surface for api-projects-project_id-experiment_holdouts-id.
+      operations:
+      - method: GET
+        name: experimentholdoutsretrieve
+        description: experimentholdoutsretrieve
+        call: posthog-experiment-holdouts.experimentholdoutsretrieve
+        with:
+          id: rest.id
+        outputParameters:
+        - type: object
+          mapping: $.
+      - method: PUT
+        name: experimentholdoutsupdate
+        description: experimentholdoutsupdate
+        call: posthog-experiment-holdouts.experimentholdoutsupdate
+        with:
+          id: rest.id
+          body: rest.body
+        outputParameters:
+        - type: object
+          mapping: $.
+      - method: PATCH
+        name: experimentholdoutspartialupdate
+        description: experimentholdoutspartialupdate
+        call: posthog-experiment-holdouts.experimentholdoutspartialupdate
+        with:
+          id: rest.id
+          body: rest.body
+        outputParameters:
+        - type: object
+          mapping: $.
+      - method: DELETE
+        name: experimentholdoutsdestroy
+        description: experimentholdoutsdestroy
+        call: posthog-experiment-holdouts.experimentholdoutsdestroy
+        with:
+          id: rest.id
+        outputParameters:
+        - type: object
+          mapping: $.
+  - type: mcp
+    namespace: posthog-experiment-holdouts-mcp
+    port: 9090
+    transport: http
+    description: MCP adapter for PostHog API — experiment_holdouts. One tool per consumed operation, routed inline through
+      this capability's consumes block.
+    tools:
+    - name: experimentholdoutslist
+      description: experimentholdoutslist
+      hints:
+        readOnly: true
+        destructive: false
+        idempotent: true
+      call: posthog-experiment-holdouts.experimentholdoutslist
+      with:
+        limit: tools.limit
+        offset: tools.offset
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: experimentholdoutscreate
+      description: experimentholdoutscreate
+      hints:
+        readOnly: false
+        destructive: false
+        idempotent: false
+      call: posthog-experiment-holdouts.experimentholdoutscreate
+      with:
+        body: tools.body
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: experimentholdoutsretrieve
+      description: experimentholdoutsretrieve
+      hints:
+        readOnly: true
+        destructive: false
+        idempotent: true
+      call: posthog-experiment-holdouts.experimentholdoutsretrieve
+      with:
+        id: tools.id
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: experimentholdoutsupdate
+      description: experimentholdoutsupdate
+      hints:
+        readOnly: false
+        destructive: false
+        idempotent: true
+      call: posthog-experiment-holdouts.experimentholdoutsupdate
+      with:
+        id: tools.id
+        body: tools.body
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: experimentholdoutspartialupdate
+      description: experimentholdoutspartialupdate
+      hints:
+        readOnly: false
+        destructive: false
+        idempotent: true
+      call: posthog-experiment-holdouts.experimentholdoutspartialupdate
+      with:
+        id: tools.id
+        body: tools.body
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: experimentholdoutsdestroy
+      description: experimentholdoutsdestroy
+      hints:
+        readOnly: false
+        destructive: true
+        idempotent: true
+      call: posthog-experiment-holdouts.experimentholdoutsdestroy
+      with:
+        id: tools.id
+      outputParameters:
+      - type: object
+        mapping: $.

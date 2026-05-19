@@ -1,0 +1,242 @@
+naftiko: 1.0.0-alpha2
+info:
+  label: PostHog API — reverse_proxy
+  description: 'PostHog API — reverse_proxy. 5 operations. Lead operation: reverse_proxy. Self-contained Naftiko capability
+    covering one Posthog business surface.'
+  tags:
+  - Posthog
+  - reverse_proxy
+  created: '2026-05-19'
+  modified: '2026-05-19'
+binds:
+- namespace: env
+  keys:
+    POSTHOG_API_KEY: POSTHOG_API_KEY
+capability:
+  consumes:
+  - type: http
+    namespace: posthog-reverse-proxy
+    baseUri: ''
+    description: PostHog API — reverse_proxy business capability. Self-contained, no shared references.
+    resources:
+    - name: api-organizations-organization_id-proxy_records
+      path: /api/organizations/{organization_id}/proxy_records/
+      operations:
+      - name: proxyrecordslist
+        method: GET
+        description: List all reverse proxies configured for the organization. Returns proxy records along with the maximum
+          number allowed by the current plan.
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+      - name: proxyrecordscreate
+        method: POST
+        description: Create a new managed reverse proxy. Provide the domain you want to proxy through. The response includes
+          the CNAME target you need to add as a DNS record. Once the CNAME is configured, the proxy will be automatically
+          verified and provisioned
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: body
+          in: body
+          type: object
+          description: Request body (JSON).
+          required: true
+    - name: api-organizations-organization_id-proxy_records-id
+      path: /api/organizations/{organization_id}/proxy_records/{id}/
+      operations:
+      - name: proxyrecordsretrieve
+        method: GET
+        description: Get details of a specific reverse proxy by ID. Returns the full configuration including domain, CNAME
+          target, and current provisioning status.
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: id
+          in: path
+          type: string
+          description: A UUID string identifying this proxy record.
+          required: true
+      - name: proxyrecordsdestroy
+        method: DELETE
+        description: Delete a reverse proxy. For proxies in 'waiting', 'erroring', or 'timed_out' status, the record is deleted
+          immediately. For active proxies, a deletion workflow is started to clean up the provisioned infrastructure.
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: id
+          in: path
+          type: string
+          description: A UUID string identifying this proxy record.
+          required: true
+    - name: api-organizations-organization_id-proxy_records-id-retry
+      path: /api/organizations/{organization_id}/proxy_records/{id}/retry/
+      operations:
+      - name: proxyrecordsretrycreate
+        method: POST
+        description: Retry provisioning a failed reverse proxy. Only available for proxies in 'erroring' or 'timed_out' status.
+          Resets the proxy to 'waiting' status and restarts the provisioning workflow.
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: id
+          in: path
+          type: string
+          description: A UUID string identifying this proxy record.
+          required: true
+    authentication:
+      type: bearer
+      token: '{{env.POSTHOG_API_KEY}}'
+  exposes:
+  - type: rest
+    namespace: posthog-reverse-proxy-rest
+    port: 8080
+    description: REST adapter for PostHog API — reverse_proxy. One Spectral-compliant resource per consumed operation, prefixed
+      with /v1.
+    resources:
+    - path: /v1/api/organizations/{organization-id}/proxy-records
+      name: api-organizations-organization-id-proxy-records
+      description: REST surface for api-organizations-organization_id-proxy_records.
+      operations:
+      - method: GET
+        name: proxyrecordslist
+        description: List all reverse proxies configured for the organization. Returns proxy records along with the maximum
+          number allowed by the current plan.
+        call: posthog-reverse-proxy.proxyrecordslist
+        outputParameters:
+        - type: object
+          mapping: $.
+      - method: POST
+        name: proxyrecordscreate
+        description: Create a new managed reverse proxy. Provide the domain you want to proxy through. The response includes
+          the CNAME target you need to add as a DNS record. Once the CNAME is configured, the proxy will be automatically
+          verified and provisioned
+        call: posthog-reverse-proxy.proxyrecordscreate
+        with:
+          body: rest.body
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /v1/api/organizations/{organization-id}/proxy-records/{id}
+      name: api-organizations-organization-id-proxy-records-id
+      description: REST surface for api-organizations-organization_id-proxy_records-id.
+      operations:
+      - method: GET
+        name: proxyrecordsretrieve
+        description: Get details of a specific reverse proxy by ID. Returns the full configuration including domain, CNAME
+          target, and current provisioning status.
+        call: posthog-reverse-proxy.proxyrecordsretrieve
+        with:
+          id: rest.id
+        outputParameters:
+        - type: object
+          mapping: $.
+      - method: DELETE
+        name: proxyrecordsdestroy
+        description: Delete a reverse proxy. For proxies in 'waiting', 'erroring', or 'timed_out' status, the record is deleted
+          immediately. For active proxies, a deletion workflow is started to clean up the provisioned infrastructure.
+        call: posthog-reverse-proxy.proxyrecordsdestroy
+        with:
+          id: rest.id
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /v1/api/organizations/{organization-id}/proxy-records/{id}/retry
+      name: api-organizations-organization-id-proxy-records-id-retry
+      description: REST surface for api-organizations-organization_id-proxy_records-id-retry.
+      operations:
+      - method: POST
+        name: proxyrecordsretrycreate
+        description: Retry provisioning a failed reverse proxy. Only available for proxies in 'erroring' or 'timed_out' status.
+          Resets the proxy to 'waiting' status and restarts the provisioning workflow.
+        call: posthog-reverse-proxy.proxyrecordsretrycreate
+        with:
+          id: rest.id
+        outputParameters:
+        - type: object
+          mapping: $.
+  - type: mcp
+    namespace: posthog-reverse-proxy-mcp
+    port: 9090
+    transport: http
+    description: MCP adapter for PostHog API — reverse_proxy. One tool per consumed operation, routed inline through this
+      capability's consumes block.
+    tools:
+    - name: list-all-reverse-proxies-configured
+      description: List all reverse proxies configured for the organization. Returns proxy records along with the maximum
+        number allowed by the current plan.
+      hints:
+        readOnly: true
+        destructive: false
+        idempotent: true
+      call: posthog-reverse-proxy.proxyrecordslist
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: create-new-managed-reverse-proxy
+      description: Create a new managed reverse proxy. Provide the domain you want to proxy through. The response includes
+        the CNAME target you need to add as a DNS record. Once the CNAME is configured, the proxy will be automatically verified
+        and provisioned
+      hints:
+        readOnly: true
+        destructive: false
+        idempotent: false
+      call: posthog-reverse-proxy.proxyrecordscreate
+      with:
+        body: tools.body
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: get-details-specific-reverse-proxy
+      description: Get details of a specific reverse proxy by ID. Returns the full configuration including domain, CNAME target,
+        and current provisioning status.
+      hints:
+        readOnly: true
+        destructive: false
+        idempotent: true
+      call: posthog-reverse-proxy.proxyrecordsretrieve
+      with:
+        id: tools.id
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: delete-reverse-proxy-proxies-waiting
+      description: Delete a reverse proxy. For proxies in 'waiting', 'erroring', or 'timed_out' status, the record is deleted
+        immediately. For active proxies, a deletion workflow is started to clean up the provisioned infrastructure.
+      hints:
+        readOnly: false
+        destructive: true
+        idempotent: true
+      call: posthog-reverse-proxy.proxyrecordsdestroy
+      with:
+        id: tools.id
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: retry-provisioning-failed-reverse-proxy
+      description: Retry provisioning a failed reverse proxy. Only available for proxies in 'erroring' or 'timed_out' status.
+        Resets the proxy to 'waiting' status and restarts the provisioning workflow.
+      hints:
+        readOnly: false
+        destructive: false
+        idempotent: false
+      call: posthog-reverse-proxy.proxyrecordsretrycreate
+      with:
+        id: tools.id
+      outputParameters:
+      - type: object
+        mapping: $.

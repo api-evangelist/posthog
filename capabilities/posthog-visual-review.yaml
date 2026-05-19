@@ -1,0 +1,2318 @@
+naftiko: 1.0.0-alpha2
+info:
+  label: PostHog API — visual_review
+  description: 'PostHog API — visual_review. 50 operations. Lead operation: visual_review. Self-contained Naftiko capability
+    covering one Posthog business surface.'
+  tags:
+  - Posthog
+  - visual_review
+  created: '2026-05-19'
+  modified: '2026-05-19'
+binds:
+- namespace: env
+  keys:
+    POSTHOG_API_KEY: POSTHOG_API_KEY
+capability:
+  consumes:
+  - type: http
+    namespace: posthog-visual-review
+    baseUri: ''
+    description: PostHog API — visual_review business capability. Self-contained, no shared references.
+    resources:
+    - name: api-projects-project_id-visual_review-repos
+      path: /api/projects/{project_id}/visual_review/repos/
+      operations:
+      - name: visualreviewreposlist
+        method: GET
+        description: List all projects for the team.
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: limit
+          in: query
+          type: integer
+          description: Number of results to return per page.
+        - name: offset
+          in: query
+          type: integer
+          description: The initial index from which to return the results.
+      - name: visualreviewreposlist
+        method: GET
+        description: List all projects for the team.
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: limit
+          in: query
+          type: integer
+          description: Number of results to return per page.
+        - name: offset
+          in: query
+          type: integer
+          description: The initial index from which to return the results.
+      - name: visualreviewreposcreate
+        method: POST
+        description: Create a new repo.
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: body
+          in: body
+          type: object
+          description: Request body (JSON).
+          required: true
+      - name: visualreviewreposcreate
+        method: POST
+        description: Create a new repo.
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: body
+          in: body
+          type: object
+          description: Request body (JSON).
+          required: true
+    - name: api-projects-project_id-visual_review-repos-id
+      path: /api/projects/{project_id}/visual_review/repos/{id}/
+      operations:
+      - name: visualreviewreposretrieve
+        method: GET
+        description: Get a repo by ID.
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: id
+          in: path
+          type: string
+          required: true
+      - name: visualreviewreposretrieve
+        method: GET
+        description: Get a repo by ID.
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: id
+          in: path
+          type: string
+          required: true
+      - name: visualreviewrepospartialupdate
+        method: PATCH
+        description: Update a repo's settings.
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: id
+          in: path
+          type: string
+          required: true
+        - name: body
+          in: body
+          type: object
+          description: Request body (JSON).
+          required: false
+      - name: visualreviewrepospartialupdate
+        method: PATCH
+        description: Update a repo's settings.
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: id
+          in: path
+          type: string
+          required: true
+        - name: body
+          in: body
+          type: object
+          description: Request body (JSON).
+          required: false
+    - name: api-projects-project_id-visual_review-repos-id-baselines
+      path: /api/projects/{project_id}/visual_review/repos/{id}/baselines/
+      operations:
+      - name: visualreviewreposbaselinesretrieve
+        method: GET
+        description: 'Snapshots overview for a repo: every identifier with a current baseline (latest non-superseded master/main
+          run per run_type), plus tolerate counts, active quarantine state, and a 30-day stability sparkline. Capped at 5000
+          entries — sets `tr'
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: id
+          in: path
+          type: string
+          required: true
+      - name: visualreviewreposbaselinesretrieve
+        method: GET
+        description: 'Snapshots overview for a repo: every identifier with a current baseline (latest non-superseded master/main
+          run per run_type), plus tolerate counts, active quarantine state, and a 30-day stability sparkline. Capped at 5000
+          entries — sets `tr'
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: id
+          in: path
+          type: string
+          required: true
+    - name: api-projects-project_id-visual_review-repos-id-quarantine
+      path: /api/projects/{project_id}/visual_review/repos/{id}/quarantine/
+      operations:
+      - name: visualreviewreposquarantinelist
+        method: GET
+        description: 'List quarantined identifiers. Without filter: active only. With identifier: full history.'
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: id
+          in: path
+          type: string
+          required: true
+        - name: identifier
+          in: query
+          type: string
+          description: Filter by identifier (returns full history)
+        - name: limit
+          in: query
+          type: integer
+          description: Number of results to return per page.
+        - name: offset
+          in: query
+          type: integer
+          description: The initial index from which to return the results.
+        - name: run_type
+          in: query
+          type: string
+          description: Filter by run type
+      - name: visualreviewreposquarantinelist
+        method: GET
+        description: 'List quarantined identifiers. Without filter: active only. With identifier: full history.'
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: id
+          in: path
+          type: string
+          required: true
+        - name: identifier
+          in: query
+          type: string
+          description: Filter by identifier (returns full history)
+        - name: limit
+          in: query
+          type: integer
+          description: Number of results to return per page.
+        - name: offset
+          in: query
+          type: integer
+          description: The initial index from which to return the results.
+        - name: run_type
+          in: query
+          type: string
+          description: Filter by run type
+    - name: api-projects-project_id-visual_review-repos-id-quarantine-run_type
+      path: /api/projects/{project_id}/visual_review/repos/{id}/quarantine/{run_type}/
+      operations:
+      - name: visualreviewreposquarantinecreate
+        method: POST
+        description: Quarantine a snapshot identifier for a specific run type.
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: id
+          in: path
+          type: string
+          required: true
+        - name: run_type
+          in: path
+          type: string
+          required: true
+        - name: body
+          in: body
+          type: object
+          description: Request body (JSON).
+          required: true
+      - name: visualreviewreposquarantinecreate
+        method: POST
+        description: Quarantine a snapshot identifier for a specific run type.
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: id
+          in: path
+          type: string
+          required: true
+        - name: run_type
+          in: path
+          type: string
+          required: true
+        - name: body
+          in: body
+          type: object
+          description: Request body (JSON).
+          required: true
+    - name: api-projects-project_id-visual_review-repos-id-quarantine-run_type-expire
+      path: /api/projects/{project_id}/visual_review/repos/{id}/quarantine/{run_type}/expire/
+      operations:
+      - name: visualreviewreposquarantineexpirecreate
+        method: POST
+        description: Expire all active quarantine entries for an identifier.
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: id
+          in: path
+          type: string
+          required: true
+        - name: run_type
+          in: path
+          type: string
+          required: true
+        - name: body
+          in: body
+          type: object
+          description: Request body (JSON).
+          required: true
+      - name: visualreviewreposquarantineexpirecreate
+        method: POST
+        description: Expire all active quarantine entries for an identifier.
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: id
+          in: path
+          type: string
+          required: true
+        - name: run_type
+          in: path
+          type: string
+          required: true
+        - name: body
+          in: body
+          type: object
+          description: Request body (JSON).
+          required: true
+    - name: api-projects-project_id-visual_review-repos-id-thumbnails-identifier
+      path: /api/projects/{project_id}/visual_review/repos/{id}/thumbnails/{identifier}/
+      operations:
+      - name: visualreviewreposthumbnailsretrieve
+        method: GET
+        description: Serve a snapshot thumbnail by identifier. Returns WebP with ETag caching.
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: id
+          in: path
+          type: string
+          required: true
+        - name: identifier
+          in: path
+          type: string
+          required: true
+      - name: visualreviewreposthumbnailsretrieve
+        method: GET
+        description: Serve a snapshot thumbnail by identifier. Returns WebP with ETag caching.
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: id
+          in: path
+          type: string
+          required: true
+        - name: identifier
+          in: path
+          type: string
+          required: true
+    - name: api-projects-project_id-visual_review-repos-repo_id-runs
+      path: /api/projects/{project_id}/visual_review/repos/{repo_id}/runs/
+      operations:
+      - name: visualreviewreposrunslist
+        method: GET
+        description: List runs in this repo, optionally filtered by review state.
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: limit
+          in: query
+          type: integer
+          description: Number of results to return per page.
+        - name: offset
+          in: query
+          type: integer
+          description: The initial index from which to return the results.
+        - name: repo_id
+          in: path
+          type: string
+          required: true
+        - name: review_state
+          in: query
+          type: string
+          description: Filter by review state
+      - name: visualreviewreposrunslist
+        method: GET
+        description: List runs in this repo, optionally filtered by review state.
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: limit
+          in: query
+          type: integer
+          description: Number of results to return per page.
+        - name: offset
+          in: query
+          type: integer
+          description: The initial index from which to return the results.
+        - name: repo_id
+          in: path
+          type: string
+          required: true
+        - name: review_state
+          in: query
+          type: string
+          description: Filter by review state
+    - name: api-projects-project_id-visual_review-repos-repo_id-runs-counts
+      path: /api/projects/{project_id}/visual_review/repos/{repo_id}/runs/counts/
+      operations:
+      - name: visualreviewreposrunscountsretrieve
+        method: GET
+        description: Review state counts for runs in this repo.
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: repo_id
+          in: path
+          type: string
+          required: true
+      - name: visualreviewreposrunscountsretrieve
+        method: GET
+        description: Review state counts for runs in this repo.
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: repo_id
+          in: path
+          type: string
+          required: true
+    - name: api-projects-project_id-visual_review-repos-repo_id-snapshots-run_type-identifie
+      path: /api/projects/{project_id}/visual_review/repos/{repo_id}/snapshots/{run_type}/{identifier}/
+      operations:
+      - name: visualreviewrepossnapshotslist
+        method: GET
+        description: Deduped baseline timeline for a snapshot identity. Newest first.
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: identifier
+          in: path
+          type: string
+          description: Snapshot identifier; clients must percent-encode before sending
+          required: true
+        - name: limit
+          in: query
+          type: integer
+          description: Number of results to return per page.
+        - name: offset
+          in: query
+          type: integer
+          description: The initial index from which to return the results.
+        - name: repo_id
+          in: path
+          type: string
+          required: true
+        - name: run_type
+          in: path
+          type: string
+          description: Run type (storybook, playwright)
+          required: true
+      - name: visualreviewrepossnapshotslist
+        method: GET
+        description: Deduped baseline timeline for a snapshot identity. Newest first.
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: identifier
+          in: path
+          type: string
+          description: Snapshot identifier; clients must percent-encode before sending
+          required: true
+        - name: limit
+          in: query
+          type: integer
+          description: Number of results to return per page.
+        - name: offset
+          in: query
+          type: integer
+          description: The initial index from which to return the results.
+        - name: repo_id
+          in: path
+          type: string
+          required: true
+        - name: run_type
+          in: path
+          type: string
+          description: Run type (storybook, playwright)
+          required: true
+    - name: api-projects-project_id-visual_review-runs
+      path: /api/projects/{project_id}/visual_review/runs/
+      operations:
+      - name: visualreviewrunslist
+        method: GET
+        description: List runs for the team, optionally filtered by review state, PR number, commit SHA, or branch.
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: branch
+          in: query
+          type: string
+          description: Filter by branch name
+        - name: commit_sha
+          in: query
+          type: string
+          description: Filter by full commit SHA
+        - name: limit
+          in: query
+          type: integer
+          description: Number of results to return per page.
+        - name: offset
+          in: query
+          type: integer
+          description: The initial index from which to return the results.
+        - name: pr_number
+          in: query
+          type: integer
+          description: Filter by GitHub PR number
+        - name: review_state
+          in: query
+          type: string
+          description: Filter by review state
+      - name: visualreviewrunslist
+        method: GET
+        description: List runs for the team, optionally filtered by review state, PR number, commit SHA, or branch.
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: branch
+          in: query
+          type: string
+          description: Filter by branch name
+        - name: commit_sha
+          in: query
+          type: string
+          description: Filter by full commit SHA
+        - name: limit
+          in: query
+          type: integer
+          description: Number of results to return per page.
+        - name: offset
+          in: query
+          type: integer
+          description: The initial index from which to return the results.
+        - name: pr_number
+          in: query
+          type: integer
+          description: Filter by GitHub PR number
+        - name: review_state
+          in: query
+          type: string
+          description: Filter by review state
+      - name: visualreviewrunscreate
+        method: POST
+        description: Create a new run from a CI manifest.
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: body
+          in: body
+          type: object
+          description: Request body (JSON).
+          required: true
+      - name: visualreviewrunscreate
+        method: POST
+        description: Create a new run from a CI manifest.
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: body
+          in: body
+          type: object
+          description: Request body (JSON).
+          required: true
+    - name: api-projects-project_id-visual_review-runs-counts
+      path: /api/projects/{project_id}/visual_review/runs/counts/
+      operations:
+      - name: visualreviewrunscountsretrieve
+        method: GET
+        description: Review state counts for the runs list.
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+      - name: visualreviewrunscountsretrieve
+        method: GET
+        description: Review state counts for the runs list.
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+    - name: api-projects-project_id-visual_review-runs-id
+      path: /api/projects/{project_id}/visual_review/runs/{id}/
+      operations:
+      - name: visualreviewrunsretrieve
+        method: GET
+        description: Get run status and summary.
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: id
+          in: path
+          type: string
+          required: true
+      - name: visualreviewrunsretrieve
+        method: GET
+        description: Get run status and summary.
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: id
+          in: path
+          type: string
+          required: true
+    - name: api-projects-project_id-visual_review-runs-id-add-snapshots
+      path: /api/projects/{project_id}/visual_review/runs/{id}/add-snapshots/
+      operations:
+      - name: visualreviewrunsaddsnapshotscreate
+        method: POST
+        description: Add a batch of snapshots to a pending run (shard-based flow).
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: id
+          in: path
+          type: string
+          required: true
+        - name: body
+          in: body
+          type: object
+          description: Request body (JSON).
+          required: true
+      - name: visualreviewrunsaddsnapshotscreate
+        method: POST
+        description: Add a batch of snapshots to a pending run (shard-based flow).
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: id
+          in: path
+          type: string
+          required: true
+        - name: body
+          in: body
+          type: object
+          description: Request body (JSON).
+          required: true
+    - name: api-projects-project_id-visual_review-runs-id-approve
+      path: /api/projects/{project_id}/visual_review/runs/{id}/approve/
+      operations:
+      - name: visualreviewrunsapprovecreate
+        method: POST
+        description: Approve visual changes for snapshots in this run.
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: id
+          in: path
+          type: string
+          required: true
+        - name: body
+          in: body
+          type: object
+          description: Request body (JSON).
+          required: false
+      - name: visualreviewrunsapprovecreate
+        method: POST
+        description: Approve visual changes for snapshots in this run.
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: id
+          in: path
+          type: string
+          required: true
+        - name: body
+          in: body
+          type: object
+          description: Request body (JSON).
+          required: false
+    - name: api-projects-project_id-visual_review-runs-id-auto-approve
+      path: /api/projects/{project_id}/visual_review/runs/{id}/auto-approve/
+      operations:
+      - name: visualreviewrunsautoapprovecreate
+        method: POST
+        description: 'CLI auto-approve: approve all and return baseline YAML for local write.'
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: id
+          in: path
+          type: string
+          required: true
+      - name: visualreviewrunsautoapprovecreate
+        method: POST
+        description: 'CLI auto-approve: approve all and return baseline YAML for local write.'
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: id
+          in: path
+          type: string
+          required: true
+    - name: api-projects-project_id-visual_review-runs-id-complete
+      path: /api/projects/{project_id}/visual_review/runs/{id}/complete/
+      operations:
+      - name: visualreviewrunscompletecreate
+        method: POST
+        description: 'Complete a run: detect removals, verify uploads, trigger diff processing.'
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: id
+          in: path
+          type: string
+          required: true
+      - name: visualreviewrunscompletecreate
+        method: POST
+        description: 'Complete a run: detect removals, verify uploads, trigger diff processing.'
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: id
+          in: path
+          type: string
+          required: true
+    - name: api-projects-project_id-visual_review-runs-id-recompute
+      path: /api/projects/{project_id}/visual_review/runs/{id}/recompute/
+      operations:
+      - name: visualreviewrunsrecomputecreate
+        method: POST
+        description: Re-evaluate quarantine and counts, update commit status, and optionally rerun the CI job.
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: id
+          in: path
+          type: string
+          required: true
+      - name: visualreviewrunsrecomputecreate
+        method: POST
+        description: Re-evaluate quarantine and counts, update commit status, and optionally rerun the CI job.
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: id
+          in: path
+          type: string
+          required: true
+    - name: api-projects-project_id-visual_review-runs-id-snapshot-history
+      path: /api/projects/{project_id}/visual_review/runs/{id}/snapshot-history/
+      operations:
+      - name: visualreviewrunssnapshothistorylist
+        method: GET
+        description: Recent change history for a snapshot identifier across runs.
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: id
+          in: path
+          type: string
+          required: true
+        - name: identifier
+          in: query
+          type: string
+          description: Snapshot identifier
+          required: true
+        - name: limit
+          in: query
+          type: integer
+          description: Number of results to return per page.
+        - name: offset
+          in: query
+          type: integer
+          description: The initial index from which to return the results.
+      - name: visualreviewrunssnapshothistorylist
+        method: GET
+        description: Recent change history for a snapshot identifier across runs.
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: id
+          in: path
+          type: string
+          required: true
+        - name: identifier
+          in: query
+          type: string
+          description: Snapshot identifier
+          required: true
+        - name: limit
+          in: query
+          type: integer
+          description: Number of results to return per page.
+        - name: offset
+          in: query
+          type: integer
+          description: The initial index from which to return the results.
+    - name: api-projects-project_id-visual_review-runs-id-snapshots
+      path: /api/projects/{project_id}/visual_review/runs/{id}/snapshots/
+      operations:
+      - name: visualreviewrunssnapshotslist
+        method: GET
+        description: Get all snapshots for a run with diff results.
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: id
+          in: path
+          type: string
+          required: true
+        - name: limit
+          in: query
+          type: integer
+          description: Number of results to return per page.
+        - name: offset
+          in: query
+          type: integer
+          description: The initial index from which to return the results.
+      - name: visualreviewrunssnapshotslist
+        method: GET
+        description: Get all snapshots for a run with diff results.
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: id
+          in: path
+          type: string
+          required: true
+        - name: limit
+          in: query
+          type: integer
+          description: Number of results to return per page.
+        - name: offset
+          in: query
+          type: integer
+          description: The initial index from which to return the results.
+    - name: api-projects-project_id-visual_review-runs-id-tolerate
+      path: /api/projects/{project_id}/visual_review/runs/{id}/tolerate/
+      operations:
+      - name: visualreviewrunstoleratecreate
+        method: POST
+        description: Mark a changed snapshot as a known tolerated alternate.
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: id
+          in: path
+          type: string
+          required: true
+        - name: body
+          in: body
+          type: object
+          description: Request body (JSON).
+          required: true
+      - name: visualreviewrunstoleratecreate
+        method: POST
+        description: Mark a changed snapshot as a known tolerated alternate.
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: id
+          in: path
+          type: string
+          required: true
+        - name: body
+          in: body
+          type: object
+          description: Request body (JSON).
+          required: true
+    - name: api-projects-project_id-visual_review-runs-id-tolerated-hashes
+      path: /api/projects/{project_id}/visual_review/runs/{id}/tolerated-hashes/
+      operations:
+      - name: visualreviewrunstoleratedhasheslist
+        method: GET
+        description: List known tolerated hashes for a snapshot identifier.
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: id
+          in: path
+          type: string
+          required: true
+        - name: identifier
+          in: query
+          type: string
+          description: Snapshot identifier
+          required: true
+        - name: limit
+          in: query
+          type: integer
+          description: Number of results to return per page.
+        - name: offset
+          in: query
+          type: integer
+          description: The initial index from which to return the results.
+      - name: visualreviewrunstoleratedhasheslist
+        method: GET
+        description: List known tolerated hashes for a snapshot identifier.
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: id
+          in: path
+          type: string
+          required: true
+        - name: identifier
+          in: query
+          type: string
+          description: Snapshot identifier
+          required: true
+        - name: limit
+          in: query
+          type: integer
+          description: Number of results to return per page.
+        - name: offset
+          in: query
+          type: integer
+          description: The initial index from which to return the results.
+    authentication:
+      type: bearer
+      token: '{{env.POSTHOG_API_KEY}}'
+  exposes:
+  - type: rest
+    namespace: posthog-visual-review-rest
+    port: 8080
+    description: REST adapter for PostHog API — visual_review. One Spectral-compliant resource per consumed operation, prefixed
+      with /v1.
+    resources:
+    - path: /v1/api/projects/{project-id}/visual-review/repos
+      name: api-projects-project-id-visual-review-repos
+      description: REST surface for api-projects-project_id-visual_review-repos.
+      operations:
+      - method: GET
+        name: visualreviewreposlist
+        description: List all projects for the team.
+        call: posthog-visual-review.visualreviewreposlist
+        with:
+          limit: rest.limit
+          offset: rest.offset
+        outputParameters:
+        - type: object
+          mapping: $.
+      - method: GET
+        name: visualreviewreposlist
+        description: List all projects for the team.
+        call: posthog-visual-review.visualreviewreposlist
+        with:
+          limit: rest.limit
+          offset: rest.offset
+        outputParameters:
+        - type: object
+          mapping: $.
+      - method: POST
+        name: visualreviewreposcreate
+        description: Create a new repo.
+        call: posthog-visual-review.visualreviewreposcreate
+        with:
+          body: rest.body
+        outputParameters:
+        - type: object
+          mapping: $.
+      - method: POST
+        name: visualreviewreposcreate
+        description: Create a new repo.
+        call: posthog-visual-review.visualreviewreposcreate
+        with:
+          body: rest.body
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /v1/api/projects/{project-id}/visual-review/repos/{id}
+      name: api-projects-project-id-visual-review-repos-id
+      description: REST surface for api-projects-project_id-visual_review-repos-id.
+      operations:
+      - method: GET
+        name: visualreviewreposretrieve
+        description: Get a repo by ID.
+        call: posthog-visual-review.visualreviewreposretrieve
+        with:
+          id: rest.id
+        outputParameters:
+        - type: object
+          mapping: $.
+      - method: GET
+        name: visualreviewreposretrieve
+        description: Get a repo by ID.
+        call: posthog-visual-review.visualreviewreposretrieve
+        with:
+          id: rest.id
+        outputParameters:
+        - type: object
+          mapping: $.
+      - method: PATCH
+        name: visualreviewrepospartialupdate
+        description: Update a repo's settings.
+        call: posthog-visual-review.visualreviewrepospartialupdate
+        with:
+          id: rest.id
+          body: rest.body
+        outputParameters:
+        - type: object
+          mapping: $.
+      - method: PATCH
+        name: visualreviewrepospartialupdate
+        description: Update a repo's settings.
+        call: posthog-visual-review.visualreviewrepospartialupdate
+        with:
+          id: rest.id
+          body: rest.body
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /v1/api/projects/{project-id}/visual-review/repos/{id}/baselines
+      name: api-projects-project-id-visual-review-repos-id-baselines
+      description: REST surface for api-projects-project_id-visual_review-repos-id-baselines.
+      operations:
+      - method: GET
+        name: visualreviewreposbaselinesretrieve
+        description: 'Snapshots overview for a repo: every identifier with a current baseline (latest non-superseded master/main
+          run per run_type), plus tolerate counts, active quarantine state, and a 30-day stability sparkline. Capped at 5000
+          entries — sets `tr'
+        call: posthog-visual-review.visualreviewreposbaselinesretrieve
+        with:
+          id: rest.id
+        outputParameters:
+        - type: object
+          mapping: $.
+      - method: GET
+        name: visualreviewreposbaselinesretrieve
+        description: 'Snapshots overview for a repo: every identifier with a current baseline (latest non-superseded master/main
+          run per run_type), plus tolerate counts, active quarantine state, and a 30-day stability sparkline. Capped at 5000
+          entries — sets `tr'
+        call: posthog-visual-review.visualreviewreposbaselinesretrieve
+        with:
+          id: rest.id
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /v1/api/projects/{project-id}/visual-review/repos/{id}/quarantine
+      name: api-projects-project-id-visual-review-repos-id-quarantine
+      description: REST surface for api-projects-project_id-visual_review-repos-id-quarantine.
+      operations:
+      - method: GET
+        name: visualreviewreposquarantinelist
+        description: 'List quarantined identifiers. Without filter: active only. With identifier: full history.'
+        call: posthog-visual-review.visualreviewreposquarantinelist
+        with:
+          id: rest.id
+          identifier: rest.identifier
+          limit: rest.limit
+          offset: rest.offset
+          run_type: rest.run_type
+        outputParameters:
+        - type: object
+          mapping: $.
+      - method: GET
+        name: visualreviewreposquarantinelist
+        description: 'List quarantined identifiers. Without filter: active only. With identifier: full history.'
+        call: posthog-visual-review.visualreviewreposquarantinelist
+        with:
+          id: rest.id
+          identifier: rest.identifier
+          limit: rest.limit
+          offset: rest.offset
+          run_type: rest.run_type
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /v1/api/projects/{project-id}/visual-review/repos/{id}/quarantine/{run-type}
+      name: api-projects-project-id-visual-review-repos-id-quarantine-run-type
+      description: REST surface for api-projects-project_id-visual_review-repos-id-quarantine-run_type.
+      operations:
+      - method: POST
+        name: visualreviewreposquarantinecreate
+        description: Quarantine a snapshot identifier for a specific run type.
+        call: posthog-visual-review.visualreviewreposquarantinecreate
+        with:
+          id: rest.id
+          run_type: rest.run_type
+          body: rest.body
+        outputParameters:
+        - type: object
+          mapping: $.
+      - method: POST
+        name: visualreviewreposquarantinecreate
+        description: Quarantine a snapshot identifier for a specific run type.
+        call: posthog-visual-review.visualreviewreposquarantinecreate
+        with:
+          id: rest.id
+          run_type: rest.run_type
+          body: rest.body
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /v1/api/projects/{project-id}/visual-review/repos/{id}/quarantine/{run-type}/expire
+      name: api-projects-project-id-visual-review-repos-id-quarantine-run-type-expire
+      description: REST surface for api-projects-project_id-visual_review-repos-id-quarantine-run_type-expire.
+      operations:
+      - method: POST
+        name: visualreviewreposquarantineexpirecreate
+        description: Expire all active quarantine entries for an identifier.
+        call: posthog-visual-review.visualreviewreposquarantineexpirecreate
+        with:
+          id: rest.id
+          run_type: rest.run_type
+          body: rest.body
+        outputParameters:
+        - type: object
+          mapping: $.
+      - method: POST
+        name: visualreviewreposquarantineexpirecreate
+        description: Expire all active quarantine entries for an identifier.
+        call: posthog-visual-review.visualreviewreposquarantineexpirecreate
+        with:
+          id: rest.id
+          run_type: rest.run_type
+          body: rest.body
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /v1/api/projects/{project-id}/visual-review/repos/{id}/thumbnails/{identifier}
+      name: api-projects-project-id-visual-review-repos-id-thumbnails-identifier
+      description: REST surface for api-projects-project_id-visual_review-repos-id-thumbnails-identifier.
+      operations:
+      - method: GET
+        name: visualreviewreposthumbnailsretrieve
+        description: Serve a snapshot thumbnail by identifier. Returns WebP with ETag caching.
+        call: posthog-visual-review.visualreviewreposthumbnailsretrieve
+        with:
+          id: rest.id
+          identifier: rest.identifier
+        outputParameters:
+        - type: object
+          mapping: $.
+      - method: GET
+        name: visualreviewreposthumbnailsretrieve
+        description: Serve a snapshot thumbnail by identifier. Returns WebP with ETag caching.
+        call: posthog-visual-review.visualreviewreposthumbnailsretrieve
+        with:
+          id: rest.id
+          identifier: rest.identifier
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /v1/api/projects/{project-id}/visual-review/repos/{repo-id}/runs
+      name: api-projects-project-id-visual-review-repos-repo-id-runs
+      description: REST surface for api-projects-project_id-visual_review-repos-repo_id-runs.
+      operations:
+      - method: GET
+        name: visualreviewreposrunslist
+        description: List runs in this repo, optionally filtered by review state.
+        call: posthog-visual-review.visualreviewreposrunslist
+        with:
+          limit: rest.limit
+          offset: rest.offset
+          repo_id: rest.repo_id
+          review_state: rest.review_state
+        outputParameters:
+        - type: object
+          mapping: $.
+      - method: GET
+        name: visualreviewreposrunslist
+        description: List runs in this repo, optionally filtered by review state.
+        call: posthog-visual-review.visualreviewreposrunslist
+        with:
+          limit: rest.limit
+          offset: rest.offset
+          repo_id: rest.repo_id
+          review_state: rest.review_state
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /v1/api/projects/{project-id}/visual-review/repos/{repo-id}/runs/counts
+      name: api-projects-project-id-visual-review-repos-repo-id-runs-counts
+      description: REST surface for api-projects-project_id-visual_review-repos-repo_id-runs-counts.
+      operations:
+      - method: GET
+        name: visualreviewreposrunscountsretrieve
+        description: Review state counts for runs in this repo.
+        call: posthog-visual-review.visualreviewreposrunscountsretrieve
+        with:
+          repo_id: rest.repo_id
+        outputParameters:
+        - type: object
+          mapping: $.
+      - method: GET
+        name: visualreviewreposrunscountsretrieve
+        description: Review state counts for runs in this repo.
+        call: posthog-visual-review.visualreviewreposrunscountsretrieve
+        with:
+          repo_id: rest.repo_id
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /v1/api/projects/{project-id}/visual-review/repos/{repo-id}/snapshots/{run-type}/{identifier}
+      name: api-projects-project-id-visual-review-repos-repo-id-snapshots-run-type-identifie
+      description: REST surface for api-projects-project_id-visual_review-repos-repo_id-snapshots-run_type-identifie.
+      operations:
+      - method: GET
+        name: visualreviewrepossnapshotslist
+        description: Deduped baseline timeline for a snapshot identity. Newest first.
+        call: posthog-visual-review.visualreviewrepossnapshotslist
+        with:
+          identifier: rest.identifier
+          limit: rest.limit
+          offset: rest.offset
+          repo_id: rest.repo_id
+          run_type: rest.run_type
+        outputParameters:
+        - type: object
+          mapping: $.
+      - method: GET
+        name: visualreviewrepossnapshotslist
+        description: Deduped baseline timeline for a snapshot identity. Newest first.
+        call: posthog-visual-review.visualreviewrepossnapshotslist
+        with:
+          identifier: rest.identifier
+          limit: rest.limit
+          offset: rest.offset
+          repo_id: rest.repo_id
+          run_type: rest.run_type
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /v1/api/projects/{project-id}/visual-review/runs
+      name: api-projects-project-id-visual-review-runs
+      description: REST surface for api-projects-project_id-visual_review-runs.
+      operations:
+      - method: GET
+        name: visualreviewrunslist
+        description: List runs for the team, optionally filtered by review state, PR number, commit SHA, or branch.
+        call: posthog-visual-review.visualreviewrunslist
+        with:
+          branch: rest.branch
+          commit_sha: rest.commit_sha
+          limit: rest.limit
+          offset: rest.offset
+          pr_number: rest.pr_number
+          review_state: rest.review_state
+        outputParameters:
+        - type: object
+          mapping: $.
+      - method: GET
+        name: visualreviewrunslist
+        description: List runs for the team, optionally filtered by review state, PR number, commit SHA, or branch.
+        call: posthog-visual-review.visualreviewrunslist
+        with:
+          branch: rest.branch
+          commit_sha: rest.commit_sha
+          limit: rest.limit
+          offset: rest.offset
+          pr_number: rest.pr_number
+          review_state: rest.review_state
+        outputParameters:
+        - type: object
+          mapping: $.
+      - method: POST
+        name: visualreviewrunscreate
+        description: Create a new run from a CI manifest.
+        call: posthog-visual-review.visualreviewrunscreate
+        with:
+          body: rest.body
+        outputParameters:
+        - type: object
+          mapping: $.
+      - method: POST
+        name: visualreviewrunscreate
+        description: Create a new run from a CI manifest.
+        call: posthog-visual-review.visualreviewrunscreate
+        with:
+          body: rest.body
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /v1/api/projects/{project-id}/visual-review/runs/counts
+      name: api-projects-project-id-visual-review-runs-counts
+      description: REST surface for api-projects-project_id-visual_review-runs-counts.
+      operations:
+      - method: GET
+        name: visualreviewrunscountsretrieve
+        description: Review state counts for the runs list.
+        call: posthog-visual-review.visualreviewrunscountsretrieve
+        outputParameters:
+        - type: object
+          mapping: $.
+      - method: GET
+        name: visualreviewrunscountsretrieve
+        description: Review state counts for the runs list.
+        call: posthog-visual-review.visualreviewrunscountsretrieve
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /v1/api/projects/{project-id}/visual-review/runs/{id}
+      name: api-projects-project-id-visual-review-runs-id
+      description: REST surface for api-projects-project_id-visual_review-runs-id.
+      operations:
+      - method: GET
+        name: visualreviewrunsretrieve
+        description: Get run status and summary.
+        call: posthog-visual-review.visualreviewrunsretrieve
+        with:
+          id: rest.id
+        outputParameters:
+        - type: object
+          mapping: $.
+      - method: GET
+        name: visualreviewrunsretrieve
+        description: Get run status and summary.
+        call: posthog-visual-review.visualreviewrunsretrieve
+        with:
+          id: rest.id
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /v1/api/projects/{project-id}/visual-review/runs/{id}/add-snapshots
+      name: api-projects-project-id-visual-review-runs-id-add-snapshots
+      description: REST surface for api-projects-project_id-visual_review-runs-id-add-snapshots.
+      operations:
+      - method: POST
+        name: visualreviewrunsaddsnapshotscreate
+        description: Add a batch of snapshots to a pending run (shard-based flow).
+        call: posthog-visual-review.visualreviewrunsaddsnapshotscreate
+        with:
+          id: rest.id
+          body: rest.body
+        outputParameters:
+        - type: object
+          mapping: $.
+      - method: POST
+        name: visualreviewrunsaddsnapshotscreate
+        description: Add a batch of snapshots to a pending run (shard-based flow).
+        call: posthog-visual-review.visualreviewrunsaddsnapshotscreate
+        with:
+          id: rest.id
+          body: rest.body
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /v1/api/projects/{project-id}/visual-review/runs/{id}/approve
+      name: api-projects-project-id-visual-review-runs-id-approve
+      description: REST surface for api-projects-project_id-visual_review-runs-id-approve.
+      operations:
+      - method: POST
+        name: visualreviewrunsapprovecreate
+        description: Approve visual changes for snapshots in this run.
+        call: posthog-visual-review.visualreviewrunsapprovecreate
+        with:
+          id: rest.id
+          body: rest.body
+        outputParameters:
+        - type: object
+          mapping: $.
+      - method: POST
+        name: visualreviewrunsapprovecreate
+        description: Approve visual changes for snapshots in this run.
+        call: posthog-visual-review.visualreviewrunsapprovecreate
+        with:
+          id: rest.id
+          body: rest.body
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /v1/api/projects/{project-id}/visual-review/runs/{id}/auto-approve
+      name: api-projects-project-id-visual-review-runs-id-auto-approve
+      description: REST surface for api-projects-project_id-visual_review-runs-id-auto-approve.
+      operations:
+      - method: POST
+        name: visualreviewrunsautoapprovecreate
+        description: 'CLI auto-approve: approve all and return baseline YAML for local write.'
+        call: posthog-visual-review.visualreviewrunsautoapprovecreate
+        with:
+          id: rest.id
+        outputParameters:
+        - type: object
+          mapping: $.
+      - method: POST
+        name: visualreviewrunsautoapprovecreate
+        description: 'CLI auto-approve: approve all and return baseline YAML for local write.'
+        call: posthog-visual-review.visualreviewrunsautoapprovecreate
+        with:
+          id: rest.id
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /v1/api/projects/{project-id}/visual-review/runs/{id}/complete
+      name: api-projects-project-id-visual-review-runs-id-complete
+      description: REST surface for api-projects-project_id-visual_review-runs-id-complete.
+      operations:
+      - method: POST
+        name: visualreviewrunscompletecreate
+        description: 'Complete a run: detect removals, verify uploads, trigger diff processing.'
+        call: posthog-visual-review.visualreviewrunscompletecreate
+        with:
+          id: rest.id
+        outputParameters:
+        - type: object
+          mapping: $.
+      - method: POST
+        name: visualreviewrunscompletecreate
+        description: 'Complete a run: detect removals, verify uploads, trigger diff processing.'
+        call: posthog-visual-review.visualreviewrunscompletecreate
+        with:
+          id: rest.id
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /v1/api/projects/{project-id}/visual-review/runs/{id}/recompute
+      name: api-projects-project-id-visual-review-runs-id-recompute
+      description: REST surface for api-projects-project_id-visual_review-runs-id-recompute.
+      operations:
+      - method: POST
+        name: visualreviewrunsrecomputecreate
+        description: Re-evaluate quarantine and counts, update commit status, and optionally rerun the CI job.
+        call: posthog-visual-review.visualreviewrunsrecomputecreate
+        with:
+          id: rest.id
+        outputParameters:
+        - type: object
+          mapping: $.
+      - method: POST
+        name: visualreviewrunsrecomputecreate
+        description: Re-evaluate quarantine and counts, update commit status, and optionally rerun the CI job.
+        call: posthog-visual-review.visualreviewrunsrecomputecreate
+        with:
+          id: rest.id
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /v1/api/projects/{project-id}/visual-review/runs/{id}/snapshot-history
+      name: api-projects-project-id-visual-review-runs-id-snapshot-history
+      description: REST surface for api-projects-project_id-visual_review-runs-id-snapshot-history.
+      operations:
+      - method: GET
+        name: visualreviewrunssnapshothistorylist
+        description: Recent change history for a snapshot identifier across runs.
+        call: posthog-visual-review.visualreviewrunssnapshothistorylist
+        with:
+          id: rest.id
+          identifier: rest.identifier
+          limit: rest.limit
+          offset: rest.offset
+        outputParameters:
+        - type: object
+          mapping: $.
+      - method: GET
+        name: visualreviewrunssnapshothistorylist
+        description: Recent change history for a snapshot identifier across runs.
+        call: posthog-visual-review.visualreviewrunssnapshothistorylist
+        with:
+          id: rest.id
+          identifier: rest.identifier
+          limit: rest.limit
+          offset: rest.offset
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /v1/api/projects/{project-id}/visual-review/runs/{id}/snapshots
+      name: api-projects-project-id-visual-review-runs-id-snapshots
+      description: REST surface for api-projects-project_id-visual_review-runs-id-snapshots.
+      operations:
+      - method: GET
+        name: visualreviewrunssnapshotslist
+        description: Get all snapshots for a run with diff results.
+        call: posthog-visual-review.visualreviewrunssnapshotslist
+        with:
+          id: rest.id
+          limit: rest.limit
+          offset: rest.offset
+        outputParameters:
+        - type: object
+          mapping: $.
+      - method: GET
+        name: visualreviewrunssnapshotslist
+        description: Get all snapshots for a run with diff results.
+        call: posthog-visual-review.visualreviewrunssnapshotslist
+        with:
+          id: rest.id
+          limit: rest.limit
+          offset: rest.offset
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /v1/api/projects/{project-id}/visual-review/runs/{id}/tolerate
+      name: api-projects-project-id-visual-review-runs-id-tolerate
+      description: REST surface for api-projects-project_id-visual_review-runs-id-tolerate.
+      operations:
+      - method: POST
+        name: visualreviewrunstoleratecreate
+        description: Mark a changed snapshot as a known tolerated alternate.
+        call: posthog-visual-review.visualreviewrunstoleratecreate
+        with:
+          id: rest.id
+          body: rest.body
+        outputParameters:
+        - type: object
+          mapping: $.
+      - method: POST
+        name: visualreviewrunstoleratecreate
+        description: Mark a changed snapshot as a known tolerated alternate.
+        call: posthog-visual-review.visualreviewrunstoleratecreate
+        with:
+          id: rest.id
+          body: rest.body
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /v1/api/projects/{project-id}/visual-review/runs/{id}/tolerated-hashes
+      name: api-projects-project-id-visual-review-runs-id-tolerated-hashes
+      description: REST surface for api-projects-project_id-visual_review-runs-id-tolerated-hashes.
+      operations:
+      - method: GET
+        name: visualreviewrunstoleratedhasheslist
+        description: List known tolerated hashes for a snapshot identifier.
+        call: posthog-visual-review.visualreviewrunstoleratedhasheslist
+        with:
+          id: rest.id
+          identifier: rest.identifier
+          limit: rest.limit
+          offset: rest.offset
+        outputParameters:
+        - type: object
+          mapping: $.
+      - method: GET
+        name: visualreviewrunstoleratedhasheslist
+        description: List known tolerated hashes for a snapshot identifier.
+        call: posthog-visual-review.visualreviewrunstoleratedhasheslist
+        with:
+          id: rest.id
+          identifier: rest.identifier
+          limit: rest.limit
+          offset: rest.offset
+        outputParameters:
+        - type: object
+          mapping: $.
+  - type: mcp
+    namespace: posthog-visual-review-mcp
+    port: 9090
+    transport: http
+    description: MCP adapter for PostHog API — visual_review. One tool per consumed operation, routed inline through this
+      capability's consumes block.
+    tools:
+    - name: list-all-projects-team
+      description: List all projects for the team.
+      hints:
+        readOnly: true
+        destructive: false
+        idempotent: true
+      call: posthog-visual-review.visualreviewreposlist
+      with:
+        limit: tools.limit
+        offset: tools.offset
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: list-all-projects-team-2
+      description: List all projects for the team.
+      hints:
+        readOnly: true
+        destructive: false
+        idempotent: true
+      call: posthog-visual-review.visualreviewreposlist
+      with:
+        limit: tools.limit
+        offset: tools.offset
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: create-new-repo
+      description: Create a new repo.
+      hints:
+        readOnly: false
+        destructive: false
+        idempotent: false
+      call: posthog-visual-review.visualreviewreposcreate
+      with:
+        body: tools.body
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: create-new-repo-2
+      description: Create a new repo.
+      hints:
+        readOnly: false
+        destructive: false
+        idempotent: false
+      call: posthog-visual-review.visualreviewreposcreate
+      with:
+        body: tools.body
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: get-repo-id
+      description: Get a repo by ID.
+      hints:
+        readOnly: true
+        destructive: false
+        idempotent: true
+      call: posthog-visual-review.visualreviewreposretrieve
+      with:
+        id: tools.id
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: get-repo-id-2
+      description: Get a repo by ID.
+      hints:
+        readOnly: true
+        destructive: false
+        idempotent: true
+      call: posthog-visual-review.visualreviewreposretrieve
+      with:
+        id: tools.id
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: update-repo-s-settings
+      description: Update a repo's settings.
+      hints:
+        readOnly: false
+        destructive: false
+        idempotent: true
+      call: posthog-visual-review.visualreviewrepospartialupdate
+      with:
+        id: tools.id
+        body: tools.body
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: update-repo-s-settings-2
+      description: Update a repo's settings.
+      hints:
+        readOnly: false
+        destructive: false
+        idempotent: true
+      call: posthog-visual-review.visualreviewrepospartialupdate
+      with:
+        id: tools.id
+        body: tools.body
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: snapshots-overview-repo-every-identifier
+      description: 'Snapshots overview for a repo: every identifier with a current baseline (latest non-superseded master/main
+        run per run_type), plus tolerate counts, active quarantine state, and a 30-day stability sparkline. Capped at 5000
+        entries — sets `tr'
+      hints:
+        readOnly: true
+        destructive: false
+        idempotent: true
+      call: posthog-visual-review.visualreviewreposbaselinesretrieve
+      with:
+        id: tools.id
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: snapshots-overview-repo-every-identifier-2
+      description: 'Snapshots overview for a repo: every identifier with a current baseline (latest non-superseded master/main
+        run per run_type), plus tolerate counts, active quarantine state, and a 30-day stability sparkline. Capped at 5000
+        entries — sets `tr'
+      hints:
+        readOnly: true
+        destructive: false
+        idempotent: true
+      call: posthog-visual-review.visualreviewreposbaselinesretrieve
+      with:
+        id: tools.id
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: list-quarantined-identifiers-without-filter
+      description: 'List quarantined identifiers. Without filter: active only. With identifier: full history.'
+      hints:
+        readOnly: true
+        destructive: false
+        idempotent: true
+      call: posthog-visual-review.visualreviewreposquarantinelist
+      with:
+        id: tools.id
+        identifier: tools.identifier
+        limit: tools.limit
+        offset: tools.offset
+        run_type: tools.run_type
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: list-quarantined-identifiers-without-filter-2
+      description: 'List quarantined identifiers. Without filter: active only. With identifier: full history.'
+      hints:
+        readOnly: true
+        destructive: false
+        idempotent: true
+      call: posthog-visual-review.visualreviewreposquarantinelist
+      with:
+        id: tools.id
+        identifier: tools.identifier
+        limit: tools.limit
+        offset: tools.offset
+        run_type: tools.run_type
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: quarantine-snapshot-identifier-specific-run
+      description: Quarantine a snapshot identifier for a specific run type.
+      hints:
+        readOnly: false
+        destructive: false
+        idempotent: false
+      call: posthog-visual-review.visualreviewreposquarantinecreate
+      with:
+        id: tools.id
+        run_type: tools.run_type
+        body: tools.body
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: quarantine-snapshot-identifier-specific-run-2
+      description: Quarantine a snapshot identifier for a specific run type.
+      hints:
+        readOnly: false
+        destructive: false
+        idempotent: false
+      call: posthog-visual-review.visualreviewreposquarantinecreate
+      with:
+        id: tools.id
+        run_type: tools.run_type
+        body: tools.body
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: expire-all-active-quarantine-entries
+      description: Expire all active quarantine entries for an identifier.
+      hints:
+        readOnly: false
+        destructive: false
+        idempotent: false
+      call: posthog-visual-review.visualreviewreposquarantineexpirecreate
+      with:
+        id: tools.id
+        run_type: tools.run_type
+        body: tools.body
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: expire-all-active-quarantine-entries-2
+      description: Expire all active quarantine entries for an identifier.
+      hints:
+        readOnly: false
+        destructive: false
+        idempotent: false
+      call: posthog-visual-review.visualreviewreposquarantineexpirecreate
+      with:
+        id: tools.id
+        run_type: tools.run_type
+        body: tools.body
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: serve-snapshot-thumbnail-identifier-returns
+      description: Serve a snapshot thumbnail by identifier. Returns WebP with ETag caching.
+      hints:
+        readOnly: true
+        destructive: false
+        idempotent: true
+      call: posthog-visual-review.visualreviewreposthumbnailsretrieve
+      with:
+        id: tools.id
+        identifier: tools.identifier
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: serve-snapshot-thumbnail-identifier-returns-2
+      description: Serve a snapshot thumbnail by identifier. Returns WebP with ETag caching.
+      hints:
+        readOnly: true
+        destructive: false
+        idempotent: true
+      call: posthog-visual-review.visualreviewreposthumbnailsretrieve
+      with:
+        id: tools.id
+        identifier: tools.identifier
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: list-runs-this-repo-optionally
+      description: List runs in this repo, optionally filtered by review state.
+      hints:
+        readOnly: true
+        destructive: false
+        idempotent: true
+      call: posthog-visual-review.visualreviewreposrunslist
+      with:
+        limit: tools.limit
+        offset: tools.offset
+        repo_id: tools.repo_id
+        review_state: tools.review_state
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: list-runs-this-repo-optionally-2
+      description: List runs in this repo, optionally filtered by review state.
+      hints:
+        readOnly: true
+        destructive: false
+        idempotent: true
+      call: posthog-visual-review.visualreviewreposrunslist
+      with:
+        limit: tools.limit
+        offset: tools.offset
+        repo_id: tools.repo_id
+        review_state: tools.review_state
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: review-state-counts-runs-this
+      description: Review state counts for runs in this repo.
+      hints:
+        readOnly: true
+        destructive: false
+        idempotent: true
+      call: posthog-visual-review.visualreviewreposrunscountsretrieve
+      with:
+        repo_id: tools.repo_id
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: review-state-counts-runs-this-2
+      description: Review state counts for runs in this repo.
+      hints:
+        readOnly: true
+        destructive: false
+        idempotent: true
+      call: posthog-visual-review.visualreviewreposrunscountsretrieve
+      with:
+        repo_id: tools.repo_id
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: deduped-baseline-timeline-snapshot-identity
+      description: Deduped baseline timeline for a snapshot identity. Newest first.
+      hints:
+        readOnly: true
+        destructive: false
+        idempotent: true
+      call: posthog-visual-review.visualreviewrepossnapshotslist
+      with:
+        identifier: tools.identifier
+        limit: tools.limit
+        offset: tools.offset
+        repo_id: tools.repo_id
+        run_type: tools.run_type
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: deduped-baseline-timeline-snapshot-identity-2
+      description: Deduped baseline timeline for a snapshot identity. Newest first.
+      hints:
+        readOnly: true
+        destructive: false
+        idempotent: true
+      call: posthog-visual-review.visualreviewrepossnapshotslist
+      with:
+        identifier: tools.identifier
+        limit: tools.limit
+        offset: tools.offset
+        repo_id: tools.repo_id
+        run_type: tools.run_type
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: list-runs-team-optionally-filtered
+      description: List runs for the team, optionally filtered by review state, PR number, commit SHA, or branch.
+      hints:
+        readOnly: true
+        destructive: false
+        idempotent: true
+      call: posthog-visual-review.visualreviewrunslist
+      with:
+        branch: tools.branch
+        commit_sha: tools.commit_sha
+        limit: tools.limit
+        offset: tools.offset
+        pr_number: tools.pr_number
+        review_state: tools.review_state
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: list-runs-team-optionally-filtered-2
+      description: List runs for the team, optionally filtered by review state, PR number, commit SHA, or branch.
+      hints:
+        readOnly: true
+        destructive: false
+        idempotent: true
+      call: posthog-visual-review.visualreviewrunslist
+      with:
+        branch: tools.branch
+        commit_sha: tools.commit_sha
+        limit: tools.limit
+        offset: tools.offset
+        pr_number: tools.pr_number
+        review_state: tools.review_state
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: create-new-run-ci-manifest
+      description: Create a new run from a CI manifest.
+      hints:
+        readOnly: false
+        destructive: false
+        idempotent: false
+      call: posthog-visual-review.visualreviewrunscreate
+      with:
+        body: tools.body
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: create-new-run-ci-manifest-2
+      description: Create a new run from a CI manifest.
+      hints:
+        readOnly: false
+        destructive: false
+        idempotent: false
+      call: posthog-visual-review.visualreviewrunscreate
+      with:
+        body: tools.body
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: review-state-counts-runs-list
+      description: Review state counts for the runs list.
+      hints:
+        readOnly: true
+        destructive: false
+        idempotent: true
+      call: posthog-visual-review.visualreviewrunscountsretrieve
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: review-state-counts-runs-list-2
+      description: Review state counts for the runs list.
+      hints:
+        readOnly: true
+        destructive: false
+        idempotent: true
+      call: posthog-visual-review.visualreviewrunscountsretrieve
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: get-run-status-and-summary
+      description: Get run status and summary.
+      hints:
+        readOnly: true
+        destructive: false
+        idempotent: true
+      call: posthog-visual-review.visualreviewrunsretrieve
+      with:
+        id: tools.id
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: get-run-status-and-summary-2
+      description: Get run status and summary.
+      hints:
+        readOnly: true
+        destructive: false
+        idempotent: true
+      call: posthog-visual-review.visualreviewrunsretrieve
+      with:
+        id: tools.id
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: add-batch-snapshots-pending-run
+      description: Add a batch of snapshots to a pending run (shard-based flow).
+      hints:
+        readOnly: false
+        destructive: false
+        idempotent: false
+      call: posthog-visual-review.visualreviewrunsaddsnapshotscreate
+      with:
+        id: tools.id
+        body: tools.body
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: add-batch-snapshots-pending-run-2
+      description: Add a batch of snapshots to a pending run (shard-based flow).
+      hints:
+        readOnly: false
+        destructive: false
+        idempotent: false
+      call: posthog-visual-review.visualreviewrunsaddsnapshotscreate
+      with:
+        id: tools.id
+        body: tools.body
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: approve-visual-changes-snapshots-this
+      description: Approve visual changes for snapshots in this run.
+      hints:
+        readOnly: false
+        destructive: false
+        idempotent: false
+      call: posthog-visual-review.visualreviewrunsapprovecreate
+      with:
+        id: tools.id
+        body: tools.body
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: approve-visual-changes-snapshots-this-2
+      description: Approve visual changes for snapshots in this run.
+      hints:
+        readOnly: false
+        destructive: false
+        idempotent: false
+      call: posthog-visual-review.visualreviewrunsapprovecreate
+      with:
+        id: tools.id
+        body: tools.body
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: cli-auto-approve-approve-all
+      description: 'CLI auto-approve: approve all and return baseline YAML for local write.'
+      hints:
+        readOnly: false
+        destructive: false
+        idempotent: false
+      call: posthog-visual-review.visualreviewrunsautoapprovecreate
+      with:
+        id: tools.id
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: cli-auto-approve-approve-all-2
+      description: 'CLI auto-approve: approve all and return baseline YAML for local write.'
+      hints:
+        readOnly: false
+        destructive: false
+        idempotent: false
+      call: posthog-visual-review.visualreviewrunsautoapprovecreate
+      with:
+        id: tools.id
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: complete-run-detect-removals-verify
+      description: 'Complete a run: detect removals, verify uploads, trigger diff processing.'
+      hints:
+        readOnly: false
+        destructive: false
+        idempotent: false
+      call: posthog-visual-review.visualreviewrunscompletecreate
+      with:
+        id: tools.id
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: complete-run-detect-removals-verify-2
+      description: 'Complete a run: detect removals, verify uploads, trigger diff processing.'
+      hints:
+        readOnly: false
+        destructive: false
+        idempotent: false
+      call: posthog-visual-review.visualreviewrunscompletecreate
+      with:
+        id: tools.id
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: re-evaluate-quarantine-and-counts
+      description: Re-evaluate quarantine and counts, update commit status, and optionally rerun the CI job.
+      hints:
+        readOnly: false
+        destructive: false
+        idempotent: false
+      call: posthog-visual-review.visualreviewrunsrecomputecreate
+      with:
+        id: tools.id
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: re-evaluate-quarantine-and-counts-2
+      description: Re-evaluate quarantine and counts, update commit status, and optionally rerun the CI job.
+      hints:
+        readOnly: false
+        destructive: false
+        idempotent: false
+      call: posthog-visual-review.visualreviewrunsrecomputecreate
+      with:
+        id: tools.id
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: recent-change-history-snapshot-identifier
+      description: Recent change history for a snapshot identifier across runs.
+      hints:
+        readOnly: true
+        destructive: false
+        idempotent: true
+      call: posthog-visual-review.visualreviewrunssnapshothistorylist
+      with:
+        id: tools.id
+        identifier: tools.identifier
+        limit: tools.limit
+        offset: tools.offset
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: recent-change-history-snapshot-identifier-2
+      description: Recent change history for a snapshot identifier across runs.
+      hints:
+        readOnly: true
+        destructive: false
+        idempotent: true
+      call: posthog-visual-review.visualreviewrunssnapshothistorylist
+      with:
+        id: tools.id
+        identifier: tools.identifier
+        limit: tools.limit
+        offset: tools.offset
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: get-all-snapshots-run-diff
+      description: Get all snapshots for a run with diff results.
+      hints:
+        readOnly: true
+        destructive: false
+        idempotent: true
+      call: posthog-visual-review.visualreviewrunssnapshotslist
+      with:
+        id: tools.id
+        limit: tools.limit
+        offset: tools.offset
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: get-all-snapshots-run-diff-2
+      description: Get all snapshots for a run with diff results.
+      hints:
+        readOnly: true
+        destructive: false
+        idempotent: true
+      call: posthog-visual-review.visualreviewrunssnapshotslist
+      with:
+        id: tools.id
+        limit: tools.limit
+        offset: tools.offset
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: mark-changed-snapshot-known-tolerated
+      description: Mark a changed snapshot as a known tolerated alternate.
+      hints:
+        readOnly: false
+        destructive: false
+        idempotent: false
+      call: posthog-visual-review.visualreviewrunstoleratecreate
+      with:
+        id: tools.id
+        body: tools.body
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: mark-changed-snapshot-known-tolerated-2
+      description: Mark a changed snapshot as a known tolerated alternate.
+      hints:
+        readOnly: false
+        destructive: false
+        idempotent: false
+      call: posthog-visual-review.visualreviewrunstoleratecreate
+      with:
+        id: tools.id
+        body: tools.body
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: list-known-tolerated-hashes-snapshot
+      description: List known tolerated hashes for a snapshot identifier.
+      hints:
+        readOnly: true
+        destructive: false
+        idempotent: true
+      call: posthog-visual-review.visualreviewrunstoleratedhasheslist
+      with:
+        id: tools.id
+        identifier: tools.identifier
+        limit: tools.limit
+        offset: tools.offset
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: list-known-tolerated-hashes-snapshot-2
+      description: List known tolerated hashes for a snapshot identifier.
+      hints:
+        readOnly: true
+        destructive: false
+        idempotent: true
+      call: posthog-visual-review.visualreviewrunstoleratedhasheslist
+      with:
+        id: tools.id
+        identifier: tools.identifier
+        limit: tools.limit
+        offset: tools.offset
+      outputParameters:
+      - type: object
+        mapping: $.

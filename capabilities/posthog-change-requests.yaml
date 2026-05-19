@@ -1,0 +1,300 @@
+naftiko: 1.0.0-alpha2
+info:
+  label: PostHog API — change_requests
+  description: 'PostHog API — change_requests. 5 operations. Lead operation: change_requests. Self-contained Naftiko capability
+    covering one Posthog business surface.'
+  tags:
+  - Posthog
+  - change_requests
+  created: '2026-05-19'
+  modified: '2026-05-19'
+binds:
+- namespace: env
+  keys:
+    POSTHOG_API_KEY: POSTHOG_API_KEY
+capability:
+  consumes:
+  - type: http
+    namespace: posthog-change-requests
+    baseUri: ''
+    description: PostHog API — change_requests business capability. Self-contained, no shared references.
+    resources:
+    - name: api-environments-project_id-change_requests
+      path: /api/environments/{project_id}/change_requests/
+      operations:
+      - name: changerequestslist
+        method: GET
+        description: ''
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: action_key
+          in: query
+          type: string
+        - name: limit
+          in: query
+          type: integer
+          description: Number of results to return per page.
+        - name: offset
+          in: query
+          type: integer
+          description: The initial index from which to return the results.
+        - name: requester
+          in: query
+          type: number
+        - name: resource_id
+          in: query
+          type: string
+        - name: resource_type
+          in: query
+          type: string
+        - name: state
+          in: query
+          type: array
+          description: Multiple values may be separated by commas.
+    - name: api-environments-project_id-change_requests-id
+      path: /api/environments/{project_id}/change_requests/{id}/
+      operations:
+      - name: changerequestsretrieve
+        method: GET
+        description: ''
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: id
+          in: path
+          type: string
+          description: A UUID string identifying this change request.
+          required: true
+    - name: api-environments-project_id-change_requests-id-approve
+      path: /api/environments/{project_id}/change_requests/{id}/approve/
+      operations:
+      - name: changerequestsapprovecreate
+        method: POST
+        description: Approve a change request.
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: id
+          in: path
+          type: string
+          description: A UUID string identifying this change request.
+          required: true
+        - name: body
+          in: body
+          type: object
+          description: Request body (JSON).
+          required: false
+    - name: api-environments-project_id-change_requests-id-cancel
+      path: /api/environments/{project_id}/change_requests/{id}/cancel/
+      operations:
+      - name: changerequestscancelcreate
+        method: POST
+        description: Cancel a change request.
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: id
+          in: path
+          type: string
+          description: A UUID string identifying this change request.
+          required: true
+        - name: body
+          in: body
+          type: object
+          description: Request body (JSON).
+          required: false
+    - name: api-environments-project_id-change_requests-id-reject
+      path: /api/environments/{project_id}/change_requests/{id}/reject/
+      operations:
+      - name: changerequestsrejectcreate
+        method: POST
+        description: Reject a change request.
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: id
+          in: path
+          type: string
+          description: A UUID string identifying this change request.
+          required: true
+        - name: body
+          in: body
+          type: object
+          description: Request body (JSON).
+          required: false
+    authentication:
+      type: bearer
+      token: '{{env.POSTHOG_API_KEY}}'
+  exposes:
+  - type: rest
+    namespace: posthog-change-requests-rest
+    port: 8080
+    description: REST adapter for PostHog API — change_requests. One Spectral-compliant resource per consumed operation, prefixed
+      with /v1.
+    resources:
+    - path: /v1/api/environments/{project-id}/change-requests
+      name: api-environments-project-id-change-requests
+      description: REST surface for api-environments-project_id-change_requests.
+      operations:
+      - method: GET
+        name: changerequestslist
+        description: changerequestslist
+        call: posthog-change-requests.changerequestslist
+        with:
+          action_key: rest.action_key
+          limit: rest.limit
+          offset: rest.offset
+          requester: rest.requester
+          resource_id: rest.resource_id
+          resource_type: rest.resource_type
+          state: rest.state
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /v1/api/environments/{project-id}/change-requests/{id}
+      name: api-environments-project-id-change-requests-id
+      description: REST surface for api-environments-project_id-change_requests-id.
+      operations:
+      - method: GET
+        name: changerequestsretrieve
+        description: changerequestsretrieve
+        call: posthog-change-requests.changerequestsretrieve
+        with:
+          id: rest.id
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /v1/api/environments/{project-id}/change-requests/{id}/approve
+      name: api-environments-project-id-change-requests-id-approve
+      description: REST surface for api-environments-project_id-change_requests-id-approve.
+      operations:
+      - method: POST
+        name: changerequestsapprovecreate
+        description: Approve a change request.
+        call: posthog-change-requests.changerequestsapprovecreate
+        with:
+          id: rest.id
+          body: rest.body
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /v1/api/environments/{project-id}/change-requests/{id}/cancel
+      name: api-environments-project-id-change-requests-id-cancel
+      description: REST surface for api-environments-project_id-change_requests-id-cancel.
+      operations:
+      - method: POST
+        name: changerequestscancelcreate
+        description: Cancel a change request.
+        call: posthog-change-requests.changerequestscancelcreate
+        with:
+          id: rest.id
+          body: rest.body
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /v1/api/environments/{project-id}/change-requests/{id}/reject
+      name: api-environments-project-id-change-requests-id-reject
+      description: REST surface for api-environments-project_id-change_requests-id-reject.
+      operations:
+      - method: POST
+        name: changerequestsrejectcreate
+        description: Reject a change request.
+        call: posthog-change-requests.changerequestsrejectcreate
+        with:
+          id: rest.id
+          body: rest.body
+        outputParameters:
+        - type: object
+          mapping: $.
+  - type: mcp
+    namespace: posthog-change-requests-mcp
+    port: 9090
+    transport: http
+    description: MCP adapter for PostHog API — change_requests. One tool per consumed operation, routed inline through this
+      capability's consumes block.
+    tools:
+    - name: changerequestslist
+      description: changerequestslist
+      hints:
+        readOnly: true
+        destructive: false
+        idempotent: true
+      call: posthog-change-requests.changerequestslist
+      with:
+        action_key: tools.action_key
+        limit: tools.limit
+        offset: tools.offset
+        requester: tools.requester
+        resource_id: tools.resource_id
+        resource_type: tools.resource_type
+        state: tools.state
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: changerequestsretrieve
+      description: changerequestsretrieve
+      hints:
+        readOnly: true
+        destructive: false
+        idempotent: true
+      call: posthog-change-requests.changerequestsretrieve
+      with:
+        id: tools.id
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: approve-change-request
+      description: Approve a change request.
+      hints:
+        readOnly: false
+        destructive: false
+        idempotent: false
+      call: posthog-change-requests.changerequestsapprovecreate
+      with:
+        id: tools.id
+        body: tools.body
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: cancel-change-request
+      description: Cancel a change request.
+      hints:
+        readOnly: false
+        destructive: false
+        idempotent: false
+      call: posthog-change-requests.changerequestscancelcreate
+      with:
+        id: tools.id
+        body: tools.body
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: reject-change-request
+      description: Reject a change request.
+      hints:
+        readOnly: false
+        destructive: false
+        idempotent: false
+      call: posthog-change-requests.changerequestsrejectcreate
+      with:
+        id: tools.id
+        body: tools.body
+      outputParameters:
+      - type: object
+        mapping: $.

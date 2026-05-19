@@ -1,0 +1,313 @@
+naftiko: 1.0.0-alpha2
+info:
+  label: PostHog API — object_media_previews
+  description: 'PostHog API — object_media_previews. 7 operations. Lead operation: object_media_previews. Self-contained Naftiko
+    capability covering one Posthog business surface.'
+  tags:
+  - Posthog
+  - object_media_previews
+  created: '2026-05-19'
+  modified: '2026-05-19'
+binds:
+- namespace: env
+  keys:
+    POSTHOG_API_KEY: POSTHOG_API_KEY
+capability:
+  consumes:
+  - type: http
+    namespace: posthog-object-media-previews
+    baseUri: ''
+    description: PostHog API — object_media_previews business capability. Self-contained, no shared references.
+    resources:
+    - name: api-projects-project_id-object_media_previews
+      path: /api/projects/{project_id}/object_media_previews/
+      operations:
+      - name: objectmediapreviewslist
+        method: GET
+        description: ''
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: limit
+          in: query
+          type: integer
+          description: Number of results to return per page.
+        - name: offset
+          in: query
+          type: integer
+          description: The initial index from which to return the results.
+      - name: objectmediapreviewscreate
+        method: POST
+        description: ''
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: body
+          in: body
+          type: object
+          description: Request body (JSON).
+          required: false
+    - name: api-projects-project_id-object_media_previews-preferred_for_event
+      path: /api/projects/{project_id}/object_media_previews/preferred_for_event/
+      operations:
+      - name: objectmediapreviewspreferredforeventretrieve
+        method: GET
+        description: Get the preferred media preview for an event definition.
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+    - name: api-projects-project_id-object_media_previews-id
+      path: /api/projects/{project_id}/object_media_previews/{id}/
+      operations:
+      - name: objectmediapreviewsretrieve
+        method: GET
+        description: ''
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: id
+          in: path
+          type: string
+          description: A UUID string identifying this object media preview.
+          required: true
+      - name: objectmediapreviewsupdate
+        method: PUT
+        description: ''
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: id
+          in: path
+          type: string
+          description: A UUID string identifying this object media preview.
+          required: true
+        - name: body
+          in: body
+          type: object
+          description: Request body (JSON).
+          required: false
+      - name: objectmediapreviewspartialupdate
+        method: PATCH
+        description: ''
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: id
+          in: path
+          type: string
+          description: A UUID string identifying this object media preview.
+          required: true
+        - name: body
+          in: body
+          type: object
+          description: Request body (JSON).
+          required: false
+      - name: objectmediapreviewsdestroy
+        method: DELETE
+        description: ''
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: id
+          in: path
+          type: string
+          description: A UUID string identifying this object media preview.
+          required: true
+    authentication:
+      type: bearer
+      token: '{{env.POSTHOG_API_KEY}}'
+  exposes:
+  - type: rest
+    namespace: posthog-object-media-previews-rest
+    port: 8080
+    description: REST adapter for PostHog API — object_media_previews. One Spectral-compliant resource per consumed operation,
+      prefixed with /v1.
+    resources:
+    - path: /v1/api/projects/{project-id}/object-media-previews
+      name: api-projects-project-id-object-media-previews
+      description: REST surface for api-projects-project_id-object_media_previews.
+      operations:
+      - method: GET
+        name: objectmediapreviewslist
+        description: objectmediapreviewslist
+        call: posthog-object-media-previews.objectmediapreviewslist
+        with:
+          limit: rest.limit
+          offset: rest.offset
+        outputParameters:
+        - type: object
+          mapping: $.
+      - method: POST
+        name: objectmediapreviewscreate
+        description: objectmediapreviewscreate
+        call: posthog-object-media-previews.objectmediapreviewscreate
+        with:
+          body: rest.body
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /v1/api/projects/{project-id}/object-media-previews/preferred-for-event
+      name: api-projects-project-id-object-media-previews-preferred-for-event
+      description: REST surface for api-projects-project_id-object_media_previews-preferred_for_event.
+      operations:
+      - method: GET
+        name: objectmediapreviewspreferredforeventretrieve
+        description: Get the preferred media preview for an event definition.
+        call: posthog-object-media-previews.objectmediapreviewspreferredforeventretrieve
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /v1/api/projects/{project-id}/object-media-previews/{id}
+      name: api-projects-project-id-object-media-previews-id
+      description: REST surface for api-projects-project_id-object_media_previews-id.
+      operations:
+      - method: GET
+        name: objectmediapreviewsretrieve
+        description: objectmediapreviewsretrieve
+        call: posthog-object-media-previews.objectmediapreviewsretrieve
+        with:
+          id: rest.id
+        outputParameters:
+        - type: object
+          mapping: $.
+      - method: PUT
+        name: objectmediapreviewsupdate
+        description: objectmediapreviewsupdate
+        call: posthog-object-media-previews.objectmediapreviewsupdate
+        with:
+          id: rest.id
+          body: rest.body
+        outputParameters:
+        - type: object
+          mapping: $.
+      - method: PATCH
+        name: objectmediapreviewspartialupdate
+        description: objectmediapreviewspartialupdate
+        call: posthog-object-media-previews.objectmediapreviewspartialupdate
+        with:
+          id: rest.id
+          body: rest.body
+        outputParameters:
+        - type: object
+          mapping: $.
+      - method: DELETE
+        name: objectmediapreviewsdestroy
+        description: objectmediapreviewsdestroy
+        call: posthog-object-media-previews.objectmediapreviewsdestroy
+        with:
+          id: rest.id
+        outputParameters:
+        - type: object
+          mapping: $.
+  - type: mcp
+    namespace: posthog-object-media-previews-mcp
+    port: 9090
+    transport: http
+    description: MCP adapter for PostHog API — object_media_previews. One tool per consumed operation, routed inline through
+      this capability's consumes block.
+    tools:
+    - name: objectmediapreviewslist
+      description: objectmediapreviewslist
+      hints:
+        readOnly: true
+        destructive: false
+        idempotent: true
+      call: posthog-object-media-previews.objectmediapreviewslist
+      with:
+        limit: tools.limit
+        offset: tools.offset
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: objectmediapreviewscreate
+      description: objectmediapreviewscreate
+      hints:
+        readOnly: false
+        destructive: false
+        idempotent: false
+      call: posthog-object-media-previews.objectmediapreviewscreate
+      with:
+        body: tools.body
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: get-preferred-media-preview-event
+      description: Get the preferred media preview for an event definition.
+      hints:
+        readOnly: true
+        destructive: false
+        idempotent: true
+      call: posthog-object-media-previews.objectmediapreviewspreferredforeventretrieve
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: objectmediapreviewsretrieve
+      description: objectmediapreviewsretrieve
+      hints:
+        readOnly: true
+        destructive: false
+        idempotent: true
+      call: posthog-object-media-previews.objectmediapreviewsretrieve
+      with:
+        id: tools.id
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: objectmediapreviewsupdate
+      description: objectmediapreviewsupdate
+      hints:
+        readOnly: false
+        destructive: false
+        idempotent: true
+      call: posthog-object-media-previews.objectmediapreviewsupdate
+      with:
+        id: tools.id
+        body: tools.body
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: objectmediapreviewspartialupdate
+      description: objectmediapreviewspartialupdate
+      hints:
+        readOnly: false
+        destructive: false
+        idempotent: true
+      call: posthog-object-media-previews.objectmediapreviewspartialupdate
+      with:
+        id: tools.id
+        body: tools.body
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: objectmediapreviewsdestroy
+      description: objectmediapreviewsdestroy
+      hints:
+        readOnly: false
+        destructive: true
+        idempotent: true
+      call: posthog-object-media-previews.objectmediapreviewsdestroy
+      with:
+        id: tools.id
+      outputParameters:
+      - type: object
+        mapping: $.

@@ -1,0 +1,373 @@
+naftiko: 1.0.0-alpha2
+info:
+  label: PostHog API — comments
+  description: 'PostHog API — comments. 8 operations. Lead operation: comments. Self-contained Naftiko capability covering
+    one Posthog business surface.'
+  tags:
+  - Posthog
+  - comments
+  created: '2026-05-19'
+  modified: '2026-05-19'
+binds:
+- namespace: env
+  keys:
+    POSTHOG_API_KEY: POSTHOG_API_KEY
+capability:
+  consumes:
+  - type: http
+    namespace: posthog-comments
+    baseUri: ''
+    description: PostHog API — comments business capability. Self-contained, no shared references.
+    resources:
+    - name: api-projects-project_id-comments
+      path: /api/projects/{project_id}/comments/
+      operations:
+      - name: commentslist
+        method: GET
+        description: ''
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: cursor
+          in: query
+          type: string
+          description: The pagination cursor value.
+        - name: item_id
+          in: query
+          type: string
+          description: Filter by the ID of the resource being commented on.
+        - name: scope
+          in: query
+          type: string
+          description: Filter by resource type (e.g. Dashboard, FeatureFlag, Insight, Replay).
+        - name: search
+          in: query
+          type: string
+          description: Full-text search within comment content.
+        - name: source_comment
+          in: query
+          type: string
+          description: Filter replies to a specific parent comment.
+      - name: commentscreate
+        method: POST
+        description: ''
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: body
+          in: body
+          type: object
+          description: Request body (JSON).
+          required: true
+    - name: api-projects-project_id-comments-count
+      path: /api/projects/{project_id}/comments/count/
+      operations:
+      - name: commentscountretrieve
+        method: GET
+        description: ''
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+    - name: api-projects-project_id-comments-id
+      path: /api/projects/{project_id}/comments/{id}/
+      operations:
+      - name: commentsretrieve
+        method: GET
+        description: ''
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: id
+          in: path
+          type: string
+          description: A UUID string identifying this comment.
+          required: true
+      - name: commentsupdate
+        method: PUT
+        description: ''
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: id
+          in: path
+          type: string
+          description: A UUID string identifying this comment.
+          required: true
+        - name: body
+          in: body
+          type: object
+          description: Request body (JSON).
+          required: true
+      - name: commentspartialupdate
+        method: PATCH
+        description: ''
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: id
+          in: path
+          type: string
+          description: A UUID string identifying this comment.
+          required: true
+        - name: body
+          in: body
+          type: object
+          description: Request body (JSON).
+          required: false
+      - name: commentsdestroy
+        method: DELETE
+        description: Hard delete of this model is not allowed. Use a patch API call to set "deleted" to true
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: id
+          in: path
+          type: string
+          description: A UUID string identifying this comment.
+          required: true
+    - name: api-projects-project_id-comments-id-thread
+      path: /api/projects/{project_id}/comments/{id}/thread/
+      operations:
+      - name: commentsthreadretrieve
+        method: GET
+        description: ''
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: id
+          in: path
+          type: string
+          description: A UUID string identifying this comment.
+          required: true
+    authentication:
+      type: bearer
+      token: '{{env.POSTHOG_API_KEY}}'
+  exposes:
+  - type: rest
+    namespace: posthog-comments-rest
+    port: 8080
+    description: REST adapter for PostHog API — comments. One Spectral-compliant resource per consumed operation, prefixed
+      with /v1.
+    resources:
+    - path: /v1/api/projects/{project-id}/comments
+      name: api-projects-project-id-comments
+      description: REST surface for api-projects-project_id-comments.
+      operations:
+      - method: GET
+        name: commentslist
+        description: commentslist
+        call: posthog-comments.commentslist
+        with:
+          cursor: rest.cursor
+          item_id: rest.item_id
+          scope: rest.scope
+          search: rest.search
+          source_comment: rest.source_comment
+        outputParameters:
+        - type: object
+          mapping: $.
+      - method: POST
+        name: commentscreate
+        description: commentscreate
+        call: posthog-comments.commentscreate
+        with:
+          body: rest.body
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /v1/api/projects/{project-id}/comments/count
+      name: api-projects-project-id-comments-count
+      description: REST surface for api-projects-project_id-comments-count.
+      operations:
+      - method: GET
+        name: commentscountretrieve
+        description: commentscountretrieve
+        call: posthog-comments.commentscountretrieve
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /v1/api/projects/{project-id}/comments/{id}
+      name: api-projects-project-id-comments-id
+      description: REST surface for api-projects-project_id-comments-id.
+      operations:
+      - method: GET
+        name: commentsretrieve
+        description: commentsretrieve
+        call: posthog-comments.commentsretrieve
+        with:
+          id: rest.id
+        outputParameters:
+        - type: object
+          mapping: $.
+      - method: PUT
+        name: commentsupdate
+        description: commentsupdate
+        call: posthog-comments.commentsupdate
+        with:
+          id: rest.id
+          body: rest.body
+        outputParameters:
+        - type: object
+          mapping: $.
+      - method: PATCH
+        name: commentspartialupdate
+        description: commentspartialupdate
+        call: posthog-comments.commentspartialupdate
+        with:
+          id: rest.id
+          body: rest.body
+        outputParameters:
+        - type: object
+          mapping: $.
+      - method: DELETE
+        name: commentsdestroy
+        description: Hard delete of this model is not allowed. Use a patch API call to set "deleted" to true
+        call: posthog-comments.commentsdestroy
+        with:
+          id: rest.id
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /v1/api/projects/{project-id}/comments/{id}/thread
+      name: api-projects-project-id-comments-id-thread
+      description: REST surface for api-projects-project_id-comments-id-thread.
+      operations:
+      - method: GET
+        name: commentsthreadretrieve
+        description: commentsthreadretrieve
+        call: posthog-comments.commentsthreadretrieve
+        with:
+          id: rest.id
+        outputParameters:
+        - type: object
+          mapping: $.
+  - type: mcp
+    namespace: posthog-comments-mcp
+    port: 9090
+    transport: http
+    description: MCP adapter for PostHog API — comments. One tool per consumed operation, routed inline through this capability's
+      consumes block.
+    tools:
+    - name: commentslist
+      description: commentslist
+      hints:
+        readOnly: true
+        destructive: false
+        idempotent: true
+      call: posthog-comments.commentslist
+      with:
+        cursor: tools.cursor
+        item_id: tools.item_id
+        scope: tools.scope
+        search: tools.search
+        source_comment: tools.source_comment
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: commentscreate
+      description: commentscreate
+      hints:
+        readOnly: false
+        destructive: false
+        idempotent: false
+      call: posthog-comments.commentscreate
+      with:
+        body: tools.body
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: commentscountretrieve
+      description: commentscountretrieve
+      hints:
+        readOnly: true
+        destructive: false
+        idempotent: true
+      call: posthog-comments.commentscountretrieve
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: commentsretrieve
+      description: commentsretrieve
+      hints:
+        readOnly: true
+        destructive: false
+        idempotent: true
+      call: posthog-comments.commentsretrieve
+      with:
+        id: tools.id
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: commentsupdate
+      description: commentsupdate
+      hints:
+        readOnly: false
+        destructive: false
+        idempotent: true
+      call: posthog-comments.commentsupdate
+      with:
+        id: tools.id
+        body: tools.body
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: commentspartialupdate
+      description: commentspartialupdate
+      hints:
+        readOnly: false
+        destructive: false
+        idempotent: true
+      call: posthog-comments.commentspartialupdate
+      with:
+        id: tools.id
+        body: tools.body
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: hard-delete-this-model-is
+      description: Hard delete of this model is not allowed. Use a patch API call to set "deleted" to true
+      hints:
+        readOnly: false
+        destructive: true
+        idempotent: true
+      call: posthog-comments.commentsdestroy
+      with:
+        id: tools.id
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: commentsthreadretrieve
+      description: commentsthreadretrieve
+      hints:
+        readOnly: true
+        destructive: false
+        idempotent: true
+      call: posthog-comments.commentsthreadretrieve
+      with:
+        id: tools.id
+      outputParameters:
+      - type: object
+        mapping: $.

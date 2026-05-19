@@ -1,0 +1,663 @@
+naftiko: 1.0.0-alpha2
+info:
+  label: PostHog API — mcp_store
+  description: 'PostHog API — mcp_store. 14 operations. Lead operation: mcp_store. Self-contained Naftiko capability covering
+    one Posthog business surface.'
+  tags:
+  - Posthog
+  - mcp_store
+  created: '2026-05-19'
+  modified: '2026-05-19'
+binds:
+- namespace: env
+  keys:
+    POSTHOG_API_KEY: POSTHOG_API_KEY
+capability:
+  consumes:
+  - type: http
+    namespace: posthog-mcp-store
+    baseUri: ''
+    description: PostHog API — mcp_store business capability. Self-contained, no shared references.
+    resources:
+    - name: api-environments-project_id-mcp_server_installations
+      path: /api/environments/{project_id}/mcp_server_installations/
+      operations:
+      - name: mcpserverinstallationslist
+        method: GET
+        description: ''
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: limit
+          in: query
+          type: integer
+          description: Number of results to return per page.
+        - name: offset
+          in: query
+          type: integer
+          description: The initial index from which to return the results.
+      - name: mcpserverinstallationscreate
+        method: POST
+        description: ''
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: body
+          in: body
+          type: object
+          description: Request body (JSON).
+          required: false
+    - name: api-environments-project_id-mcp_server_installations-authorize
+      path: /api/environments/{project_id}/mcp_server_installations/authorize/
+      operations:
+      - name: mcpserverinstallationsauthorizeretrieve
+        method: GET
+        description: Start (or re-start) an OAuth flow.
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: install_source
+          in: query
+          type: string
+          description: '* `posthog` - posthog'
+        - name: installation_id
+          in: query
+          type: string
+        - name: posthog_code_callback_url
+          in: query
+          type: string
+        - name: template_id
+          in: query
+          type: string
+    - name: api-environments-project_id-mcp_server_installations-install_custom
+      path: /api/environments/{project_id}/mcp_server_installations/install_custom/
+      operations:
+      - name: mcpserverinstallationsinstallcustomcreate
+        method: POST
+        description: ''
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: body
+          in: body
+          type: object
+          description: Request body (JSON).
+          required: true
+    - name: api-environments-project_id-mcp_server_installations-install_template
+      path: /api/environments/{project_id}/mcp_server_installations/install_template/
+      operations:
+      - name: mcpserverinstallationsinstalltemplatecreate
+        method: POST
+        description: ''
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: body
+          in: body
+          type: object
+          description: Request body (JSON).
+          required: true
+    - name: api-environments-project_id-mcp_server_installations-id
+      path: /api/environments/{project_id}/mcp_server_installations/{id}/
+      operations:
+      - name: mcpserverinstallationsretrieve
+        method: GET
+        description: ''
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: id
+          in: path
+          type: string
+          description: A UUID string identifying this mcp server installation.
+          required: true
+      - name: mcpserverinstallationsupdate
+        method: PUT
+        description: ''
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: id
+          in: path
+          type: string
+          description: A UUID string identifying this mcp server installation.
+          required: true
+        - name: body
+          in: body
+          type: object
+          description: Request body (JSON).
+          required: false
+      - name: mcpserverinstallationspartialupdate
+        method: PATCH
+        description: ''
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: id
+          in: path
+          type: string
+          description: A UUID string identifying this mcp server installation.
+          required: true
+        - name: body
+          in: body
+          type: object
+          description: Request body (JSON).
+          required: false
+      - name: mcpserverinstallationsdestroy
+        method: DELETE
+        description: ''
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: id
+          in: path
+          type: string
+          description: A UUID string identifying this mcp server installation.
+          required: true
+    - name: api-environments-project_id-mcp_server_installations-id-proxy
+      path: /api/environments/{project_id}/mcp_server_installations/{id}/proxy/
+      operations:
+      - name: mcpserverinstallationsproxycreate
+        method: POST
+        description: ''
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: id
+          in: path
+          type: string
+          description: A UUID string identifying this mcp server installation.
+          required: true
+        - name: body
+          in: body
+          type: object
+          description: Request body (JSON).
+          required: false
+    - name: api-environments-project_id-mcp_server_installations-id-tools
+      path: /api/environments/{project_id}/mcp_server_installations/{id}/tools/
+      operations:
+      - name: mcpserverinstallationstoolsretrieve
+        method: GET
+        description: ''
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: id
+          in: path
+          type: string
+          description: A UUID string identifying this mcp server installation.
+          required: true
+    - name: api-environments-project_id-mcp_server_installations-id-tools-refresh
+      path: /api/environments/{project_id}/mcp_server_installations/{id}/tools/refresh/
+      operations:
+      - name: mcpserverinstallationstoolsrefreshcreate
+        method: POST
+        description: ''
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: id
+          in: path
+          type: string
+          description: A UUID string identifying this mcp server installation.
+          required: true
+        - name: body
+          in: body
+          type: object
+          description: Request body (JSON).
+          required: false
+    - name: api-environments-project_id-mcp_server_installations-id-tools-tool_name
+      path: /api/environments/{project_id}/mcp_server_installations/{id}/tools/{tool_name}/
+      operations:
+      - name: mcpserverinstallationstoolspartialupdate
+        method: PATCH
+        description: ''
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: id
+          in: path
+          type: string
+          description: A UUID string identifying this mcp server installation.
+          required: true
+        - name: tool_name
+          in: path
+          type: string
+          required: true
+        - name: body
+          in: body
+          type: object
+          description: Request body (JSON).
+          required: false
+    - name: api-environments-project_id-mcp_servers
+      path: /api/environments/{project_id}/mcp_servers/
+      operations:
+      - name: mcpserverslist
+        method: GET
+        description: Lists curated MCP server templates that users can install with one click.
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: limit
+          in: query
+          type: integer
+          description: Number of results to return per page.
+        - name: offset
+          in: query
+          type: integer
+          description: The initial index from which to return the results.
+    authentication:
+      type: bearer
+      token: '{{env.POSTHOG_API_KEY}}'
+  exposes:
+  - type: rest
+    namespace: posthog-mcp-store-rest
+    port: 8080
+    description: REST adapter for PostHog API — mcp_store. One Spectral-compliant resource per consumed operation, prefixed
+      with /v1.
+    resources:
+    - path: /v1/api/environments/{project-id}/mcp-server-installations
+      name: api-environments-project-id-mcp-server-installations
+      description: REST surface for api-environments-project_id-mcp_server_installations.
+      operations:
+      - method: GET
+        name: mcpserverinstallationslist
+        description: mcpserverinstallationslist
+        call: posthog-mcp-store.mcpserverinstallationslist
+        with:
+          limit: rest.limit
+          offset: rest.offset
+        outputParameters:
+        - type: object
+          mapping: $.
+      - method: POST
+        name: mcpserverinstallationscreate
+        description: mcpserverinstallationscreate
+        call: posthog-mcp-store.mcpserverinstallationscreate
+        with:
+          body: rest.body
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /v1/api/environments/{project-id}/mcp-server-installations/authorize
+      name: api-environments-project-id-mcp-server-installations-authorize
+      description: REST surface for api-environments-project_id-mcp_server_installations-authorize.
+      operations:
+      - method: GET
+        name: mcpserverinstallationsauthorizeretrieve
+        description: Start (or re-start) an OAuth flow.
+        call: posthog-mcp-store.mcpserverinstallationsauthorizeretrieve
+        with:
+          install_source: rest.install_source
+          installation_id: rest.installation_id
+          posthog_code_callback_url: rest.posthog_code_callback_url
+          template_id: rest.template_id
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /v1/api/environments/{project-id}/mcp-server-installations/install-custom
+      name: api-environments-project-id-mcp-server-installations-install-custom
+      description: REST surface for api-environments-project_id-mcp_server_installations-install_custom.
+      operations:
+      - method: POST
+        name: mcpserverinstallationsinstallcustomcreate
+        description: mcpserverinstallationsinstallcustomcreate
+        call: posthog-mcp-store.mcpserverinstallationsinstallcustomcreate
+        with:
+          body: rest.body
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /v1/api/environments/{project-id}/mcp-server-installations/install-template
+      name: api-environments-project-id-mcp-server-installations-install-template
+      description: REST surface for api-environments-project_id-mcp_server_installations-install_template.
+      operations:
+      - method: POST
+        name: mcpserverinstallationsinstalltemplatecreate
+        description: mcpserverinstallationsinstalltemplatecreate
+        call: posthog-mcp-store.mcpserverinstallationsinstalltemplatecreate
+        with:
+          body: rest.body
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /v1/api/environments/{project-id}/mcp-server-installations/{id}
+      name: api-environments-project-id-mcp-server-installations-id
+      description: REST surface for api-environments-project_id-mcp_server_installations-id.
+      operations:
+      - method: GET
+        name: mcpserverinstallationsretrieve
+        description: mcpserverinstallationsretrieve
+        call: posthog-mcp-store.mcpserverinstallationsretrieve
+        with:
+          id: rest.id
+        outputParameters:
+        - type: object
+          mapping: $.
+      - method: PUT
+        name: mcpserverinstallationsupdate
+        description: mcpserverinstallationsupdate
+        call: posthog-mcp-store.mcpserverinstallationsupdate
+        with:
+          id: rest.id
+          body: rest.body
+        outputParameters:
+        - type: object
+          mapping: $.
+      - method: PATCH
+        name: mcpserverinstallationspartialupdate
+        description: mcpserverinstallationspartialupdate
+        call: posthog-mcp-store.mcpserverinstallationspartialupdate
+        with:
+          id: rest.id
+          body: rest.body
+        outputParameters:
+        - type: object
+          mapping: $.
+      - method: DELETE
+        name: mcpserverinstallationsdestroy
+        description: mcpserverinstallationsdestroy
+        call: posthog-mcp-store.mcpserverinstallationsdestroy
+        with:
+          id: rest.id
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /v1/api/environments/{project-id}/mcp-server-installations/{id}/proxy
+      name: api-environments-project-id-mcp-server-installations-id-proxy
+      description: REST surface for api-environments-project_id-mcp_server_installations-id-proxy.
+      operations:
+      - method: POST
+        name: mcpserverinstallationsproxycreate
+        description: mcpserverinstallationsproxycreate
+        call: posthog-mcp-store.mcpserverinstallationsproxycreate
+        with:
+          id: rest.id
+          body: rest.body
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /v1/api/environments/{project-id}/mcp-server-installations/{id}/tools
+      name: api-environments-project-id-mcp-server-installations-id-tools
+      description: REST surface for api-environments-project_id-mcp_server_installations-id-tools.
+      operations:
+      - method: GET
+        name: mcpserverinstallationstoolsretrieve
+        description: mcpserverinstallationstoolsretrieve
+        call: posthog-mcp-store.mcpserverinstallationstoolsretrieve
+        with:
+          id: rest.id
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /v1/api/environments/{project-id}/mcp-server-installations/{id}/tools/refresh
+      name: api-environments-project-id-mcp-server-installations-id-tools-refresh
+      description: REST surface for api-environments-project_id-mcp_server_installations-id-tools-refresh.
+      operations:
+      - method: POST
+        name: mcpserverinstallationstoolsrefreshcreate
+        description: mcpserverinstallationstoolsrefreshcreate
+        call: posthog-mcp-store.mcpserverinstallationstoolsrefreshcreate
+        with:
+          id: rest.id
+          body: rest.body
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /v1/api/environments/{project-id}/mcp-server-installations/{id}/tools/{tool-name}
+      name: api-environments-project-id-mcp-server-installations-id-tools-tool-name
+      description: REST surface for api-environments-project_id-mcp_server_installations-id-tools-tool_name.
+      operations:
+      - method: PATCH
+        name: mcpserverinstallationstoolspartialupdate
+        description: mcpserverinstallationstoolspartialupdate
+        call: posthog-mcp-store.mcpserverinstallationstoolspartialupdate
+        with:
+          id: rest.id
+          tool_name: rest.tool_name
+          body: rest.body
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /v1/api/environments/{project-id}/mcp-servers
+      name: api-environments-project-id-mcp-servers
+      description: REST surface for api-environments-project_id-mcp_servers.
+      operations:
+      - method: GET
+        name: mcpserverslist
+        description: Lists curated MCP server templates that users can install with one click.
+        call: posthog-mcp-store.mcpserverslist
+        with:
+          limit: rest.limit
+          offset: rest.offset
+        outputParameters:
+        - type: object
+          mapping: $.
+  - type: mcp
+    namespace: posthog-mcp-store-mcp
+    port: 9090
+    transport: http
+    description: MCP adapter for PostHog API — mcp_store. One tool per consumed operation, routed inline through this capability's
+      consumes block.
+    tools:
+    - name: mcpserverinstallationslist
+      description: mcpserverinstallationslist
+      hints:
+        readOnly: true
+        destructive: false
+        idempotent: true
+      call: posthog-mcp-store.mcpserverinstallationslist
+      with:
+        limit: tools.limit
+        offset: tools.offset
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: mcpserverinstallationscreate
+      description: mcpserverinstallationscreate
+      hints:
+        readOnly: false
+        destructive: false
+        idempotent: false
+      call: posthog-mcp-store.mcpserverinstallationscreate
+      with:
+        body: tools.body
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: start-re-start-oauth-flow
+      description: Start (or re-start) an OAuth flow.
+      hints:
+        readOnly: true
+        destructive: false
+        idempotent: true
+      call: posthog-mcp-store.mcpserverinstallationsauthorizeretrieve
+      with:
+        install_source: tools.install_source
+        installation_id: tools.installation_id
+        posthog_code_callback_url: tools.posthog_code_callback_url
+        template_id: tools.template_id
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: mcpserverinstallationsinstallcustomcreate
+      description: mcpserverinstallationsinstallcustomcreate
+      hints:
+        readOnly: false
+        destructive: false
+        idempotent: false
+      call: posthog-mcp-store.mcpserverinstallationsinstallcustomcreate
+      with:
+        body: tools.body
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: mcpserverinstallationsinstalltemplatecreate
+      description: mcpserverinstallationsinstalltemplatecreate
+      hints:
+        readOnly: false
+        destructive: false
+        idempotent: false
+      call: posthog-mcp-store.mcpserverinstallationsinstalltemplatecreate
+      with:
+        body: tools.body
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: mcpserverinstallationsretrieve
+      description: mcpserverinstallationsretrieve
+      hints:
+        readOnly: true
+        destructive: false
+        idempotent: true
+      call: posthog-mcp-store.mcpserverinstallationsretrieve
+      with:
+        id: tools.id
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: mcpserverinstallationsupdate
+      description: mcpserverinstallationsupdate
+      hints:
+        readOnly: false
+        destructive: false
+        idempotent: true
+      call: posthog-mcp-store.mcpserverinstallationsupdate
+      with:
+        id: tools.id
+        body: tools.body
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: mcpserverinstallationspartialupdate
+      description: mcpserverinstallationspartialupdate
+      hints:
+        readOnly: false
+        destructive: false
+        idempotent: true
+      call: posthog-mcp-store.mcpserverinstallationspartialupdate
+      with:
+        id: tools.id
+        body: tools.body
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: mcpserverinstallationsdestroy
+      description: mcpserverinstallationsdestroy
+      hints:
+        readOnly: false
+        destructive: true
+        idempotent: true
+      call: posthog-mcp-store.mcpserverinstallationsdestroy
+      with:
+        id: tools.id
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: mcpserverinstallationsproxycreate
+      description: mcpserverinstallationsproxycreate
+      hints:
+        readOnly: false
+        destructive: false
+        idempotent: false
+      call: posthog-mcp-store.mcpserverinstallationsproxycreate
+      with:
+        id: tools.id
+        body: tools.body
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: mcpserverinstallationstoolsretrieve
+      description: mcpserverinstallationstoolsretrieve
+      hints:
+        readOnly: true
+        destructive: false
+        idempotent: true
+      call: posthog-mcp-store.mcpserverinstallationstoolsretrieve
+      with:
+        id: tools.id
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: mcpserverinstallationstoolsrefreshcreate
+      description: mcpserverinstallationstoolsrefreshcreate
+      hints:
+        readOnly: false
+        destructive: false
+        idempotent: false
+      call: posthog-mcp-store.mcpserverinstallationstoolsrefreshcreate
+      with:
+        id: tools.id
+        body: tools.body
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: mcpserverinstallationstoolspartialupdate
+      description: mcpserverinstallationstoolspartialupdate
+      hints:
+        readOnly: false
+        destructive: false
+        idempotent: true
+      call: posthog-mcp-store.mcpserverinstallationstoolspartialupdate
+      with:
+        id: tools.id
+        tool_name: tools.tool_name
+        body: tools.body
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: lists-curated-mcp-server-templates
+      description: Lists curated MCP server templates that users can install with one click.
+      hints:
+        readOnly: true
+        destructive: false
+        idempotent: true
+      call: posthog-mcp-store.mcpserverslist
+      with:
+        limit: tools.limit
+        offset: tools.offset
+      outputParameters:
+      - type: object
+        mapping: $.

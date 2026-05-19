@@ -1,0 +1,5876 @@
+naftiko: 1.0.0-alpha2
+info:
+  label: PostHog API — llm_analytics
+  description: 'PostHog API — llm_analytics. 134 operations. Lead operation: llm_analytics. Self-contained Naftiko capability
+    covering one Posthog business surface.'
+  tags:
+  - Posthog
+  - llm_analytics
+  created: '2026-05-19'
+  modified: '2026-05-19'
+binds:
+- namespace: env
+  keys:
+    POSTHOG_API_KEY: POSTHOG_API_KEY
+capability:
+  consumes:
+  - type: http
+    namespace: posthog-llm-analytics-2
+    baseUri: ''
+    description: PostHog API — llm_analytics business capability. Self-contained, no shared references.
+    resources:
+    - name: api-environments-environment_id-dataset_items
+      path: /api/environments/{environment_id}/dataset_items/
+      operations:
+      - name: environmentsdatasetitemslist
+        method: GET
+        description: ''
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: dataset
+          in: query
+          type: string
+          description: Filter by dataset ID
+        - name: limit
+          in: query
+          type: integer
+          description: Number of results to return per page.
+        - name: offset
+          in: query
+          type: integer
+          description: The initial index from which to return the results.
+      - name: environmentsdatasetitemscreate
+        method: POST
+        description: ''
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: body
+          in: body
+          type: object
+          description: Request body (JSON).
+          required: true
+    - name: api-environments-environment_id-dataset_items-id
+      path: /api/environments/{environment_id}/dataset_items/{id}/
+      operations:
+      - name: environmentsdatasetitemsretrieve
+        method: GET
+        description: ''
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: id
+          in: path
+          type: string
+          description: A UUID string identifying this dataset item.
+          required: true
+      - name: environmentsdatasetitemsupdate
+        method: PUT
+        description: ''
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: id
+          in: path
+          type: string
+          description: A UUID string identifying this dataset item.
+          required: true
+        - name: body
+          in: body
+          type: object
+          description: Request body (JSON).
+          required: true
+      - name: environmentsdatasetitemspartialupdate
+        method: PATCH
+        description: ''
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: id
+          in: path
+          type: string
+          description: A UUID string identifying this dataset item.
+          required: true
+        - name: body
+          in: body
+          type: object
+          description: Request body (JSON).
+          required: false
+      - name: environmentsdatasetitemsdestroy
+        method: DELETE
+        description: Hard delete of this model is not allowed. Use a patch API call to set "deleted" to true
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: id
+          in: path
+          type: string
+          description: A UUID string identifying this dataset item.
+          required: true
+    - name: api-environments-environment_id-datasets
+      path: /api/environments/{environment_id}/datasets/
+      operations:
+      - name: environmentsdatasetslist
+        method: GET
+        description: ''
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: id__in
+          in: query
+          type: array
+          description: Multiple values may be separated by commas.
+        - name: limit
+          in: query
+          type: integer
+          description: Number of results to return per page.
+        - name: offset
+          in: query
+          type: integer
+          description: The initial index from which to return the results.
+        - name: order_by
+          in: query
+          type: array
+          description: Ordering
+        - name: search
+          in: query
+          type: string
+          description: Search in name, description, or metadata
+      - name: environmentsdatasetscreate
+        method: POST
+        description: ''
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: body
+          in: body
+          type: object
+          description: Request body (JSON).
+          required: true
+    - name: api-environments-environment_id-datasets-id
+      path: /api/environments/{environment_id}/datasets/{id}/
+      operations:
+      - name: environmentsdatasetsretrieve
+        method: GET
+        description: ''
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: id
+          in: path
+          type: string
+          description: A UUID string identifying this dataset.
+          required: true
+      - name: environmentsdatasetsupdate
+        method: PUT
+        description: ''
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: id
+          in: path
+          type: string
+          description: A UUID string identifying this dataset.
+          required: true
+        - name: body
+          in: body
+          type: object
+          description: Request body (JSON).
+          required: true
+      - name: environmentsdatasetspartialupdate
+        method: PATCH
+        description: ''
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: id
+          in: path
+          type: string
+          description: A UUID string identifying this dataset.
+          required: true
+        - name: body
+          in: body
+          type: object
+          description: Request body (JSON).
+          required: false
+      - name: environmentsdatasetsdestroy
+        method: DELETE
+        description: Hard delete of this model is not allowed. Use a patch API call to set "deleted" to true
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: id
+          in: path
+          type: string
+          description: A UUID string identifying this dataset.
+          required: true
+    - name: api-environments-project_id-evaluation_runs
+      path: /api/environments/{project_id}/evaluation_runs/
+      operations:
+      - name: evaluationrunscreate
+        method: POST
+        description: Create a new evaluation run.
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: body
+          in: body
+          type: object
+          description: Request body (JSON).
+          required: true
+    - name: api-environments-project_id-evaluations
+      path: /api/environments/{project_id}/evaluations/
+      operations:
+      - name: evaluationslist
+        method: GET
+        description: ''
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: enabled
+          in: query
+          type: boolean
+          description: Filter by enabled status
+        - name: id__in
+          in: query
+          type: array
+          description: Multiple values may be separated by commas.
+        - name: limit
+          in: query
+          type: integer
+          description: Number of results to return per page.
+        - name: offset
+          in: query
+          type: integer
+          description: The initial index from which to return the results.
+        - name: order_by
+          in: query
+          type: array
+          description: Ordering
+        - name: search
+          in: query
+          type: string
+          description: Search in name or description
+      - name: evaluationscreate
+        method: POST
+        description: ''
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: body
+          in: body
+          type: object
+          description: Request body (JSON).
+          required: true
+    - name: api-environments-project_id-evaluations-test_hog
+      path: /api/environments/{project_id}/evaluations/test_hog/
+      operations:
+      - name: evaluationstesthogcreate
+        method: POST
+        description: Test Hog evaluation code against sample events without saving.
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: body
+          in: body
+          type: object
+          description: Request body (JSON).
+          required: true
+    - name: api-environments-project_id-evaluations-id
+      path: /api/environments/{project_id}/evaluations/{id}/
+      operations:
+      - name: evaluationsretrieve
+        method: GET
+        description: ''
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: id
+          in: path
+          type: string
+          description: A UUID string identifying this evaluation.
+          required: true
+      - name: evaluationsupdate
+        method: PUT
+        description: ''
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: id
+          in: path
+          type: string
+          description: A UUID string identifying this evaluation.
+          required: true
+        - name: body
+          in: body
+          type: object
+          description: Request body (JSON).
+          required: true
+      - name: evaluationspartialupdate
+        method: PATCH
+        description: ''
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: id
+          in: path
+          type: string
+          description: A UUID string identifying this evaluation.
+          required: true
+        - name: body
+          in: body
+          type: object
+          description: Request body (JSON).
+          required: false
+      - name: evaluationsdestroy
+        method: DELETE
+        description: Hard delete of this model is not allowed. Use a patch API call to set "deleted" to true
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: id
+          in: path
+          type: string
+          description: A UUID string identifying this evaluation.
+          required: true
+    - name: api-environments-project_id-llm_analytics-clustering_config
+      path: /api/environments/{project_id}/llm_analytics/clustering_config/
+      operations:
+      - name: llmanalyticsclusteringconfigretrieve
+        method: GET
+        description: Team-level clustering configuration (event filters for automated pipelines).
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+    - name: api-environments-project_id-llm_analytics-clustering_config-set_event_filters
+      path: /api/environments/{project_id}/llm_analytics/clustering_config/set_event_filters/
+      operations:
+      - name: llmanalyticsclusteringconfigseteventfilterscreate
+        method: POST
+        description: Team-level clustering configuration (event filters for automated pipelines).
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+    - name: api-environments-project_id-llm_analytics-clustering_jobs
+      path: /api/environments/{project_id}/llm_analytics/clustering_jobs/
+      operations:
+      - name: llmanalyticsclusteringjobslist
+        method: GET
+        description: CRUD for clustering job configurations (max 5 per team).
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: limit
+          in: query
+          type: integer
+          description: Number of results to return per page.
+        - name: offset
+          in: query
+          type: integer
+          description: The initial index from which to return the results.
+      - name: llmanalyticsclusteringjobscreate
+        method: POST
+        description: CRUD for clustering job configurations (max 5 per team).
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: body
+          in: body
+          type: object
+          description: Request body (JSON).
+          required: true
+    - name: api-environments-project_id-llm_analytics-clustering_jobs-id
+      path: /api/environments/{project_id}/llm_analytics/clustering_jobs/{id}/
+      operations:
+      - name: llmanalyticsclusteringjobsretrieve
+        method: GET
+        description: CRUD for clustering job configurations (max 5 per team).
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: id
+          in: path
+          type: string
+          description: A UUID string identifying this clustering job.
+          required: true
+      - name: llmanalyticsclusteringjobsupdate
+        method: PUT
+        description: CRUD for clustering job configurations (max 5 per team).
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: id
+          in: path
+          type: string
+          description: A UUID string identifying this clustering job.
+          required: true
+        - name: body
+          in: body
+          type: object
+          description: Request body (JSON).
+          required: true
+      - name: llmanalyticsclusteringjobspartialupdate
+        method: PATCH
+        description: CRUD for clustering job configurations (max 5 per team).
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: id
+          in: path
+          type: string
+          description: A UUID string identifying this clustering job.
+          required: true
+        - name: body
+          in: body
+          type: object
+          description: Request body (JSON).
+          required: false
+      - name: llmanalyticsclusteringjobsdestroy
+        method: DELETE
+        description: CRUD for clustering job configurations (max 5 per team).
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: id
+          in: path
+          type: string
+          description: A UUID string identifying this clustering job.
+          required: true
+    - name: api-environments-project_id-llm_analytics-evaluation_config
+      path: /api/environments/{project_id}/llm_analytics/evaluation_config/
+      operations:
+      - name: llmanalyticsevaluationconfigretrieve
+        method: GET
+        description: Get the evaluation config for this team
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+    - name: api-environments-project_id-llm_analytics-evaluation_config-set_active_key
+      path: /api/environments/{project_id}/llm_analytics/evaluation_config/set_active_key/
+      operations:
+      - name: llmanalyticsevaluationconfigsetactivekeycreate
+        method: POST
+        description: Set the active provider key for evaluations
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: body
+          in: body
+          type: object
+          description: Request body (JSON).
+          required: true
+    - name: api-environments-project_id-llm_analytics-evaluation_reports
+      path: /api/environments/{project_id}/llm_analytics/evaluation_reports/
+      operations:
+      - name: llmanalyticsevaluationreportslist
+        method: GET
+        description: CRUD for evaluation report configurations + report run history.
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: limit
+          in: query
+          type: integer
+          description: Number of results to return per page.
+        - name: offset
+          in: query
+          type: integer
+          description: The initial index from which to return the results.
+      - name: llmanalyticsevaluationreportslist
+        method: GET
+        description: CRUD for evaluation report configurations + report run history.
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: limit
+          in: query
+          type: integer
+          description: Number of results to return per page.
+        - name: offset
+          in: query
+          type: integer
+          description: The initial index from which to return the results.
+      - name: llmanalyticsevaluationreportscreate
+        method: POST
+        description: CRUD for evaluation report configurations + report run history.
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: body
+          in: body
+          type: object
+          description: Request body (JSON).
+          required: true
+      - name: llmanalyticsevaluationreportscreate
+        method: POST
+        description: CRUD for evaluation report configurations + report run history.
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: body
+          in: body
+          type: object
+          description: Request body (JSON).
+          required: true
+    - name: api-environments-project_id-llm_analytics-evaluation_reports-id
+      path: /api/environments/{project_id}/llm_analytics/evaluation_reports/{id}/
+      operations:
+      - name: llmanalyticsevaluationreportsretrieve
+        method: GET
+        description: CRUD for evaluation report configurations + report run history.
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: id
+          in: path
+          type: string
+          description: A UUID string identifying this evaluation report.
+          required: true
+      - name: llmanalyticsevaluationreportsretrieve
+        method: GET
+        description: CRUD for evaluation report configurations + report run history.
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: id
+          in: path
+          type: string
+          description: A UUID string identifying this evaluation report.
+          required: true
+      - name: llmanalyticsevaluationreportsupdate
+        method: PUT
+        description: CRUD for evaluation report configurations + report run history.
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: id
+          in: path
+          type: string
+          description: A UUID string identifying this evaluation report.
+          required: true
+        - name: body
+          in: body
+          type: object
+          description: Request body (JSON).
+          required: true
+      - name: llmanalyticsevaluationreportsupdate
+        method: PUT
+        description: CRUD for evaluation report configurations + report run history.
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: id
+          in: path
+          type: string
+          description: A UUID string identifying this evaluation report.
+          required: true
+        - name: body
+          in: body
+          type: object
+          description: Request body (JSON).
+          required: true
+      - name: llmanalyticsevaluationreportspartialupdate
+        method: PATCH
+        description: CRUD for evaluation report configurations + report run history.
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: id
+          in: path
+          type: string
+          description: A UUID string identifying this evaluation report.
+          required: true
+        - name: body
+          in: body
+          type: object
+          description: Request body (JSON).
+          required: false
+      - name: llmanalyticsevaluationreportspartialupdate
+        method: PATCH
+        description: CRUD for evaluation report configurations + report run history.
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: id
+          in: path
+          type: string
+          description: A UUID string identifying this evaluation report.
+          required: true
+        - name: body
+          in: body
+          type: object
+          description: Request body (JSON).
+          required: false
+      - name: llmanalyticsevaluationreportsdestroy
+        method: DELETE
+        description: Hard delete of this model is not allowed. Use a patch API call to set "deleted" to true
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: id
+          in: path
+          type: string
+          description: A UUID string identifying this evaluation report.
+          required: true
+      - name: llmanalyticsevaluationreportsdestroy
+        method: DELETE
+        description: Hard delete of this model is not allowed. Use a patch API call to set "deleted" to true
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: id
+          in: path
+          type: string
+          description: A UUID string identifying this evaluation report.
+          required: true
+    - name: api-environments-project_id-llm_analytics-evaluation_reports-id-generate
+      path: /api/environments/{project_id}/llm_analytics/evaluation_reports/{id}/generate/
+      operations:
+      - name: llmanalyticsevaluationreportsgeneratecreate
+        method: POST
+        description: Trigger immediate report generation.
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: id
+          in: path
+          type: string
+          description: A UUID string identifying this evaluation report.
+          required: true
+      - name: llmanalyticsevaluationreportsgeneratecreate
+        method: POST
+        description: Trigger immediate report generation.
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: id
+          in: path
+          type: string
+          description: A UUID string identifying this evaluation report.
+          required: true
+    - name: api-environments-project_id-llm_analytics-evaluation_reports-id-runs
+      path: /api/environments/{project_id}/llm_analytics/evaluation_reports/{id}/runs/
+      operations:
+      - name: llmanalyticsevaluationreportsrunslist
+        method: GET
+        description: List report runs (history) for this report.
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: id
+          in: path
+          type: string
+          description: A UUID string identifying this evaluation report.
+          required: true
+        - name: limit
+          in: query
+          type: integer
+          description: Number of results to return per page.
+        - name: offset
+          in: query
+          type: integer
+          description: The initial index from which to return the results.
+      - name: llmanalyticsevaluationreportsrunslist
+        method: GET
+        description: List report runs (history) for this report.
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: id
+          in: path
+          type: string
+          description: A UUID string identifying this evaluation report.
+          required: true
+        - name: limit
+          in: query
+          type: integer
+          description: Number of results to return per page.
+        - name: offset
+          in: query
+          type: integer
+          description: The initial index from which to return the results.
+    - name: api-environments-project_id-llm_analytics-evaluation_summary
+      path: /api/environments/{project_id}/llm_analytics/evaluation_summary/
+      operations:
+      - name: llmanalyticsevaluationsummarycreate
+        method: POST
+        description: Generate an AI-powered summary of evaluation results.
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: body
+          in: body
+          type: object
+          description: Request body (JSON).
+          required: true
+    - name: api-environments-project_id-llm_analytics-models
+      path: /api/environments/{project_id}/llm_analytics/models/
+      operations:
+      - name: llmanalyticsmodelsretrieve
+        method: GET
+        description: List available models for a provider.
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: key_id
+          in: query
+          type: string
+          description: Optional provider key UUID. When supplied, models reachable with that specific key are returned (useful
+            for Azure OpenAI, where the deployment list depends on t
+        - name: provider
+          in: query
+          type: string
+          description: LLM provider to list models for. Must be one of the supported providers.
+          required: true
+    - name: api-environments-project_id-llm_analytics-provider_key_validations
+      path: /api/environments/{project_id}/llm_analytics/provider_key_validations/
+      operations:
+      - name: llmanalyticsproviderkeyvalidationscreate
+        method: POST
+        description: Validate LLM provider API keys without persisting them
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+    - name: api-environments-project_id-llm_analytics-provider_keys
+      path: /api/environments/{project_id}/llm_analytics/provider_keys/
+      operations:
+      - name: llmanalyticsproviderkeyslist
+        method: GET
+        description: ''
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: limit
+          in: query
+          type: integer
+          description: Number of results to return per page.
+        - name: offset
+          in: query
+          type: integer
+          description: The initial index from which to return the results.
+      - name: llmanalyticsproviderkeyscreate
+        method: POST
+        description: ''
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: body
+          in: body
+          type: object
+          description: Request body (JSON).
+          required: true
+    - name: api-environments-project_id-llm_analytics-provider_keys-trial_evaluations
+      path: /api/environments/{project_id}/llm_analytics/provider_keys/trial_evaluations/
+      operations:
+      - name: llmanalyticsproviderkeystrialevaluationsretrieve
+        method: GET
+        description: List enabled evaluations currently using trial credits for a given provider.
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+    - name: api-environments-project_id-llm_analytics-provider_keys-id
+      path: /api/environments/{project_id}/llm_analytics/provider_keys/{id}/
+      operations:
+      - name: llmanalyticsproviderkeysretrieve
+        method: GET
+        description: ''
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: id
+          in: path
+          type: string
+          description: A UUID string identifying this llm provider key.
+          required: true
+      - name: llmanalyticsproviderkeysupdate
+        method: PUT
+        description: ''
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: id
+          in: path
+          type: string
+          description: A UUID string identifying this llm provider key.
+          required: true
+        - name: body
+          in: body
+          type: object
+          description: Request body (JSON).
+          required: true
+      - name: llmanalyticsproviderkeyspartialupdate
+        method: PATCH
+        description: ''
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: id
+          in: path
+          type: string
+          description: A UUID string identifying this llm provider key.
+          required: true
+        - name: body
+          in: body
+          type: object
+          description: Request body (JSON).
+          required: false
+      - name: llmanalyticsproviderkeysdestroy
+        method: DELETE
+        description: ''
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: id
+          in: path
+          type: string
+          description: A UUID string identifying this llm provider key.
+          required: true
+    - name: api-environments-project_id-llm_analytics-provider_keys-id-assign
+      path: /api/environments/{project_id}/llm_analytics/provider_keys/{id}/assign/
+      operations:
+      - name: llmanalyticsproviderkeysassigncreate
+        method: POST
+        description: Assign this key to evaluations and optionally re-enable them.
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: id
+          in: path
+          type: string
+          description: A UUID string identifying this llm provider key.
+          required: true
+        - name: body
+          in: body
+          type: object
+          description: Request body (JSON).
+          required: true
+    - name: api-environments-project_id-llm_analytics-provider_keys-id-dependent_configs
+      path: /api/environments/{project_id}/llm_analytics/provider_keys/{id}/dependent_configs/
+      operations:
+      - name: llmanalyticsproviderkeysdependentconfigsretrieve
+        method: GET
+        description: Get evaluations using this key and alternative keys for replacement.
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: id
+          in: path
+          type: string
+          description: A UUID string identifying this llm provider key.
+          required: true
+    - name: api-environments-project_id-llm_analytics-provider_keys-id-validate
+      path: /api/environments/{project_id}/llm_analytics/provider_keys/{id}/validate/
+      operations:
+      - name: llmanalyticsproviderkeysvalidatecreate
+        method: POST
+        description: ''
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: id
+          in: path
+          type: string
+          description: A UUID string identifying this llm provider key.
+          required: true
+        - name: body
+          in: body
+          type: object
+          description: Request body (JSON).
+          required: true
+    - name: api-environments-project_id-llm_analytics-review_queue_items
+      path: /api/environments/{project_id}/llm_analytics/review_queue_items/
+      operations:
+      - name: llmanalyticsreviewqueueitemslist
+        method: GET
+        description: ''
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: limit
+          in: query
+          type: integer
+          description: Number of results to return per page.
+        - name: offset
+          in: query
+          type: integer
+          description: The initial index from which to return the results.
+        - name: order_by
+          in: query
+          type: string
+          description: Order by `created_at` or `updated_at`.
+        - name: queue_id
+          in: query
+          type: string
+          description: Filter by a specific review queue ID.
+        - name: search
+          in: query
+          type: string
+          description: Search pending trace IDs.
+        - name: trace_id
+          in: query
+          type: string
+          description: Filter by an exact trace ID.
+        - name: trace_id__in
+          in: query
+          type: string
+          description: Filter by multiple trace IDs separated by commas.
+      - name: llmanalyticsreviewqueueitemslist
+        method: GET
+        description: ''
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: limit
+          in: query
+          type: integer
+          description: Number of results to return per page.
+        - name: offset
+          in: query
+          type: integer
+          description: The initial index from which to return the results.
+        - name: order_by
+          in: query
+          type: string
+          description: Order by `created_at` or `updated_at`.
+        - name: queue_id
+          in: query
+          type: string
+          description: Filter by a specific review queue ID.
+        - name: search
+          in: query
+          type: string
+          description: Search pending trace IDs.
+        - name: trace_id
+          in: query
+          type: string
+          description: Filter by an exact trace ID.
+        - name: trace_id__in
+          in: query
+          type: string
+          description: Filter by multiple trace IDs separated by commas.
+      - name: llmanalyticsreviewqueueitemscreate
+        method: POST
+        description: ''
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: body
+          in: body
+          type: object
+          description: Request body (JSON).
+          required: true
+      - name: llmanalyticsreviewqueueitemscreate
+        method: POST
+        description: ''
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: body
+          in: body
+          type: object
+          description: Request body (JSON).
+          required: true
+    - name: api-environments-project_id-llm_analytics-review_queue_items-id
+      path: /api/environments/{project_id}/llm_analytics/review_queue_items/{id}/
+      operations:
+      - name: llmanalyticsreviewqueueitemsretrieve
+        method: GET
+        description: ''
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: id
+          in: path
+          type: string
+          description: A UUID string identifying this review queue item.
+          required: true
+      - name: llmanalyticsreviewqueueitemsretrieve
+        method: GET
+        description: ''
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: id
+          in: path
+          type: string
+          description: A UUID string identifying this review queue item.
+          required: true
+      - name: llmanalyticsreviewqueueitemspartialupdate
+        method: PATCH
+        description: ''
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: id
+          in: path
+          type: string
+          description: A UUID string identifying this review queue item.
+          required: true
+        - name: body
+          in: body
+          type: object
+          description: Request body (JSON).
+          required: false
+      - name: llmanalyticsreviewqueueitemspartialupdate
+        method: PATCH
+        description: ''
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: id
+          in: path
+          type: string
+          description: A UUID string identifying this review queue item.
+          required: true
+        - name: body
+          in: body
+          type: object
+          description: Request body (JSON).
+          required: false
+      - name: llmanalyticsreviewqueueitemsdestroy
+        method: DELETE
+        description: ''
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: id
+          in: path
+          type: string
+          description: A UUID string identifying this review queue item.
+          required: true
+      - name: llmanalyticsreviewqueueitemsdestroy
+        method: DELETE
+        description: ''
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: id
+          in: path
+          type: string
+          description: A UUID string identifying this review queue item.
+          required: true
+    - name: api-environments-project_id-llm_analytics-review_queues
+      path: /api/environments/{project_id}/llm_analytics/review_queues/
+      operations:
+      - name: llmanalyticsreviewqueueslist
+        method: GET
+        description: ''
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: limit
+          in: query
+          type: integer
+          description: Number of results to return per page.
+        - name: name
+          in: query
+          type: string
+        - name: offset
+          in: query
+          type: integer
+          description: The initial index from which to return the results.
+        - name: order_by
+          in: query
+          type: string
+          description: Order by `name`, `updated_at`, or `created_at`.
+        - name: search
+          in: query
+          type: string
+          description: Search review queue names.
+      - name: llmanalyticsreviewqueueslist
+        method: GET
+        description: ''
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: limit
+          in: query
+          type: integer
+          description: Number of results to return per page.
+        - name: name
+          in: query
+          type: string
+        - name: offset
+          in: query
+          type: integer
+          description: The initial index from which to return the results.
+        - name: order_by
+          in: query
+          type: string
+          description: Order by `name`, `updated_at`, or `created_at`.
+        - name: search
+          in: query
+          type: string
+          description: Search review queue names.
+      - name: llmanalyticsreviewqueuescreate
+        method: POST
+        description: ''
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: body
+          in: body
+          type: object
+          description: Request body (JSON).
+          required: true
+      - name: llmanalyticsreviewqueuescreate
+        method: POST
+        description: ''
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: body
+          in: body
+          type: object
+          description: Request body (JSON).
+          required: true
+    - name: api-environments-project_id-llm_analytics-review_queues-id
+      path: /api/environments/{project_id}/llm_analytics/review_queues/{id}/
+      operations:
+      - name: llmanalyticsreviewqueuesretrieve
+        method: GET
+        description: ''
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: id
+          in: path
+          type: string
+          description: A UUID string identifying this review queue.
+          required: true
+      - name: llmanalyticsreviewqueuesretrieve
+        method: GET
+        description: ''
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: id
+          in: path
+          type: string
+          description: A UUID string identifying this review queue.
+          required: true
+      - name: llmanalyticsreviewqueuespartialupdate
+        method: PATCH
+        description: ''
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: id
+          in: path
+          type: string
+          description: A UUID string identifying this review queue.
+          required: true
+        - name: body
+          in: body
+          type: object
+          description: Request body (JSON).
+          required: false
+      - name: llmanalyticsreviewqueuespartialupdate
+        method: PATCH
+        description: ''
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: id
+          in: path
+          type: string
+          description: A UUID string identifying this review queue.
+          required: true
+        - name: body
+          in: body
+          type: object
+          description: Request body (JSON).
+          required: false
+      - name: llmanalyticsreviewqueuesdestroy
+        method: DELETE
+        description: ''
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: id
+          in: path
+          type: string
+          description: A UUID string identifying this review queue.
+          required: true
+      - name: llmanalyticsreviewqueuesdestroy
+        method: DELETE
+        description: ''
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: id
+          in: path
+          type: string
+          description: A UUID string identifying this review queue.
+          required: true
+    - name: api-environments-project_id-llm_analytics-score_definitions
+      path: /api/environments/{project_id}/llm_analytics/score_definitions/
+      operations:
+      - name: llmanalyticsscoredefinitionslist
+        method: GET
+        description: ''
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: archived
+          in: query
+          type: boolean
+          description: Filter by archived state.
+        - name: kind
+          in: query
+          type: string
+          description: Filter by scorer kind.
+        - name: limit
+          in: query
+          type: integer
+          description: Number of results to return per page.
+        - name: offset
+          in: query
+          type: integer
+          description: The initial index from which to return the results.
+        - name: order_by
+          in: query
+          type: string
+          description: Sort by name, kind, created_at, updated_at, or current_version.
+        - name: search
+          in: query
+          type: string
+          description: Search scorers by name or description.
+      - name: llmanalyticsscoredefinitionslist
+        method: GET
+        description: ''
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: archived
+          in: query
+          type: boolean
+          description: Filter by archived state.
+        - name: kind
+          in: query
+          type: string
+          description: Filter by scorer kind.
+        - name: limit
+          in: query
+          type: integer
+          description: Number of results to return per page.
+        - name: offset
+          in: query
+          type: integer
+          description: The initial index from which to return the results.
+        - name: order_by
+          in: query
+          type: string
+          description: Sort by name, kind, created_at, updated_at, or current_version.
+        - name: search
+          in: query
+          type: string
+          description: Search scorers by name or description.
+      - name: llmanalyticsscoredefinitionscreate
+        method: POST
+        description: ''
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: body
+          in: body
+          type: object
+          description: Request body (JSON).
+          required: true
+      - name: llmanalyticsscoredefinitionscreate
+        method: POST
+        description: ''
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: body
+          in: body
+          type: object
+          description: Request body (JSON).
+          required: true
+    - name: api-environments-project_id-llm_analytics-score_definitions-id
+      path: /api/environments/{project_id}/llm_analytics/score_definitions/{id}/
+      operations:
+      - name: llmanalyticsscoredefinitionsretrieve
+        method: GET
+        description: ''
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: id
+          in: path
+          type: string
+          description: A UUID string identifying this score definition.
+          required: true
+      - name: llmanalyticsscoredefinitionsretrieve
+        method: GET
+        description: ''
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: id
+          in: path
+          type: string
+          description: A UUID string identifying this score definition.
+          required: true
+      - name: llmanalyticsscoredefinitionspartialupdate
+        method: PATCH
+        description: ''
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: id
+          in: path
+          type: string
+          description: A UUID string identifying this score definition.
+          required: true
+        - name: body
+          in: body
+          type: object
+          description: Request body (JSON).
+          required: false
+      - name: llmanalyticsscoredefinitionspartialupdate
+        method: PATCH
+        description: ''
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: id
+          in: path
+          type: string
+          description: A UUID string identifying this score definition.
+          required: true
+        - name: body
+          in: body
+          type: object
+          description: Request body (JSON).
+          required: false
+    - name: api-environments-project_id-llm_analytics-score_definitions-id-new_version
+      path: /api/environments/{project_id}/llm_analytics/score_definitions/{id}/new_version/
+      operations:
+      - name: llmanalyticsscoredefinitionsnewversioncreate
+        method: POST
+        description: ''
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: id
+          in: path
+          type: string
+          description: A UUID string identifying this score definition.
+          required: true
+        - name: body
+          in: body
+          type: object
+          description: Request body (JSON).
+          required: true
+      - name: llmanalyticsscoredefinitionsnewversioncreate
+        method: POST
+        description: ''
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: id
+          in: path
+          type: string
+          description: A UUID string identifying this score definition.
+          required: true
+        - name: body
+          in: body
+          type: object
+          description: Request body (JSON).
+          required: true
+    - name: api-environments-project_id-llm_analytics-sentiment
+      path: /api/environments/{project_id}/llm_analytics/sentiment/
+      operations:
+      - name: llmanalyticssentimentcreate
+        method: POST
+        description: ''
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: body
+          in: body
+          type: object
+          description: Request body (JSON).
+          required: true
+    - name: api-environments-project_id-llm_analytics-summarization
+      path: /api/environments/{project_id}/llm_analytics/summarization/
+      operations:
+      - name: llmanalyticssummarizationcreate
+        method: POST
+        description: Generate an AI-powered summary of an LLM trace or event.
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: body
+          in: body
+          type: object
+          description: Request body (JSON).
+          required: false
+    - name: api-environments-project_id-llm_analytics-summarization-batch_check
+      path: /api/environments/{project_id}/llm_analytics/summarization/batch_check/
+      operations:
+      - name: llmanalyticssummarizationbatchcheckcreate
+        method: POST
+        description: Check which traces have cached summaries available.
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: body
+          in: body
+          type: object
+          description: Request body (JSON).
+          required: true
+    - name: api-environments-project_id-llm_analytics-text_repr
+      path: /api/environments/{project_id}/llm_analytics/text_repr/
+      operations:
+      - name: llmanalyticstextreprcreate
+        method: POST
+        description: Generate a human-readable text representation of an LLM trace event.
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: body
+          in: body
+          type: object
+          description: Request body (JSON).
+          required: true
+    - name: api-environments-project_id-llm_analytics-trace_reviews
+      path: /api/environments/{project_id}/llm_analytics/trace_reviews/
+      operations:
+      - name: llmanalyticstracereviewslist
+        method: GET
+        description: ''
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: definition_id
+          in: query
+          type: string
+          description: Filter by a stable scorer definition ID.
+        - name: definition_id__in
+          in: query
+          type: string
+          description: Filter by multiple scorer definition IDs separated by commas.
+        - name: limit
+          in: query
+          type: integer
+          description: Number of results to return per page.
+        - name: offset
+          in: query
+          type: integer
+          description: The initial index from which to return the results.
+        - name: order_by
+          in: query
+          type: string
+          description: Order by `updated_at` or `created_at`.
+        - name: search
+          in: query
+          type: string
+          description: Search trace IDs and comments.
+        - name: trace_id
+          in: query
+          type: string
+          description: Filter by an exact trace ID.
+        - name: trace_id__in
+          in: query
+          type: string
+          description: Filter by multiple trace IDs separated by commas.
+      - name: llmanalyticstracereviewslist
+        method: GET
+        description: ''
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: definition_id
+          in: query
+          type: string
+          description: Filter by a stable scorer definition ID.
+        - name: definition_id__in
+          in: query
+          type: string
+          description: Filter by multiple scorer definition IDs separated by commas.
+        - name: limit
+          in: query
+          type: integer
+          description: Number of results to return per page.
+        - name: offset
+          in: query
+          type: integer
+          description: The initial index from which to return the results.
+        - name: order_by
+          in: query
+          type: string
+          description: Order by `updated_at` or `created_at`.
+        - name: search
+          in: query
+          type: string
+          description: Search trace IDs and comments.
+        - name: trace_id
+          in: query
+          type: string
+          description: Filter by an exact trace ID.
+        - name: trace_id__in
+          in: query
+          type: string
+          description: Filter by multiple trace IDs separated by commas.
+      - name: llmanalyticstracereviewscreate
+        method: POST
+        description: ''
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: body
+          in: body
+          type: object
+          description: Request body (JSON).
+          required: true
+      - name: llmanalyticstracereviewscreate
+        method: POST
+        description: ''
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: body
+          in: body
+          type: object
+          description: Request body (JSON).
+          required: true
+    - name: api-environments-project_id-llm_analytics-trace_reviews-id
+      path: /api/environments/{project_id}/llm_analytics/trace_reviews/{id}/
+      operations:
+      - name: llmanalyticstracereviewsretrieve
+        method: GET
+        description: ''
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: id
+          in: path
+          type: string
+          description: A UUID string identifying this trace review.
+          required: true
+      - name: llmanalyticstracereviewsretrieve
+        method: GET
+        description: ''
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: id
+          in: path
+          type: string
+          description: A UUID string identifying this trace review.
+          required: true
+      - name: llmanalyticstracereviewspartialupdate
+        method: PATCH
+        description: ''
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: id
+          in: path
+          type: string
+          description: A UUID string identifying this trace review.
+          required: true
+        - name: body
+          in: body
+          type: object
+          description: Request body (JSON).
+          required: false
+      - name: llmanalyticstracereviewspartialupdate
+        method: PATCH
+        description: ''
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: id
+          in: path
+          type: string
+          description: A UUID string identifying this trace review.
+          required: true
+        - name: body
+          in: body
+          type: object
+          description: Request body (JSON).
+          required: false
+      - name: llmanalyticstracereviewsdestroy
+        method: DELETE
+        description: ''
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: id
+          in: path
+          type: string
+          description: A UUID string identifying this trace review.
+          required: true
+      - name: llmanalyticstracereviewsdestroy
+        method: DELETE
+        description: ''
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: id
+          in: path
+          type: string
+          description: A UUID string identifying this trace review.
+          required: true
+    - name: api-environments-project_id-llm_analytics-translate
+      path: /api/environments/{project_id}/llm_analytics/translate/
+      operations:
+      - name: llmanalyticstranslatecreate
+        method: POST
+        description: Translate text to target language.
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: body
+          in: body
+          type: object
+          description: Request body (JSON).
+          required: true
+    - name: api-environments-project_id-llm_prompts
+      path: /api/environments/{project_id}/llm_prompts/
+      operations:
+      - name: llmpromptslist
+        method: GET
+        description: ''
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: content
+          in: query
+          type: string
+          description: Controls how much prompt content is included in the response. 'full' includes the full prompt, 'preview'
+            includes a short prompt_preview, and 'none' omits promp
+        - name: created_by_id
+          in: query
+          type: integer
+          description: Filter prompts by the ID of the user who created them.
+        - name: limit
+          in: query
+          type: integer
+          description: Number of results to return per page.
+        - name: offset
+          in: query
+          type: integer
+          description: The initial index from which to return the results.
+        - name: search
+          in: query
+          type: string
+          description: Optional substring filter applied to prompt names and prompt content.
+      - name: llmpromptscreate
+        method: POST
+        description: ''
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: body
+          in: body
+          type: object
+          description: Request body (JSON).
+          required: true
+    - name: api-environments-project_id-llm_prompts-name-prompt_name
+      path: /api/environments/{project_id}/llm_prompts/name/{prompt_name}/
+      operations:
+      - name: llmpromptsnameretrieve
+        method: GET
+        description: ''
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: content
+          in: query
+          type: string
+          description: Controls how much prompt content is included in the response. 'full' includes the full prompt, 'preview'
+            includes a short prompt_preview, and 'none' omits promp
+        - name: prompt_name
+          in: path
+          type: string
+          required: true
+        - name: version
+          in: query
+          type: integer
+          description: Specific prompt version to fetch. If omitted, the latest version is returned.
+      - name: llmpromptsnamepartialupdate
+        method: PATCH
+        description: ''
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: prompt_name
+          in: path
+          type: string
+          required: true
+        - name: body
+          in: body
+          type: object
+          description: Request body (JSON).
+          required: false
+    - name: api-environments-project_id-llm_prompts-name-prompt_name-archive
+      path: /api/environments/{project_id}/llm_prompts/name/{prompt_name}/archive/
+      operations:
+      - name: llmpromptsnamearchivecreate
+        method: POST
+        description: ''
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: prompt_name
+          in: path
+          type: string
+          required: true
+        - name: body
+          in: body
+          type: object
+          description: Request body (JSON).
+          required: true
+    - name: api-environments-project_id-llm_prompts-name-prompt_name-duplicate
+      path: /api/environments/{project_id}/llm_prompts/name/{prompt_name}/duplicate/
+      operations:
+      - name: llmpromptsnameduplicatecreate
+        method: POST
+        description: ''
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: prompt_name
+          in: path
+          type: string
+          required: true
+        - name: body
+          in: body
+          type: object
+          description: Request body (JSON).
+          required: true
+    - name: api-environments-project_id-llm_prompts-resolve-name-prompt_name
+      path: /api/environments/{project_id}/llm_prompts/resolve/name/{prompt_name}/
+      operations:
+      - name: llmpromptsresolvenameretrieve
+        method: GET
+        description: ''
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: before_version
+          in: query
+          type: integer
+          description: Return versions older than this version number. Mutually exclusive with offset.
+        - name: limit
+          in: query
+          type: integer
+          description: Maximum number of versions to return per page (1-100).
+        - name: offset
+          in: query
+          type: integer
+          description: Zero-based offset into version history for pagination. Mutually exclusive with before_version.
+        - name: prompt_name
+          in: path
+          type: string
+          required: true
+        - name: version
+          in: query
+          type: integer
+          description: Specific prompt version to fetch. If omitted, the latest version is returned.
+        - name: version_id
+          in: query
+          type: string
+          description: Exact prompt version UUID to resolve. Can be used together with version for extra safety.
+    - name: api-environments-project_id-llm_skills
+      path: /api/environments/{project_id}/llm_skills/
+      operations:
+      - name: llmskillslist
+        method: GET
+        description: ''
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: created_by_id
+          in: query
+          type: integer
+          description: Filter skills by the ID of the user who created them.
+        - name: limit
+          in: query
+          type: integer
+          description: Number of results to return per page.
+        - name: offset
+          in: query
+          type: integer
+          description: The initial index from which to return the results.
+        - name: search
+          in: query
+          type: string
+          description: Optional substring filter applied to skill names and descriptions.
+      - name: llmskillscreate
+        method: POST
+        description: ''
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: body
+          in: body
+          type: object
+          description: Request body (JSON).
+          required: true
+    - name: api-environments-project_id-llm_skills-name-skill_name
+      path: /api/environments/{project_id}/llm_skills/name/{skill_name}/
+      operations:
+      - name: llmskillsnameretrieve
+        method: GET
+        description: ''
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: skill_name
+          in: path
+          type: string
+          required: true
+        - name: version
+          in: query
+          type: integer
+          description: Specific skill version to fetch. If omitted, the latest version is returned.
+      - name: llmskillsnamepartialupdate
+        method: PATCH
+        description: ''
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: skill_name
+          in: path
+          type: string
+          required: true
+        - name: body
+          in: body
+          type: object
+          description: Request body (JSON).
+          required: false
+    - name: api-environments-project_id-llm_skills-name-skill_name-archive
+      path: /api/environments/{project_id}/llm_skills/name/{skill_name}/archive/
+      operations:
+      - name: llmskillsnamearchivecreate
+        method: POST
+        description: ''
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: skill_name
+          in: path
+          type: string
+          required: true
+    - name: api-environments-project_id-llm_skills-name-skill_name-duplicate
+      path: /api/environments/{project_id}/llm_skills/name/{skill_name}/duplicate/
+      operations:
+      - name: llmskillsnameduplicatecreate
+        method: POST
+        description: ''
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: skill_name
+          in: path
+          type: string
+          required: true
+        - name: body
+          in: body
+          type: object
+          description: Request body (JSON).
+          required: true
+    - name: api-environments-project_id-llm_skills-name-skill_name-files-rename
+      path: /api/environments/{project_id}/llm_skills/name/{skill_name}/files-rename/
+      operations:
+      - name: llmskillsnamefilesrenamecreate
+        method: POST
+        description: ''
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: skill_name
+          in: path
+          type: string
+          required: true
+        - name: body
+          in: body
+          type: object
+          description: Request body (JSON).
+          required: true
+    - name: api-environments-project_id-llm_skills-name-skill_name-files
+      path: /api/environments/{project_id}/llm_skills/name/{skill_name}/files/
+      operations:
+      - name: llmskillsnamefilescreate
+        method: POST
+        description: ''
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: skill_name
+          in: path
+          type: string
+          required: true
+        - name: body
+          in: body
+          type: object
+          description: Request body (JSON).
+          required: true
+    - name: api-environments-project_id-llm_skills-name-skill_name-files-file_path
+      path: /api/environments/{project_id}/llm_skills/name/{skill_name}/files/{file_path}/
+      operations:
+      - name: llmskillsnamefilesretrieve
+        method: GET
+        description: ''
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: file_path
+          in: path
+          type: string
+          required: true
+        - name: skill_name
+          in: path
+          type: string
+          required: true
+        - name: version
+          in: query
+          type: integer
+          description: Specific skill version to fetch. If omitted, the latest version is returned.
+      - name: llmskillsnamefilesdestroy
+        method: DELETE
+        description: ''
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: base_version
+          in: query
+          type: integer
+          description: Latest version you are editing from. If provided, the request fails with 409 when another write has
+            landed in the meantime.
+        - name: file_path
+          in: path
+          type: string
+          required: true
+        - name: skill_name
+          in: path
+          type: string
+          required: true
+    - name: api-environments-project_id-llm_skills-resolve-name-skill_name
+      path: /api/environments/{project_id}/llm_skills/resolve/name/{skill_name}/
+      operations:
+      - name: llmskillsresolvenameretrieve
+        method: GET
+        description: ''
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: before_version
+          in: query
+          type: integer
+          description: Return versions older than this version number. Mutually exclusive with offset.
+        - name: limit
+          in: query
+          type: integer
+          description: Maximum number of versions to return per page (1-100).
+        - name: offset
+          in: query
+          type: integer
+          description: Zero-based offset into version history for pagination. Mutually exclusive with before_version.
+        - name: skill_name
+          in: path
+          type: string
+          required: true
+        - name: version
+          in: query
+          type: integer
+          description: Specific skill version to fetch. If omitted, the latest version is returned.
+        - name: version_id
+          in: query
+          type: string
+          description: Exact skill version UUID to resolve.
+    - name: api-projects-project_id-dataset_items
+      path: /api/projects/{project_id}/dataset_items/
+      operations:
+      - name: datasetitemslist
+        method: GET
+        description: ''
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: dataset
+          in: query
+          type: string
+          description: Filter by dataset ID
+        - name: limit
+          in: query
+          type: integer
+          description: Number of results to return per page.
+        - name: offset
+          in: query
+          type: integer
+          description: The initial index from which to return the results.
+      - name: datasetitemscreate
+        method: POST
+        description: ''
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: body
+          in: body
+          type: object
+          description: Request body (JSON).
+          required: true
+    - name: api-projects-project_id-dataset_items-id
+      path: /api/projects/{project_id}/dataset_items/{id}/
+      operations:
+      - name: datasetitemsretrieve
+        method: GET
+        description: ''
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: id
+          in: path
+          type: string
+          description: A UUID string identifying this dataset item.
+          required: true
+      - name: datasetitemsupdate
+        method: PUT
+        description: ''
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: id
+          in: path
+          type: string
+          description: A UUID string identifying this dataset item.
+          required: true
+        - name: body
+          in: body
+          type: object
+          description: Request body (JSON).
+          required: true
+      - name: datasetitemspartialupdate
+        method: PATCH
+        description: ''
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: id
+          in: path
+          type: string
+          description: A UUID string identifying this dataset item.
+          required: true
+        - name: body
+          in: body
+          type: object
+          description: Request body (JSON).
+          required: false
+      - name: datasetitemsdestroy
+        method: DELETE
+        description: Hard delete of this model is not allowed. Use a patch API call to set "deleted" to true
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: id
+          in: path
+          type: string
+          description: A UUID string identifying this dataset item.
+          required: true
+    - name: api-projects-project_id-datasets
+      path: /api/projects/{project_id}/datasets/
+      operations:
+      - name: datasetslist
+        method: GET
+        description: ''
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: id__in
+          in: query
+          type: array
+          description: Multiple values may be separated by commas.
+        - name: limit
+          in: query
+          type: integer
+          description: Number of results to return per page.
+        - name: offset
+          in: query
+          type: integer
+          description: The initial index from which to return the results.
+        - name: order_by
+          in: query
+          type: array
+          description: Ordering
+        - name: search
+          in: query
+          type: string
+          description: Search in name, description, or metadata
+      - name: datasetscreate
+        method: POST
+        description: ''
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: body
+          in: body
+          type: object
+          description: Request body (JSON).
+          required: true
+    - name: api-projects-project_id-datasets-id
+      path: /api/projects/{project_id}/datasets/{id}/
+      operations:
+      - name: datasetsretrieve
+        method: GET
+        description: ''
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: id
+          in: path
+          type: string
+          description: A UUID string identifying this dataset.
+          required: true
+      - name: datasetsupdate
+        method: PUT
+        description: ''
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: id
+          in: path
+          type: string
+          description: A UUID string identifying this dataset.
+          required: true
+        - name: body
+          in: body
+          type: object
+          description: Request body (JSON).
+          required: true
+      - name: datasetspartialupdate
+        method: PATCH
+        description: ''
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: id
+          in: path
+          type: string
+          description: A UUID string identifying this dataset.
+          required: true
+        - name: body
+          in: body
+          type: object
+          description: Request body (JSON).
+          required: false
+      - name: datasetsdestroy
+        method: DELETE
+        description: Hard delete of this model is not allowed. Use a patch API call to set "deleted" to true
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: id
+          in: path
+          type: string
+          description: A UUID string identifying this dataset.
+          required: true
+    authentication:
+      type: bearer
+      token: '{{env.POSTHOG_API_KEY}}'
+  exposes:
+  - type: rest
+    namespace: posthog-llm-analytics-2-rest
+    port: 8080
+    description: REST adapter for PostHog API — llm_analytics. One Spectral-compliant resource per consumed operation, prefixed
+      with /v1.
+    resources:
+    - path: /v1/api/environments/{environment-id}/dataset-items
+      name: api-environments-environment-id-dataset-items
+      description: REST surface for api-environments-environment_id-dataset_items.
+      operations:
+      - method: GET
+        name: environmentsdatasetitemslist
+        description: environmentsdatasetitemslist
+        call: posthog-llm-analytics-2.environmentsdatasetitemslist
+        with:
+          dataset: rest.dataset
+          limit: rest.limit
+          offset: rest.offset
+        outputParameters:
+        - type: object
+          mapping: $.
+      - method: POST
+        name: environmentsdatasetitemscreate
+        description: environmentsdatasetitemscreate
+        call: posthog-llm-analytics-2.environmentsdatasetitemscreate
+        with:
+          body: rest.body
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /v1/api/environments/{environment-id}/dataset-items/{id}
+      name: api-environments-environment-id-dataset-items-id
+      description: REST surface for api-environments-environment_id-dataset_items-id.
+      operations:
+      - method: GET
+        name: environmentsdatasetitemsretrieve
+        description: environmentsdatasetitemsretrieve
+        call: posthog-llm-analytics-2.environmentsdatasetitemsretrieve
+        with:
+          id: rest.id
+        outputParameters:
+        - type: object
+          mapping: $.
+      - method: PUT
+        name: environmentsdatasetitemsupdate
+        description: environmentsdatasetitemsupdate
+        call: posthog-llm-analytics-2.environmentsdatasetitemsupdate
+        with:
+          id: rest.id
+          body: rest.body
+        outputParameters:
+        - type: object
+          mapping: $.
+      - method: PATCH
+        name: environmentsdatasetitemspartialupdate
+        description: environmentsdatasetitemspartialupdate
+        call: posthog-llm-analytics-2.environmentsdatasetitemspartialupdate
+        with:
+          id: rest.id
+          body: rest.body
+        outputParameters:
+        - type: object
+          mapping: $.
+      - method: DELETE
+        name: environmentsdatasetitemsdestroy
+        description: Hard delete of this model is not allowed. Use a patch API call to set "deleted" to true
+        call: posthog-llm-analytics-2.environmentsdatasetitemsdestroy
+        with:
+          id: rest.id
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /v1/api/environments/{environment-id}/datasets
+      name: api-environments-environment-id-datasets
+      description: REST surface for api-environments-environment_id-datasets.
+      operations:
+      - method: GET
+        name: environmentsdatasetslist
+        description: environmentsdatasetslist
+        call: posthog-llm-analytics-2.environmentsdatasetslist
+        with:
+          id__in: rest.id__in
+          limit: rest.limit
+          offset: rest.offset
+          order_by: rest.order_by
+          search: rest.search
+        outputParameters:
+        - type: object
+          mapping: $.
+      - method: POST
+        name: environmentsdatasetscreate
+        description: environmentsdatasetscreate
+        call: posthog-llm-analytics-2.environmentsdatasetscreate
+        with:
+          body: rest.body
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /v1/api/environments/{environment-id}/datasets/{id}
+      name: api-environments-environment-id-datasets-id
+      description: REST surface for api-environments-environment_id-datasets-id.
+      operations:
+      - method: GET
+        name: environmentsdatasetsretrieve
+        description: environmentsdatasetsretrieve
+        call: posthog-llm-analytics-2.environmentsdatasetsretrieve
+        with:
+          id: rest.id
+        outputParameters:
+        - type: object
+          mapping: $.
+      - method: PUT
+        name: environmentsdatasetsupdate
+        description: environmentsdatasetsupdate
+        call: posthog-llm-analytics-2.environmentsdatasetsupdate
+        with:
+          id: rest.id
+          body: rest.body
+        outputParameters:
+        - type: object
+          mapping: $.
+      - method: PATCH
+        name: environmentsdatasetspartialupdate
+        description: environmentsdatasetspartialupdate
+        call: posthog-llm-analytics-2.environmentsdatasetspartialupdate
+        with:
+          id: rest.id
+          body: rest.body
+        outputParameters:
+        - type: object
+          mapping: $.
+      - method: DELETE
+        name: environmentsdatasetsdestroy
+        description: Hard delete of this model is not allowed. Use a patch API call to set "deleted" to true
+        call: posthog-llm-analytics-2.environmentsdatasetsdestroy
+        with:
+          id: rest.id
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /v1/api/environments/{project-id}/evaluation-runs
+      name: api-environments-project-id-evaluation-runs
+      description: REST surface for api-environments-project_id-evaluation_runs.
+      operations:
+      - method: POST
+        name: evaluationrunscreate
+        description: Create a new evaluation run.
+        call: posthog-llm-analytics-2.evaluationrunscreate
+        with:
+          body: rest.body
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /v1/api/environments/{project-id}/evaluations
+      name: api-environments-project-id-evaluations
+      description: REST surface for api-environments-project_id-evaluations.
+      operations:
+      - method: GET
+        name: evaluationslist
+        description: evaluationslist
+        call: posthog-llm-analytics-2.evaluationslist
+        with:
+          enabled: rest.enabled
+          id__in: rest.id__in
+          limit: rest.limit
+          offset: rest.offset
+          order_by: rest.order_by
+          search: rest.search
+        outputParameters:
+        - type: object
+          mapping: $.
+      - method: POST
+        name: evaluationscreate
+        description: evaluationscreate
+        call: posthog-llm-analytics-2.evaluationscreate
+        with:
+          body: rest.body
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /v1/api/environments/{project-id}/evaluations/test-hog
+      name: api-environments-project-id-evaluations-test-hog
+      description: REST surface for api-environments-project_id-evaluations-test_hog.
+      operations:
+      - method: POST
+        name: evaluationstesthogcreate
+        description: Test Hog evaluation code against sample events without saving.
+        call: posthog-llm-analytics-2.evaluationstesthogcreate
+        with:
+          body: rest.body
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /v1/api/environments/{project-id}/evaluations/{id}
+      name: api-environments-project-id-evaluations-id
+      description: REST surface for api-environments-project_id-evaluations-id.
+      operations:
+      - method: GET
+        name: evaluationsretrieve
+        description: evaluationsretrieve
+        call: posthog-llm-analytics-2.evaluationsretrieve
+        with:
+          id: rest.id
+        outputParameters:
+        - type: object
+          mapping: $.
+      - method: PUT
+        name: evaluationsupdate
+        description: evaluationsupdate
+        call: posthog-llm-analytics-2.evaluationsupdate
+        with:
+          id: rest.id
+          body: rest.body
+        outputParameters:
+        - type: object
+          mapping: $.
+      - method: PATCH
+        name: evaluationspartialupdate
+        description: evaluationspartialupdate
+        call: posthog-llm-analytics-2.evaluationspartialupdate
+        with:
+          id: rest.id
+          body: rest.body
+        outputParameters:
+        - type: object
+          mapping: $.
+      - method: DELETE
+        name: evaluationsdestroy
+        description: Hard delete of this model is not allowed. Use a patch API call to set "deleted" to true
+        call: posthog-llm-analytics-2.evaluationsdestroy
+        with:
+          id: rest.id
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /v1/api/environments/{project-id}/llm-analytics/clustering-config
+      name: api-environments-project-id-llm-analytics-clustering-config
+      description: REST surface for api-environments-project_id-llm_analytics-clustering_config.
+      operations:
+      - method: GET
+        name: llmanalyticsclusteringconfigretrieve
+        description: Team-level clustering configuration (event filters for automated pipelines).
+        call: posthog-llm-analytics-2.llmanalyticsclusteringconfigretrieve
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /v1/api/environments/{project-id}/llm-analytics/clustering-config/set-event-filters
+      name: api-environments-project-id-llm-analytics-clustering-config-set-event-filters
+      description: REST surface for api-environments-project_id-llm_analytics-clustering_config-set_event_filters.
+      operations:
+      - method: POST
+        name: llmanalyticsclusteringconfigseteventfilterscreate
+        description: Team-level clustering configuration (event filters for automated pipelines).
+        call: posthog-llm-analytics-2.llmanalyticsclusteringconfigseteventfilterscreate
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /v1/api/environments/{project-id}/llm-analytics/clustering-jobs
+      name: api-environments-project-id-llm-analytics-clustering-jobs
+      description: REST surface for api-environments-project_id-llm_analytics-clustering_jobs.
+      operations:
+      - method: GET
+        name: llmanalyticsclusteringjobslist
+        description: CRUD for clustering job configurations (max 5 per team).
+        call: posthog-llm-analytics-2.llmanalyticsclusteringjobslist
+        with:
+          limit: rest.limit
+          offset: rest.offset
+        outputParameters:
+        - type: object
+          mapping: $.
+      - method: POST
+        name: llmanalyticsclusteringjobscreate
+        description: CRUD for clustering job configurations (max 5 per team).
+        call: posthog-llm-analytics-2.llmanalyticsclusteringjobscreate
+        with:
+          body: rest.body
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /v1/api/environments/{project-id}/llm-analytics/clustering-jobs/{id}
+      name: api-environments-project-id-llm-analytics-clustering-jobs-id
+      description: REST surface for api-environments-project_id-llm_analytics-clustering_jobs-id.
+      operations:
+      - method: GET
+        name: llmanalyticsclusteringjobsretrieve
+        description: CRUD for clustering job configurations (max 5 per team).
+        call: posthog-llm-analytics-2.llmanalyticsclusteringjobsretrieve
+        with:
+          id: rest.id
+        outputParameters:
+        - type: object
+          mapping: $.
+      - method: PUT
+        name: llmanalyticsclusteringjobsupdate
+        description: CRUD for clustering job configurations (max 5 per team).
+        call: posthog-llm-analytics-2.llmanalyticsclusteringjobsupdate
+        with:
+          id: rest.id
+          body: rest.body
+        outputParameters:
+        - type: object
+          mapping: $.
+      - method: PATCH
+        name: llmanalyticsclusteringjobspartialupdate
+        description: CRUD for clustering job configurations (max 5 per team).
+        call: posthog-llm-analytics-2.llmanalyticsclusteringjobspartialupdate
+        with:
+          id: rest.id
+          body: rest.body
+        outputParameters:
+        - type: object
+          mapping: $.
+      - method: DELETE
+        name: llmanalyticsclusteringjobsdestroy
+        description: CRUD for clustering job configurations (max 5 per team).
+        call: posthog-llm-analytics-2.llmanalyticsclusteringjobsdestroy
+        with:
+          id: rest.id
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /v1/api/environments/{project-id}/llm-analytics/evaluation-config
+      name: api-environments-project-id-llm-analytics-evaluation-config
+      description: REST surface for api-environments-project_id-llm_analytics-evaluation_config.
+      operations:
+      - method: GET
+        name: llmanalyticsevaluationconfigretrieve
+        description: Get the evaluation config for this team
+        call: posthog-llm-analytics-2.llmanalyticsevaluationconfigretrieve
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /v1/api/environments/{project-id}/llm-analytics/evaluation-config/set-active-key
+      name: api-environments-project-id-llm-analytics-evaluation-config-set-active-key
+      description: REST surface for api-environments-project_id-llm_analytics-evaluation_config-set_active_key.
+      operations:
+      - method: POST
+        name: llmanalyticsevaluationconfigsetactivekeycreate
+        description: Set the active provider key for evaluations
+        call: posthog-llm-analytics-2.llmanalyticsevaluationconfigsetactivekeycreate
+        with:
+          body: rest.body
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /v1/api/environments/{project-id}/llm-analytics/evaluation-reports
+      name: api-environments-project-id-llm-analytics-evaluation-reports
+      description: REST surface for api-environments-project_id-llm_analytics-evaluation_reports.
+      operations:
+      - method: GET
+        name: llmanalyticsevaluationreportslist
+        description: CRUD for evaluation report configurations + report run history.
+        call: posthog-llm-analytics-2.llmanalyticsevaluationreportslist
+        with:
+          limit: rest.limit
+          offset: rest.offset
+        outputParameters:
+        - type: object
+          mapping: $.
+      - method: GET
+        name: llmanalyticsevaluationreportslist
+        description: CRUD for evaluation report configurations + report run history.
+        call: posthog-llm-analytics-2.llmanalyticsevaluationreportslist
+        with:
+          limit: rest.limit
+          offset: rest.offset
+        outputParameters:
+        - type: object
+          mapping: $.
+      - method: POST
+        name: llmanalyticsevaluationreportscreate
+        description: CRUD for evaluation report configurations + report run history.
+        call: posthog-llm-analytics-2.llmanalyticsevaluationreportscreate
+        with:
+          body: rest.body
+        outputParameters:
+        - type: object
+          mapping: $.
+      - method: POST
+        name: llmanalyticsevaluationreportscreate
+        description: CRUD for evaluation report configurations + report run history.
+        call: posthog-llm-analytics-2.llmanalyticsevaluationreportscreate
+        with:
+          body: rest.body
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /v1/api/environments/{project-id}/llm-analytics/evaluation-reports/{id}
+      name: api-environments-project-id-llm-analytics-evaluation-reports-id
+      description: REST surface for api-environments-project_id-llm_analytics-evaluation_reports-id.
+      operations:
+      - method: GET
+        name: llmanalyticsevaluationreportsretrieve
+        description: CRUD for evaluation report configurations + report run history.
+        call: posthog-llm-analytics-2.llmanalyticsevaluationreportsretrieve
+        with:
+          id: rest.id
+        outputParameters:
+        - type: object
+          mapping: $.
+      - method: GET
+        name: llmanalyticsevaluationreportsretrieve
+        description: CRUD for evaluation report configurations + report run history.
+        call: posthog-llm-analytics-2.llmanalyticsevaluationreportsretrieve
+        with:
+          id: rest.id
+        outputParameters:
+        - type: object
+          mapping: $.
+      - method: PUT
+        name: llmanalyticsevaluationreportsupdate
+        description: CRUD for evaluation report configurations + report run history.
+        call: posthog-llm-analytics-2.llmanalyticsevaluationreportsupdate
+        with:
+          id: rest.id
+          body: rest.body
+        outputParameters:
+        - type: object
+          mapping: $.
+      - method: PUT
+        name: llmanalyticsevaluationreportsupdate
+        description: CRUD for evaluation report configurations + report run history.
+        call: posthog-llm-analytics-2.llmanalyticsevaluationreportsupdate
+        with:
+          id: rest.id
+          body: rest.body
+        outputParameters:
+        - type: object
+          mapping: $.
+      - method: PATCH
+        name: llmanalyticsevaluationreportspartialupdate
+        description: CRUD for evaluation report configurations + report run history.
+        call: posthog-llm-analytics-2.llmanalyticsevaluationreportspartialupdate
+        with:
+          id: rest.id
+          body: rest.body
+        outputParameters:
+        - type: object
+          mapping: $.
+      - method: PATCH
+        name: llmanalyticsevaluationreportspartialupdate
+        description: CRUD for evaluation report configurations + report run history.
+        call: posthog-llm-analytics-2.llmanalyticsevaluationreportspartialupdate
+        with:
+          id: rest.id
+          body: rest.body
+        outputParameters:
+        - type: object
+          mapping: $.
+      - method: DELETE
+        name: llmanalyticsevaluationreportsdestroy
+        description: Hard delete of this model is not allowed. Use a patch API call to set "deleted" to true
+        call: posthog-llm-analytics-2.llmanalyticsevaluationreportsdestroy
+        with:
+          id: rest.id
+        outputParameters:
+        - type: object
+          mapping: $.
+      - method: DELETE
+        name: llmanalyticsevaluationreportsdestroy
+        description: Hard delete of this model is not allowed. Use a patch API call to set "deleted" to true
+        call: posthog-llm-analytics-2.llmanalyticsevaluationreportsdestroy
+        with:
+          id: rest.id
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /v1/api/environments/{project-id}/llm-analytics/evaluation-reports/{id}/generate
+      name: api-environments-project-id-llm-analytics-evaluation-reports-id-generate
+      description: REST surface for api-environments-project_id-llm_analytics-evaluation_reports-id-generate.
+      operations:
+      - method: POST
+        name: llmanalyticsevaluationreportsgeneratecreate
+        description: Trigger immediate report generation.
+        call: posthog-llm-analytics-2.llmanalyticsevaluationreportsgeneratecreate
+        with:
+          id: rest.id
+        outputParameters:
+        - type: object
+          mapping: $.
+      - method: POST
+        name: llmanalyticsevaluationreportsgeneratecreate
+        description: Trigger immediate report generation.
+        call: posthog-llm-analytics-2.llmanalyticsevaluationreportsgeneratecreate
+        with:
+          id: rest.id
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /v1/api/environments/{project-id}/llm-analytics/evaluation-reports/{id}/runs
+      name: api-environments-project-id-llm-analytics-evaluation-reports-id-runs
+      description: REST surface for api-environments-project_id-llm_analytics-evaluation_reports-id-runs.
+      operations:
+      - method: GET
+        name: llmanalyticsevaluationreportsrunslist
+        description: List report runs (history) for this report.
+        call: posthog-llm-analytics-2.llmanalyticsevaluationreportsrunslist
+        with:
+          id: rest.id
+          limit: rest.limit
+          offset: rest.offset
+        outputParameters:
+        - type: object
+          mapping: $.
+      - method: GET
+        name: llmanalyticsevaluationreportsrunslist
+        description: List report runs (history) for this report.
+        call: posthog-llm-analytics-2.llmanalyticsevaluationreportsrunslist
+        with:
+          id: rest.id
+          limit: rest.limit
+          offset: rest.offset
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /v1/api/environments/{project-id}/llm-analytics/evaluation-summary
+      name: api-environments-project-id-llm-analytics-evaluation-summary
+      description: REST surface for api-environments-project_id-llm_analytics-evaluation_summary.
+      operations:
+      - method: POST
+        name: llmanalyticsevaluationsummarycreate
+        description: Generate an AI-powered summary of evaluation results.
+        call: posthog-llm-analytics-2.llmanalyticsevaluationsummarycreate
+        with:
+          body: rest.body
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /v1/api/environments/{project-id}/llm-analytics/models
+      name: api-environments-project-id-llm-analytics-models
+      description: REST surface for api-environments-project_id-llm_analytics-models.
+      operations:
+      - method: GET
+        name: llmanalyticsmodelsretrieve
+        description: List available models for a provider.
+        call: posthog-llm-analytics-2.llmanalyticsmodelsretrieve
+        with:
+          key_id: rest.key_id
+          provider: rest.provider
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /v1/api/environments/{project-id}/llm-analytics/provider-key-validations
+      name: api-environments-project-id-llm-analytics-provider-key-validations
+      description: REST surface for api-environments-project_id-llm_analytics-provider_key_validations.
+      operations:
+      - method: POST
+        name: llmanalyticsproviderkeyvalidationscreate
+        description: Validate LLM provider API keys without persisting them
+        call: posthog-llm-analytics-2.llmanalyticsproviderkeyvalidationscreate
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /v1/api/environments/{project-id}/llm-analytics/provider-keys
+      name: api-environments-project-id-llm-analytics-provider-keys
+      description: REST surface for api-environments-project_id-llm_analytics-provider_keys.
+      operations:
+      - method: GET
+        name: llmanalyticsproviderkeyslist
+        description: llmanalyticsproviderkeyslist
+        call: posthog-llm-analytics-2.llmanalyticsproviderkeyslist
+        with:
+          limit: rest.limit
+          offset: rest.offset
+        outputParameters:
+        - type: object
+          mapping: $.
+      - method: POST
+        name: llmanalyticsproviderkeyscreate
+        description: llmanalyticsproviderkeyscreate
+        call: posthog-llm-analytics-2.llmanalyticsproviderkeyscreate
+        with:
+          body: rest.body
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /v1/api/environments/{project-id}/llm-analytics/provider-keys/trial-evaluations
+      name: api-environments-project-id-llm-analytics-provider-keys-trial-evaluations
+      description: REST surface for api-environments-project_id-llm_analytics-provider_keys-trial_evaluations.
+      operations:
+      - method: GET
+        name: llmanalyticsproviderkeystrialevaluationsretrieve
+        description: List enabled evaluations currently using trial credits for a given provider.
+        call: posthog-llm-analytics-2.llmanalyticsproviderkeystrialevaluationsretrieve
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /v1/api/environments/{project-id}/llm-analytics/provider-keys/{id}
+      name: api-environments-project-id-llm-analytics-provider-keys-id
+      description: REST surface for api-environments-project_id-llm_analytics-provider_keys-id.
+      operations:
+      - method: GET
+        name: llmanalyticsproviderkeysretrieve
+        description: llmanalyticsproviderkeysretrieve
+        call: posthog-llm-analytics-2.llmanalyticsproviderkeysretrieve
+        with:
+          id: rest.id
+        outputParameters:
+        - type: object
+          mapping: $.
+      - method: PUT
+        name: llmanalyticsproviderkeysupdate
+        description: llmanalyticsproviderkeysupdate
+        call: posthog-llm-analytics-2.llmanalyticsproviderkeysupdate
+        with:
+          id: rest.id
+          body: rest.body
+        outputParameters:
+        - type: object
+          mapping: $.
+      - method: PATCH
+        name: llmanalyticsproviderkeyspartialupdate
+        description: llmanalyticsproviderkeyspartialupdate
+        call: posthog-llm-analytics-2.llmanalyticsproviderkeyspartialupdate
+        with:
+          id: rest.id
+          body: rest.body
+        outputParameters:
+        - type: object
+          mapping: $.
+      - method: DELETE
+        name: llmanalyticsproviderkeysdestroy
+        description: llmanalyticsproviderkeysdestroy
+        call: posthog-llm-analytics-2.llmanalyticsproviderkeysdestroy
+        with:
+          id: rest.id
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /v1/api/environments/{project-id}/llm-analytics/provider-keys/{id}/assign
+      name: api-environments-project-id-llm-analytics-provider-keys-id-assign
+      description: REST surface for api-environments-project_id-llm_analytics-provider_keys-id-assign.
+      operations:
+      - method: POST
+        name: llmanalyticsproviderkeysassigncreate
+        description: Assign this key to evaluations and optionally re-enable them.
+        call: posthog-llm-analytics-2.llmanalyticsproviderkeysassigncreate
+        with:
+          id: rest.id
+          body: rest.body
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /v1/api/environments/{project-id}/llm-analytics/provider-keys/{id}/dependent-configs
+      name: api-environments-project-id-llm-analytics-provider-keys-id-dependent-configs
+      description: REST surface for api-environments-project_id-llm_analytics-provider_keys-id-dependent_configs.
+      operations:
+      - method: GET
+        name: llmanalyticsproviderkeysdependentconfigsretrieve
+        description: Get evaluations using this key and alternative keys for replacement.
+        call: posthog-llm-analytics-2.llmanalyticsproviderkeysdependentconfigsretrieve
+        with:
+          id: rest.id
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /v1/api/environments/{project-id}/llm-analytics/provider-keys/{id}/validate
+      name: api-environments-project-id-llm-analytics-provider-keys-id-validate
+      description: REST surface for api-environments-project_id-llm_analytics-provider_keys-id-validate.
+      operations:
+      - method: POST
+        name: llmanalyticsproviderkeysvalidatecreate
+        description: llmanalyticsproviderkeysvalidatecreate
+        call: posthog-llm-analytics-2.llmanalyticsproviderkeysvalidatecreate
+        with:
+          id: rest.id
+          body: rest.body
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /v1/api/environments/{project-id}/llm-analytics/review-queue-items
+      name: api-environments-project-id-llm-analytics-review-queue-items
+      description: REST surface for api-environments-project_id-llm_analytics-review_queue_items.
+      operations:
+      - method: GET
+        name: llmanalyticsreviewqueueitemslist
+        description: llmanalyticsreviewqueueitemslist
+        call: posthog-llm-analytics-2.llmanalyticsreviewqueueitemslist
+        with:
+          limit: rest.limit
+          offset: rest.offset
+          order_by: rest.order_by
+          queue_id: rest.queue_id
+          search: rest.search
+          trace_id: rest.trace_id
+          trace_id__in: rest.trace_id__in
+        outputParameters:
+        - type: object
+          mapping: $.
+      - method: GET
+        name: llmanalyticsreviewqueueitemslist
+        description: llmanalyticsreviewqueueitemslist
+        call: posthog-llm-analytics-2.llmanalyticsreviewqueueitemslist
+        with:
+          limit: rest.limit
+          offset: rest.offset
+          order_by: rest.order_by
+          queue_id: rest.queue_id
+          search: rest.search
+          trace_id: rest.trace_id
+          trace_id__in: rest.trace_id__in
+        outputParameters:
+        - type: object
+          mapping: $.
+      - method: POST
+        name: llmanalyticsreviewqueueitemscreate
+        description: llmanalyticsreviewqueueitemscreate
+        call: posthog-llm-analytics-2.llmanalyticsreviewqueueitemscreate
+        with:
+          body: rest.body
+        outputParameters:
+        - type: object
+          mapping: $.
+      - method: POST
+        name: llmanalyticsreviewqueueitemscreate
+        description: llmanalyticsreviewqueueitemscreate
+        call: posthog-llm-analytics-2.llmanalyticsreviewqueueitemscreate
+        with:
+          body: rest.body
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /v1/api/environments/{project-id}/llm-analytics/review-queue-items/{id}
+      name: api-environments-project-id-llm-analytics-review-queue-items-id
+      description: REST surface for api-environments-project_id-llm_analytics-review_queue_items-id.
+      operations:
+      - method: GET
+        name: llmanalyticsreviewqueueitemsretrieve
+        description: llmanalyticsreviewqueueitemsretrieve
+        call: posthog-llm-analytics-2.llmanalyticsreviewqueueitemsretrieve
+        with:
+          id: rest.id
+        outputParameters:
+        - type: object
+          mapping: $.
+      - method: GET
+        name: llmanalyticsreviewqueueitemsretrieve
+        description: llmanalyticsreviewqueueitemsretrieve
+        call: posthog-llm-analytics-2.llmanalyticsreviewqueueitemsretrieve
+        with:
+          id: rest.id
+        outputParameters:
+        - type: object
+          mapping: $.
+      - method: PATCH
+        name: llmanalyticsreviewqueueitemspartialupdate
+        description: llmanalyticsreviewqueueitemspartialupdate
+        call: posthog-llm-analytics-2.llmanalyticsreviewqueueitemspartialupdate
+        with:
+          id: rest.id
+          body: rest.body
+        outputParameters:
+        - type: object
+          mapping: $.
+      - method: PATCH
+        name: llmanalyticsreviewqueueitemspartialupdate
+        description: llmanalyticsreviewqueueitemspartialupdate
+        call: posthog-llm-analytics-2.llmanalyticsreviewqueueitemspartialupdate
+        with:
+          id: rest.id
+          body: rest.body
+        outputParameters:
+        - type: object
+          mapping: $.
+      - method: DELETE
+        name: llmanalyticsreviewqueueitemsdestroy
+        description: llmanalyticsreviewqueueitemsdestroy
+        call: posthog-llm-analytics-2.llmanalyticsreviewqueueitemsdestroy
+        with:
+          id: rest.id
+        outputParameters:
+        - type: object
+          mapping: $.
+      - method: DELETE
+        name: llmanalyticsreviewqueueitemsdestroy
+        description: llmanalyticsreviewqueueitemsdestroy
+        call: posthog-llm-analytics-2.llmanalyticsreviewqueueitemsdestroy
+        with:
+          id: rest.id
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /v1/api/environments/{project-id}/llm-analytics/review-queues
+      name: api-environments-project-id-llm-analytics-review-queues
+      description: REST surface for api-environments-project_id-llm_analytics-review_queues.
+      operations:
+      - method: GET
+        name: llmanalyticsreviewqueueslist
+        description: llmanalyticsreviewqueueslist
+        call: posthog-llm-analytics-2.llmanalyticsreviewqueueslist
+        with:
+          limit: rest.limit
+          name: rest.name
+          offset: rest.offset
+          order_by: rest.order_by
+          search: rest.search
+        outputParameters:
+        - type: object
+          mapping: $.
+      - method: GET
+        name: llmanalyticsreviewqueueslist
+        description: llmanalyticsreviewqueueslist
+        call: posthog-llm-analytics-2.llmanalyticsreviewqueueslist
+        with:
+          limit: rest.limit
+          name: rest.name
+          offset: rest.offset
+          order_by: rest.order_by
+          search: rest.search
+        outputParameters:
+        - type: object
+          mapping: $.
+      - method: POST
+        name: llmanalyticsreviewqueuescreate
+        description: llmanalyticsreviewqueuescreate
+        call: posthog-llm-analytics-2.llmanalyticsreviewqueuescreate
+        with:
+          body: rest.body
+        outputParameters:
+        - type: object
+          mapping: $.
+      - method: POST
+        name: llmanalyticsreviewqueuescreate
+        description: llmanalyticsreviewqueuescreate
+        call: posthog-llm-analytics-2.llmanalyticsreviewqueuescreate
+        with:
+          body: rest.body
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /v1/api/environments/{project-id}/llm-analytics/review-queues/{id}
+      name: api-environments-project-id-llm-analytics-review-queues-id
+      description: REST surface for api-environments-project_id-llm_analytics-review_queues-id.
+      operations:
+      - method: GET
+        name: llmanalyticsreviewqueuesretrieve
+        description: llmanalyticsreviewqueuesretrieve
+        call: posthog-llm-analytics-2.llmanalyticsreviewqueuesretrieve
+        with:
+          id: rest.id
+        outputParameters:
+        - type: object
+          mapping: $.
+      - method: GET
+        name: llmanalyticsreviewqueuesretrieve
+        description: llmanalyticsreviewqueuesretrieve
+        call: posthog-llm-analytics-2.llmanalyticsreviewqueuesretrieve
+        with:
+          id: rest.id
+        outputParameters:
+        - type: object
+          mapping: $.
+      - method: PATCH
+        name: llmanalyticsreviewqueuespartialupdate
+        description: llmanalyticsreviewqueuespartialupdate
+        call: posthog-llm-analytics-2.llmanalyticsreviewqueuespartialupdate
+        with:
+          id: rest.id
+          body: rest.body
+        outputParameters:
+        - type: object
+          mapping: $.
+      - method: PATCH
+        name: llmanalyticsreviewqueuespartialupdate
+        description: llmanalyticsreviewqueuespartialupdate
+        call: posthog-llm-analytics-2.llmanalyticsreviewqueuespartialupdate
+        with:
+          id: rest.id
+          body: rest.body
+        outputParameters:
+        - type: object
+          mapping: $.
+      - method: DELETE
+        name: llmanalyticsreviewqueuesdestroy
+        description: llmanalyticsreviewqueuesdestroy
+        call: posthog-llm-analytics-2.llmanalyticsreviewqueuesdestroy
+        with:
+          id: rest.id
+        outputParameters:
+        - type: object
+          mapping: $.
+      - method: DELETE
+        name: llmanalyticsreviewqueuesdestroy
+        description: llmanalyticsreviewqueuesdestroy
+        call: posthog-llm-analytics-2.llmanalyticsreviewqueuesdestroy
+        with:
+          id: rest.id
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /v1/api/environments/{project-id}/llm-analytics/score-definitions
+      name: api-environments-project-id-llm-analytics-score-definitions
+      description: REST surface for api-environments-project_id-llm_analytics-score_definitions.
+      operations:
+      - method: GET
+        name: llmanalyticsscoredefinitionslist
+        description: llmanalyticsscoredefinitionslist
+        call: posthog-llm-analytics-2.llmanalyticsscoredefinitionslist
+        with:
+          archived: rest.archived
+          kind: rest.kind
+          limit: rest.limit
+          offset: rest.offset
+          order_by: rest.order_by
+          search: rest.search
+        outputParameters:
+        - type: object
+          mapping: $.
+      - method: GET
+        name: llmanalyticsscoredefinitionslist
+        description: llmanalyticsscoredefinitionslist
+        call: posthog-llm-analytics-2.llmanalyticsscoredefinitionslist
+        with:
+          archived: rest.archived
+          kind: rest.kind
+          limit: rest.limit
+          offset: rest.offset
+          order_by: rest.order_by
+          search: rest.search
+        outputParameters:
+        - type: object
+          mapping: $.
+      - method: POST
+        name: llmanalyticsscoredefinitionscreate
+        description: llmanalyticsscoredefinitionscreate
+        call: posthog-llm-analytics-2.llmanalyticsscoredefinitionscreate
+        with:
+          body: rest.body
+        outputParameters:
+        - type: object
+          mapping: $.
+      - method: POST
+        name: llmanalyticsscoredefinitionscreate
+        description: llmanalyticsscoredefinitionscreate
+        call: posthog-llm-analytics-2.llmanalyticsscoredefinitionscreate
+        with:
+          body: rest.body
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /v1/api/environments/{project-id}/llm-analytics/score-definitions/{id}
+      name: api-environments-project-id-llm-analytics-score-definitions-id
+      description: REST surface for api-environments-project_id-llm_analytics-score_definitions-id.
+      operations:
+      - method: GET
+        name: llmanalyticsscoredefinitionsretrieve
+        description: llmanalyticsscoredefinitionsretrieve
+        call: posthog-llm-analytics-2.llmanalyticsscoredefinitionsretrieve
+        with:
+          id: rest.id
+        outputParameters:
+        - type: object
+          mapping: $.
+      - method: GET
+        name: llmanalyticsscoredefinitionsretrieve
+        description: llmanalyticsscoredefinitionsretrieve
+        call: posthog-llm-analytics-2.llmanalyticsscoredefinitionsretrieve
+        with:
+          id: rest.id
+        outputParameters:
+        - type: object
+          mapping: $.
+      - method: PATCH
+        name: llmanalyticsscoredefinitionspartialupdate
+        description: llmanalyticsscoredefinitionspartialupdate
+        call: posthog-llm-analytics-2.llmanalyticsscoredefinitionspartialupdate
+        with:
+          id: rest.id
+          body: rest.body
+        outputParameters:
+        - type: object
+          mapping: $.
+      - method: PATCH
+        name: llmanalyticsscoredefinitionspartialupdate
+        description: llmanalyticsscoredefinitionspartialupdate
+        call: posthog-llm-analytics-2.llmanalyticsscoredefinitionspartialupdate
+        with:
+          id: rest.id
+          body: rest.body
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /v1/api/environments/{project-id}/llm-analytics/score-definitions/{id}/new-version
+      name: api-environments-project-id-llm-analytics-score-definitions-id-new-version
+      description: REST surface for api-environments-project_id-llm_analytics-score_definitions-id-new_version.
+      operations:
+      - method: POST
+        name: llmanalyticsscoredefinitionsnewversioncreate
+        description: llmanalyticsscoredefinitionsnewversioncreate
+        call: posthog-llm-analytics-2.llmanalyticsscoredefinitionsnewversioncreate
+        with:
+          id: rest.id
+          body: rest.body
+        outputParameters:
+        - type: object
+          mapping: $.
+      - method: POST
+        name: llmanalyticsscoredefinitionsnewversioncreate
+        description: llmanalyticsscoredefinitionsnewversioncreate
+        call: posthog-llm-analytics-2.llmanalyticsscoredefinitionsnewversioncreate
+        with:
+          id: rest.id
+          body: rest.body
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /v1/api/environments/{project-id}/llm-analytics/sentiment
+      name: api-environments-project-id-llm-analytics-sentiment
+      description: REST surface for api-environments-project_id-llm_analytics-sentiment.
+      operations:
+      - method: POST
+        name: llmanalyticssentimentcreate
+        description: llmanalyticssentimentcreate
+        call: posthog-llm-analytics-2.llmanalyticssentimentcreate
+        with:
+          body: rest.body
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /v1/api/environments/{project-id}/llm-analytics/summarization
+      name: api-environments-project-id-llm-analytics-summarization
+      description: REST surface for api-environments-project_id-llm_analytics-summarization.
+      operations:
+      - method: POST
+        name: llmanalyticssummarizationcreate
+        description: Generate an AI-powered summary of an LLM trace or event.
+        call: posthog-llm-analytics-2.llmanalyticssummarizationcreate
+        with:
+          body: rest.body
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /v1/api/environments/{project-id}/llm-analytics/summarization/batch-check
+      name: api-environments-project-id-llm-analytics-summarization-batch-check
+      description: REST surface for api-environments-project_id-llm_analytics-summarization-batch_check.
+      operations:
+      - method: POST
+        name: llmanalyticssummarizationbatchcheckcreate
+        description: Check which traces have cached summaries available.
+        call: posthog-llm-analytics-2.llmanalyticssummarizationbatchcheckcreate
+        with:
+          body: rest.body
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /v1/api/environments/{project-id}/llm-analytics/text-repr
+      name: api-environments-project-id-llm-analytics-text-repr
+      description: REST surface for api-environments-project_id-llm_analytics-text_repr.
+      operations:
+      - method: POST
+        name: llmanalyticstextreprcreate
+        description: Generate a human-readable text representation of an LLM trace event.
+        call: posthog-llm-analytics-2.llmanalyticstextreprcreate
+        with:
+          body: rest.body
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /v1/api/environments/{project-id}/llm-analytics/trace-reviews
+      name: api-environments-project-id-llm-analytics-trace-reviews
+      description: REST surface for api-environments-project_id-llm_analytics-trace_reviews.
+      operations:
+      - method: GET
+        name: llmanalyticstracereviewslist
+        description: llmanalyticstracereviewslist
+        call: posthog-llm-analytics-2.llmanalyticstracereviewslist
+        with:
+          definition_id: rest.definition_id
+          definition_id__in: rest.definition_id__in
+          limit: rest.limit
+          offset: rest.offset
+          order_by: rest.order_by
+          search: rest.search
+          trace_id: rest.trace_id
+          trace_id__in: rest.trace_id__in
+        outputParameters:
+        - type: object
+          mapping: $.
+      - method: GET
+        name: llmanalyticstracereviewslist
+        description: llmanalyticstracereviewslist
+        call: posthog-llm-analytics-2.llmanalyticstracereviewslist
+        with:
+          definition_id: rest.definition_id
+          definition_id__in: rest.definition_id__in
+          limit: rest.limit
+          offset: rest.offset
+          order_by: rest.order_by
+          search: rest.search
+          trace_id: rest.trace_id
+          trace_id__in: rest.trace_id__in
+        outputParameters:
+        - type: object
+          mapping: $.
+      - method: POST
+        name: llmanalyticstracereviewscreate
+        description: llmanalyticstracereviewscreate
+        call: posthog-llm-analytics-2.llmanalyticstracereviewscreate
+        with:
+          body: rest.body
+        outputParameters:
+        - type: object
+          mapping: $.
+      - method: POST
+        name: llmanalyticstracereviewscreate
+        description: llmanalyticstracereviewscreate
+        call: posthog-llm-analytics-2.llmanalyticstracereviewscreate
+        with:
+          body: rest.body
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /v1/api/environments/{project-id}/llm-analytics/trace-reviews/{id}
+      name: api-environments-project-id-llm-analytics-trace-reviews-id
+      description: REST surface for api-environments-project_id-llm_analytics-trace_reviews-id.
+      operations:
+      - method: GET
+        name: llmanalyticstracereviewsretrieve
+        description: llmanalyticstracereviewsretrieve
+        call: posthog-llm-analytics-2.llmanalyticstracereviewsretrieve
+        with:
+          id: rest.id
+        outputParameters:
+        - type: object
+          mapping: $.
+      - method: GET
+        name: llmanalyticstracereviewsretrieve
+        description: llmanalyticstracereviewsretrieve
+        call: posthog-llm-analytics-2.llmanalyticstracereviewsretrieve
+        with:
+          id: rest.id
+        outputParameters:
+        - type: object
+          mapping: $.
+      - method: PATCH
+        name: llmanalyticstracereviewspartialupdate
+        description: llmanalyticstracereviewspartialupdate
+        call: posthog-llm-analytics-2.llmanalyticstracereviewspartialupdate
+        with:
+          id: rest.id
+          body: rest.body
+        outputParameters:
+        - type: object
+          mapping: $.
+      - method: PATCH
+        name: llmanalyticstracereviewspartialupdate
+        description: llmanalyticstracereviewspartialupdate
+        call: posthog-llm-analytics-2.llmanalyticstracereviewspartialupdate
+        with:
+          id: rest.id
+          body: rest.body
+        outputParameters:
+        - type: object
+          mapping: $.
+      - method: DELETE
+        name: llmanalyticstracereviewsdestroy
+        description: llmanalyticstracereviewsdestroy
+        call: posthog-llm-analytics-2.llmanalyticstracereviewsdestroy
+        with:
+          id: rest.id
+        outputParameters:
+        - type: object
+          mapping: $.
+      - method: DELETE
+        name: llmanalyticstracereviewsdestroy
+        description: llmanalyticstracereviewsdestroy
+        call: posthog-llm-analytics-2.llmanalyticstracereviewsdestroy
+        with:
+          id: rest.id
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /v1/api/environments/{project-id}/llm-analytics/translate
+      name: api-environments-project-id-llm-analytics-translate
+      description: REST surface for api-environments-project_id-llm_analytics-translate.
+      operations:
+      - method: POST
+        name: llmanalyticstranslatecreate
+        description: Translate text to target language.
+        call: posthog-llm-analytics-2.llmanalyticstranslatecreate
+        with:
+          body: rest.body
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /v1/api/environments/{project-id}/llm-prompts
+      name: api-environments-project-id-llm-prompts
+      description: REST surface for api-environments-project_id-llm_prompts.
+      operations:
+      - method: GET
+        name: llmpromptslist
+        description: llmpromptslist
+        call: posthog-llm-analytics-2.llmpromptslist
+        with:
+          content: rest.content
+          created_by_id: rest.created_by_id
+          limit: rest.limit
+          offset: rest.offset
+          search: rest.search
+        outputParameters:
+        - type: object
+          mapping: $.
+      - method: POST
+        name: llmpromptscreate
+        description: llmpromptscreate
+        call: posthog-llm-analytics-2.llmpromptscreate
+        with:
+          body: rest.body
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /v1/api/environments/{project-id}/llm-prompts/name/{prompt-name}
+      name: api-environments-project-id-llm-prompts-name-prompt-name
+      description: REST surface for api-environments-project_id-llm_prompts-name-prompt_name.
+      operations:
+      - method: GET
+        name: llmpromptsnameretrieve
+        description: llmpromptsnameretrieve
+        call: posthog-llm-analytics-2.llmpromptsnameretrieve
+        with:
+          content: rest.content
+          prompt_name: rest.prompt_name
+          version: rest.version
+        outputParameters:
+        - type: object
+          mapping: $.
+      - method: PATCH
+        name: llmpromptsnamepartialupdate
+        description: llmpromptsnamepartialupdate
+        call: posthog-llm-analytics-2.llmpromptsnamepartialupdate
+        with:
+          prompt_name: rest.prompt_name
+          body: rest.body
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /v1/api/environments/{project-id}/llm-prompts/name/{prompt-name}/archive
+      name: api-environments-project-id-llm-prompts-name-prompt-name-archive
+      description: REST surface for api-environments-project_id-llm_prompts-name-prompt_name-archive.
+      operations:
+      - method: POST
+        name: llmpromptsnamearchivecreate
+        description: llmpromptsnamearchivecreate
+        call: posthog-llm-analytics-2.llmpromptsnamearchivecreate
+        with:
+          prompt_name: rest.prompt_name
+          body: rest.body
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /v1/api/environments/{project-id}/llm-prompts/name/{prompt-name}/duplicate
+      name: api-environments-project-id-llm-prompts-name-prompt-name-duplicate
+      description: REST surface for api-environments-project_id-llm_prompts-name-prompt_name-duplicate.
+      operations:
+      - method: POST
+        name: llmpromptsnameduplicatecreate
+        description: llmpromptsnameduplicatecreate
+        call: posthog-llm-analytics-2.llmpromptsnameduplicatecreate
+        with:
+          prompt_name: rest.prompt_name
+          body: rest.body
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /v1/api/environments/{project-id}/llm-prompts/resolve/name/{prompt-name}
+      name: api-environments-project-id-llm-prompts-resolve-name-prompt-name
+      description: REST surface for api-environments-project_id-llm_prompts-resolve-name-prompt_name.
+      operations:
+      - method: GET
+        name: llmpromptsresolvenameretrieve
+        description: llmpromptsresolvenameretrieve
+        call: posthog-llm-analytics-2.llmpromptsresolvenameretrieve
+        with:
+          before_version: rest.before_version
+          limit: rest.limit
+          offset: rest.offset
+          prompt_name: rest.prompt_name
+          version: rest.version
+          version_id: rest.version_id
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /v1/api/environments/{project-id}/llm-skills
+      name: api-environments-project-id-llm-skills
+      description: REST surface for api-environments-project_id-llm_skills.
+      operations:
+      - method: GET
+        name: llmskillslist
+        description: llmskillslist
+        call: posthog-llm-analytics-2.llmskillslist
+        with:
+          created_by_id: rest.created_by_id
+          limit: rest.limit
+          offset: rest.offset
+          search: rest.search
+        outputParameters:
+        - type: object
+          mapping: $.
+      - method: POST
+        name: llmskillscreate
+        description: llmskillscreate
+        call: posthog-llm-analytics-2.llmskillscreate
+        with:
+          body: rest.body
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /v1/api/environments/{project-id}/llm-skills/name/{skill-name}
+      name: api-environments-project-id-llm-skills-name-skill-name
+      description: REST surface for api-environments-project_id-llm_skills-name-skill_name.
+      operations:
+      - method: GET
+        name: llmskillsnameretrieve
+        description: llmskillsnameretrieve
+        call: posthog-llm-analytics-2.llmskillsnameretrieve
+        with:
+          skill_name: rest.skill_name
+          version: rest.version
+        outputParameters:
+        - type: object
+          mapping: $.
+      - method: PATCH
+        name: llmskillsnamepartialupdate
+        description: llmskillsnamepartialupdate
+        call: posthog-llm-analytics-2.llmskillsnamepartialupdate
+        with:
+          skill_name: rest.skill_name
+          body: rest.body
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /v1/api/environments/{project-id}/llm-skills/name/{skill-name}/archive
+      name: api-environments-project-id-llm-skills-name-skill-name-archive
+      description: REST surface for api-environments-project_id-llm_skills-name-skill_name-archive.
+      operations:
+      - method: POST
+        name: llmskillsnamearchivecreate
+        description: llmskillsnamearchivecreate
+        call: posthog-llm-analytics-2.llmskillsnamearchivecreate
+        with:
+          skill_name: rest.skill_name
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /v1/api/environments/{project-id}/llm-skills/name/{skill-name}/duplicate
+      name: api-environments-project-id-llm-skills-name-skill-name-duplicate
+      description: REST surface for api-environments-project_id-llm_skills-name-skill_name-duplicate.
+      operations:
+      - method: POST
+        name: llmskillsnameduplicatecreate
+        description: llmskillsnameduplicatecreate
+        call: posthog-llm-analytics-2.llmskillsnameduplicatecreate
+        with:
+          skill_name: rest.skill_name
+          body: rest.body
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /v1/api/environments/{project-id}/llm-skills/name/{skill-name}/files-rename
+      name: api-environments-project-id-llm-skills-name-skill-name-files-rename
+      description: REST surface for api-environments-project_id-llm_skills-name-skill_name-files-rename.
+      operations:
+      - method: POST
+        name: llmskillsnamefilesrenamecreate
+        description: llmskillsnamefilesrenamecreate
+        call: posthog-llm-analytics-2.llmskillsnamefilesrenamecreate
+        with:
+          skill_name: rest.skill_name
+          body: rest.body
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /v1/api/environments/{project-id}/llm-skills/name/{skill-name}/files
+      name: api-environments-project-id-llm-skills-name-skill-name-files
+      description: REST surface for api-environments-project_id-llm_skills-name-skill_name-files.
+      operations:
+      - method: POST
+        name: llmskillsnamefilescreate
+        description: llmskillsnamefilescreate
+        call: posthog-llm-analytics-2.llmskillsnamefilescreate
+        with:
+          skill_name: rest.skill_name
+          body: rest.body
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /v1/api/environments/{project-id}/llm-skills/name/{skill-name}/files/{file-path}
+      name: api-environments-project-id-llm-skills-name-skill-name-files-file-path
+      description: REST surface for api-environments-project_id-llm_skills-name-skill_name-files-file_path.
+      operations:
+      - method: GET
+        name: llmskillsnamefilesretrieve
+        description: llmskillsnamefilesretrieve
+        call: posthog-llm-analytics-2.llmskillsnamefilesretrieve
+        with:
+          file_path: rest.file_path
+          skill_name: rest.skill_name
+          version: rest.version
+        outputParameters:
+        - type: object
+          mapping: $.
+      - method: DELETE
+        name: llmskillsnamefilesdestroy
+        description: llmskillsnamefilesdestroy
+        call: posthog-llm-analytics-2.llmskillsnamefilesdestroy
+        with:
+          base_version: rest.base_version
+          file_path: rest.file_path
+          skill_name: rest.skill_name
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /v1/api/environments/{project-id}/llm-skills/resolve/name/{skill-name}
+      name: api-environments-project-id-llm-skills-resolve-name-skill-name
+      description: REST surface for api-environments-project_id-llm_skills-resolve-name-skill_name.
+      operations:
+      - method: GET
+        name: llmskillsresolvenameretrieve
+        description: llmskillsresolvenameretrieve
+        call: posthog-llm-analytics-2.llmskillsresolvenameretrieve
+        with:
+          before_version: rest.before_version
+          limit: rest.limit
+          offset: rest.offset
+          skill_name: rest.skill_name
+          version: rest.version
+          version_id: rest.version_id
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /v1/api/projects/{project-id}/dataset-items
+      name: api-projects-project-id-dataset-items
+      description: REST surface for api-projects-project_id-dataset_items.
+      operations:
+      - method: GET
+        name: datasetitemslist
+        description: datasetitemslist
+        call: posthog-llm-analytics-2.datasetitemslist
+        with:
+          dataset: rest.dataset
+          limit: rest.limit
+          offset: rest.offset
+        outputParameters:
+        - type: object
+          mapping: $.
+      - method: POST
+        name: datasetitemscreate
+        description: datasetitemscreate
+        call: posthog-llm-analytics-2.datasetitemscreate
+        with:
+          body: rest.body
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /v1/api/projects/{project-id}/dataset-items/{id}
+      name: api-projects-project-id-dataset-items-id
+      description: REST surface for api-projects-project_id-dataset_items-id.
+      operations:
+      - method: GET
+        name: datasetitemsretrieve
+        description: datasetitemsretrieve
+        call: posthog-llm-analytics-2.datasetitemsretrieve
+        with:
+          id: rest.id
+        outputParameters:
+        - type: object
+          mapping: $.
+      - method: PUT
+        name: datasetitemsupdate
+        description: datasetitemsupdate
+        call: posthog-llm-analytics-2.datasetitemsupdate
+        with:
+          id: rest.id
+          body: rest.body
+        outputParameters:
+        - type: object
+          mapping: $.
+      - method: PATCH
+        name: datasetitemspartialupdate
+        description: datasetitemspartialupdate
+        call: posthog-llm-analytics-2.datasetitemspartialupdate
+        with:
+          id: rest.id
+          body: rest.body
+        outputParameters:
+        - type: object
+          mapping: $.
+      - method: DELETE
+        name: datasetitemsdestroy
+        description: Hard delete of this model is not allowed. Use a patch API call to set "deleted" to true
+        call: posthog-llm-analytics-2.datasetitemsdestroy
+        with:
+          id: rest.id
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /v1/api/projects/{project-id}/datasets
+      name: api-projects-project-id-datasets
+      description: REST surface for api-projects-project_id-datasets.
+      operations:
+      - method: GET
+        name: datasetslist
+        description: datasetslist
+        call: posthog-llm-analytics-2.datasetslist
+        with:
+          id__in: rest.id__in
+          limit: rest.limit
+          offset: rest.offset
+          order_by: rest.order_by
+          search: rest.search
+        outputParameters:
+        - type: object
+          mapping: $.
+      - method: POST
+        name: datasetscreate
+        description: datasetscreate
+        call: posthog-llm-analytics-2.datasetscreate
+        with:
+          body: rest.body
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /v1/api/projects/{project-id}/datasets/{id}
+      name: api-projects-project-id-datasets-id
+      description: REST surface for api-projects-project_id-datasets-id.
+      operations:
+      - method: GET
+        name: datasetsretrieve
+        description: datasetsretrieve
+        call: posthog-llm-analytics-2.datasetsretrieve
+        with:
+          id: rest.id
+        outputParameters:
+        - type: object
+          mapping: $.
+      - method: PUT
+        name: datasetsupdate
+        description: datasetsupdate
+        call: posthog-llm-analytics-2.datasetsupdate
+        with:
+          id: rest.id
+          body: rest.body
+        outputParameters:
+        - type: object
+          mapping: $.
+      - method: PATCH
+        name: datasetspartialupdate
+        description: datasetspartialupdate
+        call: posthog-llm-analytics-2.datasetspartialupdate
+        with:
+          id: rest.id
+          body: rest.body
+        outputParameters:
+        - type: object
+          mapping: $.
+      - method: DELETE
+        name: datasetsdestroy
+        description: Hard delete of this model is not allowed. Use a patch API call to set "deleted" to true
+        call: posthog-llm-analytics-2.datasetsdestroy
+        with:
+          id: rest.id
+        outputParameters:
+        - type: object
+          mapping: $.
+  - type: mcp
+    namespace: posthog-llm-analytics-2-mcp
+    port: 9090
+    transport: http
+    description: MCP adapter for PostHog API — llm_analytics. One tool per consumed operation, routed inline through this
+      capability's consumes block.
+    tools:
+    - name: environmentsdatasetitemslist
+      description: environmentsdatasetitemslist
+      hints:
+        readOnly: true
+        destructive: false
+        idempotent: true
+      call: posthog-llm-analytics-2.environmentsdatasetitemslist
+      with:
+        dataset: tools.dataset
+        limit: tools.limit
+        offset: tools.offset
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: environmentsdatasetitemscreate
+      description: environmentsdatasetitemscreate
+      hints:
+        readOnly: false
+        destructive: false
+        idempotent: false
+      call: posthog-llm-analytics-2.environmentsdatasetitemscreate
+      with:
+        body: tools.body
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: environmentsdatasetitemsretrieve
+      description: environmentsdatasetitemsretrieve
+      hints:
+        readOnly: true
+        destructive: false
+        idempotent: true
+      call: posthog-llm-analytics-2.environmentsdatasetitemsretrieve
+      with:
+        id: tools.id
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: environmentsdatasetitemsupdate
+      description: environmentsdatasetitemsupdate
+      hints:
+        readOnly: false
+        destructive: false
+        idempotent: true
+      call: posthog-llm-analytics-2.environmentsdatasetitemsupdate
+      with:
+        id: tools.id
+        body: tools.body
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: environmentsdatasetitemspartialupdate
+      description: environmentsdatasetitemspartialupdate
+      hints:
+        readOnly: false
+        destructive: false
+        idempotent: true
+      call: posthog-llm-analytics-2.environmentsdatasetitemspartialupdate
+      with:
+        id: tools.id
+        body: tools.body
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: hard-delete-this-model-is
+      description: Hard delete of this model is not allowed. Use a patch API call to set "deleted" to true
+      hints:
+        readOnly: false
+        destructive: true
+        idempotent: true
+      call: posthog-llm-analytics-2.environmentsdatasetitemsdestroy
+      with:
+        id: tools.id
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: environmentsdatasetslist
+      description: environmentsdatasetslist
+      hints:
+        readOnly: true
+        destructive: false
+        idempotent: true
+      call: posthog-llm-analytics-2.environmentsdatasetslist
+      with:
+        id__in: tools.id__in
+        limit: tools.limit
+        offset: tools.offset
+        order_by: tools.order_by
+        search: tools.search
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: environmentsdatasetscreate
+      description: environmentsdatasetscreate
+      hints:
+        readOnly: false
+        destructive: false
+        idempotent: false
+      call: posthog-llm-analytics-2.environmentsdatasetscreate
+      with:
+        body: tools.body
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: environmentsdatasetsretrieve
+      description: environmentsdatasetsretrieve
+      hints:
+        readOnly: true
+        destructive: false
+        idempotent: true
+      call: posthog-llm-analytics-2.environmentsdatasetsretrieve
+      with:
+        id: tools.id
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: environmentsdatasetsupdate
+      description: environmentsdatasetsupdate
+      hints:
+        readOnly: false
+        destructive: false
+        idempotent: true
+      call: posthog-llm-analytics-2.environmentsdatasetsupdate
+      with:
+        id: tools.id
+        body: tools.body
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: environmentsdatasetspartialupdate
+      description: environmentsdatasetspartialupdate
+      hints:
+        readOnly: false
+        destructive: false
+        idempotent: true
+      call: posthog-llm-analytics-2.environmentsdatasetspartialupdate
+      with:
+        id: tools.id
+        body: tools.body
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: hard-delete-this-model-is-2
+      description: Hard delete of this model is not allowed. Use a patch API call to set "deleted" to true
+      hints:
+        readOnly: false
+        destructive: true
+        idempotent: true
+      call: posthog-llm-analytics-2.environmentsdatasetsdestroy
+      with:
+        id: tools.id
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: create-new-evaluation-run
+      description: Create a new evaluation run.
+      hints:
+        readOnly: false
+        destructive: false
+        idempotent: false
+      call: posthog-llm-analytics-2.evaluationrunscreate
+      with:
+        body: tools.body
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: evaluationslist
+      description: evaluationslist
+      hints:
+        readOnly: true
+        destructive: false
+        idempotent: true
+      call: posthog-llm-analytics-2.evaluationslist
+      with:
+        enabled: tools.enabled
+        id__in: tools.id__in
+        limit: tools.limit
+        offset: tools.offset
+        order_by: tools.order_by
+        search: tools.search
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: evaluationscreate
+      description: evaluationscreate
+      hints:
+        readOnly: false
+        destructive: false
+        idempotent: false
+      call: posthog-llm-analytics-2.evaluationscreate
+      with:
+        body: tools.body
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: test-hog-evaluation-code-against
+      description: Test Hog evaluation code against sample events without saving.
+      hints:
+        readOnly: true
+        destructive: false
+        idempotent: false
+      call: posthog-llm-analytics-2.evaluationstesthogcreate
+      with:
+        body: tools.body
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: evaluationsretrieve
+      description: evaluationsretrieve
+      hints:
+        readOnly: true
+        destructive: false
+        idempotent: true
+      call: posthog-llm-analytics-2.evaluationsretrieve
+      with:
+        id: tools.id
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: evaluationsupdate
+      description: evaluationsupdate
+      hints:
+        readOnly: false
+        destructive: false
+        idempotent: true
+      call: posthog-llm-analytics-2.evaluationsupdate
+      with:
+        id: tools.id
+        body: tools.body
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: evaluationspartialupdate
+      description: evaluationspartialupdate
+      hints:
+        readOnly: false
+        destructive: false
+        idempotent: true
+      call: posthog-llm-analytics-2.evaluationspartialupdate
+      with:
+        id: tools.id
+        body: tools.body
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: hard-delete-this-model-is-3
+      description: Hard delete of this model is not allowed. Use a patch API call to set "deleted" to true
+      hints:
+        readOnly: false
+        destructive: true
+        idempotent: true
+      call: posthog-llm-analytics-2.evaluationsdestroy
+      with:
+        id: tools.id
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: team-level-clustering-configuration-event
+      description: Team-level clustering configuration (event filters for automated pipelines).
+      hints:
+        readOnly: true
+        destructive: false
+        idempotent: true
+      call: posthog-llm-analytics-2.llmanalyticsclusteringconfigretrieve
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: team-level-clustering-configuration-event-2
+      description: Team-level clustering configuration (event filters for automated pipelines).
+      hints:
+        readOnly: false
+        destructive: false
+        idempotent: false
+      call: posthog-llm-analytics-2.llmanalyticsclusteringconfigseteventfilterscreate
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: crud-clustering-job-configurations-max
+      description: CRUD for clustering job configurations (max 5 per team).
+      hints:
+        readOnly: true
+        destructive: false
+        idempotent: true
+      call: posthog-llm-analytics-2.llmanalyticsclusteringjobslist
+      with:
+        limit: tools.limit
+        offset: tools.offset
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: crud-clustering-job-configurations-max-2
+      description: CRUD for clustering job configurations (max 5 per team).
+      hints:
+        readOnly: false
+        destructive: false
+        idempotent: false
+      call: posthog-llm-analytics-2.llmanalyticsclusteringjobscreate
+      with:
+        body: tools.body
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: crud-clustering-job-configurations-max-3
+      description: CRUD for clustering job configurations (max 5 per team).
+      hints:
+        readOnly: true
+        destructive: false
+        idempotent: true
+      call: posthog-llm-analytics-2.llmanalyticsclusteringjobsretrieve
+      with:
+        id: tools.id
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: crud-clustering-job-configurations-max-4
+      description: CRUD for clustering job configurations (max 5 per team).
+      hints:
+        readOnly: false
+        destructive: false
+        idempotent: true
+      call: posthog-llm-analytics-2.llmanalyticsclusteringjobsupdate
+      with:
+        id: tools.id
+        body: tools.body
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: crud-clustering-job-configurations-max-5
+      description: CRUD for clustering job configurations (max 5 per team).
+      hints:
+        readOnly: false
+        destructive: false
+        idempotent: true
+      call: posthog-llm-analytics-2.llmanalyticsclusteringjobspartialupdate
+      with:
+        id: tools.id
+        body: tools.body
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: crud-clustering-job-configurations-max-6
+      description: CRUD for clustering job configurations (max 5 per team).
+      hints:
+        readOnly: false
+        destructive: true
+        idempotent: true
+      call: posthog-llm-analytics-2.llmanalyticsclusteringjobsdestroy
+      with:
+        id: tools.id
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: get-evaluation-config-this-team
+      description: Get the evaluation config for this team
+      hints:
+        readOnly: true
+        destructive: false
+        idempotent: true
+      call: posthog-llm-analytics-2.llmanalyticsevaluationconfigretrieve
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: set-active-provider-key-evaluations
+      description: Set the active provider key for evaluations
+      hints:
+        readOnly: false
+        destructive: false
+        idempotent: false
+      call: posthog-llm-analytics-2.llmanalyticsevaluationconfigsetactivekeycreate
+      with:
+        body: tools.body
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: crud-evaluation-report-configurations-report
+      description: CRUD for evaluation report configurations + report run history.
+      hints:
+        readOnly: true
+        destructive: false
+        idempotent: true
+      call: posthog-llm-analytics-2.llmanalyticsevaluationreportslist
+      with:
+        limit: tools.limit
+        offset: tools.offset
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: crud-evaluation-report-configurations-report-2
+      description: CRUD for evaluation report configurations + report run history.
+      hints:
+        readOnly: true
+        destructive: false
+        idempotent: true
+      call: posthog-llm-analytics-2.llmanalyticsevaluationreportslist
+      with:
+        limit: tools.limit
+        offset: tools.offset
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: crud-evaluation-report-configurations-report-3
+      description: CRUD for evaluation report configurations + report run history.
+      hints:
+        readOnly: false
+        destructive: false
+        idempotent: false
+      call: posthog-llm-analytics-2.llmanalyticsevaluationreportscreate
+      with:
+        body: tools.body
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: crud-evaluation-report-configurations-report-4
+      description: CRUD for evaluation report configurations + report run history.
+      hints:
+        readOnly: false
+        destructive: false
+        idempotent: false
+      call: posthog-llm-analytics-2.llmanalyticsevaluationreportscreate
+      with:
+        body: tools.body
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: crud-evaluation-report-configurations-report-5
+      description: CRUD for evaluation report configurations + report run history.
+      hints:
+        readOnly: true
+        destructive: false
+        idempotent: true
+      call: posthog-llm-analytics-2.llmanalyticsevaluationreportsretrieve
+      with:
+        id: tools.id
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: crud-evaluation-report-configurations-report-6
+      description: CRUD for evaluation report configurations + report run history.
+      hints:
+        readOnly: true
+        destructive: false
+        idempotent: true
+      call: posthog-llm-analytics-2.llmanalyticsevaluationreportsretrieve
+      with:
+        id: tools.id
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: crud-evaluation-report-configurations-report-7
+      description: CRUD for evaluation report configurations + report run history.
+      hints:
+        readOnly: false
+        destructive: false
+        idempotent: true
+      call: posthog-llm-analytics-2.llmanalyticsevaluationreportsupdate
+      with:
+        id: tools.id
+        body: tools.body
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: crud-evaluation-report-configurations-report-8
+      description: CRUD for evaluation report configurations + report run history.
+      hints:
+        readOnly: false
+        destructive: false
+        idempotent: true
+      call: posthog-llm-analytics-2.llmanalyticsevaluationreportsupdate
+      with:
+        id: tools.id
+        body: tools.body
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: crud-evaluation-report-configurations-report-9
+      description: CRUD for evaluation report configurations + report run history.
+      hints:
+        readOnly: false
+        destructive: false
+        idempotent: true
+      call: posthog-llm-analytics-2.llmanalyticsevaluationreportspartialupdate
+      with:
+        id: tools.id
+        body: tools.body
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: crud-evaluation-report-configurations-report-10
+      description: CRUD for evaluation report configurations + report run history.
+      hints:
+        readOnly: false
+        destructive: false
+        idempotent: true
+      call: posthog-llm-analytics-2.llmanalyticsevaluationreportspartialupdate
+      with:
+        id: tools.id
+        body: tools.body
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: hard-delete-this-model-is-4
+      description: Hard delete of this model is not allowed. Use a patch API call to set "deleted" to true
+      hints:
+        readOnly: false
+        destructive: true
+        idempotent: true
+      call: posthog-llm-analytics-2.llmanalyticsevaluationreportsdestroy
+      with:
+        id: tools.id
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: hard-delete-this-model-is-5
+      description: Hard delete of this model is not allowed. Use a patch API call to set "deleted" to true
+      hints:
+        readOnly: false
+        destructive: true
+        idempotent: true
+      call: posthog-llm-analytics-2.llmanalyticsevaluationreportsdestroy
+      with:
+        id: tools.id
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: trigger-immediate-report-generation
+      description: Trigger immediate report generation.
+      hints:
+        readOnly: false
+        destructive: false
+        idempotent: false
+      call: posthog-llm-analytics-2.llmanalyticsevaluationreportsgeneratecreate
+      with:
+        id: tools.id
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: trigger-immediate-report-generation-2
+      description: Trigger immediate report generation.
+      hints:
+        readOnly: false
+        destructive: false
+        idempotent: false
+      call: posthog-llm-analytics-2.llmanalyticsevaluationreportsgeneratecreate
+      with:
+        id: tools.id
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: list-report-runs-history-this
+      description: List report runs (history) for this report.
+      hints:
+        readOnly: true
+        destructive: false
+        idempotent: true
+      call: posthog-llm-analytics-2.llmanalyticsevaluationreportsrunslist
+      with:
+        id: tools.id
+        limit: tools.limit
+        offset: tools.offset
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: list-report-runs-history-this-2
+      description: List report runs (history) for this report.
+      hints:
+        readOnly: true
+        destructive: false
+        idempotent: true
+      call: posthog-llm-analytics-2.llmanalyticsevaluationreportsrunslist
+      with:
+        id: tools.id
+        limit: tools.limit
+        offset: tools.offset
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: generate-ai-powered-summary-evaluation
+      description: Generate an AI-powered summary of evaluation results.
+      hints:
+        readOnly: false
+        destructive: false
+        idempotent: false
+      call: posthog-llm-analytics-2.llmanalyticsevaluationsummarycreate
+      with:
+        body: tools.body
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: list-available-models-provider
+      description: List available models for a provider.
+      hints:
+        readOnly: true
+        destructive: false
+        idempotent: true
+      call: posthog-llm-analytics-2.llmanalyticsmodelsretrieve
+      with:
+        key_id: tools.key_id
+        provider: tools.provider
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: validate-llm-provider-api-keys
+      description: Validate LLM provider API keys without persisting them
+      hints:
+        readOnly: true
+        destructive: false
+        idempotent: false
+      call: posthog-llm-analytics-2.llmanalyticsproviderkeyvalidationscreate
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: llmanalyticsproviderkeyslist
+      description: llmanalyticsproviderkeyslist
+      hints:
+        readOnly: true
+        destructive: false
+        idempotent: true
+      call: posthog-llm-analytics-2.llmanalyticsproviderkeyslist
+      with:
+        limit: tools.limit
+        offset: tools.offset
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: llmanalyticsproviderkeyscreate
+      description: llmanalyticsproviderkeyscreate
+      hints:
+        readOnly: false
+        destructive: false
+        idempotent: false
+      call: posthog-llm-analytics-2.llmanalyticsproviderkeyscreate
+      with:
+        body: tools.body
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: list-enabled-evaluations-currently-using
+      description: List enabled evaluations currently using trial credits for a given provider.
+      hints:
+        readOnly: true
+        destructive: false
+        idempotent: true
+      call: posthog-llm-analytics-2.llmanalyticsproviderkeystrialevaluationsretrieve
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: llmanalyticsproviderkeysretrieve
+      description: llmanalyticsproviderkeysretrieve
+      hints:
+        readOnly: true
+        destructive: false
+        idempotent: true
+      call: posthog-llm-analytics-2.llmanalyticsproviderkeysretrieve
+      with:
+        id: tools.id
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: llmanalyticsproviderkeysupdate
+      description: llmanalyticsproviderkeysupdate
+      hints:
+        readOnly: false
+        destructive: false
+        idempotent: true
+      call: posthog-llm-analytics-2.llmanalyticsproviderkeysupdate
+      with:
+        id: tools.id
+        body: tools.body
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: llmanalyticsproviderkeyspartialupdate
+      description: llmanalyticsproviderkeyspartialupdate
+      hints:
+        readOnly: false
+        destructive: false
+        idempotent: true
+      call: posthog-llm-analytics-2.llmanalyticsproviderkeyspartialupdate
+      with:
+        id: tools.id
+        body: tools.body
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: llmanalyticsproviderkeysdestroy
+      description: llmanalyticsproviderkeysdestroy
+      hints:
+        readOnly: false
+        destructive: true
+        idempotent: true
+      call: posthog-llm-analytics-2.llmanalyticsproviderkeysdestroy
+      with:
+        id: tools.id
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: assign-this-key-evaluations-and
+      description: Assign this key to evaluations and optionally re-enable them.
+      hints:
+        readOnly: false
+        destructive: false
+        idempotent: false
+      call: posthog-llm-analytics-2.llmanalyticsproviderkeysassigncreate
+      with:
+        id: tools.id
+        body: tools.body
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: get-evaluations-using-this-key
+      description: Get evaluations using this key and alternative keys for replacement.
+      hints:
+        readOnly: true
+        destructive: false
+        idempotent: true
+      call: posthog-llm-analytics-2.llmanalyticsproviderkeysdependentconfigsretrieve
+      with:
+        id: tools.id
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: llmanalyticsproviderkeysvalidatecreate
+      description: llmanalyticsproviderkeysvalidatecreate
+      hints:
+        readOnly: true
+        destructive: false
+        idempotent: false
+      call: posthog-llm-analytics-2.llmanalyticsproviderkeysvalidatecreate
+      with:
+        id: tools.id
+        body: tools.body
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: llmanalyticsreviewqueueitemslist
+      description: llmanalyticsreviewqueueitemslist
+      hints:
+        readOnly: true
+        destructive: false
+        idempotent: true
+      call: posthog-llm-analytics-2.llmanalyticsreviewqueueitemslist
+      with:
+        limit: tools.limit
+        offset: tools.offset
+        order_by: tools.order_by
+        queue_id: tools.queue_id
+        search: tools.search
+        trace_id: tools.trace_id
+        trace_id__in: tools.trace_id__in
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: llmanalyticsreviewqueueitemslist-2
+      description: llmanalyticsreviewqueueitemslist
+      hints:
+        readOnly: true
+        destructive: false
+        idempotent: true
+      call: posthog-llm-analytics-2.llmanalyticsreviewqueueitemslist
+      with:
+        limit: tools.limit
+        offset: tools.offset
+        order_by: tools.order_by
+        queue_id: tools.queue_id
+        search: tools.search
+        trace_id: tools.trace_id
+        trace_id__in: tools.trace_id__in
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: llmanalyticsreviewqueueitemscreate
+      description: llmanalyticsreviewqueueitemscreate
+      hints:
+        readOnly: false
+        destructive: false
+        idempotent: false
+      call: posthog-llm-analytics-2.llmanalyticsreviewqueueitemscreate
+      with:
+        body: tools.body
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: llmanalyticsreviewqueueitemscreate-2
+      description: llmanalyticsreviewqueueitemscreate
+      hints:
+        readOnly: false
+        destructive: false
+        idempotent: false
+      call: posthog-llm-analytics-2.llmanalyticsreviewqueueitemscreate
+      with:
+        body: tools.body
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: llmanalyticsreviewqueueitemsretrieve
+      description: llmanalyticsreviewqueueitemsretrieve
+      hints:
+        readOnly: true
+        destructive: false
+        idempotent: true
+      call: posthog-llm-analytics-2.llmanalyticsreviewqueueitemsretrieve
+      with:
+        id: tools.id
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: llmanalyticsreviewqueueitemsretrieve-2
+      description: llmanalyticsreviewqueueitemsretrieve
+      hints:
+        readOnly: true
+        destructive: false
+        idempotent: true
+      call: posthog-llm-analytics-2.llmanalyticsreviewqueueitemsretrieve
+      with:
+        id: tools.id
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: llmanalyticsreviewqueueitemspartialupdate
+      description: llmanalyticsreviewqueueitemspartialupdate
+      hints:
+        readOnly: false
+        destructive: false
+        idempotent: true
+      call: posthog-llm-analytics-2.llmanalyticsreviewqueueitemspartialupdate
+      with:
+        id: tools.id
+        body: tools.body
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: llmanalyticsreviewqueueitemspartialupdate-2
+      description: llmanalyticsreviewqueueitemspartialupdate
+      hints:
+        readOnly: false
+        destructive: false
+        idempotent: true
+      call: posthog-llm-analytics-2.llmanalyticsreviewqueueitemspartialupdate
+      with:
+        id: tools.id
+        body: tools.body
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: llmanalyticsreviewqueueitemsdestroy
+      description: llmanalyticsreviewqueueitemsdestroy
+      hints:
+        readOnly: false
+        destructive: true
+        idempotent: true
+      call: posthog-llm-analytics-2.llmanalyticsreviewqueueitemsdestroy
+      with:
+        id: tools.id
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: llmanalyticsreviewqueueitemsdestroy-2
+      description: llmanalyticsreviewqueueitemsdestroy
+      hints:
+        readOnly: false
+        destructive: true
+        idempotent: true
+      call: posthog-llm-analytics-2.llmanalyticsreviewqueueitemsdestroy
+      with:
+        id: tools.id
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: llmanalyticsreviewqueueslist
+      description: llmanalyticsreviewqueueslist
+      hints:
+        readOnly: true
+        destructive: false
+        idempotent: true
+      call: posthog-llm-analytics-2.llmanalyticsreviewqueueslist
+      with:
+        limit: tools.limit
+        name: tools.name
+        offset: tools.offset
+        order_by: tools.order_by
+        search: tools.search
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: llmanalyticsreviewqueueslist-2
+      description: llmanalyticsreviewqueueslist
+      hints:
+        readOnly: true
+        destructive: false
+        idempotent: true
+      call: posthog-llm-analytics-2.llmanalyticsreviewqueueslist
+      with:
+        limit: tools.limit
+        name: tools.name
+        offset: tools.offset
+        order_by: tools.order_by
+        search: tools.search
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: llmanalyticsreviewqueuescreate
+      description: llmanalyticsreviewqueuescreate
+      hints:
+        readOnly: false
+        destructive: false
+        idempotent: false
+      call: posthog-llm-analytics-2.llmanalyticsreviewqueuescreate
+      with:
+        body: tools.body
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: llmanalyticsreviewqueuescreate-2
+      description: llmanalyticsreviewqueuescreate
+      hints:
+        readOnly: false
+        destructive: false
+        idempotent: false
+      call: posthog-llm-analytics-2.llmanalyticsreviewqueuescreate
+      with:
+        body: tools.body
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: llmanalyticsreviewqueuesretrieve
+      description: llmanalyticsreviewqueuesretrieve
+      hints:
+        readOnly: true
+        destructive: false
+        idempotent: true
+      call: posthog-llm-analytics-2.llmanalyticsreviewqueuesretrieve
+      with:
+        id: tools.id
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: llmanalyticsreviewqueuesretrieve-2
+      description: llmanalyticsreviewqueuesretrieve
+      hints:
+        readOnly: true
+        destructive: false
+        idempotent: true
+      call: posthog-llm-analytics-2.llmanalyticsreviewqueuesretrieve
+      with:
+        id: tools.id
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: llmanalyticsreviewqueuespartialupdate
+      description: llmanalyticsreviewqueuespartialupdate
+      hints:
+        readOnly: false
+        destructive: false
+        idempotent: true
+      call: posthog-llm-analytics-2.llmanalyticsreviewqueuespartialupdate
+      with:
+        id: tools.id
+        body: tools.body
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: llmanalyticsreviewqueuespartialupdate-2
+      description: llmanalyticsreviewqueuespartialupdate
+      hints:
+        readOnly: false
+        destructive: false
+        idempotent: true
+      call: posthog-llm-analytics-2.llmanalyticsreviewqueuespartialupdate
+      with:
+        id: tools.id
+        body: tools.body
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: llmanalyticsreviewqueuesdestroy
+      description: llmanalyticsreviewqueuesdestroy
+      hints:
+        readOnly: false
+        destructive: true
+        idempotent: true
+      call: posthog-llm-analytics-2.llmanalyticsreviewqueuesdestroy
+      with:
+        id: tools.id
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: llmanalyticsreviewqueuesdestroy-2
+      description: llmanalyticsreviewqueuesdestroy
+      hints:
+        readOnly: false
+        destructive: true
+        idempotent: true
+      call: posthog-llm-analytics-2.llmanalyticsreviewqueuesdestroy
+      with:
+        id: tools.id
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: llmanalyticsscoredefinitionslist
+      description: llmanalyticsscoredefinitionslist
+      hints:
+        readOnly: true
+        destructive: false
+        idempotent: true
+      call: posthog-llm-analytics-2.llmanalyticsscoredefinitionslist
+      with:
+        archived: tools.archived
+        kind: tools.kind
+        limit: tools.limit
+        offset: tools.offset
+        order_by: tools.order_by
+        search: tools.search
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: llmanalyticsscoredefinitionslist-2
+      description: llmanalyticsscoredefinitionslist
+      hints:
+        readOnly: true
+        destructive: false
+        idempotent: true
+      call: posthog-llm-analytics-2.llmanalyticsscoredefinitionslist
+      with:
+        archived: tools.archived
+        kind: tools.kind
+        limit: tools.limit
+        offset: tools.offset
+        order_by: tools.order_by
+        search: tools.search
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: llmanalyticsscoredefinitionscreate
+      description: llmanalyticsscoredefinitionscreate
+      hints:
+        readOnly: false
+        destructive: false
+        idempotent: false
+      call: posthog-llm-analytics-2.llmanalyticsscoredefinitionscreate
+      with:
+        body: tools.body
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: llmanalyticsscoredefinitionscreate-2
+      description: llmanalyticsscoredefinitionscreate
+      hints:
+        readOnly: false
+        destructive: false
+        idempotent: false
+      call: posthog-llm-analytics-2.llmanalyticsscoredefinitionscreate
+      with:
+        body: tools.body
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: llmanalyticsscoredefinitionsretrieve
+      description: llmanalyticsscoredefinitionsretrieve
+      hints:
+        readOnly: true
+        destructive: false
+        idempotent: true
+      call: posthog-llm-analytics-2.llmanalyticsscoredefinitionsretrieve
+      with:
+        id: tools.id
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: llmanalyticsscoredefinitionsretrieve-2
+      description: llmanalyticsscoredefinitionsretrieve
+      hints:
+        readOnly: true
+        destructive: false
+        idempotent: true
+      call: posthog-llm-analytics-2.llmanalyticsscoredefinitionsretrieve
+      with:
+        id: tools.id
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: llmanalyticsscoredefinitionspartialupdate
+      description: llmanalyticsscoredefinitionspartialupdate
+      hints:
+        readOnly: false
+        destructive: false
+        idempotent: true
+      call: posthog-llm-analytics-2.llmanalyticsscoredefinitionspartialupdate
+      with:
+        id: tools.id
+        body: tools.body
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: llmanalyticsscoredefinitionspartialupdate-2
+      description: llmanalyticsscoredefinitionspartialupdate
+      hints:
+        readOnly: false
+        destructive: false
+        idempotent: true
+      call: posthog-llm-analytics-2.llmanalyticsscoredefinitionspartialupdate
+      with:
+        id: tools.id
+        body: tools.body
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: llmanalyticsscoredefinitionsnewversioncreate
+      description: llmanalyticsscoredefinitionsnewversioncreate
+      hints:
+        readOnly: false
+        destructive: false
+        idempotent: false
+      call: posthog-llm-analytics-2.llmanalyticsscoredefinitionsnewversioncreate
+      with:
+        id: tools.id
+        body: tools.body
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: llmanalyticsscoredefinitionsnewversioncreate-2
+      description: llmanalyticsscoredefinitionsnewversioncreate
+      hints:
+        readOnly: false
+        destructive: false
+        idempotent: false
+      call: posthog-llm-analytics-2.llmanalyticsscoredefinitionsnewversioncreate
+      with:
+        id: tools.id
+        body: tools.body
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: llmanalyticssentimentcreate
+      description: llmanalyticssentimentcreate
+      hints:
+        readOnly: false
+        destructive: false
+        idempotent: false
+      call: posthog-llm-analytics-2.llmanalyticssentimentcreate
+      with:
+        body: tools.body
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: generate-ai-powered-summary-llm
+      description: Generate an AI-powered summary of an LLM trace or event.
+      hints:
+        readOnly: false
+        destructive: false
+        idempotent: false
+      call: posthog-llm-analytics-2.llmanalyticssummarizationcreate
+      with:
+        body: tools.body
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: check-which-traces-have-cached
+      description: Check which traces have cached summaries available.
+      hints:
+        readOnly: true
+        destructive: false
+        idempotent: false
+      call: posthog-llm-analytics-2.llmanalyticssummarizationbatchcheckcreate
+      with:
+        body: tools.body
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: generate-human-readable-text-representation
+      description: Generate a human-readable text representation of an LLM trace event.
+      hints:
+        readOnly: false
+        destructive: false
+        idempotent: false
+      call: posthog-llm-analytics-2.llmanalyticstextreprcreate
+      with:
+        body: tools.body
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: llmanalyticstracereviewslist
+      description: llmanalyticstracereviewslist
+      hints:
+        readOnly: true
+        destructive: false
+        idempotent: true
+      call: posthog-llm-analytics-2.llmanalyticstracereviewslist
+      with:
+        definition_id: tools.definition_id
+        definition_id__in: tools.definition_id__in
+        limit: tools.limit
+        offset: tools.offset
+        order_by: tools.order_by
+        search: tools.search
+        trace_id: tools.trace_id
+        trace_id__in: tools.trace_id__in
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: llmanalyticstracereviewslist-2
+      description: llmanalyticstracereviewslist
+      hints:
+        readOnly: true
+        destructive: false
+        idempotent: true
+      call: posthog-llm-analytics-2.llmanalyticstracereviewslist
+      with:
+        definition_id: tools.definition_id
+        definition_id__in: tools.definition_id__in
+        limit: tools.limit
+        offset: tools.offset
+        order_by: tools.order_by
+        search: tools.search
+        trace_id: tools.trace_id
+        trace_id__in: tools.trace_id__in
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: llmanalyticstracereviewscreate
+      description: llmanalyticstracereviewscreate
+      hints:
+        readOnly: false
+        destructive: false
+        idempotent: false
+      call: posthog-llm-analytics-2.llmanalyticstracereviewscreate
+      with:
+        body: tools.body
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: llmanalyticstracereviewscreate-2
+      description: llmanalyticstracereviewscreate
+      hints:
+        readOnly: false
+        destructive: false
+        idempotent: false
+      call: posthog-llm-analytics-2.llmanalyticstracereviewscreate
+      with:
+        body: tools.body
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: llmanalyticstracereviewsretrieve
+      description: llmanalyticstracereviewsretrieve
+      hints:
+        readOnly: true
+        destructive: false
+        idempotent: true
+      call: posthog-llm-analytics-2.llmanalyticstracereviewsretrieve
+      with:
+        id: tools.id
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: llmanalyticstracereviewsretrieve-2
+      description: llmanalyticstracereviewsretrieve
+      hints:
+        readOnly: true
+        destructive: false
+        idempotent: true
+      call: posthog-llm-analytics-2.llmanalyticstracereviewsretrieve
+      with:
+        id: tools.id
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: llmanalyticstracereviewspartialupdate
+      description: llmanalyticstracereviewspartialupdate
+      hints:
+        readOnly: false
+        destructive: false
+        idempotent: true
+      call: posthog-llm-analytics-2.llmanalyticstracereviewspartialupdate
+      with:
+        id: tools.id
+        body: tools.body
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: llmanalyticstracereviewspartialupdate-2
+      description: llmanalyticstracereviewspartialupdate
+      hints:
+        readOnly: false
+        destructive: false
+        idempotent: true
+      call: posthog-llm-analytics-2.llmanalyticstracereviewspartialupdate
+      with:
+        id: tools.id
+        body: tools.body
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: llmanalyticstracereviewsdestroy
+      description: llmanalyticstracereviewsdestroy
+      hints:
+        readOnly: false
+        destructive: true
+        idempotent: true
+      call: posthog-llm-analytics-2.llmanalyticstracereviewsdestroy
+      with:
+        id: tools.id
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: llmanalyticstracereviewsdestroy-2
+      description: llmanalyticstracereviewsdestroy
+      hints:
+        readOnly: false
+        destructive: true
+        idempotent: true
+      call: posthog-llm-analytics-2.llmanalyticstracereviewsdestroy
+      with:
+        id: tools.id
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: translate-text-target-language
+      description: Translate text to target language.
+      hints:
+        readOnly: true
+        destructive: false
+        idempotent: false
+      call: posthog-llm-analytics-2.llmanalyticstranslatecreate
+      with:
+        body: tools.body
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: llmpromptslist
+      description: llmpromptslist
+      hints:
+        readOnly: true
+        destructive: false
+        idempotent: true
+      call: posthog-llm-analytics-2.llmpromptslist
+      with:
+        content: tools.content
+        created_by_id: tools.created_by_id
+        limit: tools.limit
+        offset: tools.offset
+        search: tools.search
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: llmpromptscreate
+      description: llmpromptscreate
+      hints:
+        readOnly: false
+        destructive: false
+        idempotent: false
+      call: posthog-llm-analytics-2.llmpromptscreate
+      with:
+        body: tools.body
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: llmpromptsnameretrieve
+      description: llmpromptsnameretrieve
+      hints:
+        readOnly: true
+        destructive: false
+        idempotent: true
+      call: posthog-llm-analytics-2.llmpromptsnameretrieve
+      with:
+        content: tools.content
+        prompt_name: tools.prompt_name
+        version: tools.version
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: llmpromptsnamepartialupdate
+      description: llmpromptsnamepartialupdate
+      hints:
+        readOnly: false
+        destructive: false
+        idempotent: true
+      call: posthog-llm-analytics-2.llmpromptsnamepartialupdate
+      with:
+        prompt_name: tools.prompt_name
+        body: tools.body
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: llmpromptsnamearchivecreate
+      description: llmpromptsnamearchivecreate
+      hints:
+        readOnly: false
+        destructive: false
+        idempotent: false
+      call: posthog-llm-analytics-2.llmpromptsnamearchivecreate
+      with:
+        prompt_name: tools.prompt_name
+        body: tools.body
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: llmpromptsnameduplicatecreate
+      description: llmpromptsnameduplicatecreate
+      hints:
+        readOnly: false
+        destructive: false
+        idempotent: false
+      call: posthog-llm-analytics-2.llmpromptsnameduplicatecreate
+      with:
+        prompt_name: tools.prompt_name
+        body: tools.body
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: llmpromptsresolvenameretrieve
+      description: llmpromptsresolvenameretrieve
+      hints:
+        readOnly: true
+        destructive: false
+        idempotent: true
+      call: posthog-llm-analytics-2.llmpromptsresolvenameretrieve
+      with:
+        before_version: tools.before_version
+        limit: tools.limit
+        offset: tools.offset
+        prompt_name: tools.prompt_name
+        version: tools.version
+        version_id: tools.version_id
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: llmskillslist
+      description: llmskillslist
+      hints:
+        readOnly: true
+        destructive: false
+        idempotent: true
+      call: posthog-llm-analytics-2.llmskillslist
+      with:
+        created_by_id: tools.created_by_id
+        limit: tools.limit
+        offset: tools.offset
+        search: tools.search
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: llmskillscreate
+      description: llmskillscreate
+      hints:
+        readOnly: false
+        destructive: false
+        idempotent: false
+      call: posthog-llm-analytics-2.llmskillscreate
+      with:
+        body: tools.body
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: llmskillsnameretrieve
+      description: llmskillsnameretrieve
+      hints:
+        readOnly: true
+        destructive: false
+        idempotent: true
+      call: posthog-llm-analytics-2.llmskillsnameretrieve
+      with:
+        skill_name: tools.skill_name
+        version: tools.version
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: llmskillsnamepartialupdate
+      description: llmskillsnamepartialupdate
+      hints:
+        readOnly: false
+        destructive: false
+        idempotent: true
+      call: posthog-llm-analytics-2.llmskillsnamepartialupdate
+      with:
+        skill_name: tools.skill_name
+        body: tools.body
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: llmskillsnamearchivecreate
+      description: llmskillsnamearchivecreate
+      hints:
+        readOnly: false
+        destructive: false
+        idempotent: false
+      call: posthog-llm-analytics-2.llmskillsnamearchivecreate
+      with:
+        skill_name: tools.skill_name
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: llmskillsnameduplicatecreate
+      description: llmskillsnameduplicatecreate
+      hints:
+        readOnly: false
+        destructive: false
+        idempotent: false
+      call: posthog-llm-analytics-2.llmskillsnameduplicatecreate
+      with:
+        skill_name: tools.skill_name
+        body: tools.body
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: llmskillsnamefilesrenamecreate
+      description: llmskillsnamefilesrenamecreate
+      hints:
+        readOnly: false
+        destructive: false
+        idempotent: false
+      call: posthog-llm-analytics-2.llmskillsnamefilesrenamecreate
+      with:
+        skill_name: tools.skill_name
+        body: tools.body
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: llmskillsnamefilescreate
+      description: llmskillsnamefilescreate
+      hints:
+        readOnly: false
+        destructive: false
+        idempotent: false
+      call: posthog-llm-analytics-2.llmskillsnamefilescreate
+      with:
+        skill_name: tools.skill_name
+        body: tools.body
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: llmskillsnamefilesretrieve
+      description: llmskillsnamefilesretrieve
+      hints:
+        readOnly: true
+        destructive: false
+        idempotent: true
+      call: posthog-llm-analytics-2.llmskillsnamefilesretrieve
+      with:
+        file_path: tools.file_path
+        skill_name: tools.skill_name
+        version: tools.version
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: llmskillsnamefilesdestroy
+      description: llmskillsnamefilesdestroy
+      hints:
+        readOnly: false
+        destructive: true
+        idempotent: true
+      call: posthog-llm-analytics-2.llmskillsnamefilesdestroy
+      with:
+        base_version: tools.base_version
+        file_path: tools.file_path
+        skill_name: tools.skill_name
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: llmskillsresolvenameretrieve
+      description: llmskillsresolvenameretrieve
+      hints:
+        readOnly: true
+        destructive: false
+        idempotent: true
+      call: posthog-llm-analytics-2.llmskillsresolvenameretrieve
+      with:
+        before_version: tools.before_version
+        limit: tools.limit
+        offset: tools.offset
+        skill_name: tools.skill_name
+        version: tools.version
+        version_id: tools.version_id
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: datasetitemslist
+      description: datasetitemslist
+      hints:
+        readOnly: true
+        destructive: false
+        idempotent: true
+      call: posthog-llm-analytics-2.datasetitemslist
+      with:
+        dataset: tools.dataset
+        limit: tools.limit
+        offset: tools.offset
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: datasetitemscreate
+      description: datasetitemscreate
+      hints:
+        readOnly: false
+        destructive: false
+        idempotent: false
+      call: posthog-llm-analytics-2.datasetitemscreate
+      with:
+        body: tools.body
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: datasetitemsretrieve
+      description: datasetitemsretrieve
+      hints:
+        readOnly: true
+        destructive: false
+        idempotent: true
+      call: posthog-llm-analytics-2.datasetitemsretrieve
+      with:
+        id: tools.id
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: datasetitemsupdate
+      description: datasetitemsupdate
+      hints:
+        readOnly: false
+        destructive: false
+        idempotent: true
+      call: posthog-llm-analytics-2.datasetitemsupdate
+      with:
+        id: tools.id
+        body: tools.body
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: datasetitemspartialupdate
+      description: datasetitemspartialupdate
+      hints:
+        readOnly: false
+        destructive: false
+        idempotent: true
+      call: posthog-llm-analytics-2.datasetitemspartialupdate
+      with:
+        id: tools.id
+        body: tools.body
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: hard-delete-this-model-is-6
+      description: Hard delete of this model is not allowed. Use a patch API call to set "deleted" to true
+      hints:
+        readOnly: false
+        destructive: true
+        idempotent: true
+      call: posthog-llm-analytics-2.datasetitemsdestroy
+      with:
+        id: tools.id
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: datasetslist
+      description: datasetslist
+      hints:
+        readOnly: true
+        destructive: false
+        idempotent: true
+      call: posthog-llm-analytics-2.datasetslist
+      with:
+        id__in: tools.id__in
+        limit: tools.limit
+        offset: tools.offset
+        order_by: tools.order_by
+        search: tools.search
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: datasetscreate
+      description: datasetscreate
+      hints:
+        readOnly: false
+        destructive: false
+        idempotent: false
+      call: posthog-llm-analytics-2.datasetscreate
+      with:
+        body: tools.body
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: datasetsretrieve
+      description: datasetsretrieve
+      hints:
+        readOnly: true
+        destructive: false
+        idempotent: true
+      call: posthog-llm-analytics-2.datasetsretrieve
+      with:
+        id: tools.id
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: datasetsupdate
+      description: datasetsupdate
+      hints:
+        readOnly: false
+        destructive: false
+        idempotent: true
+      call: posthog-llm-analytics-2.datasetsupdate
+      with:
+        id: tools.id
+        body: tools.body
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: datasetspartialupdate
+      description: datasetspartialupdate
+      hints:
+        readOnly: false
+        destructive: false
+        idempotent: true
+      call: posthog-llm-analytics-2.datasetspartialupdate
+      with:
+        id: tools.id
+        body: tools.body
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: hard-delete-this-model-is-7
+      description: Hard delete of this model is not allowed. Use a patch API call to set "deleted" to true
+      hints:
+        readOnly: false
+        destructive: true
+        idempotent: true
+      call: posthog-llm-analytics-2.datasetsdestroy
+      with:
+        id: tools.id
+      outputParameters:
+      - type: object
+        mapping: $.

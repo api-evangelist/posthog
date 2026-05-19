@@ -1,0 +1,2376 @@
+naftiko: 1.0.0-alpha2
+info:
+  label: PostHog API — insights
+  description: 'PostHog API — insights. 46 operations. Lead operation: insights. Self-contained Naftiko capability covering
+    one Posthog business surface.'
+  tags:
+  - Posthog
+  - insights
+  created: '2026-05-19'
+  modified: '2026-05-19'
+binds:
+- namespace: env
+  keys:
+    POSTHOG_API_KEY: POSTHOG_API_KEY
+capability:
+  consumes:
+  - type: http
+    namespace: posthog-insights
+    baseUri: ''
+    description: PostHog API — insights business capability. Self-contained, no shared references.
+    resources:
+    - name: api-environments-environment_id-insights
+      path: /api/environments/{environment_id}/insights/
+      operations:
+      - name: environmentsinsightslist
+        method: GET
+        description: DRF ViewSet mixin that gates coalesced responses behind permission checks.
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: basic
+          in: query
+          type: boolean
+          description: Return basic insight metadata only (no results, faster).
+        - name: created_by
+          in: query
+          type: string
+          description: JSON-encoded array of user IDs. Only returns insights whose `created_by` is in the list, e.g. `[1,42]`.
+        - name: created_date_from
+          in: query
+          type: string
+          description: Filter by `created_at > created_date_from`. Accepts absolute or relative dates.
+        - name: created_date_to
+          in: query
+          type: string
+          description: Filter by `created_at < created_date_to`. Accepts absolute or relative dates.
+        - name: dashboards
+          in: query
+          type: string
+          description: JSON-encoded array of dashboard IDs. Returns insights attached to every listed dashboard (AND).
+        - name: date_from
+          in: query
+          type: string
+          description: Filter by `last_modified_at > date_from`. Accepts absolute dates (`2025-04-23`) or relative strings
+            (`-7d`, `-1m`).
+        - name: date_to
+          in: query
+          type: string
+          description: Filter by `last_modified_at < date_to`. Accepts absolute dates or relative strings.
+        - name: favorited
+          in: query
+          type: boolean
+          description: Include this parameter (any value) to restrict results to insights marked as favorited.
+        - name: format
+          in: query
+          type: string
+        - name: insight
+          in: query
+          type: string
+          description: Restrict to a single insight type. `JSON` matches non-wrapper query insights; `SQL` matches HogQL queries.
+        - name: last_viewed_date_from
+          in: query
+          type: string
+          description: Filter by `last_viewed_at > last_viewed_date_from`. Accepts absolute or relative dates.
+        - name: last_viewed_date_to
+          in: query
+          type: string
+          description: Filter by `last_viewed_at < last_viewed_date_to`. Accepts absolute or relative dates.
+        - name: limit
+          in: query
+          type: integer
+          description: Number of results to return per page.
+        - name: offset
+          in: query
+          type: integer
+          description: The initial index from which to return the results.
+        - name: refresh
+          in: query
+          type: string
+          description: 'Whether to refresh the retrieved insights, how aggressively, and if sync or async:'
+        - name: saved
+          in: query
+          type: boolean
+          description: When truthy, restricts results to insights that are saved (or attached to a visible dashboard). When
+            falsy, only unsaved insights.
+        - name: search
+          in: query
+          type: string
+          description: Case-insensitive substring match across name, derived_name, description, and tag names.
+        - name: short_id
+          in: query
+          type: string
+        - name: tags
+          in: query
+          type: string
+          description: JSON-encoded array of tag names. Returns insights with any of the listed tags.
+        - name: user
+          in: query
+          type: boolean
+          description: Include this parameter (any value) to restrict results to insights created by the authenticated user.
+      - name: environmentsinsightscreate
+        method: POST
+        description: DRF ViewSet mixin that gates coalesced responses behind permission checks.
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: format
+          in: query
+          type: string
+        - name: body
+          in: body
+          type: object
+          description: Request body (JSON).
+          required: false
+    - name: api-environments-environment_id-insights-activity
+      path: /api/environments/{environment_id}/insights/activity/
+      operations:
+      - name: environmentsinsightsallactivityretrieve
+        method: GET
+        description: DRF ViewSet mixin that gates coalesced responses behind permission checks.
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: format
+          in: query
+          type: string
+    - name: api-environments-environment_id-insights-bulk_update_tags
+      path: /api/environments/{environment_id}/insights/bulk_update_tags/
+      operations:
+      - name: environmentsinsightsbulkupdatetagscreate
+        method: POST
+        description: Bulk update tags on multiple objects.
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: format
+          in: query
+          type: string
+        - name: body
+          in: body
+          type: object
+          description: Request body (JSON).
+          required: true
+    - name: api-environments-environment_id-insights-cancel
+      path: /api/environments/{environment_id}/insights/cancel/
+      operations:
+      - name: environmentsinsightscancelcreate
+        method: POST
+        description: DRF ViewSet mixin that gates coalesced responses behind permission checks.
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: format
+          in: query
+          type: string
+        - name: body
+          in: body
+          type: object
+          description: Request body (JSON).
+          required: false
+    - name: api-environments-environment_id-insights-generate_metadata
+      path: /api/environments/{environment_id}/insights/generate_metadata/
+      operations:
+      - name: environmentsinsightsgeneratemetadatacreate
+        method: POST
+        description: Generate an AI-suggested name and description for an insight based on its query configuration.
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: format
+          in: query
+          type: string
+        - name: body
+          in: body
+          type: object
+          description: Request body (JSON).
+          required: false
+    - name: api-environments-environment_id-insights-my_last_viewed
+      path: /api/environments/{environment_id}/insights/my_last_viewed/
+      operations:
+      - name: environmentsinsightsmylastviewedretrieve
+        method: GET
+        description: Returns basic details about the last 5 insights viewed by this user. Most recently viewed first.
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: format
+          in: query
+          type: string
+    - name: api-environments-environment_id-insights-trending
+      path: /api/environments/{environment_id}/insights/trending/
+      operations:
+      - name: environmentsinsightstrendingretrieve
+        method: GET
+        description: Returns trending insights based on view count in the last N days (default 7).
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: format
+          in: query
+          type: string
+    - name: api-environments-environment_id-insights-viewed
+      path: /api/environments/{environment_id}/insights/viewed/
+      operations:
+      - name: environmentsinsightsviewedcreate
+        method: POST
+        description: Update insight view timestamps.
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: format
+          in: query
+          type: string
+        - name: body
+          in: body
+          type: object
+          description: Request body (JSON).
+          required: false
+    - name: api-environments-environment_id-insights-id
+      path: /api/environments/{environment_id}/insights/{id}/
+      operations:
+      - name: environmentsinsightsretrieve
+        method: GET
+        description: DRF ViewSet mixin that gates coalesced responses behind permission checks.
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: format
+          in: query
+          type: string
+        - name: from_dashboard
+          in: query
+          type: integer
+          description: 'Only if loading an insight in the context of a dashboard: The relevant dashboard''s ID.'
+        - name: id
+          in: path
+          type: string
+          description: Numeric primary key or 8-character `short_id` (for example `AaVQ8Ijw`) identifying the insight.
+          required: true
+        - name: refresh
+          in: query
+          type: string
+          description: 'Whether to refresh the insight, how aggresively, and if sync or async:'
+      - name: environmentsinsightsupdate
+        method: PUT
+        description: DRF ViewSet mixin that gates coalesced responses behind permission checks.
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: format
+          in: query
+          type: string
+        - name: id
+          in: path
+          type: string
+          description: Numeric primary key or 8-character `short_id` (for example `AaVQ8Ijw`) identifying the insight.
+          required: true
+        - name: body
+          in: body
+          type: object
+          description: Request body (JSON).
+          required: false
+      - name: environmentsinsightspartialupdate
+        method: PATCH
+        description: DRF ViewSet mixin that gates coalesced responses behind permission checks.
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: format
+          in: query
+          type: string
+        - name: id
+          in: path
+          type: string
+          description: Numeric primary key or 8-character `short_id` (for example `AaVQ8Ijw`) identifying the insight.
+          required: true
+        - name: body
+          in: body
+          type: object
+          description: Request body (JSON).
+          required: false
+      - name: environmentsinsightsdestroy
+        method: DELETE
+        description: Hard delete of this model is not allowed. Use a patch API call to set "deleted" to true
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: format
+          in: query
+          type: string
+        - name: id
+          in: path
+          type: string
+          description: Numeric primary key or 8-character `short_id` (for example `AaVQ8Ijw`) identifying the insight.
+          required: true
+    - name: api-environments-environment_id-insights-id-activity
+      path: /api/environments/{environment_id}/insights/{id}/activity/
+      operations:
+      - name: environmentsinsightsactivityretrieve
+        method: GET
+        description: DRF ViewSet mixin that gates coalesced responses behind permission checks.
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: format
+          in: query
+          type: string
+        - name: id
+          in: path
+          type: integer
+          description: A unique integer value identifying this insight.
+          required: true
+    - name: api-environments-environment_id-insights-id-analyze
+      path: /api/environments/{environment_id}/insights/{id}/analyze/
+      operations:
+      - name: environmentsinsightsanalyzeretrieve
+        method: GET
+        description: DRF ViewSet mixin that gates coalesced responses behind permission checks.
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: format
+          in: query
+          type: string
+        - name: id
+          in: path
+          type: integer
+          description: A unique integer value identifying this insight.
+          required: true
+    - name: api-environments-environment_id-insights-id-suggestions
+      path: /api/environments/{environment_id}/insights/{id}/suggestions/
+      operations:
+      - name: environmentsinsightssuggestionsretrieve
+        method: GET
+        description: DRF ViewSet mixin that gates coalesced responses behind permission checks.
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: format
+          in: query
+          type: string
+        - name: id
+          in: path
+          type: integer
+          description: A unique integer value identifying this insight.
+          required: true
+      - name: environmentsinsightssuggestionscreate
+        method: POST
+        description: DRF ViewSet mixin that gates coalesced responses behind permission checks.
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: format
+          in: query
+          type: string
+        - name: id
+          in: path
+          type: integer
+          description: A unique integer value identifying this insight.
+          required: true
+        - name: body
+          in: body
+          type: object
+          description: Request body (JSON).
+          required: false
+    - name: api-environments-environment_id-insights-insight_id-sharing
+      path: /api/environments/{environment_id}/insights/{insight_id}/sharing/
+      operations:
+      - name: environmentsinsightssharinglist
+        method: GET
+        description: ''
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: insight_id
+          in: path
+          type: integer
+          required: true
+    - name: api-environments-environment_id-insights-insight_id-sharing-passwords
+      path: /api/environments/{environment_id}/insights/{insight_id}/sharing/passwords/
+      operations:
+      - name: environmentsinsightssharingpasswordscreate
+        method: POST
+        description: Create a new password for the sharing configuration.
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: insight_id
+          in: path
+          type: integer
+          required: true
+        - name: body
+          in: body
+          type: object
+          description: Request body (JSON).
+          required: false
+    - name: api-environments-environment_id-insights-insight_id-sharing-passwords-password_i
+      path: /api/environments/{environment_id}/insights/{insight_id}/sharing/passwords/{password_id}/
+      operations:
+      - name: environmentsinsightssharingpasswordsdestroy
+        method: DELETE
+        description: Delete a password from the sharing configuration.
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: insight_id
+          in: path
+          type: integer
+          required: true
+        - name: password_id
+          in: path
+          type: string
+          required: true
+    - name: api-environments-environment_id-insights-insight_id-sharing-refresh
+      path: /api/environments/{environment_id}/insights/{insight_id}/sharing/refresh/
+      operations:
+      - name: environmentsinsightssharingrefreshcreate
+        method: POST
+        description: ''
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: insight_id
+          in: path
+          type: integer
+          required: true
+        - name: body
+          in: body
+          type: object
+          description: Request body (JSON).
+          required: false
+    - name: api-environments-environment_id-insights-insight_id-thresholds
+      path: /api/environments/{environment_id}/insights/{insight_id}/thresholds/
+      operations:
+      - name: environmentsinsightsthresholdslist
+        method: GET
+        description: ''
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: insight_id
+          in: path
+          type: integer
+          required: true
+        - name: limit
+          in: query
+          type: integer
+          description: Number of results to return per page.
+        - name: offset
+          in: query
+          type: integer
+          description: The initial index from which to return the results.
+    - name: api-environments-environment_id-insights-insight_id-thresholds-id
+      path: /api/environments/{environment_id}/insights/{insight_id}/thresholds/{id}/
+      operations:
+      - name: environmentsinsightsthresholdsretrieve
+        method: GET
+        description: ''
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: id
+          in: path
+          type: string
+          description: A UUID string identifying this threshold.
+          required: true
+        - name: insight_id
+          in: path
+          type: integer
+          required: true
+    - name: api-projects-project_id-insights
+      path: /api/projects/{project_id}/insights/
+      operations:
+      - name: insightslist
+        method: GET
+        description: DRF ViewSet mixin that gates coalesced responses behind permission checks.
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: basic
+          in: query
+          type: boolean
+          description: Return basic insight metadata only (no results, faster).
+        - name: created_by
+          in: query
+          type: string
+          description: JSON-encoded array of user IDs. Only returns insights whose `created_by` is in the list, e.g. `[1,42]`.
+        - name: created_date_from
+          in: query
+          type: string
+          description: Filter by `created_at > created_date_from`. Accepts absolute or relative dates.
+        - name: created_date_to
+          in: query
+          type: string
+          description: Filter by `created_at < created_date_to`. Accepts absolute or relative dates.
+        - name: dashboards
+          in: query
+          type: string
+          description: JSON-encoded array of dashboard IDs. Returns insights attached to every listed dashboard (AND).
+        - name: date_from
+          in: query
+          type: string
+          description: Filter by `last_modified_at > date_from`. Accepts absolute dates (`2025-04-23`) or relative strings
+            (`-7d`, `-1m`).
+        - name: date_to
+          in: query
+          type: string
+          description: Filter by `last_modified_at < date_to`. Accepts absolute dates or relative strings.
+        - name: favorited
+          in: query
+          type: boolean
+          description: Include this parameter (any value) to restrict results to insights marked as favorited.
+        - name: format
+          in: query
+          type: string
+        - name: insight
+          in: query
+          type: string
+          description: Restrict to a single insight type. `JSON` matches non-wrapper query insights; `SQL` matches HogQL queries.
+        - name: last_viewed_date_from
+          in: query
+          type: string
+          description: Filter by `last_viewed_at > last_viewed_date_from`. Accepts absolute or relative dates.
+        - name: last_viewed_date_to
+          in: query
+          type: string
+          description: Filter by `last_viewed_at < last_viewed_date_to`. Accepts absolute or relative dates.
+        - name: limit
+          in: query
+          type: integer
+          description: Number of results to return per page.
+        - name: offset
+          in: query
+          type: integer
+          description: The initial index from which to return the results.
+        - name: refresh
+          in: query
+          type: string
+          description: 'Whether to refresh the retrieved insights, how aggressively, and if sync or async:'
+        - name: saved
+          in: query
+          type: boolean
+          description: When truthy, restricts results to insights that are saved (or attached to a visible dashboard). When
+            falsy, only unsaved insights.
+        - name: search
+          in: query
+          type: string
+          description: Case-insensitive substring match across name, derived_name, description, and tag names.
+        - name: short_id
+          in: query
+          type: string
+        - name: tags
+          in: query
+          type: string
+          description: JSON-encoded array of tag names. Returns insights with any of the listed tags.
+        - name: user
+          in: query
+          type: boolean
+          description: Include this parameter (any value) to restrict results to insights created by the authenticated user.
+      - name: insightscreate
+        method: POST
+        description: DRF ViewSet mixin that gates coalesced responses behind permission checks.
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: format
+          in: query
+          type: string
+        - name: body
+          in: body
+          type: object
+          description: Request body (JSON).
+          required: false
+    - name: api-projects-project_id-insights-activity
+      path: /api/projects/{project_id}/insights/activity/
+      operations:
+      - name: insightsallactivityretrieve
+        method: GET
+        description: DRF ViewSet mixin that gates coalesced responses behind permission checks.
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: format
+          in: query
+          type: string
+    - name: api-projects-project_id-insights-bulk_update_tags
+      path: /api/projects/{project_id}/insights/bulk_update_tags/
+      operations:
+      - name: insightsbulkupdatetagscreate
+        method: POST
+        description: Bulk update tags on multiple objects.
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: format
+          in: query
+          type: string
+        - name: body
+          in: body
+          type: object
+          description: Request body (JSON).
+          required: true
+    - name: api-projects-project_id-insights-cancel
+      path: /api/projects/{project_id}/insights/cancel/
+      operations:
+      - name: insightscancelcreate
+        method: POST
+        description: DRF ViewSet mixin that gates coalesced responses behind permission checks.
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: format
+          in: query
+          type: string
+        - name: body
+          in: body
+          type: object
+          description: Request body (JSON).
+          required: false
+    - name: api-projects-project_id-insights-generate_metadata
+      path: /api/projects/{project_id}/insights/generate_metadata/
+      operations:
+      - name: insightsgeneratemetadatacreate
+        method: POST
+        description: Generate an AI-suggested name and description for an insight based on its query configuration.
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: format
+          in: query
+          type: string
+        - name: body
+          in: body
+          type: object
+          description: Request body (JSON).
+          required: false
+    - name: api-projects-project_id-insights-my_last_viewed
+      path: /api/projects/{project_id}/insights/my_last_viewed/
+      operations:
+      - name: insightsmylastviewedretrieve
+        method: GET
+        description: Returns basic details about the last 5 insights viewed by this user. Most recently viewed first.
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: format
+          in: query
+          type: string
+    - name: api-projects-project_id-insights-trending
+      path: /api/projects/{project_id}/insights/trending/
+      operations:
+      - name: insightstrendingretrieve
+        method: GET
+        description: Returns trending insights based on view count in the last N days (default 7).
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: format
+          in: query
+          type: string
+    - name: api-projects-project_id-insights-viewed
+      path: /api/projects/{project_id}/insights/viewed/
+      operations:
+      - name: insightsviewedcreate
+        method: POST
+        description: Update insight view timestamps.
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: format
+          in: query
+          type: string
+        - name: body
+          in: body
+          type: object
+          description: Request body (JSON).
+          required: false
+    - name: api-projects-project_id-insights-id
+      path: /api/projects/{project_id}/insights/{id}/
+      operations:
+      - name: insightsretrieve
+        method: GET
+        description: DRF ViewSet mixin that gates coalesced responses behind permission checks.
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: format
+          in: query
+          type: string
+        - name: from_dashboard
+          in: query
+          type: integer
+          description: 'Only if loading an insight in the context of a dashboard: The relevant dashboard''s ID.'
+        - name: id
+          in: path
+          type: string
+          description: Numeric primary key or 8-character `short_id` (for example `AaVQ8Ijw`) identifying the insight.
+          required: true
+        - name: refresh
+          in: query
+          type: string
+          description: 'Whether to refresh the insight, how aggresively, and if sync or async:'
+      - name: insightsupdate
+        method: PUT
+        description: DRF ViewSet mixin that gates coalesced responses behind permission checks.
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: format
+          in: query
+          type: string
+        - name: id
+          in: path
+          type: string
+          description: Numeric primary key or 8-character `short_id` (for example `AaVQ8Ijw`) identifying the insight.
+          required: true
+        - name: body
+          in: body
+          type: object
+          description: Request body (JSON).
+          required: false
+      - name: insightspartialupdate
+        method: PATCH
+        description: DRF ViewSet mixin that gates coalesced responses behind permission checks.
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: format
+          in: query
+          type: string
+        - name: id
+          in: path
+          type: string
+          description: Numeric primary key or 8-character `short_id` (for example `AaVQ8Ijw`) identifying the insight.
+          required: true
+        - name: body
+          in: body
+          type: object
+          description: Request body (JSON).
+          required: false
+      - name: insightsdestroy
+        method: DELETE
+        description: Hard delete of this model is not allowed. Use a patch API call to set "deleted" to true
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: format
+          in: query
+          type: string
+        - name: id
+          in: path
+          type: string
+          description: Numeric primary key or 8-character `short_id` (for example `AaVQ8Ijw`) identifying the insight.
+          required: true
+    - name: api-projects-project_id-insights-id-activity
+      path: /api/projects/{project_id}/insights/{id}/activity/
+      operations:
+      - name: insightsactivityretrieve
+        method: GET
+        description: DRF ViewSet mixin that gates coalesced responses behind permission checks.
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: format
+          in: query
+          type: string
+        - name: id
+          in: path
+          type: integer
+          description: A unique integer value identifying this insight.
+          required: true
+    - name: api-projects-project_id-insights-id-analyze
+      path: /api/projects/{project_id}/insights/{id}/analyze/
+      operations:
+      - name: insightsanalyzeretrieve
+        method: GET
+        description: DRF ViewSet mixin that gates coalesced responses behind permission checks.
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: format
+          in: query
+          type: string
+        - name: id
+          in: path
+          type: integer
+          description: A unique integer value identifying this insight.
+          required: true
+    - name: api-projects-project_id-insights-id-suggestions
+      path: /api/projects/{project_id}/insights/{id}/suggestions/
+      operations:
+      - name: insightssuggestionsretrieve
+        method: GET
+        description: DRF ViewSet mixin that gates coalesced responses behind permission checks.
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: format
+          in: query
+          type: string
+        - name: id
+          in: path
+          type: integer
+          description: A unique integer value identifying this insight.
+          required: true
+      - name: insightssuggestionscreate
+        method: POST
+        description: DRF ViewSet mixin that gates coalesced responses behind permission checks.
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: format
+          in: query
+          type: string
+        - name: id
+          in: path
+          type: integer
+          description: A unique integer value identifying this insight.
+          required: true
+        - name: body
+          in: body
+          type: object
+          description: Request body (JSON).
+          required: false
+    - name: api-projects-project_id-insights-insight_id-sharing
+      path: /api/projects/{project_id}/insights/{insight_id}/sharing/
+      operations:
+      - name: insightssharinglist
+        method: GET
+        description: ''
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: insight_id
+          in: path
+          type: integer
+          required: true
+    - name: api-projects-project_id-insights-insight_id-sharing-passwords
+      path: /api/projects/{project_id}/insights/{insight_id}/sharing/passwords/
+      operations:
+      - name: insightssharingpasswordscreate
+        method: POST
+        description: Create a new password for the sharing configuration.
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: insight_id
+          in: path
+          type: integer
+          required: true
+        - name: body
+          in: body
+          type: object
+          description: Request body (JSON).
+          required: false
+    - name: api-projects-project_id-insights-insight_id-sharing-passwords-password_id
+      path: /api/projects/{project_id}/insights/{insight_id}/sharing/passwords/{password_id}/
+      operations:
+      - name: insightssharingpasswordsdestroy
+        method: DELETE
+        description: Delete a password from the sharing configuration.
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: insight_id
+          in: path
+          type: integer
+          required: true
+        - name: password_id
+          in: path
+          type: string
+          required: true
+    - name: api-projects-project_id-insights-insight_id-sharing-refresh
+      path: /api/projects/{project_id}/insights/{insight_id}/sharing/refresh/
+      operations:
+      - name: insightssharingrefreshcreate
+        method: POST
+        description: ''
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: insight_id
+          in: path
+          type: integer
+          required: true
+        - name: body
+          in: body
+          type: object
+          description: Request body (JSON).
+          required: false
+    - name: api-projects-project_id-insights-insight_id-thresholds
+      path: /api/projects/{project_id}/insights/{insight_id}/thresholds/
+      operations:
+      - name: insightsthresholdslist
+        method: GET
+        description: ''
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: insight_id
+          in: path
+          type: integer
+          required: true
+        - name: limit
+          in: query
+          type: integer
+          description: Number of results to return per page.
+        - name: offset
+          in: query
+          type: integer
+          description: The initial index from which to return the results.
+    - name: api-projects-project_id-insights-insight_id-thresholds-id
+      path: /api/projects/{project_id}/insights/{insight_id}/thresholds/{id}/
+      operations:
+      - name: insightsthresholdsretrieve
+        method: GET
+        description: ''
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: id
+          in: path
+          type: string
+          description: A UUID string identifying this threshold.
+          required: true
+        - name: insight_id
+          in: path
+          type: integer
+          required: true
+    authentication:
+      type: bearer
+      token: '{{env.POSTHOG_API_KEY}}'
+  exposes:
+  - type: rest
+    namespace: posthog-insights-rest
+    port: 8080
+    description: REST adapter for PostHog API — insights. One Spectral-compliant resource per consumed operation, prefixed
+      with /v1.
+    resources:
+    - path: /v1/api/environments/{environment-id}/insights
+      name: api-environments-environment-id-insights
+      description: REST surface for api-environments-environment_id-insights.
+      operations:
+      - method: GET
+        name: environmentsinsightslist
+        description: DRF ViewSet mixin that gates coalesced responses behind permission checks.
+        call: posthog-insights.environmentsinsightslist
+        with:
+          basic: rest.basic
+          created_by: rest.created_by
+          created_date_from: rest.created_date_from
+          created_date_to: rest.created_date_to
+          dashboards: rest.dashboards
+          date_from: rest.date_from
+          date_to: rest.date_to
+          favorited: rest.favorited
+          format: rest.format
+          insight: rest.insight
+          last_viewed_date_from: rest.last_viewed_date_from
+          last_viewed_date_to: rest.last_viewed_date_to
+          limit: rest.limit
+          offset: rest.offset
+          refresh: rest.refresh
+          saved: rest.saved
+          search: rest.search
+          short_id: rest.short_id
+          tags: rest.tags
+          user: rest.user
+        outputParameters:
+        - type: object
+          mapping: $.
+      - method: POST
+        name: environmentsinsightscreate
+        description: DRF ViewSet mixin that gates coalesced responses behind permission checks.
+        call: posthog-insights.environmentsinsightscreate
+        with:
+          format: rest.format
+          body: rest.body
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /v1/api/environments/{environment-id}/insights/activity
+      name: api-environments-environment-id-insights-activity
+      description: REST surface for api-environments-environment_id-insights-activity.
+      operations:
+      - method: GET
+        name: environmentsinsightsallactivityretrieve
+        description: DRF ViewSet mixin that gates coalesced responses behind permission checks.
+        call: posthog-insights.environmentsinsightsallactivityretrieve
+        with:
+          format: rest.format
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /v1/api/environments/{environment-id}/insights/bulk-update-tags
+      name: api-environments-environment-id-insights-bulk-update-tags
+      description: REST surface for api-environments-environment_id-insights-bulk_update_tags.
+      operations:
+      - method: POST
+        name: environmentsinsightsbulkupdatetagscreate
+        description: Bulk update tags on multiple objects.
+        call: posthog-insights.environmentsinsightsbulkupdatetagscreate
+        with:
+          format: rest.format
+          body: rest.body
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /v1/api/environments/{environment-id}/insights/cancel
+      name: api-environments-environment-id-insights-cancel
+      description: REST surface for api-environments-environment_id-insights-cancel.
+      operations:
+      - method: POST
+        name: environmentsinsightscancelcreate
+        description: DRF ViewSet mixin that gates coalesced responses behind permission checks.
+        call: posthog-insights.environmentsinsightscancelcreate
+        with:
+          format: rest.format
+          body: rest.body
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /v1/api/environments/{environment-id}/insights/generate-metadata
+      name: api-environments-environment-id-insights-generate-metadata
+      description: REST surface for api-environments-environment_id-insights-generate_metadata.
+      operations:
+      - method: POST
+        name: environmentsinsightsgeneratemetadatacreate
+        description: Generate an AI-suggested name and description for an insight based on its query configuration.
+        call: posthog-insights.environmentsinsightsgeneratemetadatacreate
+        with:
+          format: rest.format
+          body: rest.body
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /v1/api/environments/{environment-id}/insights/my-last-viewed
+      name: api-environments-environment-id-insights-my-last-viewed
+      description: REST surface for api-environments-environment_id-insights-my_last_viewed.
+      operations:
+      - method: GET
+        name: environmentsinsightsmylastviewedretrieve
+        description: Returns basic details about the last 5 insights viewed by this user. Most recently viewed first.
+        call: posthog-insights.environmentsinsightsmylastviewedretrieve
+        with:
+          format: rest.format
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /v1/api/environments/{environment-id}/insights/trending
+      name: api-environments-environment-id-insights-trending
+      description: REST surface for api-environments-environment_id-insights-trending.
+      operations:
+      - method: GET
+        name: environmentsinsightstrendingretrieve
+        description: Returns trending insights based on view count in the last N days (default 7).
+        call: posthog-insights.environmentsinsightstrendingretrieve
+        with:
+          format: rest.format
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /v1/api/environments/{environment-id}/insights/viewed
+      name: api-environments-environment-id-insights-viewed
+      description: REST surface for api-environments-environment_id-insights-viewed.
+      operations:
+      - method: POST
+        name: environmentsinsightsviewedcreate
+        description: Update insight view timestamps.
+        call: posthog-insights.environmentsinsightsviewedcreate
+        with:
+          format: rest.format
+          body: rest.body
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /v1/api/environments/{environment-id}/insights/{id}
+      name: api-environments-environment-id-insights-id
+      description: REST surface for api-environments-environment_id-insights-id.
+      operations:
+      - method: GET
+        name: environmentsinsightsretrieve
+        description: DRF ViewSet mixin that gates coalesced responses behind permission checks.
+        call: posthog-insights.environmentsinsightsretrieve
+        with:
+          format: rest.format
+          from_dashboard: rest.from_dashboard
+          id: rest.id
+          refresh: rest.refresh
+        outputParameters:
+        - type: object
+          mapping: $.
+      - method: PUT
+        name: environmentsinsightsupdate
+        description: DRF ViewSet mixin that gates coalesced responses behind permission checks.
+        call: posthog-insights.environmentsinsightsupdate
+        with:
+          format: rest.format
+          id: rest.id
+          body: rest.body
+        outputParameters:
+        - type: object
+          mapping: $.
+      - method: PATCH
+        name: environmentsinsightspartialupdate
+        description: DRF ViewSet mixin that gates coalesced responses behind permission checks.
+        call: posthog-insights.environmentsinsightspartialupdate
+        with:
+          format: rest.format
+          id: rest.id
+          body: rest.body
+        outputParameters:
+        - type: object
+          mapping: $.
+      - method: DELETE
+        name: environmentsinsightsdestroy
+        description: Hard delete of this model is not allowed. Use a patch API call to set "deleted" to true
+        call: posthog-insights.environmentsinsightsdestroy
+        with:
+          format: rest.format
+          id: rest.id
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /v1/api/environments/{environment-id}/insights/{id}/activity
+      name: api-environments-environment-id-insights-id-activity
+      description: REST surface for api-environments-environment_id-insights-id-activity.
+      operations:
+      - method: GET
+        name: environmentsinsightsactivityretrieve
+        description: DRF ViewSet mixin that gates coalesced responses behind permission checks.
+        call: posthog-insights.environmentsinsightsactivityretrieve
+        with:
+          format: rest.format
+          id: rest.id
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /v1/api/environments/{environment-id}/insights/{id}/analyze
+      name: api-environments-environment-id-insights-id-analyze
+      description: REST surface for api-environments-environment_id-insights-id-analyze.
+      operations:
+      - method: GET
+        name: environmentsinsightsanalyzeretrieve
+        description: DRF ViewSet mixin that gates coalesced responses behind permission checks.
+        call: posthog-insights.environmentsinsightsanalyzeretrieve
+        with:
+          format: rest.format
+          id: rest.id
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /v1/api/environments/{environment-id}/insights/{id}/suggestions
+      name: api-environments-environment-id-insights-id-suggestions
+      description: REST surface for api-environments-environment_id-insights-id-suggestions.
+      operations:
+      - method: GET
+        name: environmentsinsightssuggestionsretrieve
+        description: DRF ViewSet mixin that gates coalesced responses behind permission checks.
+        call: posthog-insights.environmentsinsightssuggestionsretrieve
+        with:
+          format: rest.format
+          id: rest.id
+        outputParameters:
+        - type: object
+          mapping: $.
+      - method: POST
+        name: environmentsinsightssuggestionscreate
+        description: DRF ViewSet mixin that gates coalesced responses behind permission checks.
+        call: posthog-insights.environmentsinsightssuggestionscreate
+        with:
+          format: rest.format
+          id: rest.id
+          body: rest.body
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /v1/api/environments/{environment-id}/insights/{insight-id}/sharing
+      name: api-environments-environment-id-insights-insight-id-sharing
+      description: REST surface for api-environments-environment_id-insights-insight_id-sharing.
+      operations:
+      - method: GET
+        name: environmentsinsightssharinglist
+        description: environmentsinsightssharinglist
+        call: posthog-insights.environmentsinsightssharinglist
+        with:
+          insight_id: rest.insight_id
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /v1/api/environments/{environment-id}/insights/{insight-id}/sharing/passwords
+      name: api-environments-environment-id-insights-insight-id-sharing-passwords
+      description: REST surface for api-environments-environment_id-insights-insight_id-sharing-passwords.
+      operations:
+      - method: POST
+        name: environmentsinsightssharingpasswordscreate
+        description: Create a new password for the sharing configuration.
+        call: posthog-insights.environmentsinsightssharingpasswordscreate
+        with:
+          insight_id: rest.insight_id
+          body: rest.body
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /v1/api/environments/{environment-id}/insights/{insight-id}/sharing/passwords/{password-id}
+      name: api-environments-environment-id-insights-insight-id-sharing-passwords-password-i
+      description: REST surface for api-environments-environment_id-insights-insight_id-sharing-passwords-password_i.
+      operations:
+      - method: DELETE
+        name: environmentsinsightssharingpasswordsdestroy
+        description: Delete a password from the sharing configuration.
+        call: posthog-insights.environmentsinsightssharingpasswordsdestroy
+        with:
+          insight_id: rest.insight_id
+          password_id: rest.password_id
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /v1/api/environments/{environment-id}/insights/{insight-id}/sharing/refresh
+      name: api-environments-environment-id-insights-insight-id-sharing-refresh
+      description: REST surface for api-environments-environment_id-insights-insight_id-sharing-refresh.
+      operations:
+      - method: POST
+        name: environmentsinsightssharingrefreshcreate
+        description: environmentsinsightssharingrefreshcreate
+        call: posthog-insights.environmentsinsightssharingrefreshcreate
+        with:
+          insight_id: rest.insight_id
+          body: rest.body
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /v1/api/environments/{environment-id}/insights/{insight-id}/thresholds
+      name: api-environments-environment-id-insights-insight-id-thresholds
+      description: REST surface for api-environments-environment_id-insights-insight_id-thresholds.
+      operations:
+      - method: GET
+        name: environmentsinsightsthresholdslist
+        description: environmentsinsightsthresholdslist
+        call: posthog-insights.environmentsinsightsthresholdslist
+        with:
+          insight_id: rest.insight_id
+          limit: rest.limit
+          offset: rest.offset
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /v1/api/environments/{environment-id}/insights/{insight-id}/thresholds/{id}
+      name: api-environments-environment-id-insights-insight-id-thresholds-id
+      description: REST surface for api-environments-environment_id-insights-insight_id-thresholds-id.
+      operations:
+      - method: GET
+        name: environmentsinsightsthresholdsretrieve
+        description: environmentsinsightsthresholdsretrieve
+        call: posthog-insights.environmentsinsightsthresholdsretrieve
+        with:
+          id: rest.id
+          insight_id: rest.insight_id
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /v1/api/projects/{project-id}/insights
+      name: api-projects-project-id-insights
+      description: REST surface for api-projects-project_id-insights.
+      operations:
+      - method: GET
+        name: insightslist
+        description: DRF ViewSet mixin that gates coalesced responses behind permission checks.
+        call: posthog-insights.insightslist
+        with:
+          basic: rest.basic
+          created_by: rest.created_by
+          created_date_from: rest.created_date_from
+          created_date_to: rest.created_date_to
+          dashboards: rest.dashboards
+          date_from: rest.date_from
+          date_to: rest.date_to
+          favorited: rest.favorited
+          format: rest.format
+          insight: rest.insight
+          last_viewed_date_from: rest.last_viewed_date_from
+          last_viewed_date_to: rest.last_viewed_date_to
+          limit: rest.limit
+          offset: rest.offset
+          refresh: rest.refresh
+          saved: rest.saved
+          search: rest.search
+          short_id: rest.short_id
+          tags: rest.tags
+          user: rest.user
+        outputParameters:
+        - type: object
+          mapping: $.
+      - method: POST
+        name: insightscreate
+        description: DRF ViewSet mixin that gates coalesced responses behind permission checks.
+        call: posthog-insights.insightscreate
+        with:
+          format: rest.format
+          body: rest.body
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /v1/api/projects/{project-id}/insights/activity
+      name: api-projects-project-id-insights-activity
+      description: REST surface for api-projects-project_id-insights-activity.
+      operations:
+      - method: GET
+        name: insightsallactivityretrieve
+        description: DRF ViewSet mixin that gates coalesced responses behind permission checks.
+        call: posthog-insights.insightsallactivityretrieve
+        with:
+          format: rest.format
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /v1/api/projects/{project-id}/insights/bulk-update-tags
+      name: api-projects-project-id-insights-bulk-update-tags
+      description: REST surface for api-projects-project_id-insights-bulk_update_tags.
+      operations:
+      - method: POST
+        name: insightsbulkupdatetagscreate
+        description: Bulk update tags on multiple objects.
+        call: posthog-insights.insightsbulkupdatetagscreate
+        with:
+          format: rest.format
+          body: rest.body
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /v1/api/projects/{project-id}/insights/cancel
+      name: api-projects-project-id-insights-cancel
+      description: REST surface for api-projects-project_id-insights-cancel.
+      operations:
+      - method: POST
+        name: insightscancelcreate
+        description: DRF ViewSet mixin that gates coalesced responses behind permission checks.
+        call: posthog-insights.insightscancelcreate
+        with:
+          format: rest.format
+          body: rest.body
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /v1/api/projects/{project-id}/insights/generate-metadata
+      name: api-projects-project-id-insights-generate-metadata
+      description: REST surface for api-projects-project_id-insights-generate_metadata.
+      operations:
+      - method: POST
+        name: insightsgeneratemetadatacreate
+        description: Generate an AI-suggested name and description for an insight based on its query configuration.
+        call: posthog-insights.insightsgeneratemetadatacreate
+        with:
+          format: rest.format
+          body: rest.body
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /v1/api/projects/{project-id}/insights/my-last-viewed
+      name: api-projects-project-id-insights-my-last-viewed
+      description: REST surface for api-projects-project_id-insights-my_last_viewed.
+      operations:
+      - method: GET
+        name: insightsmylastviewedretrieve
+        description: Returns basic details about the last 5 insights viewed by this user. Most recently viewed first.
+        call: posthog-insights.insightsmylastviewedretrieve
+        with:
+          format: rest.format
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /v1/api/projects/{project-id}/insights/trending
+      name: api-projects-project-id-insights-trending
+      description: REST surface for api-projects-project_id-insights-trending.
+      operations:
+      - method: GET
+        name: insightstrendingretrieve
+        description: Returns trending insights based on view count in the last N days (default 7).
+        call: posthog-insights.insightstrendingretrieve
+        with:
+          format: rest.format
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /v1/api/projects/{project-id}/insights/viewed
+      name: api-projects-project-id-insights-viewed
+      description: REST surface for api-projects-project_id-insights-viewed.
+      operations:
+      - method: POST
+        name: insightsviewedcreate
+        description: Update insight view timestamps.
+        call: posthog-insights.insightsviewedcreate
+        with:
+          format: rest.format
+          body: rest.body
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /v1/api/projects/{project-id}/insights/{id}
+      name: api-projects-project-id-insights-id
+      description: REST surface for api-projects-project_id-insights-id.
+      operations:
+      - method: GET
+        name: insightsretrieve
+        description: DRF ViewSet mixin that gates coalesced responses behind permission checks.
+        call: posthog-insights.insightsretrieve
+        with:
+          format: rest.format
+          from_dashboard: rest.from_dashboard
+          id: rest.id
+          refresh: rest.refresh
+        outputParameters:
+        - type: object
+          mapping: $.
+      - method: PUT
+        name: insightsupdate
+        description: DRF ViewSet mixin that gates coalesced responses behind permission checks.
+        call: posthog-insights.insightsupdate
+        with:
+          format: rest.format
+          id: rest.id
+          body: rest.body
+        outputParameters:
+        - type: object
+          mapping: $.
+      - method: PATCH
+        name: insightspartialupdate
+        description: DRF ViewSet mixin that gates coalesced responses behind permission checks.
+        call: posthog-insights.insightspartialupdate
+        with:
+          format: rest.format
+          id: rest.id
+          body: rest.body
+        outputParameters:
+        - type: object
+          mapping: $.
+      - method: DELETE
+        name: insightsdestroy
+        description: Hard delete of this model is not allowed. Use a patch API call to set "deleted" to true
+        call: posthog-insights.insightsdestroy
+        with:
+          format: rest.format
+          id: rest.id
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /v1/api/projects/{project-id}/insights/{id}/activity
+      name: api-projects-project-id-insights-id-activity
+      description: REST surface for api-projects-project_id-insights-id-activity.
+      operations:
+      - method: GET
+        name: insightsactivityretrieve
+        description: DRF ViewSet mixin that gates coalesced responses behind permission checks.
+        call: posthog-insights.insightsactivityretrieve
+        with:
+          format: rest.format
+          id: rest.id
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /v1/api/projects/{project-id}/insights/{id}/analyze
+      name: api-projects-project-id-insights-id-analyze
+      description: REST surface for api-projects-project_id-insights-id-analyze.
+      operations:
+      - method: GET
+        name: insightsanalyzeretrieve
+        description: DRF ViewSet mixin that gates coalesced responses behind permission checks.
+        call: posthog-insights.insightsanalyzeretrieve
+        with:
+          format: rest.format
+          id: rest.id
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /v1/api/projects/{project-id}/insights/{id}/suggestions
+      name: api-projects-project-id-insights-id-suggestions
+      description: REST surface for api-projects-project_id-insights-id-suggestions.
+      operations:
+      - method: GET
+        name: insightssuggestionsretrieve
+        description: DRF ViewSet mixin that gates coalesced responses behind permission checks.
+        call: posthog-insights.insightssuggestionsretrieve
+        with:
+          format: rest.format
+          id: rest.id
+        outputParameters:
+        - type: object
+          mapping: $.
+      - method: POST
+        name: insightssuggestionscreate
+        description: DRF ViewSet mixin that gates coalesced responses behind permission checks.
+        call: posthog-insights.insightssuggestionscreate
+        with:
+          format: rest.format
+          id: rest.id
+          body: rest.body
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /v1/api/projects/{project-id}/insights/{insight-id}/sharing
+      name: api-projects-project-id-insights-insight-id-sharing
+      description: REST surface for api-projects-project_id-insights-insight_id-sharing.
+      operations:
+      - method: GET
+        name: insightssharinglist
+        description: insightssharinglist
+        call: posthog-insights.insightssharinglist
+        with:
+          insight_id: rest.insight_id
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /v1/api/projects/{project-id}/insights/{insight-id}/sharing/passwords
+      name: api-projects-project-id-insights-insight-id-sharing-passwords
+      description: REST surface for api-projects-project_id-insights-insight_id-sharing-passwords.
+      operations:
+      - method: POST
+        name: insightssharingpasswordscreate
+        description: Create a new password for the sharing configuration.
+        call: posthog-insights.insightssharingpasswordscreate
+        with:
+          insight_id: rest.insight_id
+          body: rest.body
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /v1/api/projects/{project-id}/insights/{insight-id}/sharing/passwords/{password-id}
+      name: api-projects-project-id-insights-insight-id-sharing-passwords-password-id
+      description: REST surface for api-projects-project_id-insights-insight_id-sharing-passwords-password_id.
+      operations:
+      - method: DELETE
+        name: insightssharingpasswordsdestroy
+        description: Delete a password from the sharing configuration.
+        call: posthog-insights.insightssharingpasswordsdestroy
+        with:
+          insight_id: rest.insight_id
+          password_id: rest.password_id
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /v1/api/projects/{project-id}/insights/{insight-id}/sharing/refresh
+      name: api-projects-project-id-insights-insight-id-sharing-refresh
+      description: REST surface for api-projects-project_id-insights-insight_id-sharing-refresh.
+      operations:
+      - method: POST
+        name: insightssharingrefreshcreate
+        description: insightssharingrefreshcreate
+        call: posthog-insights.insightssharingrefreshcreate
+        with:
+          insight_id: rest.insight_id
+          body: rest.body
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /v1/api/projects/{project-id}/insights/{insight-id}/thresholds
+      name: api-projects-project-id-insights-insight-id-thresholds
+      description: REST surface for api-projects-project_id-insights-insight_id-thresholds.
+      operations:
+      - method: GET
+        name: insightsthresholdslist
+        description: insightsthresholdslist
+        call: posthog-insights.insightsthresholdslist
+        with:
+          insight_id: rest.insight_id
+          limit: rest.limit
+          offset: rest.offset
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /v1/api/projects/{project-id}/insights/{insight-id}/thresholds/{id}
+      name: api-projects-project-id-insights-insight-id-thresholds-id
+      description: REST surface for api-projects-project_id-insights-insight_id-thresholds-id.
+      operations:
+      - method: GET
+        name: insightsthresholdsretrieve
+        description: insightsthresholdsretrieve
+        call: posthog-insights.insightsthresholdsretrieve
+        with:
+          id: rest.id
+          insight_id: rest.insight_id
+        outputParameters:
+        - type: object
+          mapping: $.
+  - type: mcp
+    namespace: posthog-insights-mcp
+    port: 9090
+    transport: http
+    description: MCP adapter for PostHog API — insights. One tool per consumed operation, routed inline through this capability's
+      consumes block.
+    tools:
+    - name: drf-viewset-mixin-that-gates
+      description: DRF ViewSet mixin that gates coalesced responses behind permission checks.
+      hints:
+        readOnly: true
+        destructive: false
+        idempotent: true
+      call: posthog-insights.environmentsinsightslist
+      with:
+        basic: tools.basic
+        created_by: tools.created_by
+        created_date_from: tools.created_date_from
+        created_date_to: tools.created_date_to
+        dashboards: tools.dashboards
+        date_from: tools.date_from
+        date_to: tools.date_to
+        favorited: tools.favorited
+        format: tools.format
+        insight: tools.insight
+        last_viewed_date_from: tools.last_viewed_date_from
+        last_viewed_date_to: tools.last_viewed_date_to
+        limit: tools.limit
+        offset: tools.offset
+        refresh: tools.refresh
+        saved: tools.saved
+        search: tools.search
+        short_id: tools.short_id
+        tags: tools.tags
+        user: tools.user
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: drf-viewset-mixin-that-gates-2
+      description: DRF ViewSet mixin that gates coalesced responses behind permission checks.
+      hints:
+        readOnly: false
+        destructive: false
+        idempotent: false
+      call: posthog-insights.environmentsinsightscreate
+      with:
+        format: tools.format
+        body: tools.body
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: drf-viewset-mixin-that-gates-3
+      description: DRF ViewSet mixin that gates coalesced responses behind permission checks.
+      hints:
+        readOnly: true
+        destructive: false
+        idempotent: true
+      call: posthog-insights.environmentsinsightsallactivityretrieve
+      with:
+        format: tools.format
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: bulk-update-tags-multiple-objects
+      description: Bulk update tags on multiple objects.
+      hints:
+        readOnly: false
+        destructive: false
+        idempotent: false
+      call: posthog-insights.environmentsinsightsbulkupdatetagscreate
+      with:
+        format: tools.format
+        body: tools.body
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: drf-viewset-mixin-that-gates-4
+      description: DRF ViewSet mixin that gates coalesced responses behind permission checks.
+      hints:
+        readOnly: false
+        destructive: false
+        idempotent: false
+      call: posthog-insights.environmentsinsightscancelcreate
+      with:
+        format: tools.format
+        body: tools.body
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: generate-ai-suggested-name-and
+      description: Generate an AI-suggested name and description for an insight based on its query configuration.
+      hints:
+        readOnly: true
+        destructive: false
+        idempotent: false
+      call: posthog-insights.environmentsinsightsgeneratemetadatacreate
+      with:
+        format: tools.format
+        body: tools.body
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: returns-basic-details-about-last
+      description: Returns basic details about the last 5 insights viewed by this user. Most recently viewed first.
+      hints:
+        readOnly: true
+        destructive: false
+        idempotent: true
+      call: posthog-insights.environmentsinsightsmylastviewedretrieve
+      with:
+        format: tools.format
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: returns-trending-insights-based-view
+      description: Returns trending insights based on view count in the last N days (default 7).
+      hints:
+        readOnly: true
+        destructive: false
+        idempotent: true
+      call: posthog-insights.environmentsinsightstrendingretrieve
+      with:
+        format: tools.format
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: update-insight-view-timestamps
+      description: Update insight view timestamps.
+      hints:
+        readOnly: false
+        destructive: false
+        idempotent: false
+      call: posthog-insights.environmentsinsightsviewedcreate
+      with:
+        format: tools.format
+        body: tools.body
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: drf-viewset-mixin-that-gates-5
+      description: DRF ViewSet mixin that gates coalesced responses behind permission checks.
+      hints:
+        readOnly: true
+        destructive: false
+        idempotent: true
+      call: posthog-insights.environmentsinsightsretrieve
+      with:
+        format: tools.format
+        from_dashboard: tools.from_dashboard
+        id: tools.id
+        refresh: tools.refresh
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: drf-viewset-mixin-that-gates-6
+      description: DRF ViewSet mixin that gates coalesced responses behind permission checks.
+      hints:
+        readOnly: false
+        destructive: false
+        idempotent: true
+      call: posthog-insights.environmentsinsightsupdate
+      with:
+        format: tools.format
+        id: tools.id
+        body: tools.body
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: drf-viewset-mixin-that-gates-7
+      description: DRF ViewSet mixin that gates coalesced responses behind permission checks.
+      hints:
+        readOnly: false
+        destructive: false
+        idempotent: true
+      call: posthog-insights.environmentsinsightspartialupdate
+      with:
+        format: tools.format
+        id: tools.id
+        body: tools.body
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: hard-delete-this-model-is
+      description: Hard delete of this model is not allowed. Use a patch API call to set "deleted" to true
+      hints:
+        readOnly: false
+        destructive: true
+        idempotent: true
+      call: posthog-insights.environmentsinsightsdestroy
+      with:
+        format: tools.format
+        id: tools.id
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: drf-viewset-mixin-that-gates-8
+      description: DRF ViewSet mixin that gates coalesced responses behind permission checks.
+      hints:
+        readOnly: true
+        destructive: false
+        idempotent: true
+      call: posthog-insights.environmentsinsightsactivityretrieve
+      with:
+        format: tools.format
+        id: tools.id
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: drf-viewset-mixin-that-gates-9
+      description: DRF ViewSet mixin that gates coalesced responses behind permission checks.
+      hints:
+        readOnly: true
+        destructive: false
+        idempotent: true
+      call: posthog-insights.environmentsinsightsanalyzeretrieve
+      with:
+        format: tools.format
+        id: tools.id
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: drf-viewset-mixin-that-gates-10
+      description: DRF ViewSet mixin that gates coalesced responses behind permission checks.
+      hints:
+        readOnly: true
+        destructive: false
+        idempotent: true
+      call: posthog-insights.environmentsinsightssuggestionsretrieve
+      with:
+        format: tools.format
+        id: tools.id
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: drf-viewset-mixin-that-gates-11
+      description: DRF ViewSet mixin that gates coalesced responses behind permission checks.
+      hints:
+        readOnly: false
+        destructive: false
+        idempotent: false
+      call: posthog-insights.environmentsinsightssuggestionscreate
+      with:
+        format: tools.format
+        id: tools.id
+        body: tools.body
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: environmentsinsightssharinglist
+      description: environmentsinsightssharinglist
+      hints:
+        readOnly: true
+        destructive: false
+        idempotent: true
+      call: posthog-insights.environmentsinsightssharinglist
+      with:
+        insight_id: tools.insight_id
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: create-new-password-sharing-configuration
+      description: Create a new password for the sharing configuration.
+      hints:
+        readOnly: false
+        destructive: false
+        idempotent: false
+      call: posthog-insights.environmentsinsightssharingpasswordscreate
+      with:
+        insight_id: tools.insight_id
+        body: tools.body
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: delete-password-sharing-configuration
+      description: Delete a password from the sharing configuration.
+      hints:
+        readOnly: false
+        destructive: true
+        idempotent: true
+      call: posthog-insights.environmentsinsightssharingpasswordsdestroy
+      with:
+        insight_id: tools.insight_id
+        password_id: tools.password_id
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: environmentsinsightssharingrefreshcreate
+      description: environmentsinsightssharingrefreshcreate
+      hints:
+        readOnly: false
+        destructive: false
+        idempotent: false
+      call: posthog-insights.environmentsinsightssharingrefreshcreate
+      with:
+        insight_id: tools.insight_id
+        body: tools.body
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: environmentsinsightsthresholdslist
+      description: environmentsinsightsthresholdslist
+      hints:
+        readOnly: true
+        destructive: false
+        idempotent: true
+      call: posthog-insights.environmentsinsightsthresholdslist
+      with:
+        insight_id: tools.insight_id
+        limit: tools.limit
+        offset: tools.offset
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: environmentsinsightsthresholdsretrieve
+      description: environmentsinsightsthresholdsretrieve
+      hints:
+        readOnly: true
+        destructive: false
+        idempotent: true
+      call: posthog-insights.environmentsinsightsthresholdsretrieve
+      with:
+        id: tools.id
+        insight_id: tools.insight_id
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: drf-viewset-mixin-that-gates-12
+      description: DRF ViewSet mixin that gates coalesced responses behind permission checks.
+      hints:
+        readOnly: true
+        destructive: false
+        idempotent: true
+      call: posthog-insights.insightslist
+      with:
+        basic: tools.basic
+        created_by: tools.created_by
+        created_date_from: tools.created_date_from
+        created_date_to: tools.created_date_to
+        dashboards: tools.dashboards
+        date_from: tools.date_from
+        date_to: tools.date_to
+        favorited: tools.favorited
+        format: tools.format
+        insight: tools.insight
+        last_viewed_date_from: tools.last_viewed_date_from
+        last_viewed_date_to: tools.last_viewed_date_to
+        limit: tools.limit
+        offset: tools.offset
+        refresh: tools.refresh
+        saved: tools.saved
+        search: tools.search
+        short_id: tools.short_id
+        tags: tools.tags
+        user: tools.user
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: drf-viewset-mixin-that-gates-13
+      description: DRF ViewSet mixin that gates coalesced responses behind permission checks.
+      hints:
+        readOnly: false
+        destructive: false
+        idempotent: false
+      call: posthog-insights.insightscreate
+      with:
+        format: tools.format
+        body: tools.body
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: drf-viewset-mixin-that-gates-14
+      description: DRF ViewSet mixin that gates coalesced responses behind permission checks.
+      hints:
+        readOnly: true
+        destructive: false
+        idempotent: true
+      call: posthog-insights.insightsallactivityretrieve
+      with:
+        format: tools.format
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: bulk-update-tags-multiple-objects-2
+      description: Bulk update tags on multiple objects.
+      hints:
+        readOnly: false
+        destructive: false
+        idempotent: false
+      call: posthog-insights.insightsbulkupdatetagscreate
+      with:
+        format: tools.format
+        body: tools.body
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: drf-viewset-mixin-that-gates-15
+      description: DRF ViewSet mixin that gates coalesced responses behind permission checks.
+      hints:
+        readOnly: false
+        destructive: false
+        idempotent: false
+      call: posthog-insights.insightscancelcreate
+      with:
+        format: tools.format
+        body: tools.body
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: generate-ai-suggested-name-and-2
+      description: Generate an AI-suggested name and description for an insight based on its query configuration.
+      hints:
+        readOnly: true
+        destructive: false
+        idempotent: false
+      call: posthog-insights.insightsgeneratemetadatacreate
+      with:
+        format: tools.format
+        body: tools.body
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: returns-basic-details-about-last-2
+      description: Returns basic details about the last 5 insights viewed by this user. Most recently viewed first.
+      hints:
+        readOnly: true
+        destructive: false
+        idempotent: true
+      call: posthog-insights.insightsmylastviewedretrieve
+      with:
+        format: tools.format
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: returns-trending-insights-based-view-2
+      description: Returns trending insights based on view count in the last N days (default 7).
+      hints:
+        readOnly: true
+        destructive: false
+        idempotent: true
+      call: posthog-insights.insightstrendingretrieve
+      with:
+        format: tools.format
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: update-insight-view-timestamps-2
+      description: Update insight view timestamps.
+      hints:
+        readOnly: false
+        destructive: false
+        idempotent: false
+      call: posthog-insights.insightsviewedcreate
+      with:
+        format: tools.format
+        body: tools.body
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: drf-viewset-mixin-that-gates-16
+      description: DRF ViewSet mixin that gates coalesced responses behind permission checks.
+      hints:
+        readOnly: true
+        destructive: false
+        idempotent: true
+      call: posthog-insights.insightsretrieve
+      with:
+        format: tools.format
+        from_dashboard: tools.from_dashboard
+        id: tools.id
+        refresh: tools.refresh
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: drf-viewset-mixin-that-gates-17
+      description: DRF ViewSet mixin that gates coalesced responses behind permission checks.
+      hints:
+        readOnly: false
+        destructive: false
+        idempotent: true
+      call: posthog-insights.insightsupdate
+      with:
+        format: tools.format
+        id: tools.id
+        body: tools.body
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: drf-viewset-mixin-that-gates-18
+      description: DRF ViewSet mixin that gates coalesced responses behind permission checks.
+      hints:
+        readOnly: false
+        destructive: false
+        idempotent: true
+      call: posthog-insights.insightspartialupdate
+      with:
+        format: tools.format
+        id: tools.id
+        body: tools.body
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: hard-delete-this-model-is-2
+      description: Hard delete of this model is not allowed. Use a patch API call to set "deleted" to true
+      hints:
+        readOnly: false
+        destructive: true
+        idempotent: true
+      call: posthog-insights.insightsdestroy
+      with:
+        format: tools.format
+        id: tools.id
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: drf-viewset-mixin-that-gates-19
+      description: DRF ViewSet mixin that gates coalesced responses behind permission checks.
+      hints:
+        readOnly: true
+        destructive: false
+        idempotent: true
+      call: posthog-insights.insightsactivityretrieve
+      with:
+        format: tools.format
+        id: tools.id
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: drf-viewset-mixin-that-gates-20
+      description: DRF ViewSet mixin that gates coalesced responses behind permission checks.
+      hints:
+        readOnly: true
+        destructive: false
+        idempotent: true
+      call: posthog-insights.insightsanalyzeretrieve
+      with:
+        format: tools.format
+        id: tools.id
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: drf-viewset-mixin-that-gates-21
+      description: DRF ViewSet mixin that gates coalesced responses behind permission checks.
+      hints:
+        readOnly: true
+        destructive: false
+        idempotent: true
+      call: posthog-insights.insightssuggestionsretrieve
+      with:
+        format: tools.format
+        id: tools.id
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: drf-viewset-mixin-that-gates-22
+      description: DRF ViewSet mixin that gates coalesced responses behind permission checks.
+      hints:
+        readOnly: false
+        destructive: false
+        idempotent: false
+      call: posthog-insights.insightssuggestionscreate
+      with:
+        format: tools.format
+        id: tools.id
+        body: tools.body
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: insightssharinglist
+      description: insightssharinglist
+      hints:
+        readOnly: true
+        destructive: false
+        idempotent: true
+      call: posthog-insights.insightssharinglist
+      with:
+        insight_id: tools.insight_id
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: create-new-password-sharing-configuration-2
+      description: Create a new password for the sharing configuration.
+      hints:
+        readOnly: false
+        destructive: false
+        idempotent: false
+      call: posthog-insights.insightssharingpasswordscreate
+      with:
+        insight_id: tools.insight_id
+        body: tools.body
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: delete-password-sharing-configuration-2
+      description: Delete a password from the sharing configuration.
+      hints:
+        readOnly: false
+        destructive: true
+        idempotent: true
+      call: posthog-insights.insightssharingpasswordsdestroy
+      with:
+        insight_id: tools.insight_id
+        password_id: tools.password_id
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: insightssharingrefreshcreate
+      description: insightssharingrefreshcreate
+      hints:
+        readOnly: false
+        destructive: false
+        idempotent: false
+      call: posthog-insights.insightssharingrefreshcreate
+      with:
+        insight_id: tools.insight_id
+        body: tools.body
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: insightsthresholdslist
+      description: insightsthresholdslist
+      hints:
+        readOnly: true
+        destructive: false
+        idempotent: true
+      call: posthog-insights.insightsthresholdslist
+      with:
+        insight_id: tools.insight_id
+        limit: tools.limit
+        offset: tools.offset
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: insightsthresholdsretrieve
+      description: insightsthresholdsretrieve
+      hints:
+        readOnly: true
+        destructive: false
+        idempotent: true
+      call: posthog-insights.insightsthresholdsretrieve
+      with:
+        id: tools.id
+        insight_id: tools.insight_id
+      outputParameters:
+      - type: object
+        mapping: $.

@@ -1,0 +1,169 @@
+naftiko: 1.0.0-alpha2
+info:
+  label: PostHog API — event_filter
+  description: 'PostHog API — event_filter. 4 operations. Lead operation: event_filter. Self-contained Naftiko capability
+    covering one Posthog business surface.'
+  tags:
+  - Posthog
+  - event_filter
+  created: '2026-05-19'
+  modified: '2026-05-19'
+binds:
+- namespace: env
+  keys:
+    POSTHOG_API_KEY: POSTHOG_API_KEY
+capability:
+  consumes:
+  - type: http
+    namespace: posthog-event-filter
+    baseUri: ''
+    description: PostHog API — event_filter business capability. Self-contained, no shared references.
+    resources:
+    - name: api-environments-project_id-event_filter
+      path: /api/environments/{project_id}/event_filter/
+      operations:
+      - name: eventfilterretrieve
+        method: GET
+        description: Returns the event filter config for the team, or null if not yet created.
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+      - name: eventfiltercreate
+        method: POST
+        description: Create or update the event filter config.
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: body
+          in: body
+          type: object
+          description: Request body (JSON).
+          required: false
+    - name: api-environments-project_id-event_filter-metrics
+      path: /api/environments/{project_id}/event_filter/metrics/
+      operations:
+      - name: eventfiltermetricsretrieve
+        method: GET
+        description: Single event filter per team.
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+    - name: api-environments-project_id-event_filter-metrics-totals
+      path: /api/environments/{project_id}/event_filter/metrics/totals/
+      operations:
+      - name: eventfiltermetricstotalsretrieve
+        method: GET
+        description: Single event filter per team.
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+    authentication:
+      type: bearer
+      token: '{{env.POSTHOG_API_KEY}}'
+  exposes:
+  - type: rest
+    namespace: posthog-event-filter-rest
+    port: 8080
+    description: REST adapter for PostHog API — event_filter. One Spectral-compliant resource per consumed operation, prefixed
+      with /v1.
+    resources:
+    - path: /v1/api/environments/{project-id}/event-filter
+      name: api-environments-project-id-event-filter
+      description: REST surface for api-environments-project_id-event_filter.
+      operations:
+      - method: GET
+        name: eventfilterretrieve
+        description: Returns the event filter config for the team, or null if not yet created.
+        call: posthog-event-filter.eventfilterretrieve
+        outputParameters:
+        - type: object
+          mapping: $.
+      - method: POST
+        name: eventfiltercreate
+        description: Create or update the event filter config.
+        call: posthog-event-filter.eventfiltercreate
+        with:
+          body: rest.body
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /v1/api/environments/{project-id}/event-filter/metrics
+      name: api-environments-project-id-event-filter-metrics
+      description: REST surface for api-environments-project_id-event_filter-metrics.
+      operations:
+      - method: GET
+        name: eventfiltermetricsretrieve
+        description: Single event filter per team.
+        call: posthog-event-filter.eventfiltermetricsretrieve
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /v1/api/environments/{project-id}/event-filter/metrics/totals
+      name: api-environments-project-id-event-filter-metrics-totals
+      description: REST surface for api-environments-project_id-event_filter-metrics-totals.
+      operations:
+      - method: GET
+        name: eventfiltermetricstotalsretrieve
+        description: Single event filter per team.
+        call: posthog-event-filter.eventfiltermetricstotalsretrieve
+        outputParameters:
+        - type: object
+          mapping: $.
+  - type: mcp
+    namespace: posthog-event-filter-mcp
+    port: 9090
+    transport: http
+    description: MCP adapter for PostHog API — event_filter. One tool per consumed operation, routed inline through this capability's
+      consumes block.
+    tools:
+    - name: returns-event-filter-config-team
+      description: Returns the event filter config for the team, or null if not yet created.
+      hints:
+        readOnly: true
+        destructive: false
+        idempotent: true
+      call: posthog-event-filter.eventfilterretrieve
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: create-update-event-filter-config
+      description: Create or update the event filter config.
+      hints:
+        readOnly: false
+        destructive: false
+        idempotent: false
+      call: posthog-event-filter.eventfiltercreate
+      with:
+        body: tools.body
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: single-event-filter-per-team
+      description: Single event filter per team.
+      hints:
+        readOnly: true
+        destructive: false
+        idempotent: true
+      call: posthog-event-filter.eventfiltermetricsretrieve
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: single-event-filter-per-team-2
+      description: Single event filter per team.
+      hints:
+        readOnly: true
+        destructive: false
+        idempotent: true
+      call: posthog-event-filter.eventfiltermetricstotalsretrieve
+      outputParameters:
+      - type: object
+        mapping: $.

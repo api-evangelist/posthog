@@ -1,0 +1,1427 @@
+naftiko: 1.0.0-alpha2
+info:
+  label: PostHog API — users
+  description: 'PostHog API — users. 31 operations. Lead operation: List personal GitHub integrations. Self-contained Naftiko
+    capability covering one Posthog business surface.'
+  tags:
+  - Posthog
+  - users
+  created: '2026-05-19'
+  modified: '2026-05-19'
+binds:
+- namespace: env
+  keys:
+    POSTHOG_API_KEY: POSTHOG_API_KEY
+capability:
+  consumes:
+  - type: http
+    namespace: posthog-users
+    baseUri: ''
+    description: PostHog API — users business capability. Self-contained, no shared references.
+    resources:
+    - name: api-users
+      path: /api/users/
+      operations:
+      - name: userslist
+        method: GET
+        description: ''
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: email
+          in: query
+          type: string
+        - name: is_staff
+          in: query
+          type: boolean
+        - name: limit
+          in: query
+          type: integer
+          description: Number of results to return per page.
+        - name: offset
+          in: query
+          type: integer
+          description: The initial index from which to return the results.
+    - name: api-users-cancel_email_change_request
+      path: /api/users/cancel_email_change_request/
+      operations:
+      - name: userscancelemailchangerequestpartialupdate
+        method: PATCH
+        description: ''
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: body
+          in: body
+          type: object
+          description: Request body (JSON).
+          required: false
+    - name: api-users-request_email_verification
+      path: /api/users/request_email_verification/
+      operations:
+      - name: usersrequestemailverificationcreate
+        method: POST
+        description: ''
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: body
+          in: body
+          type: object
+          description: Request body (JSON).
+          required: true
+    - name: api-users-verify_email
+      path: /api/users/verify_email/
+      operations:
+      - name: usersverifyemailcreate
+        method: POST
+        description: ''
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: body
+          in: body
+          type: object
+          description: Request body (JSON).
+          required: true
+    - name: api-users-user_id-signal_autonomy
+      path: /api/users/{user_id}/signal_autonomy/
+      operations:
+      - name: userssignalautonomyretrieve
+        method: GET
+        description: Per-user signal autonomy config (singleton keyed by user).
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: user_id
+          in: path
+          type: string
+          required: true
+      - name: userssignalautonomyretrieve
+        method: GET
+        description: Per-user signal autonomy config (singleton keyed by user).
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: user_id
+          in: path
+          type: string
+          required: true
+      - name: userssignalautonomycreate
+        method: POST
+        description: Per-user signal autonomy config (singleton keyed by user).
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: user_id
+          in: path
+          type: string
+          required: true
+        - name: body
+          in: body
+          type: object
+          description: Request body (JSON).
+          required: false
+      - name: userssignalautonomycreate
+        method: POST
+        description: Per-user signal autonomy config (singleton keyed by user).
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: user_id
+          in: path
+          type: string
+          required: true
+        - name: body
+          in: body
+          type: object
+          description: Request body (JSON).
+          required: false
+      - name: userssignalautonomydestroy
+        method: DELETE
+        description: Per-user signal autonomy config (singleton keyed by user).
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: user_id
+          in: path
+          type: string
+          required: true
+      - name: userssignalautonomydestroy
+        method: DELETE
+        description: Per-user signal autonomy config (singleton keyed by user).
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: user_id
+          in: path
+          type: string
+          required: true
+    - name: api-users-uuid
+      path: /api/users/{uuid}/
+      operations:
+      - name: usersretrieve
+        method: GET
+        description: Retrieve a user's profile and settings. Pass `@me` as the UUID to fetch the authenticated user; non-staff
+          callers may only access their own account.
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: uuid
+          in: path
+          type: string
+          required: true
+      - name: usersupdate
+        method: PUT
+        description: Replace the authenticated user's profile and settings. Pass `@me` as the UUID to update the authenticated
+          user. Prefer the PATCH endpoint for partial updates — PUT requires every writable field to be provided.
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: uuid
+          in: path
+          type: string
+          required: true
+        - name: body
+          in: body
+          type: object
+          description: Request body (JSON).
+          required: true
+      - name: userspartialupdate
+        method: PATCH
+        description: Update one or more of the authenticated user's profile fields or settings.
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: uuid
+          in: path
+          type: string
+          required: true
+        - name: body
+          in: body
+          type: object
+          description: Request body (JSON).
+          required: false
+      - name: usersdestroy
+        method: DELETE
+        description: ''
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: uuid
+          in: path
+          type: string
+          required: true
+    - name: api-users-uuid-github_login
+      path: /api/users/{uuid}/github_login/
+      operations:
+      - name: usersgithubloginretrieve
+        method: GET
+        description: ''
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: uuid
+          in: path
+          type: string
+          required: true
+    - name: api-users-uuid-hedgehog_config
+      path: /api/users/{uuid}/hedgehog_config/
+      operations:
+      - name: usershedgehogconfigretrieve
+        method: GET
+        description: ''
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: uuid
+          in: path
+          type: string
+          required: true
+      - name: usershedgehogconfigpartialupdate
+        method: PATCH
+        description: ''
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: uuid
+          in: path
+          type: string
+          required: true
+        - name: body
+          in: body
+          type: object
+          description: Request body (JSON).
+          required: false
+    - name: api-users-uuid-integrations
+      path: /api/users/{uuid}/integrations/
+      operations:
+      - name: usersintegrationslist
+        method: GET
+        description: List personal GitHub integrations
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: limit
+          in: query
+          type: integer
+          description: Number of results to return per page.
+        - name: offset
+          in: query
+          type: integer
+          description: The initial index from which to return the results.
+        - name: uuid
+          in: path
+          type: string
+          required: true
+    - name: api-users-uuid-integrations-github-start
+      path: /api/users/{uuid}/integrations/github/start/
+      operations:
+      - name: usersintegrationsgithubstartcreate
+        method: POST
+        description: Start GitHub personal integration linking
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: uuid
+          in: path
+          type: string
+          required: true
+        - name: body
+          in: body
+          type: object
+          description: Request body (JSON).
+          required: false
+    - name: api-users-uuid-integrations-github-installation_id
+      path: /api/users/{uuid}/integrations/github/{installation_id}/
+      operations:
+      - name: usersintegrationsgithubdestroy
+        method: DELETE
+        description: Disconnect a personal GitHub integration
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: installation_id
+          in: path
+          type: string
+          required: true
+        - name: uuid
+          in: path
+          type: string
+          required: true
+    - name: api-users-uuid-integrations-github-installation_id-branches
+      path: /api/users/{uuid}/integrations/github/{installation_id}/branches/
+      operations:
+      - name: usersintegrationsgithubbranchesretrieve
+        method: GET
+        description: List branches for a personal GitHub installation repository
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: installation_id
+          in: path
+          type: string
+          required: true
+        - name: limit
+          in: query
+          type: integer
+          description: Maximum number of branches to return
+        - name: offset
+          in: query
+          type: integer
+          description: Number of branches to skip
+        - name: repo
+          in: query
+          type: string
+          description: Repository in owner/repo format
+          required: true
+        - name: search
+          in: query
+          type: string
+          description: Optional case-insensitive branch name search query.
+        - name: uuid
+          in: path
+          type: string
+          required: true
+    - name: api-users-uuid-integrations-github-installation_id-repos
+      path: /api/users/{uuid}/integrations/github/{installation_id}/repos/
+      operations:
+      - name: usersintegrationsgithubreposretrieve
+        method: GET
+        description: List repositories for a personal GitHub installation
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: installation_id
+          in: path
+          type: string
+          required: true
+        - name: limit
+          in: query
+          type: integer
+          description: Maximum number of repositories to return per request (max 500).
+        - name: offset
+          in: query
+          type: integer
+          description: Number of repositories to skip before returning results.
+        - name: search
+          in: query
+          type: string
+          description: Optional case-insensitive repository name search query.
+        - name: uuid
+          in: path
+          type: string
+          required: true
+    - name: api-users-uuid-integrations-github-installation_id-repos-refresh
+      path: /api/users/{uuid}/integrations/github/{installation_id}/repos/refresh/
+      operations:
+      - name: usersintegrationsgithubreposrefreshcreate
+        method: POST
+        description: Refresh repositories for a personal GitHub installation
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: installation_id
+          in: path
+          type: string
+          required: true
+        - name: uuid
+          in: path
+          type: string
+          required: true
+    - name: api-users-uuid-scene_personalisation
+      path: /api/users/{uuid}/scene_personalisation/
+      operations:
+      - name: usersscenepersonalisationcreate
+        method: POST
+        description: ''
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: uuid
+          in: path
+          type: string
+          required: true
+        - name: body
+          in: body
+          type: object
+          description: Request body (JSON).
+          required: true
+    - name: api-users-uuid-start_2fa_setup
+      path: /api/users/{uuid}/start_2fa_setup/
+      operations:
+      - name: usersstart2fasetupretrieve
+        method: GET
+        description: ''
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: uuid
+          in: path
+          type: string
+          required: true
+    - name: api-users-uuid-two_factor_backup_codes
+      path: /api/users/{uuid}/two_factor_backup_codes/
+      operations:
+      - name: userstwofactorbackupcodescreate
+        method: POST
+        description: Generate new backup codes, invalidating any existing ones
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: uuid
+          in: path
+          type: string
+          required: true
+        - name: body
+          in: body
+          type: object
+          description: Request body (JSON).
+          required: true
+    - name: api-users-uuid-two_factor_disable
+      path: /api/users/{uuid}/two_factor_disable/
+      operations:
+      - name: userstwofactordisablecreate
+        method: POST
+        description: Disable 2FA and remove all related devices
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: uuid
+          in: path
+          type: string
+          required: true
+        - name: body
+          in: body
+          type: object
+          description: Request body (JSON).
+          required: true
+    - name: api-users-uuid-two_factor_start_setup
+      path: /api/users/{uuid}/two_factor_start_setup/
+      operations:
+      - name: userstwofactorstartsetupretrieve
+        method: GET
+        description: ''
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: uuid
+          in: path
+          type: string
+          required: true
+    - name: api-users-uuid-two_factor_status
+      path: /api/users/{uuid}/two_factor_status/
+      operations:
+      - name: userstwofactorstatusretrieve
+        method: GET
+        description: Get current 2FA status including backup codes if enabled
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: uuid
+          in: path
+          type: string
+          required: true
+    - name: api-users-uuid-two_factor_validate
+      path: /api/users/{uuid}/two_factor_validate/
+      operations:
+      - name: userstwofactorvalidatecreate
+        method: POST
+        description: ''
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: uuid
+          in: path
+          type: string
+          required: true
+        - name: body
+          in: body
+          type: object
+          description: Request body (JSON).
+          required: true
+    - name: api-users-uuid-validate_2fa
+      path: /api/users/{uuid}/validate_2fa/
+      operations:
+      - name: usersvalidate2facreate
+        method: POST
+        description: ''
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: uuid
+          in: path
+          type: string
+          required: true
+        - name: body
+          in: body
+          type: object
+          description: Request body (JSON).
+          required: true
+    authentication:
+      type: bearer
+      token: '{{env.POSTHOG_API_KEY}}'
+  exposes:
+  - type: rest
+    namespace: posthog-users-rest
+    port: 8080
+    description: REST adapter for PostHog API — users. One Spectral-compliant resource per consumed operation, prefixed with
+      /v1.
+    resources:
+    - path: /v1/api/users
+      name: api-users
+      description: REST surface for api-users.
+      operations:
+      - method: GET
+        name: userslist
+        description: userslist
+        call: posthog-users.userslist
+        with:
+          email: rest.email
+          is_staff: rest.is_staff
+          limit: rest.limit
+          offset: rest.offset
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /v1/api/users/cancel-email-change-request
+      name: api-users-cancel-email-change-request
+      description: REST surface for api-users-cancel_email_change_request.
+      operations:
+      - method: PATCH
+        name: userscancelemailchangerequestpartialupdate
+        description: userscancelemailchangerequestpartialupdate
+        call: posthog-users.userscancelemailchangerequestpartialupdate
+        with:
+          body: rest.body
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /v1/api/users/request-email-verification
+      name: api-users-request-email-verification
+      description: REST surface for api-users-request_email_verification.
+      operations:
+      - method: POST
+        name: usersrequestemailverificationcreate
+        description: usersrequestemailverificationcreate
+        call: posthog-users.usersrequestemailverificationcreate
+        with:
+          body: rest.body
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /v1/api/users/verify-email
+      name: api-users-verify-email
+      description: REST surface for api-users-verify_email.
+      operations:
+      - method: POST
+        name: usersverifyemailcreate
+        description: usersverifyemailcreate
+        call: posthog-users.usersverifyemailcreate
+        with:
+          body: rest.body
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /v1/api/users/{user-id}/signal-autonomy
+      name: api-users-user-id-signal-autonomy
+      description: REST surface for api-users-user_id-signal_autonomy.
+      operations:
+      - method: GET
+        name: userssignalautonomyretrieve
+        description: Per-user signal autonomy config (singleton keyed by user).
+        call: posthog-users.userssignalautonomyretrieve
+        with:
+          user_id: rest.user_id
+        outputParameters:
+        - type: object
+          mapping: $.
+      - method: GET
+        name: userssignalautonomyretrieve
+        description: Per-user signal autonomy config (singleton keyed by user).
+        call: posthog-users.userssignalautonomyretrieve
+        with:
+          user_id: rest.user_id
+        outputParameters:
+        - type: object
+          mapping: $.
+      - method: POST
+        name: userssignalautonomycreate
+        description: Per-user signal autonomy config (singleton keyed by user).
+        call: posthog-users.userssignalautonomycreate
+        with:
+          user_id: rest.user_id
+          body: rest.body
+        outputParameters:
+        - type: object
+          mapping: $.
+      - method: POST
+        name: userssignalautonomycreate
+        description: Per-user signal autonomy config (singleton keyed by user).
+        call: posthog-users.userssignalautonomycreate
+        with:
+          user_id: rest.user_id
+          body: rest.body
+        outputParameters:
+        - type: object
+          mapping: $.
+      - method: DELETE
+        name: userssignalautonomydestroy
+        description: Per-user signal autonomy config (singleton keyed by user).
+        call: posthog-users.userssignalautonomydestroy
+        with:
+          user_id: rest.user_id
+        outputParameters:
+        - type: object
+          mapping: $.
+      - method: DELETE
+        name: userssignalautonomydestroy
+        description: Per-user signal autonomy config (singleton keyed by user).
+        call: posthog-users.userssignalautonomydestroy
+        with:
+          user_id: rest.user_id
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /v1/api/users/{uuid}
+      name: api-users-uuid
+      description: REST surface for api-users-uuid.
+      operations:
+      - method: GET
+        name: usersretrieve
+        description: Retrieve a user's profile and settings. Pass `@me` as the UUID to fetch the authenticated user; non-staff
+          callers may only access their own account.
+        call: posthog-users.usersretrieve
+        with:
+          uuid: rest.uuid
+        outputParameters:
+        - type: object
+          mapping: $.
+      - method: PUT
+        name: usersupdate
+        description: Replace the authenticated user's profile and settings. Pass `@me` as the UUID to update the authenticated
+          user. Prefer the PATCH endpoint for partial updates — PUT requires every writable field to be provided.
+        call: posthog-users.usersupdate
+        with:
+          uuid: rest.uuid
+          body: rest.body
+        outputParameters:
+        - type: object
+          mapping: $.
+      - method: PATCH
+        name: userspartialupdate
+        description: Update one or more of the authenticated user's profile fields or settings.
+        call: posthog-users.userspartialupdate
+        with:
+          uuid: rest.uuid
+          body: rest.body
+        outputParameters:
+        - type: object
+          mapping: $.
+      - method: DELETE
+        name: usersdestroy
+        description: usersdestroy
+        call: posthog-users.usersdestroy
+        with:
+          uuid: rest.uuid
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /v1/api/users/{uuid}/github-login
+      name: api-users-uuid-github-login
+      description: REST surface for api-users-uuid-github_login.
+      operations:
+      - method: GET
+        name: usersgithubloginretrieve
+        description: usersgithubloginretrieve
+        call: posthog-users.usersgithubloginretrieve
+        with:
+          uuid: rest.uuid
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /v1/api/users/{uuid}/hedgehog-config
+      name: api-users-uuid-hedgehog-config
+      description: REST surface for api-users-uuid-hedgehog_config.
+      operations:
+      - method: GET
+        name: usershedgehogconfigretrieve
+        description: usershedgehogconfigretrieve
+        call: posthog-users.usershedgehogconfigretrieve
+        with:
+          uuid: rest.uuid
+        outputParameters:
+        - type: object
+          mapping: $.
+      - method: PATCH
+        name: usershedgehogconfigpartialupdate
+        description: usershedgehogconfigpartialupdate
+        call: posthog-users.usershedgehogconfigpartialupdate
+        with:
+          uuid: rest.uuid
+          body: rest.body
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /v1/api/users/{uuid}/integrations
+      name: api-users-uuid-integrations
+      description: REST surface for api-users-uuid-integrations.
+      operations:
+      - method: GET
+        name: usersintegrationslist
+        description: List personal GitHub integrations
+        call: posthog-users.usersintegrationslist
+        with:
+          limit: rest.limit
+          offset: rest.offset
+          uuid: rest.uuid
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /v1/api/users/{uuid}/integrations/github/start
+      name: api-users-uuid-integrations-github-start
+      description: REST surface for api-users-uuid-integrations-github-start.
+      operations:
+      - method: POST
+        name: usersintegrationsgithubstartcreate
+        description: Start GitHub personal integration linking
+        call: posthog-users.usersintegrationsgithubstartcreate
+        with:
+          uuid: rest.uuid
+          body: rest.body
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /v1/api/users/{uuid}/integrations/github/{installation-id}
+      name: api-users-uuid-integrations-github-installation-id
+      description: REST surface for api-users-uuid-integrations-github-installation_id.
+      operations:
+      - method: DELETE
+        name: usersintegrationsgithubdestroy
+        description: Disconnect a personal GitHub integration
+        call: posthog-users.usersintegrationsgithubdestroy
+        with:
+          installation_id: rest.installation_id
+          uuid: rest.uuid
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /v1/api/users/{uuid}/integrations/github/{installation-id}/branches
+      name: api-users-uuid-integrations-github-installation-id-branches
+      description: REST surface for api-users-uuid-integrations-github-installation_id-branches.
+      operations:
+      - method: GET
+        name: usersintegrationsgithubbranchesretrieve
+        description: List branches for a personal GitHub installation repository
+        call: posthog-users.usersintegrationsgithubbranchesretrieve
+        with:
+          installation_id: rest.installation_id
+          limit: rest.limit
+          offset: rest.offset
+          repo: rest.repo
+          search: rest.search
+          uuid: rest.uuid
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /v1/api/users/{uuid}/integrations/github/{installation-id}/repos
+      name: api-users-uuid-integrations-github-installation-id-repos
+      description: REST surface for api-users-uuid-integrations-github-installation_id-repos.
+      operations:
+      - method: GET
+        name: usersintegrationsgithubreposretrieve
+        description: List repositories for a personal GitHub installation
+        call: posthog-users.usersintegrationsgithubreposretrieve
+        with:
+          installation_id: rest.installation_id
+          limit: rest.limit
+          offset: rest.offset
+          search: rest.search
+          uuid: rest.uuid
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /v1/api/users/{uuid}/integrations/github/{installation-id}/repos/refresh
+      name: api-users-uuid-integrations-github-installation-id-repos-refresh
+      description: REST surface for api-users-uuid-integrations-github-installation_id-repos-refresh.
+      operations:
+      - method: POST
+        name: usersintegrationsgithubreposrefreshcreate
+        description: Refresh repositories for a personal GitHub installation
+        call: posthog-users.usersintegrationsgithubreposrefreshcreate
+        with:
+          installation_id: rest.installation_id
+          uuid: rest.uuid
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /v1/api/users/{uuid}/scene-personalisation
+      name: api-users-uuid-scene-personalisation
+      description: REST surface for api-users-uuid-scene_personalisation.
+      operations:
+      - method: POST
+        name: usersscenepersonalisationcreate
+        description: usersscenepersonalisationcreate
+        call: posthog-users.usersscenepersonalisationcreate
+        with:
+          uuid: rest.uuid
+          body: rest.body
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /v1/api/users/{uuid}/start-2fa-setup
+      name: api-users-uuid-start-2fa-setup
+      description: REST surface for api-users-uuid-start_2fa_setup.
+      operations:
+      - method: GET
+        name: usersstart2fasetupretrieve
+        description: usersstart2fasetupretrieve
+        call: posthog-users.usersstart2fasetupretrieve
+        with:
+          uuid: rest.uuid
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /v1/api/users/{uuid}/two-factor-backup-codes
+      name: api-users-uuid-two-factor-backup-codes
+      description: REST surface for api-users-uuid-two_factor_backup_codes.
+      operations:
+      - method: POST
+        name: userstwofactorbackupcodescreate
+        description: Generate new backup codes, invalidating any existing ones
+        call: posthog-users.userstwofactorbackupcodescreate
+        with:
+          uuid: rest.uuid
+          body: rest.body
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /v1/api/users/{uuid}/two-factor-disable
+      name: api-users-uuid-two-factor-disable
+      description: REST surface for api-users-uuid-two_factor_disable.
+      operations:
+      - method: POST
+        name: userstwofactordisablecreate
+        description: Disable 2FA and remove all related devices
+        call: posthog-users.userstwofactordisablecreate
+        with:
+          uuid: rest.uuid
+          body: rest.body
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /v1/api/users/{uuid}/two-factor-start-setup
+      name: api-users-uuid-two-factor-start-setup
+      description: REST surface for api-users-uuid-two_factor_start_setup.
+      operations:
+      - method: GET
+        name: userstwofactorstartsetupretrieve
+        description: userstwofactorstartsetupretrieve
+        call: posthog-users.userstwofactorstartsetupretrieve
+        with:
+          uuid: rest.uuid
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /v1/api/users/{uuid}/two-factor-status
+      name: api-users-uuid-two-factor-status
+      description: REST surface for api-users-uuid-two_factor_status.
+      operations:
+      - method: GET
+        name: userstwofactorstatusretrieve
+        description: Get current 2FA status including backup codes if enabled
+        call: posthog-users.userstwofactorstatusretrieve
+        with:
+          uuid: rest.uuid
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /v1/api/users/{uuid}/two-factor-validate
+      name: api-users-uuid-two-factor-validate
+      description: REST surface for api-users-uuid-two_factor_validate.
+      operations:
+      - method: POST
+        name: userstwofactorvalidatecreate
+        description: userstwofactorvalidatecreate
+        call: posthog-users.userstwofactorvalidatecreate
+        with:
+          uuid: rest.uuid
+          body: rest.body
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /v1/api/users/{uuid}/validate-2fa
+      name: api-users-uuid-validate-2fa
+      description: REST surface for api-users-uuid-validate_2fa.
+      operations:
+      - method: POST
+        name: usersvalidate2facreate
+        description: usersvalidate2facreate
+        call: posthog-users.usersvalidate2facreate
+        with:
+          uuid: rest.uuid
+          body: rest.body
+        outputParameters:
+        - type: object
+          mapping: $.
+  - type: mcp
+    namespace: posthog-users-mcp
+    port: 9090
+    transport: http
+    description: MCP adapter for PostHog API — users. One tool per consumed operation, routed inline through this capability's
+      consumes block.
+    tools:
+    - name: userslist
+      description: userslist
+      hints:
+        readOnly: true
+        destructive: false
+        idempotent: true
+      call: posthog-users.userslist
+      with:
+        email: tools.email
+        is_staff: tools.is_staff
+        limit: tools.limit
+        offset: tools.offset
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: userscancelemailchangerequestpartialupdate
+      description: userscancelemailchangerequestpartialupdate
+      hints:
+        readOnly: false
+        destructive: false
+        idempotent: true
+      call: posthog-users.userscancelemailchangerequestpartialupdate
+      with:
+        body: tools.body
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: usersrequestemailverificationcreate
+      description: usersrequestemailverificationcreate
+      hints:
+        readOnly: false
+        destructive: false
+        idempotent: false
+      call: posthog-users.usersrequestemailverificationcreate
+      with:
+        body: tools.body
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: usersverifyemailcreate
+      description: usersverifyemailcreate
+      hints:
+        readOnly: false
+        destructive: false
+        idempotent: false
+      call: posthog-users.usersverifyemailcreate
+      with:
+        body: tools.body
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: per-user-signal-autonomy-config
+      description: Per-user signal autonomy config (singleton keyed by user).
+      hints:
+        readOnly: true
+        destructive: false
+        idempotent: true
+      call: posthog-users.userssignalautonomyretrieve
+      with:
+        user_id: tools.user_id
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: per-user-signal-autonomy-config-2
+      description: Per-user signal autonomy config (singleton keyed by user).
+      hints:
+        readOnly: true
+        destructive: false
+        idempotent: true
+      call: posthog-users.userssignalautonomyretrieve
+      with:
+        user_id: tools.user_id
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: per-user-signal-autonomy-config-3
+      description: Per-user signal autonomy config (singleton keyed by user).
+      hints:
+        readOnly: false
+        destructive: false
+        idempotent: false
+      call: posthog-users.userssignalautonomycreate
+      with:
+        user_id: tools.user_id
+        body: tools.body
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: per-user-signal-autonomy-config-4
+      description: Per-user signal autonomy config (singleton keyed by user).
+      hints:
+        readOnly: false
+        destructive: false
+        idempotent: false
+      call: posthog-users.userssignalautonomycreate
+      with:
+        user_id: tools.user_id
+        body: tools.body
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: per-user-signal-autonomy-config-5
+      description: Per-user signal autonomy config (singleton keyed by user).
+      hints:
+        readOnly: false
+        destructive: true
+        idempotent: true
+      call: posthog-users.userssignalautonomydestroy
+      with:
+        user_id: tools.user_id
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: per-user-signal-autonomy-config-6
+      description: Per-user signal autonomy config (singleton keyed by user).
+      hints:
+        readOnly: false
+        destructive: true
+        idempotent: true
+      call: posthog-users.userssignalautonomydestroy
+      with:
+        user_id: tools.user_id
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: retrieve-user-s-profile-and-settings
+      description: Retrieve a user's profile and settings. Pass `@me` as the UUID to fetch the authenticated user; non-staff
+        callers may only access their own account.
+      hints:
+        readOnly: true
+        destructive: false
+        idempotent: true
+      call: posthog-users.usersretrieve
+      with:
+        uuid: tools.uuid
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: replace-authenticated-user-s-profile-and
+      description: Replace the authenticated user's profile and settings. Pass `@me` as the UUID to update the authenticated
+        user. Prefer the PATCH endpoint for partial updates — PUT requires every writable field to be provided.
+      hints:
+        readOnly: false
+        destructive: false
+        idempotent: true
+      call: posthog-users.usersupdate
+      with:
+        uuid: tools.uuid
+        body: tools.body
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: update-one-more-authenticated-user-s
+      description: Update one or more of the authenticated user's profile fields or settings.
+      hints:
+        readOnly: false
+        destructive: false
+        idempotent: true
+      call: posthog-users.userspartialupdate
+      with:
+        uuid: tools.uuid
+        body: tools.body
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: usersdestroy
+      description: usersdestroy
+      hints:
+        readOnly: false
+        destructive: true
+        idempotent: true
+      call: posthog-users.usersdestroy
+      with:
+        uuid: tools.uuid
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: usersgithubloginretrieve
+      description: usersgithubloginretrieve
+      hints:
+        readOnly: true
+        destructive: false
+        idempotent: true
+      call: posthog-users.usersgithubloginretrieve
+      with:
+        uuid: tools.uuid
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: usershedgehogconfigretrieve
+      description: usershedgehogconfigretrieve
+      hints:
+        readOnly: true
+        destructive: false
+        idempotent: true
+      call: posthog-users.usershedgehogconfigretrieve
+      with:
+        uuid: tools.uuid
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: usershedgehogconfigpartialupdate
+      description: usershedgehogconfigpartialupdate
+      hints:
+        readOnly: false
+        destructive: false
+        idempotent: true
+      call: posthog-users.usershedgehogconfigpartialupdate
+      with:
+        uuid: tools.uuid
+        body: tools.body
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: list-personal-github-integrations
+      description: List personal GitHub integrations
+      hints:
+        readOnly: true
+        destructive: false
+        idempotent: true
+      call: posthog-users.usersintegrationslist
+      with:
+        limit: tools.limit
+        offset: tools.offset
+        uuid: tools.uuid
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: start-github-personal-integration-linking
+      description: Start GitHub personal integration linking
+      hints:
+        readOnly: false
+        destructive: false
+        idempotent: false
+      call: posthog-users.usersintegrationsgithubstartcreate
+      with:
+        uuid: tools.uuid
+        body: tools.body
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: disconnect-personal-github-integration
+      description: Disconnect a personal GitHub integration
+      hints:
+        readOnly: false
+        destructive: true
+        idempotent: true
+      call: posthog-users.usersintegrationsgithubdestroy
+      with:
+        installation_id: tools.installation_id
+        uuid: tools.uuid
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: list-branches-personal-github-installation
+      description: List branches for a personal GitHub installation repository
+      hints:
+        readOnly: true
+        destructive: false
+        idempotent: true
+      call: posthog-users.usersintegrationsgithubbranchesretrieve
+      with:
+        installation_id: tools.installation_id
+        limit: tools.limit
+        offset: tools.offset
+        repo: tools.repo
+        search: tools.search
+        uuid: tools.uuid
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: list-repositories-personal-github-installation
+      description: List repositories for a personal GitHub installation
+      hints:
+        readOnly: true
+        destructive: false
+        idempotent: true
+      call: posthog-users.usersintegrationsgithubreposretrieve
+      with:
+        installation_id: tools.installation_id
+        limit: tools.limit
+        offset: tools.offset
+        search: tools.search
+        uuid: tools.uuid
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: refresh-repositories-personal-github-installation
+      description: Refresh repositories for a personal GitHub installation
+      hints:
+        readOnly: false
+        destructive: false
+        idempotent: false
+      call: posthog-users.usersintegrationsgithubreposrefreshcreate
+      with:
+        installation_id: tools.installation_id
+        uuid: tools.uuid
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: usersscenepersonalisationcreate
+      description: usersscenepersonalisationcreate
+      hints:
+        readOnly: false
+        destructive: false
+        idempotent: false
+      call: posthog-users.usersscenepersonalisationcreate
+      with:
+        uuid: tools.uuid
+        body: tools.body
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: usersstart2fasetupretrieve
+      description: usersstart2fasetupretrieve
+      hints:
+        readOnly: true
+        destructive: false
+        idempotent: true
+      call: posthog-users.usersstart2fasetupretrieve
+      with:
+        uuid: tools.uuid
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: generate-new-backup-codes-invalidating
+      description: Generate new backup codes, invalidating any existing ones
+      hints:
+        readOnly: false
+        destructive: false
+        idempotent: false
+      call: posthog-users.userstwofactorbackupcodescreate
+      with:
+        uuid: tools.uuid
+        body: tools.body
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: disable-2fa-and-remove-all
+      description: Disable 2FA and remove all related devices
+      hints:
+        readOnly: false
+        destructive: false
+        idempotent: false
+      call: posthog-users.userstwofactordisablecreate
+      with:
+        uuid: tools.uuid
+        body: tools.body
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: userstwofactorstartsetupretrieve
+      description: userstwofactorstartsetupretrieve
+      hints:
+        readOnly: true
+        destructive: false
+        idempotent: true
+      call: posthog-users.userstwofactorstartsetupretrieve
+      with:
+        uuid: tools.uuid
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: get-current-2fa-status-including
+      description: Get current 2FA status including backup codes if enabled
+      hints:
+        readOnly: true
+        destructive: false
+        idempotent: true
+      call: posthog-users.userstwofactorstatusretrieve
+      with:
+        uuid: tools.uuid
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: userstwofactorvalidatecreate
+      description: userstwofactorvalidatecreate
+      hints:
+        readOnly: true
+        destructive: false
+        idempotent: false
+      call: posthog-users.userstwofactorvalidatecreate
+      with:
+        uuid: tools.uuid
+        body: tools.body
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: usersvalidate2facreate
+      description: usersvalidate2facreate
+      hints:
+        readOnly: true
+        destructive: false
+        idempotent: false
+      call: posthog-users.usersvalidate2facreate
+      with:
+        uuid: tools.uuid
+        body: tools.body
+      outputParameters:
+      - type: object
+        mapping: $.

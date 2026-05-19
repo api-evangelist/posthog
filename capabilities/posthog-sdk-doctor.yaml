@@ -1,0 +1,115 @@
+naftiko: 1.0.0-alpha2
+info:
+  label: PostHog API — sdk_doctor
+  description: 'PostHog API — sdk_doctor. 2 operations. Lead operation: Get SDK health report for a project. Self-contained
+    Naftiko capability covering one Posthog business surface.'
+  tags:
+  - Posthog
+  - sdk_doctor
+  created: '2026-05-19'
+  modified: '2026-05-19'
+binds:
+- namespace: env
+  keys:
+    POSTHOG_API_KEY: POSTHOG_API_KEY
+capability:
+  consumes:
+  - type: http
+    namespace: posthog-sdk-doctor
+    baseUri: ''
+    description: PostHog API — sdk_doctor business capability. Self-contained, no shared references.
+    resources:
+    - name: api-projects-project_id-sdk_doctor-report
+      path: /api/projects/{project_id}/sdk_doctor/report/
+      operations:
+      - name: sdkdoctorreportretrieve
+        method: GET
+        description: Get SDK health report for a project
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: force_refresh
+          in: query
+          type: boolean
+          description: When true, bypasses the Redis cache and re-queries ClickHouse for SDK usage. Use sparingly — data is
+            refreshed every 12 hours by a background job.
+      - name: sdkdoctorreportretrieve
+        method: GET
+        description: Get SDK health report for a project
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: force_refresh
+          in: query
+          type: boolean
+          description: When true, bypasses the Redis cache and re-queries ClickHouse for SDK usage. Use sparingly — data is
+            refreshed every 12 hours by a background job.
+    authentication:
+      type: bearer
+      token: '{{env.POSTHOG_API_KEY}}'
+  exposes:
+  - type: rest
+    namespace: posthog-sdk-doctor-rest
+    port: 8080
+    description: REST adapter for PostHog API — sdk_doctor. One Spectral-compliant resource per consumed operation, prefixed
+      with /v1.
+    resources:
+    - path: /v1/api/projects/{project-id}/sdk-doctor/report
+      name: api-projects-project-id-sdk-doctor-report
+      description: REST surface for api-projects-project_id-sdk_doctor-report.
+      operations:
+      - method: GET
+        name: sdkdoctorreportretrieve
+        description: Get SDK health report for a project
+        call: posthog-sdk-doctor.sdkdoctorreportretrieve
+        with:
+          force_refresh: rest.force_refresh
+        outputParameters:
+        - type: object
+          mapping: $.
+      - method: GET
+        name: sdkdoctorreportretrieve
+        description: Get SDK health report for a project
+        call: posthog-sdk-doctor.sdkdoctorreportretrieve
+        with:
+          force_refresh: rest.force_refresh
+        outputParameters:
+        - type: object
+          mapping: $.
+  - type: mcp
+    namespace: posthog-sdk-doctor-mcp
+    port: 9090
+    transport: http
+    description: MCP adapter for PostHog API — sdk_doctor. One tool per consumed operation, routed inline through this capability's
+      consumes block.
+    tools:
+    - name: get-sdk-health-report-project
+      description: Get SDK health report for a project
+      hints:
+        readOnly: true
+        destructive: false
+        idempotent: true
+      call: posthog-sdk-doctor.sdkdoctorreportretrieve
+      with:
+        force_refresh: tools.force_refresh
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: get-sdk-health-report-project-2
+      description: Get SDK health report for a project
+      hints:
+        readOnly: true
+        destructive: false
+        idempotent: true
+      call: posthog-sdk-doctor.sdkdoctorreportretrieve
+      with:
+        force_refresh: tools.force_refresh
+      outputParameters:
+      - type: object
+        mapping: $.

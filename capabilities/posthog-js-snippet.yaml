@@ -1,0 +1,137 @@
+naftiko: 1.0.0-alpha2
+info:
+  label: PostHog API — js-snippet
+  description: 'PostHog API — js-snippet. 3 operations. Lead operation: js-snippet. Self-contained Naftiko capability covering
+    one Posthog business surface.'
+  tags:
+  - Posthog
+  - js-snippet
+  created: '2026-05-19'
+  modified: '2026-05-19'
+binds:
+- namespace: env
+  keys:
+    POSTHOG_API_KEY: POSTHOG_API_KEY
+capability:
+  consumes:
+  - type: http
+    namespace: posthog-js-snippet
+    baseUri: ''
+    description: PostHog API — js-snippet business capability. Self-contained, no shared references.
+    resources:
+    - name: api-projects-project_id-js-snippet-resolve
+      path: /api/projects/{project_id}/js-snippet/resolve/
+      operations:
+      - name: jssnippetresolveretrieve
+        method: GET
+        description: Preview what a given pin would resolve to, without saving it.
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+    - name: api-projects-project_id-js-snippet-version
+      path: /api/projects/{project_id}/js-snippet/version/
+      operations:
+      - name: jssnippetversionretrieve
+        method: GET
+        description: Return the team's current version pin and resolved version.
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+      - name: jssnippetversionpartialupdate
+        method: PATCH
+        description: Update the team's version pin.
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: body
+          in: body
+          type: object
+          description: Request body (JSON).
+          required: false
+    authentication:
+      type: bearer
+      token: '{{env.POSTHOG_API_KEY}}'
+  exposes:
+  - type: rest
+    namespace: posthog-js-snippet-rest
+    port: 8080
+    description: REST adapter for PostHog API — js-snippet. One Spectral-compliant resource per consumed operation, prefixed
+      with /v1.
+    resources:
+    - path: /v1/api/projects/{project-id}/js-snippet/resolve
+      name: api-projects-project-id-js-snippet-resolve
+      description: REST surface for api-projects-project_id-js-snippet-resolve.
+      operations:
+      - method: GET
+        name: jssnippetresolveretrieve
+        description: Preview what a given pin would resolve to, without saving it.
+        call: posthog-js-snippet.jssnippetresolveretrieve
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /v1/api/projects/{project-id}/js-snippet/version
+      name: api-projects-project-id-js-snippet-version
+      description: REST surface for api-projects-project_id-js-snippet-version.
+      operations:
+      - method: GET
+        name: jssnippetversionretrieve
+        description: Return the team's current version pin and resolved version.
+        call: posthog-js-snippet.jssnippetversionretrieve
+        outputParameters:
+        - type: object
+          mapping: $.
+      - method: PATCH
+        name: jssnippetversionpartialupdate
+        description: Update the team's version pin.
+        call: posthog-js-snippet.jssnippetversionpartialupdate
+        with:
+          body: rest.body
+        outputParameters:
+        - type: object
+          mapping: $.
+  - type: mcp
+    namespace: posthog-js-snippet-mcp
+    port: 9090
+    transport: http
+    description: MCP adapter for PostHog API — js-snippet. One tool per consumed operation, routed inline through this capability's
+      consumes block.
+    tools:
+    - name: preview-what-given-pin-would
+      description: Preview what a given pin would resolve to, without saving it.
+      hints:
+        readOnly: true
+        destructive: false
+        idempotent: true
+      call: posthog-js-snippet.jssnippetresolveretrieve
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: return-team-s-current-version-pin
+      description: Return the team's current version pin and resolved version.
+      hints:
+        readOnly: true
+        destructive: false
+        idempotent: true
+      call: posthog-js-snippet.jssnippetversionretrieve
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: update-team-s-version-pin
+      description: Update the team's version pin.
+      hints:
+        readOnly: false
+        destructive: false
+        idempotent: true
+      call: posthog-js-snippet.jssnippetversionpartialupdate
+      with:
+        body: tools.body
+      outputParameters:
+      - type: object
+        mapping: $.

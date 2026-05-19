@@ -1,0 +1,79 @@
+naftiko: 1.0.0-alpha2
+info:
+  label: PostHog API — mcp_tools
+  description: 'PostHog API — mcp_tools. 1 operations. Lead operation: mcp_tools. Self-contained Naftiko capability covering
+    one Posthog business surface.'
+  tags:
+  - Posthog
+  - mcp_tools
+  created: '2026-05-19'
+  modified: '2026-05-19'
+binds:
+- namespace: env
+  keys:
+    POSTHOG_API_KEY: POSTHOG_API_KEY
+capability:
+  consumes:
+  - type: http
+    namespace: posthog-mcp-tools
+    baseUri: ''
+    description: PostHog API — mcp_tools business capability. Self-contained, no shared references.
+    resources:
+    - name: api-environments-project_id-mcp_tools-tool_name
+      path: /api/environments/{project_id}/mcp_tools/{tool_name}/
+      operations:
+      - name: mcptoolscreate
+        method: POST
+        description: Invoke an MCP tool by name.
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: tool_name
+          in: path
+          type: string
+          required: true
+    authentication:
+      type: bearer
+      token: '{{env.POSTHOG_API_KEY}}'
+  exposes:
+  - type: rest
+    namespace: posthog-mcp-tools-rest
+    port: 8080
+    description: REST adapter for PostHog API — mcp_tools. One Spectral-compliant resource per consumed operation, prefixed
+      with /v1.
+    resources:
+    - path: /v1/api/environments/{project-id}/mcp-tools/{tool-name}
+      name: api-environments-project-id-mcp-tools-tool-name
+      description: REST surface for api-environments-project_id-mcp_tools-tool_name.
+      operations:
+      - method: POST
+        name: mcptoolscreate
+        description: Invoke an MCP tool by name.
+        call: posthog-mcp-tools.mcptoolscreate
+        with:
+          tool_name: rest.tool_name
+        outputParameters:
+        - type: object
+          mapping: $.
+  - type: mcp
+    namespace: posthog-mcp-tools-mcp
+    port: 9090
+    transport: http
+    description: MCP adapter for PostHog API — mcp_tools. One tool per consumed operation, routed inline through this capability's
+      consumes block.
+    tools:
+    - name: invoke-mcp-tool-name
+      description: Invoke an MCP tool by name.
+      hints:
+        readOnly: false
+        destructive: false
+        idempotent: false
+      call: posthog-mcp-tools.mcptoolscreate
+      with:
+        tool_name: tools.tool_name
+      outputParameters:
+      - type: object
+        mapping: $.

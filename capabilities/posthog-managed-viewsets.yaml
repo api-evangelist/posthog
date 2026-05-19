@@ -1,0 +1,113 @@
+naftiko: 1.0.0-alpha2
+info:
+  label: PostHog API — managed_viewsets
+  description: 'PostHog API — managed_viewsets. 2 operations. Lead operation: managed_viewsets. Self-contained Naftiko capability
+    covering one Posthog business surface.'
+  tags:
+  - Posthog
+  - managed_viewsets
+  created: '2026-05-19'
+  modified: '2026-05-19'
+binds:
+- namespace: env
+  keys:
+    POSTHOG_API_KEY: POSTHOG_API_KEY
+capability:
+  consumes:
+  - type: http
+    namespace: posthog-managed-viewsets
+    baseUri: ''
+    description: PostHog API — managed_viewsets business capability. Self-contained, no shared references.
+    resources:
+    - name: api-environments-project_id-managed_viewsets-kind
+      path: /api/environments/{project_id}/managed_viewsets/{kind}/
+      operations:
+      - name: managedviewsetsretrieve
+        method: GET
+        description: Get all views associated with a specific managed viewset.
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: kind
+          in: path
+          type: string
+          required: true
+      - name: managedviewsetsupdate
+        method: PUT
+        description: Enable or disable a managed viewset by kind.
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: kind
+          in: path
+          type: string
+          required: true
+    authentication:
+      type: bearer
+      token: '{{env.POSTHOG_API_KEY}}'
+  exposes:
+  - type: rest
+    namespace: posthog-managed-viewsets-rest
+    port: 8080
+    description: REST adapter for PostHog API — managed_viewsets. One Spectral-compliant resource per consumed operation,
+      prefixed with /v1.
+    resources:
+    - path: /v1/api/environments/{project-id}/managed-viewsets/{kind}
+      name: api-environments-project-id-managed-viewsets-kind
+      description: REST surface for api-environments-project_id-managed_viewsets-kind.
+      operations:
+      - method: GET
+        name: managedviewsetsretrieve
+        description: Get all views associated with a specific managed viewset.
+        call: posthog-managed-viewsets.managedviewsetsretrieve
+        with:
+          kind: rest.kind
+        outputParameters:
+        - type: object
+          mapping: $.
+      - method: PUT
+        name: managedviewsetsupdate
+        description: Enable or disable a managed viewset by kind.
+        call: posthog-managed-viewsets.managedviewsetsupdate
+        with:
+          kind: rest.kind
+        outputParameters:
+        - type: object
+          mapping: $.
+  - type: mcp
+    namespace: posthog-managed-viewsets-mcp
+    port: 9090
+    transport: http
+    description: MCP adapter for PostHog API — managed_viewsets. One tool per consumed operation, routed inline through this
+      capability's consumes block.
+    tools:
+    - name: get-all-views-associated-specific
+      description: Get all views associated with a specific managed viewset.
+      hints:
+        readOnly: true
+        destructive: false
+        idempotent: true
+      call: posthog-managed-viewsets.managedviewsetsretrieve
+      with:
+        kind: tools.kind
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: enable-disable-managed-viewset-kind
+      description: Enable or disable a managed viewset by kind.
+      hints:
+        readOnly: false
+        destructive: false
+        idempotent: true
+      call: posthog-managed-viewsets.managedviewsetsupdate
+      with:
+        kind: tools.kind
+      outputParameters:
+      - type: object
+        mapping: $.

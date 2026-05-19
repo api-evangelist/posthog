@@ -1,0 +1,2838 @@
+naftiko: 1.0.0-alpha2
+info:
+  label: PostHog API — dashboards
+  description: 'PostHog API — dashboards. 58 operations. Lead operation: dashboards. Self-contained Naftiko capability covering
+    one Posthog business surface.'
+  tags:
+  - Posthog
+  - dashboards
+  created: '2026-05-19'
+  modified: '2026-05-19'
+binds:
+- namespace: env
+  keys:
+    POSTHOG_API_KEY: POSTHOG_API_KEY
+capability:
+  consumes:
+  - type: http
+    namespace: posthog-dashboards
+    baseUri: ''
+    description: PostHog API — dashboards business capability. Self-contained, no shared references.
+    resources:
+    - name: api-environments-environment_id-dashboards
+      path: /api/environments/{environment_id}/dashboards/
+      operations:
+      - name: environmentsdashboardslist
+        method: GET
+        description: ''
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: format
+          in: query
+          type: string
+        - name: limit
+          in: query
+          type: integer
+          description: Number of results to return per page.
+        - name: offset
+          in: query
+          type: integer
+          description: The initial index from which to return the results.
+      - name: environmentsdashboardscreate
+        method: POST
+        description: ''
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: format
+          in: query
+          type: string
+        - name: body
+          in: body
+          type: object
+          description: Request body (JSON).
+          required: false
+    - name: api-environments-environment_id-dashboards-bulk_update_tags
+      path: /api/environments/{environment_id}/dashboards/bulk_update_tags/
+      operations:
+      - name: environmentsdashboardsbulkupdatetagscreate
+        method: POST
+        description: Bulk update tags on multiple objects.
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: format
+          in: query
+          type: string
+        - name: body
+          in: body
+          type: object
+          description: Request body (JSON).
+          required: true
+    - name: api-environments-environment_id-dashboards-create_from_template_json
+      path: /api/environments/{environment_id}/dashboards/create_from_template_json/
+      operations:
+      - name: environmentsdashboardscreatefromtemplatejsoncreate
+        method: POST
+        description: ''
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: format
+          in: query
+          type: string
+        - name: body
+          in: body
+          type: object
+          description: Request body (JSON).
+          required: false
+    - name: api-environments-environment_id-dashboards-create_unlisted_dashboard
+      path: /api/environments/{environment_id}/dashboards/create_unlisted_dashboard/
+      operations:
+      - name: environmentsdashboardscreateunlisteddashboardcreate
+        method: POST
+        description: Creates an unlisted dashboard from template by tag.
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: format
+          in: query
+          type: string
+        - name: body
+          in: body
+          type: object
+          description: Request body (JSON).
+          required: false
+    - name: api-environments-environment_id-dashboards-dashboard_id-collaborators
+      path: /api/environments/{environment_id}/dashboards/{dashboard_id}/collaborators/
+      operations:
+      - name: environmentsdashboardscollaboratorslist
+        method: GET
+        description: ''
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: dashboard_id
+          in: path
+          type: integer
+          required: true
+      - name: environmentsdashboardscollaboratorscreate
+        method: POST
+        description: ''
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: dashboard_id
+          in: path
+          type: integer
+          required: true
+        - name: body
+          in: body
+          type: object
+          description: Request body (JSON).
+          required: true
+    - name: api-environments-environment_id-dashboards-dashboard_id-collaborators-user__uuid
+      path: /api/environments/{environment_id}/dashboards/{dashboard_id}/collaborators/{user__uuid}/
+      operations:
+      - name: environmentsdashboardscollaboratorsdestroy
+        method: DELETE
+        description: ''
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: dashboard_id
+          in: path
+          type: integer
+          required: true
+        - name: user__uuid
+          in: path
+          type: string
+          required: true
+    - name: api-environments-environment_id-dashboards-dashboard_id-sharing
+      path: /api/environments/{environment_id}/dashboards/{dashboard_id}/sharing/
+      operations:
+      - name: environmentsdashboardssharinglist
+        method: GET
+        description: ''
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: dashboard_id
+          in: path
+          type: integer
+          required: true
+    - name: api-environments-environment_id-dashboards-dashboard_id-sharing-passwords
+      path: /api/environments/{environment_id}/dashboards/{dashboard_id}/sharing/passwords/
+      operations:
+      - name: environmentsdashboardssharingpasswordscreate
+        method: POST
+        description: Create a new password for the sharing configuration.
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: dashboard_id
+          in: path
+          type: integer
+          required: true
+        - name: body
+          in: body
+          type: object
+          description: Request body (JSON).
+          required: false
+    - name: api-environments-environment_id-dashboards-dashboard_id-sharing-passwords-passwo
+      path: /api/environments/{environment_id}/dashboards/{dashboard_id}/sharing/passwords/{password_id}/
+      operations:
+      - name: environmentsdashboardssharingpasswordsdestroy
+        method: DELETE
+        description: Delete a password from the sharing configuration.
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: dashboard_id
+          in: path
+          type: integer
+          required: true
+        - name: password_id
+          in: path
+          type: string
+          required: true
+    - name: api-environments-environment_id-dashboards-dashboard_id-sharing-refresh
+      path: /api/environments/{environment_id}/dashboards/{dashboard_id}/sharing/refresh/
+      operations:
+      - name: environmentsdashboardssharingrefreshcreate
+        method: POST
+        description: ''
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: dashboard_id
+          in: path
+          type: integer
+          required: true
+        - name: body
+          in: body
+          type: object
+          description: Request body (JSON).
+          required: false
+    - name: api-environments-environment_id-dashboards-id
+      path: /api/environments/{environment_id}/dashboards/{id}/
+      operations:
+      - name: environmentsdashboardsretrieve
+        method: GET
+        description: ''
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: filters_override
+          in: query
+          type: string
+          description: JSON object to override dashboard filters for this request only (not persisted). Top-level keys replace;
+            nested values are not deep-merged — pass the complete v
+        - name: format
+          in: query
+          type: string
+        - name: id
+          in: path
+          type: integer
+          description: A unique integer value identifying this dashboard.
+          required: true
+        - name: variables_override
+          in: query
+          type: string
+          description: 'JSON object to override dashboard variables for this request only (not persisted). Format: {"<variable_id>":
+            {"code_name": "<code_name>", "variableId": "<variab'
+      - name: environmentsdashboardsupdate
+        method: PUT
+        description: ''
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: format
+          in: query
+          type: string
+        - name: id
+          in: path
+          type: integer
+          description: A unique integer value identifying this dashboard.
+          required: true
+        - name: body
+          in: body
+          type: object
+          description: Request body (JSON).
+          required: false
+      - name: environmentsdashboardspartialupdate
+        method: PATCH
+        description: ''
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: format
+          in: query
+          type: string
+        - name: id
+          in: path
+          type: integer
+          description: A unique integer value identifying this dashboard.
+          required: true
+        - name: body
+          in: body
+          type: object
+          description: Request body (JSON).
+          required: false
+      - name: environmentsdashboardsdestroy
+        method: DELETE
+        description: Hard delete of this model is not allowed. Use a patch API call to set "deleted" to true
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: format
+          in: query
+          type: string
+        - name: id
+          in: path
+          type: integer
+          description: A unique integer value identifying this dashboard.
+          required: true
+    - name: api-environments-environment_id-dashboards-id-analyze_refresh_result
+      path: /api/environments/{environment_id}/dashboards/{id}/analyze_refresh_result/
+      operations:
+      - name: environmentsdashboardsanalyzerefreshresultcreate
+        method: POST
+        description: Generate AI analysis comparing before/after dashboard refresh.
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: format
+          in: query
+          type: string
+        - name: id
+          in: path
+          type: integer
+          description: A unique integer value identifying this dashboard.
+          required: true
+        - name: body
+          in: body
+          type: object
+          description: Request body (JSON).
+          required: false
+    - name: api-environments-environment_id-dashboards-id-copy_tile
+      path: /api/environments/{environment_id}/dashboards/{id}/copy_tile/
+      operations:
+      - name: environmentsdashboardscopytilecreate
+        method: POST
+        description: Copy an existing dashboard tile to another dashboard (insight or text card; new tile row).
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: format
+          in: query
+          type: string
+        - name: id
+          in: path
+          type: integer
+          description: A unique integer value identifying this dashboard.
+          required: true
+        - name: body
+          in: body
+          type: object
+          description: Request body (JSON).
+          required: true
+    - name: api-environments-environment_id-dashboards-id-move_tile
+      path: /api/environments/{environment_id}/dashboards/{id}/move_tile/
+      operations:
+      - name: environmentsdashboardsmovetilepartialupdate
+        method: PATCH
+        description: ''
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: format
+          in: query
+          type: string
+        - name: id
+          in: path
+          type: integer
+          description: A unique integer value identifying this dashboard.
+          required: true
+        - name: body
+          in: body
+          type: object
+          description: Request body (JSON).
+          required: false
+    - name: api-environments-environment_id-dashboards-id-reorder_tiles
+      path: /api/environments/{environment_id}/dashboards/{id}/reorder_tiles/
+      operations:
+      - name: environmentsdashboardsreordertilescreate
+        method: POST
+        description: ''
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: format
+          in: query
+          type: string
+        - name: id
+          in: path
+          type: integer
+          description: A unique integer value identifying this dashboard.
+          required: true
+        - name: body
+          in: body
+          type: object
+          description: Request body (JSON).
+          required: true
+    - name: api-environments-environment_id-dashboards-id-run_insights
+      path: /api/environments/{environment_id}/dashboards/{id}/run_insights/
+      operations:
+      - name: environmentsdashboardsruninsightsretrieve
+        method: GET
+        description: Run all insights on a dashboard and return their results.
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: filters_override
+          in: query
+          type: string
+          description: JSON object to override dashboard filters for this request only (not persisted). Top-level keys replace;
+            nested values are not deep-merged — pass the complete v
+        - name: format
+          in: query
+          type: string
+        - name: id
+          in: path
+          type: integer
+          description: A unique integer value identifying this dashboard.
+          required: true
+        - name: output_format
+          in: query
+          type: string
+          description: '''optimized'' (default) returns LLM-friendly formatted text per insight. ''json'' returns the raw
+            query result objects.'
+        - name: refresh
+          in: query
+          type: string
+          description: Cache behavior. 'force_cache' (default) serves from cache even if stale. 'blocking' uses cache if fresh,
+            otherwise recalculates. 'force_blocking' always recalcu
+        - name: variables_override
+          in: query
+          type: string
+          description: 'JSON object to override dashboard variables for this request only (not persisted). Format: {"<variable_id>":
+            {"code_name": "<code_name>", "variableId": "<variab'
+    - name: api-environments-environment_id-dashboards-id-snapshot
+      path: /api/environments/{environment_id}/dashboards/{id}/snapshot/
+      operations:
+      - name: environmentsdashboardssnapshotcreate
+        method: POST
+        description: Snapshot the current dashboard state (from cache) for AI analysis.
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: format
+          in: query
+          type: string
+        - name: id
+          in: path
+          type: integer
+          description: A unique integer value identifying this dashboard.
+          required: true
+        - name: body
+          in: body
+          type: object
+          description: Request body (JSON).
+          required: false
+    - name: api-environments-environment_id-dashboards-id-stream_tiles
+      path: /api/environments/{environment_id}/dashboards/{id}/stream_tiles/
+      operations:
+      - name: environmentsdashboardsstreamtilesretrieve
+        method: GET
+        description: Stream dashboard metadata and tiles via Server-Sent Events. Sends metadata first, then tiles as they
+          are rendered.
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: filters_override
+          in: query
+          type: string
+          description: JSON object to override dashboard filters for this request only (not persisted). Top-level keys replace;
+            nested values are not deep-merged — pass the complete v
+        - name: format
+          in: query
+          type: string
+        - name: id
+          in: path
+          type: integer
+          description: A unique integer value identifying this dashboard.
+          required: true
+        - name: layoutSize
+          in: query
+          type: string
+          description: Layout size for tile positioning. 'sm' (default) for standard, 'xs' for mobile. The snake_case alias
+            `layout_size` is also accepted for backward compatibility.
+        - name: variables_override
+          in: query
+          type: string
+          description: 'JSON object to override dashboard variables for this request only (not persisted). Format: {"<variable_id>":
+            {"code_name": "<code_name>", "variableId": "<variab'
+    - name: api-environments-environment_id-data_color_themes
+      path: /api/environments/{environment_id}/data_color_themes/
+      operations:
+      - name: environmentsdatacolorthemeslist
+        method: GET
+        description: ''
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: limit
+          in: query
+          type: integer
+          description: Number of results to return per page.
+        - name: offset
+          in: query
+          type: integer
+          description: The initial index from which to return the results.
+      - name: environmentsdatacolorthemescreate
+        method: POST
+        description: ''
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: body
+          in: body
+          type: object
+          description: Request body (JSON).
+          required: true
+    - name: api-environments-environment_id-data_color_themes-id
+      path: /api/environments/{environment_id}/data_color_themes/{id}/
+      operations:
+      - name: environmentsdatacolorthemesretrieve
+        method: GET
+        description: ''
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: id
+          in: path
+          type: integer
+          description: A unique integer value identifying this data color theme.
+          required: true
+      - name: environmentsdatacolorthemesupdate
+        method: PUT
+        description: ''
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: id
+          in: path
+          type: integer
+          description: A unique integer value identifying this data color theme.
+          required: true
+        - name: body
+          in: body
+          type: object
+          description: Request body (JSON).
+          required: true
+      - name: environmentsdatacolorthemespartialupdate
+        method: PATCH
+        description: ''
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: id
+          in: path
+          type: integer
+          description: A unique integer value identifying this data color theme.
+          required: true
+        - name: body
+          in: body
+          type: object
+          description: Request body (JSON).
+          required: false
+      - name: environmentsdatacolorthemesdestroy
+        method: DELETE
+        description: ''
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: id
+          in: path
+          type: integer
+          description: A unique integer value identifying this data color theme.
+          required: true
+    - name: api-projects-project_id-dashboards
+      path: /api/projects/{project_id}/dashboards/
+      operations:
+      - name: dashboardslist
+        method: GET
+        description: ''
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: format
+          in: query
+          type: string
+        - name: limit
+          in: query
+          type: integer
+          description: Number of results to return per page.
+        - name: offset
+          in: query
+          type: integer
+          description: The initial index from which to return the results.
+      - name: dashboardscreate
+        method: POST
+        description: ''
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: format
+          in: query
+          type: string
+        - name: body
+          in: body
+          type: object
+          description: Request body (JSON).
+          required: false
+    - name: api-projects-project_id-dashboards-bulk_update_tags
+      path: /api/projects/{project_id}/dashboards/bulk_update_tags/
+      operations:
+      - name: dashboardsbulkupdatetagscreate
+        method: POST
+        description: Bulk update tags on multiple objects.
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: format
+          in: query
+          type: string
+        - name: body
+          in: body
+          type: object
+          description: Request body (JSON).
+          required: true
+    - name: api-projects-project_id-dashboards-create_from_template_json
+      path: /api/projects/{project_id}/dashboards/create_from_template_json/
+      operations:
+      - name: dashboardscreatefromtemplatejsoncreate
+        method: POST
+        description: ''
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: format
+          in: query
+          type: string
+        - name: body
+          in: body
+          type: object
+          description: Request body (JSON).
+          required: false
+    - name: api-projects-project_id-dashboards-create_unlisted_dashboard
+      path: /api/projects/{project_id}/dashboards/create_unlisted_dashboard/
+      operations:
+      - name: dashboardscreateunlisteddashboardcreate
+        method: POST
+        description: Creates an unlisted dashboard from template by tag.
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: format
+          in: query
+          type: string
+        - name: body
+          in: body
+          type: object
+          description: Request body (JSON).
+          required: false
+    - name: api-projects-project_id-dashboards-dashboard_id-collaborators
+      path: /api/projects/{project_id}/dashboards/{dashboard_id}/collaborators/
+      operations:
+      - name: dashboardscollaboratorslist
+        method: GET
+        description: ''
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: dashboard_id
+          in: path
+          type: integer
+          required: true
+      - name: dashboardscollaboratorscreate
+        method: POST
+        description: ''
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: dashboard_id
+          in: path
+          type: integer
+          required: true
+        - name: body
+          in: body
+          type: object
+          description: Request body (JSON).
+          required: true
+    - name: api-projects-project_id-dashboards-dashboard_id-collaborators-user__uuid
+      path: /api/projects/{project_id}/dashboards/{dashboard_id}/collaborators/{user__uuid}/
+      operations:
+      - name: dashboardscollaboratorsdestroy
+        method: DELETE
+        description: ''
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: dashboard_id
+          in: path
+          type: integer
+          required: true
+        - name: user__uuid
+          in: path
+          type: string
+          required: true
+    - name: api-projects-project_id-dashboards-dashboard_id-sharing
+      path: /api/projects/{project_id}/dashboards/{dashboard_id}/sharing/
+      operations:
+      - name: dashboardssharinglist
+        method: GET
+        description: ''
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: dashboard_id
+          in: path
+          type: integer
+          required: true
+    - name: api-projects-project_id-dashboards-dashboard_id-sharing-passwords
+      path: /api/projects/{project_id}/dashboards/{dashboard_id}/sharing/passwords/
+      operations:
+      - name: dashboardssharingpasswordscreate
+        method: POST
+        description: Create a new password for the sharing configuration.
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: dashboard_id
+          in: path
+          type: integer
+          required: true
+        - name: body
+          in: body
+          type: object
+          description: Request body (JSON).
+          required: false
+    - name: api-projects-project_id-dashboards-dashboard_id-sharing-passwords-password_id
+      path: /api/projects/{project_id}/dashboards/{dashboard_id}/sharing/passwords/{password_id}/
+      operations:
+      - name: dashboardssharingpasswordsdestroy
+        method: DELETE
+        description: Delete a password from the sharing configuration.
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: dashboard_id
+          in: path
+          type: integer
+          required: true
+        - name: password_id
+          in: path
+          type: string
+          required: true
+    - name: api-projects-project_id-dashboards-dashboard_id-sharing-refresh
+      path: /api/projects/{project_id}/dashboards/{dashboard_id}/sharing/refresh/
+      operations:
+      - name: dashboardssharingrefreshcreate
+        method: POST
+        description: ''
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: dashboard_id
+          in: path
+          type: integer
+          required: true
+        - name: body
+          in: body
+          type: object
+          description: Request body (JSON).
+          required: false
+    - name: api-projects-project_id-dashboards-id
+      path: /api/projects/{project_id}/dashboards/{id}/
+      operations:
+      - name: dashboardsretrieve
+        method: GET
+        description: ''
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: filters_override
+          in: query
+          type: string
+          description: JSON object to override dashboard filters for this request only (not persisted). Top-level keys replace;
+            nested values are not deep-merged — pass the complete v
+        - name: format
+          in: query
+          type: string
+        - name: id
+          in: path
+          type: integer
+          description: A unique integer value identifying this dashboard.
+          required: true
+        - name: variables_override
+          in: query
+          type: string
+          description: 'JSON object to override dashboard variables for this request only (not persisted). Format: {"<variable_id>":
+            {"code_name": "<code_name>", "variableId": "<variab'
+      - name: dashboardsupdate
+        method: PUT
+        description: ''
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: format
+          in: query
+          type: string
+        - name: id
+          in: path
+          type: integer
+          description: A unique integer value identifying this dashboard.
+          required: true
+        - name: body
+          in: body
+          type: object
+          description: Request body (JSON).
+          required: false
+      - name: dashboardspartialupdate
+        method: PATCH
+        description: ''
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: format
+          in: query
+          type: string
+        - name: id
+          in: path
+          type: integer
+          description: A unique integer value identifying this dashboard.
+          required: true
+        - name: body
+          in: body
+          type: object
+          description: Request body (JSON).
+          required: false
+      - name: dashboardsdestroy
+        method: DELETE
+        description: Hard delete of this model is not allowed. Use a patch API call to set "deleted" to true
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: format
+          in: query
+          type: string
+        - name: id
+          in: path
+          type: integer
+          description: A unique integer value identifying this dashboard.
+          required: true
+    - name: api-projects-project_id-dashboards-id-analyze_refresh_result
+      path: /api/projects/{project_id}/dashboards/{id}/analyze_refresh_result/
+      operations:
+      - name: dashboardsanalyzerefreshresultcreate
+        method: POST
+        description: Generate AI analysis comparing before/after dashboard refresh.
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: format
+          in: query
+          type: string
+        - name: id
+          in: path
+          type: integer
+          description: A unique integer value identifying this dashboard.
+          required: true
+        - name: body
+          in: body
+          type: object
+          description: Request body (JSON).
+          required: false
+    - name: api-projects-project_id-dashboards-id-copy_tile
+      path: /api/projects/{project_id}/dashboards/{id}/copy_tile/
+      operations:
+      - name: dashboardscopytilecreate
+        method: POST
+        description: Copy an existing dashboard tile to another dashboard (insight or text card; new tile row).
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: format
+          in: query
+          type: string
+        - name: id
+          in: path
+          type: integer
+          description: A unique integer value identifying this dashboard.
+          required: true
+        - name: body
+          in: body
+          type: object
+          description: Request body (JSON).
+          required: true
+    - name: api-projects-project_id-dashboards-id-move_tile
+      path: /api/projects/{project_id}/dashboards/{id}/move_tile/
+      operations:
+      - name: dashboardsmovetilepartialupdate
+        method: PATCH
+        description: ''
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: format
+          in: query
+          type: string
+        - name: id
+          in: path
+          type: integer
+          description: A unique integer value identifying this dashboard.
+          required: true
+        - name: body
+          in: body
+          type: object
+          description: Request body (JSON).
+          required: false
+    - name: api-projects-project_id-dashboards-id-reorder_tiles
+      path: /api/projects/{project_id}/dashboards/{id}/reorder_tiles/
+      operations:
+      - name: dashboardsreordertilescreate
+        method: POST
+        description: ''
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: format
+          in: query
+          type: string
+        - name: id
+          in: path
+          type: integer
+          description: A unique integer value identifying this dashboard.
+          required: true
+        - name: body
+          in: body
+          type: object
+          description: Request body (JSON).
+          required: true
+    - name: api-projects-project_id-dashboards-id-run_insights
+      path: /api/projects/{project_id}/dashboards/{id}/run_insights/
+      operations:
+      - name: dashboardsruninsightsretrieve
+        method: GET
+        description: Run all insights on a dashboard and return their results.
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: filters_override
+          in: query
+          type: string
+          description: JSON object to override dashboard filters for this request only (not persisted). Top-level keys replace;
+            nested values are not deep-merged — pass the complete v
+        - name: format
+          in: query
+          type: string
+        - name: id
+          in: path
+          type: integer
+          description: A unique integer value identifying this dashboard.
+          required: true
+        - name: output_format
+          in: query
+          type: string
+          description: '''optimized'' (default) returns LLM-friendly formatted text per insight. ''json'' returns the raw
+            query result objects.'
+        - name: refresh
+          in: query
+          type: string
+          description: Cache behavior. 'force_cache' (default) serves from cache even if stale. 'blocking' uses cache if fresh,
+            otherwise recalculates. 'force_blocking' always recalcu
+        - name: variables_override
+          in: query
+          type: string
+          description: 'JSON object to override dashboard variables for this request only (not persisted). Format: {"<variable_id>":
+            {"code_name": "<code_name>", "variableId": "<variab'
+    - name: api-projects-project_id-dashboards-id-snapshot
+      path: /api/projects/{project_id}/dashboards/{id}/snapshot/
+      operations:
+      - name: dashboardssnapshotcreate
+        method: POST
+        description: Snapshot the current dashboard state (from cache) for AI analysis.
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: format
+          in: query
+          type: string
+        - name: id
+          in: path
+          type: integer
+          description: A unique integer value identifying this dashboard.
+          required: true
+        - name: body
+          in: body
+          type: object
+          description: Request body (JSON).
+          required: false
+    - name: api-projects-project_id-dashboards-id-stream_tiles
+      path: /api/projects/{project_id}/dashboards/{id}/stream_tiles/
+      operations:
+      - name: dashboardsstreamtilesretrieve
+        method: GET
+        description: Stream dashboard metadata and tiles via Server-Sent Events. Sends metadata first, then tiles as they
+          are rendered.
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: filters_override
+          in: query
+          type: string
+          description: JSON object to override dashboard filters for this request only (not persisted). Top-level keys replace;
+            nested values are not deep-merged — pass the complete v
+        - name: format
+          in: query
+          type: string
+        - name: id
+          in: path
+          type: integer
+          description: A unique integer value identifying this dashboard.
+          required: true
+        - name: layoutSize
+          in: query
+          type: string
+          description: Layout size for tile positioning. 'sm' (default) for standard, 'xs' for mobile. The snake_case alias
+            `layout_size` is also accepted for backward compatibility.
+        - name: variables_override
+          in: query
+          type: string
+          description: 'JSON object to override dashboard variables for this request only (not persisted). Format: {"<variable_id>":
+            {"code_name": "<code_name>", "variableId": "<variab'
+    - name: api-projects-project_id-data_color_themes
+      path: /api/projects/{project_id}/data_color_themes/
+      operations:
+      - name: datacolorthemeslist
+        method: GET
+        description: ''
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: limit
+          in: query
+          type: integer
+          description: Number of results to return per page.
+        - name: offset
+          in: query
+          type: integer
+          description: The initial index from which to return the results.
+      - name: datacolorthemescreate
+        method: POST
+        description: ''
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: body
+          in: body
+          type: object
+          description: Request body (JSON).
+          required: true
+    - name: api-projects-project_id-data_color_themes-id
+      path: /api/projects/{project_id}/data_color_themes/{id}/
+      operations:
+      - name: datacolorthemesretrieve
+        method: GET
+        description: ''
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: id
+          in: path
+          type: integer
+          description: A unique integer value identifying this data color theme.
+          required: true
+      - name: datacolorthemesupdate
+        method: PUT
+        description: ''
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: id
+          in: path
+          type: integer
+          description: A unique integer value identifying this data color theme.
+          required: true
+        - name: body
+          in: body
+          type: object
+          description: Request body (JSON).
+          required: true
+      - name: datacolorthemespartialupdate
+        method: PATCH
+        description: ''
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: id
+          in: path
+          type: integer
+          description: A unique integer value identifying this data color theme.
+          required: true
+        - name: body
+          in: body
+          type: object
+          description: Request body (JSON).
+          required: false
+      - name: datacolorthemesdestroy
+        method: DELETE
+        description: ''
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: id
+          in: path
+          type: integer
+          description: A unique integer value identifying this data color theme.
+          required: true
+    authentication:
+      type: bearer
+      token: '{{env.POSTHOG_API_KEY}}'
+  exposes:
+  - type: rest
+    namespace: posthog-dashboards-rest
+    port: 8080
+    description: REST adapter for PostHog API — dashboards. One Spectral-compliant resource per consumed operation, prefixed
+      with /v1.
+    resources:
+    - path: /v1/api/environments/{environment-id}/dashboards
+      name: api-environments-environment-id-dashboards
+      description: REST surface for api-environments-environment_id-dashboards.
+      operations:
+      - method: GET
+        name: environmentsdashboardslist
+        description: environmentsdashboardslist
+        call: posthog-dashboards.environmentsdashboardslist
+        with:
+          format: rest.format
+          limit: rest.limit
+          offset: rest.offset
+        outputParameters:
+        - type: object
+          mapping: $.
+      - method: POST
+        name: environmentsdashboardscreate
+        description: environmentsdashboardscreate
+        call: posthog-dashboards.environmentsdashboardscreate
+        with:
+          format: rest.format
+          body: rest.body
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /v1/api/environments/{environment-id}/dashboards/bulk-update-tags
+      name: api-environments-environment-id-dashboards-bulk-update-tags
+      description: REST surface for api-environments-environment_id-dashboards-bulk_update_tags.
+      operations:
+      - method: POST
+        name: environmentsdashboardsbulkupdatetagscreate
+        description: Bulk update tags on multiple objects.
+        call: posthog-dashboards.environmentsdashboardsbulkupdatetagscreate
+        with:
+          format: rest.format
+          body: rest.body
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /v1/api/environments/{environment-id}/dashboards/create-from-template-json
+      name: api-environments-environment-id-dashboards-create-from-template-json
+      description: REST surface for api-environments-environment_id-dashboards-create_from_template_json.
+      operations:
+      - method: POST
+        name: environmentsdashboardscreatefromtemplatejsoncreate
+        description: environmentsdashboardscreatefromtemplatejsoncreate
+        call: posthog-dashboards.environmentsdashboardscreatefromtemplatejsoncreate
+        with:
+          format: rest.format
+          body: rest.body
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /v1/api/environments/{environment-id}/dashboards/create-unlisted-dashboard
+      name: api-environments-environment-id-dashboards-create-unlisted-dashboard
+      description: REST surface for api-environments-environment_id-dashboards-create_unlisted_dashboard.
+      operations:
+      - method: POST
+        name: environmentsdashboardscreateunlisteddashboardcreate
+        description: Creates an unlisted dashboard from template by tag.
+        call: posthog-dashboards.environmentsdashboardscreateunlisteddashboardcreate
+        with:
+          format: rest.format
+          body: rest.body
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /v1/api/environments/{environment-id}/dashboards/{dashboard-id}/collaborators
+      name: api-environments-environment-id-dashboards-dashboard-id-collaborators
+      description: REST surface for api-environments-environment_id-dashboards-dashboard_id-collaborators.
+      operations:
+      - method: GET
+        name: environmentsdashboardscollaboratorslist
+        description: environmentsdashboardscollaboratorslist
+        call: posthog-dashboards.environmentsdashboardscollaboratorslist
+        with:
+          dashboard_id: rest.dashboard_id
+        outputParameters:
+        - type: object
+          mapping: $.
+      - method: POST
+        name: environmentsdashboardscollaboratorscreate
+        description: environmentsdashboardscollaboratorscreate
+        call: posthog-dashboards.environmentsdashboardscollaboratorscreate
+        with:
+          dashboard_id: rest.dashboard_id
+          body: rest.body
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /v1/api/environments/{environment-id}/dashboards/{dashboard-id}/collaborators/{user-uuid}
+      name: api-environments-environment-id-dashboards-dashboard-id-collaborators-user-uuid
+      description: REST surface for api-environments-environment_id-dashboards-dashboard_id-collaborators-user__uuid.
+      operations:
+      - method: DELETE
+        name: environmentsdashboardscollaboratorsdestroy
+        description: environmentsdashboardscollaboratorsdestroy
+        call: posthog-dashboards.environmentsdashboardscollaboratorsdestroy
+        with:
+          dashboard_id: rest.dashboard_id
+          user__uuid: rest.user__uuid
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /v1/api/environments/{environment-id}/dashboards/{dashboard-id}/sharing
+      name: api-environments-environment-id-dashboards-dashboard-id-sharing
+      description: REST surface for api-environments-environment_id-dashboards-dashboard_id-sharing.
+      operations:
+      - method: GET
+        name: environmentsdashboardssharinglist
+        description: environmentsdashboardssharinglist
+        call: posthog-dashboards.environmentsdashboardssharinglist
+        with:
+          dashboard_id: rest.dashboard_id
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /v1/api/environments/{environment-id}/dashboards/{dashboard-id}/sharing/passwords
+      name: api-environments-environment-id-dashboards-dashboard-id-sharing-passwords
+      description: REST surface for api-environments-environment_id-dashboards-dashboard_id-sharing-passwords.
+      operations:
+      - method: POST
+        name: environmentsdashboardssharingpasswordscreate
+        description: Create a new password for the sharing configuration.
+        call: posthog-dashboards.environmentsdashboardssharingpasswordscreate
+        with:
+          dashboard_id: rest.dashboard_id
+          body: rest.body
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /v1/api/environments/{environment-id}/dashboards/{dashboard-id}/sharing/passwords/{password-id}
+      name: api-environments-environment-id-dashboards-dashboard-id-sharing-passwords-passwo
+      description: REST surface for api-environments-environment_id-dashboards-dashboard_id-sharing-passwords-passwo.
+      operations:
+      - method: DELETE
+        name: environmentsdashboardssharingpasswordsdestroy
+        description: Delete a password from the sharing configuration.
+        call: posthog-dashboards.environmentsdashboardssharingpasswordsdestroy
+        with:
+          dashboard_id: rest.dashboard_id
+          password_id: rest.password_id
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /v1/api/environments/{environment-id}/dashboards/{dashboard-id}/sharing/refresh
+      name: api-environments-environment-id-dashboards-dashboard-id-sharing-refresh
+      description: REST surface for api-environments-environment_id-dashboards-dashboard_id-sharing-refresh.
+      operations:
+      - method: POST
+        name: environmentsdashboardssharingrefreshcreate
+        description: environmentsdashboardssharingrefreshcreate
+        call: posthog-dashboards.environmentsdashboardssharingrefreshcreate
+        with:
+          dashboard_id: rest.dashboard_id
+          body: rest.body
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /v1/api/environments/{environment-id}/dashboards/{id}
+      name: api-environments-environment-id-dashboards-id
+      description: REST surface for api-environments-environment_id-dashboards-id.
+      operations:
+      - method: GET
+        name: environmentsdashboardsretrieve
+        description: environmentsdashboardsretrieve
+        call: posthog-dashboards.environmentsdashboardsretrieve
+        with:
+          filters_override: rest.filters_override
+          format: rest.format
+          id: rest.id
+          variables_override: rest.variables_override
+        outputParameters:
+        - type: object
+          mapping: $.
+      - method: PUT
+        name: environmentsdashboardsupdate
+        description: environmentsdashboardsupdate
+        call: posthog-dashboards.environmentsdashboardsupdate
+        with:
+          format: rest.format
+          id: rest.id
+          body: rest.body
+        outputParameters:
+        - type: object
+          mapping: $.
+      - method: PATCH
+        name: environmentsdashboardspartialupdate
+        description: environmentsdashboardspartialupdate
+        call: posthog-dashboards.environmentsdashboardspartialupdate
+        with:
+          format: rest.format
+          id: rest.id
+          body: rest.body
+        outputParameters:
+        - type: object
+          mapping: $.
+      - method: DELETE
+        name: environmentsdashboardsdestroy
+        description: Hard delete of this model is not allowed. Use a patch API call to set "deleted" to true
+        call: posthog-dashboards.environmentsdashboardsdestroy
+        with:
+          format: rest.format
+          id: rest.id
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /v1/api/environments/{environment-id}/dashboards/{id}/analyze-refresh-result
+      name: api-environments-environment-id-dashboards-id-analyze-refresh-result
+      description: REST surface for api-environments-environment_id-dashboards-id-analyze_refresh_result.
+      operations:
+      - method: POST
+        name: environmentsdashboardsanalyzerefreshresultcreate
+        description: Generate AI analysis comparing before/after dashboard refresh.
+        call: posthog-dashboards.environmentsdashboardsanalyzerefreshresultcreate
+        with:
+          format: rest.format
+          id: rest.id
+          body: rest.body
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /v1/api/environments/{environment-id}/dashboards/{id}/copy-tile
+      name: api-environments-environment-id-dashboards-id-copy-tile
+      description: REST surface for api-environments-environment_id-dashboards-id-copy_tile.
+      operations:
+      - method: POST
+        name: environmentsdashboardscopytilecreate
+        description: Copy an existing dashboard tile to another dashboard (insight or text card; new tile row).
+        call: posthog-dashboards.environmentsdashboardscopytilecreate
+        with:
+          format: rest.format
+          id: rest.id
+          body: rest.body
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /v1/api/environments/{environment-id}/dashboards/{id}/move-tile
+      name: api-environments-environment-id-dashboards-id-move-tile
+      description: REST surface for api-environments-environment_id-dashboards-id-move_tile.
+      operations:
+      - method: PATCH
+        name: environmentsdashboardsmovetilepartialupdate
+        description: environmentsdashboardsmovetilepartialupdate
+        call: posthog-dashboards.environmentsdashboardsmovetilepartialupdate
+        with:
+          format: rest.format
+          id: rest.id
+          body: rest.body
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /v1/api/environments/{environment-id}/dashboards/{id}/reorder-tiles
+      name: api-environments-environment-id-dashboards-id-reorder-tiles
+      description: REST surface for api-environments-environment_id-dashboards-id-reorder_tiles.
+      operations:
+      - method: POST
+        name: environmentsdashboardsreordertilescreate
+        description: environmentsdashboardsreordertilescreate
+        call: posthog-dashboards.environmentsdashboardsreordertilescreate
+        with:
+          format: rest.format
+          id: rest.id
+          body: rest.body
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /v1/api/environments/{environment-id}/dashboards/{id}/run-insights
+      name: api-environments-environment-id-dashboards-id-run-insights
+      description: REST surface for api-environments-environment_id-dashboards-id-run_insights.
+      operations:
+      - method: GET
+        name: environmentsdashboardsruninsightsretrieve
+        description: Run all insights on a dashboard and return their results.
+        call: posthog-dashboards.environmentsdashboardsruninsightsretrieve
+        with:
+          filters_override: rest.filters_override
+          format: rest.format
+          id: rest.id
+          output_format: rest.output_format
+          refresh: rest.refresh
+          variables_override: rest.variables_override
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /v1/api/environments/{environment-id}/dashboards/{id}/snapshot
+      name: api-environments-environment-id-dashboards-id-snapshot
+      description: REST surface for api-environments-environment_id-dashboards-id-snapshot.
+      operations:
+      - method: POST
+        name: environmentsdashboardssnapshotcreate
+        description: Snapshot the current dashboard state (from cache) for AI analysis.
+        call: posthog-dashboards.environmentsdashboardssnapshotcreate
+        with:
+          format: rest.format
+          id: rest.id
+          body: rest.body
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /v1/api/environments/{environment-id}/dashboards/{id}/stream-tiles
+      name: api-environments-environment-id-dashboards-id-stream-tiles
+      description: REST surface for api-environments-environment_id-dashboards-id-stream_tiles.
+      operations:
+      - method: GET
+        name: environmentsdashboardsstreamtilesretrieve
+        description: Stream dashboard metadata and tiles via Server-Sent Events. Sends metadata first, then tiles as they
+          are rendered.
+        call: posthog-dashboards.environmentsdashboardsstreamtilesretrieve
+        with:
+          filters_override: rest.filters_override
+          format: rest.format
+          id: rest.id
+          layoutSize: rest.layoutSize
+          variables_override: rest.variables_override
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /v1/api/environments/{environment-id}/data-color-themes
+      name: api-environments-environment-id-data-color-themes
+      description: REST surface for api-environments-environment_id-data_color_themes.
+      operations:
+      - method: GET
+        name: environmentsdatacolorthemeslist
+        description: environmentsdatacolorthemeslist
+        call: posthog-dashboards.environmentsdatacolorthemeslist
+        with:
+          limit: rest.limit
+          offset: rest.offset
+        outputParameters:
+        - type: object
+          mapping: $.
+      - method: POST
+        name: environmentsdatacolorthemescreate
+        description: environmentsdatacolorthemescreate
+        call: posthog-dashboards.environmentsdatacolorthemescreate
+        with:
+          body: rest.body
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /v1/api/environments/{environment-id}/data-color-themes/{id}
+      name: api-environments-environment-id-data-color-themes-id
+      description: REST surface for api-environments-environment_id-data_color_themes-id.
+      operations:
+      - method: GET
+        name: environmentsdatacolorthemesretrieve
+        description: environmentsdatacolorthemesretrieve
+        call: posthog-dashboards.environmentsdatacolorthemesretrieve
+        with:
+          id: rest.id
+        outputParameters:
+        - type: object
+          mapping: $.
+      - method: PUT
+        name: environmentsdatacolorthemesupdate
+        description: environmentsdatacolorthemesupdate
+        call: posthog-dashboards.environmentsdatacolorthemesupdate
+        with:
+          id: rest.id
+          body: rest.body
+        outputParameters:
+        - type: object
+          mapping: $.
+      - method: PATCH
+        name: environmentsdatacolorthemespartialupdate
+        description: environmentsdatacolorthemespartialupdate
+        call: posthog-dashboards.environmentsdatacolorthemespartialupdate
+        with:
+          id: rest.id
+          body: rest.body
+        outputParameters:
+        - type: object
+          mapping: $.
+      - method: DELETE
+        name: environmentsdatacolorthemesdestroy
+        description: environmentsdatacolorthemesdestroy
+        call: posthog-dashboards.environmentsdatacolorthemesdestroy
+        with:
+          id: rest.id
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /v1/api/projects/{project-id}/dashboards
+      name: api-projects-project-id-dashboards
+      description: REST surface for api-projects-project_id-dashboards.
+      operations:
+      - method: GET
+        name: dashboardslist
+        description: dashboardslist
+        call: posthog-dashboards.dashboardslist
+        with:
+          format: rest.format
+          limit: rest.limit
+          offset: rest.offset
+        outputParameters:
+        - type: object
+          mapping: $.
+      - method: POST
+        name: dashboardscreate
+        description: dashboardscreate
+        call: posthog-dashboards.dashboardscreate
+        with:
+          format: rest.format
+          body: rest.body
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /v1/api/projects/{project-id}/dashboards/bulk-update-tags
+      name: api-projects-project-id-dashboards-bulk-update-tags
+      description: REST surface for api-projects-project_id-dashboards-bulk_update_tags.
+      operations:
+      - method: POST
+        name: dashboardsbulkupdatetagscreate
+        description: Bulk update tags on multiple objects.
+        call: posthog-dashboards.dashboardsbulkupdatetagscreate
+        with:
+          format: rest.format
+          body: rest.body
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /v1/api/projects/{project-id}/dashboards/create-from-template-json
+      name: api-projects-project-id-dashboards-create-from-template-json
+      description: REST surface for api-projects-project_id-dashboards-create_from_template_json.
+      operations:
+      - method: POST
+        name: dashboardscreatefromtemplatejsoncreate
+        description: dashboardscreatefromtemplatejsoncreate
+        call: posthog-dashboards.dashboardscreatefromtemplatejsoncreate
+        with:
+          format: rest.format
+          body: rest.body
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /v1/api/projects/{project-id}/dashboards/create-unlisted-dashboard
+      name: api-projects-project-id-dashboards-create-unlisted-dashboard
+      description: REST surface for api-projects-project_id-dashboards-create_unlisted_dashboard.
+      operations:
+      - method: POST
+        name: dashboardscreateunlisteddashboardcreate
+        description: Creates an unlisted dashboard from template by tag.
+        call: posthog-dashboards.dashboardscreateunlisteddashboardcreate
+        with:
+          format: rest.format
+          body: rest.body
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /v1/api/projects/{project-id}/dashboards/{dashboard-id}/collaborators
+      name: api-projects-project-id-dashboards-dashboard-id-collaborators
+      description: REST surface for api-projects-project_id-dashboards-dashboard_id-collaborators.
+      operations:
+      - method: GET
+        name: dashboardscollaboratorslist
+        description: dashboardscollaboratorslist
+        call: posthog-dashboards.dashboardscollaboratorslist
+        with:
+          dashboard_id: rest.dashboard_id
+        outputParameters:
+        - type: object
+          mapping: $.
+      - method: POST
+        name: dashboardscollaboratorscreate
+        description: dashboardscollaboratorscreate
+        call: posthog-dashboards.dashboardscollaboratorscreate
+        with:
+          dashboard_id: rest.dashboard_id
+          body: rest.body
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /v1/api/projects/{project-id}/dashboards/{dashboard-id}/collaborators/{user-uuid}
+      name: api-projects-project-id-dashboards-dashboard-id-collaborators-user-uuid
+      description: REST surface for api-projects-project_id-dashboards-dashboard_id-collaborators-user__uuid.
+      operations:
+      - method: DELETE
+        name: dashboardscollaboratorsdestroy
+        description: dashboardscollaboratorsdestroy
+        call: posthog-dashboards.dashboardscollaboratorsdestroy
+        with:
+          dashboard_id: rest.dashboard_id
+          user__uuid: rest.user__uuid
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /v1/api/projects/{project-id}/dashboards/{dashboard-id}/sharing
+      name: api-projects-project-id-dashboards-dashboard-id-sharing
+      description: REST surface for api-projects-project_id-dashboards-dashboard_id-sharing.
+      operations:
+      - method: GET
+        name: dashboardssharinglist
+        description: dashboardssharinglist
+        call: posthog-dashboards.dashboardssharinglist
+        with:
+          dashboard_id: rest.dashboard_id
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /v1/api/projects/{project-id}/dashboards/{dashboard-id}/sharing/passwords
+      name: api-projects-project-id-dashboards-dashboard-id-sharing-passwords
+      description: REST surface for api-projects-project_id-dashboards-dashboard_id-sharing-passwords.
+      operations:
+      - method: POST
+        name: dashboardssharingpasswordscreate
+        description: Create a new password for the sharing configuration.
+        call: posthog-dashboards.dashboardssharingpasswordscreate
+        with:
+          dashboard_id: rest.dashboard_id
+          body: rest.body
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /v1/api/projects/{project-id}/dashboards/{dashboard-id}/sharing/passwords/{password-id}
+      name: api-projects-project-id-dashboards-dashboard-id-sharing-passwords-password-id
+      description: REST surface for api-projects-project_id-dashboards-dashboard_id-sharing-passwords-password_id.
+      operations:
+      - method: DELETE
+        name: dashboardssharingpasswordsdestroy
+        description: Delete a password from the sharing configuration.
+        call: posthog-dashboards.dashboardssharingpasswordsdestroy
+        with:
+          dashboard_id: rest.dashboard_id
+          password_id: rest.password_id
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /v1/api/projects/{project-id}/dashboards/{dashboard-id}/sharing/refresh
+      name: api-projects-project-id-dashboards-dashboard-id-sharing-refresh
+      description: REST surface for api-projects-project_id-dashboards-dashboard_id-sharing-refresh.
+      operations:
+      - method: POST
+        name: dashboardssharingrefreshcreate
+        description: dashboardssharingrefreshcreate
+        call: posthog-dashboards.dashboardssharingrefreshcreate
+        with:
+          dashboard_id: rest.dashboard_id
+          body: rest.body
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /v1/api/projects/{project-id}/dashboards/{id}
+      name: api-projects-project-id-dashboards-id
+      description: REST surface for api-projects-project_id-dashboards-id.
+      operations:
+      - method: GET
+        name: dashboardsretrieve
+        description: dashboardsretrieve
+        call: posthog-dashboards.dashboardsretrieve
+        with:
+          filters_override: rest.filters_override
+          format: rest.format
+          id: rest.id
+          variables_override: rest.variables_override
+        outputParameters:
+        - type: object
+          mapping: $.
+      - method: PUT
+        name: dashboardsupdate
+        description: dashboardsupdate
+        call: posthog-dashboards.dashboardsupdate
+        with:
+          format: rest.format
+          id: rest.id
+          body: rest.body
+        outputParameters:
+        - type: object
+          mapping: $.
+      - method: PATCH
+        name: dashboardspartialupdate
+        description: dashboardspartialupdate
+        call: posthog-dashboards.dashboardspartialupdate
+        with:
+          format: rest.format
+          id: rest.id
+          body: rest.body
+        outputParameters:
+        - type: object
+          mapping: $.
+      - method: DELETE
+        name: dashboardsdestroy
+        description: Hard delete of this model is not allowed. Use a patch API call to set "deleted" to true
+        call: posthog-dashboards.dashboardsdestroy
+        with:
+          format: rest.format
+          id: rest.id
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /v1/api/projects/{project-id}/dashboards/{id}/analyze-refresh-result
+      name: api-projects-project-id-dashboards-id-analyze-refresh-result
+      description: REST surface for api-projects-project_id-dashboards-id-analyze_refresh_result.
+      operations:
+      - method: POST
+        name: dashboardsanalyzerefreshresultcreate
+        description: Generate AI analysis comparing before/after dashboard refresh.
+        call: posthog-dashboards.dashboardsanalyzerefreshresultcreate
+        with:
+          format: rest.format
+          id: rest.id
+          body: rest.body
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /v1/api/projects/{project-id}/dashboards/{id}/copy-tile
+      name: api-projects-project-id-dashboards-id-copy-tile
+      description: REST surface for api-projects-project_id-dashboards-id-copy_tile.
+      operations:
+      - method: POST
+        name: dashboardscopytilecreate
+        description: Copy an existing dashboard tile to another dashboard (insight or text card; new tile row).
+        call: posthog-dashboards.dashboardscopytilecreate
+        with:
+          format: rest.format
+          id: rest.id
+          body: rest.body
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /v1/api/projects/{project-id}/dashboards/{id}/move-tile
+      name: api-projects-project-id-dashboards-id-move-tile
+      description: REST surface for api-projects-project_id-dashboards-id-move_tile.
+      operations:
+      - method: PATCH
+        name: dashboardsmovetilepartialupdate
+        description: dashboardsmovetilepartialupdate
+        call: posthog-dashboards.dashboardsmovetilepartialupdate
+        with:
+          format: rest.format
+          id: rest.id
+          body: rest.body
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /v1/api/projects/{project-id}/dashboards/{id}/reorder-tiles
+      name: api-projects-project-id-dashboards-id-reorder-tiles
+      description: REST surface for api-projects-project_id-dashboards-id-reorder_tiles.
+      operations:
+      - method: POST
+        name: dashboardsreordertilescreate
+        description: dashboardsreordertilescreate
+        call: posthog-dashboards.dashboardsreordertilescreate
+        with:
+          format: rest.format
+          id: rest.id
+          body: rest.body
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /v1/api/projects/{project-id}/dashboards/{id}/run-insights
+      name: api-projects-project-id-dashboards-id-run-insights
+      description: REST surface for api-projects-project_id-dashboards-id-run_insights.
+      operations:
+      - method: GET
+        name: dashboardsruninsightsretrieve
+        description: Run all insights on a dashboard and return their results.
+        call: posthog-dashboards.dashboardsruninsightsretrieve
+        with:
+          filters_override: rest.filters_override
+          format: rest.format
+          id: rest.id
+          output_format: rest.output_format
+          refresh: rest.refresh
+          variables_override: rest.variables_override
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /v1/api/projects/{project-id}/dashboards/{id}/snapshot
+      name: api-projects-project-id-dashboards-id-snapshot
+      description: REST surface for api-projects-project_id-dashboards-id-snapshot.
+      operations:
+      - method: POST
+        name: dashboardssnapshotcreate
+        description: Snapshot the current dashboard state (from cache) for AI analysis.
+        call: posthog-dashboards.dashboardssnapshotcreate
+        with:
+          format: rest.format
+          id: rest.id
+          body: rest.body
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /v1/api/projects/{project-id}/dashboards/{id}/stream-tiles
+      name: api-projects-project-id-dashboards-id-stream-tiles
+      description: REST surface for api-projects-project_id-dashboards-id-stream_tiles.
+      operations:
+      - method: GET
+        name: dashboardsstreamtilesretrieve
+        description: Stream dashboard metadata and tiles via Server-Sent Events. Sends metadata first, then tiles as they
+          are rendered.
+        call: posthog-dashboards.dashboardsstreamtilesretrieve
+        with:
+          filters_override: rest.filters_override
+          format: rest.format
+          id: rest.id
+          layoutSize: rest.layoutSize
+          variables_override: rest.variables_override
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /v1/api/projects/{project-id}/data-color-themes
+      name: api-projects-project-id-data-color-themes
+      description: REST surface for api-projects-project_id-data_color_themes.
+      operations:
+      - method: GET
+        name: datacolorthemeslist
+        description: datacolorthemeslist
+        call: posthog-dashboards.datacolorthemeslist
+        with:
+          limit: rest.limit
+          offset: rest.offset
+        outputParameters:
+        - type: object
+          mapping: $.
+      - method: POST
+        name: datacolorthemescreate
+        description: datacolorthemescreate
+        call: posthog-dashboards.datacolorthemescreate
+        with:
+          body: rest.body
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /v1/api/projects/{project-id}/data-color-themes/{id}
+      name: api-projects-project-id-data-color-themes-id
+      description: REST surface for api-projects-project_id-data_color_themes-id.
+      operations:
+      - method: GET
+        name: datacolorthemesretrieve
+        description: datacolorthemesretrieve
+        call: posthog-dashboards.datacolorthemesretrieve
+        with:
+          id: rest.id
+        outputParameters:
+        - type: object
+          mapping: $.
+      - method: PUT
+        name: datacolorthemesupdate
+        description: datacolorthemesupdate
+        call: posthog-dashboards.datacolorthemesupdate
+        with:
+          id: rest.id
+          body: rest.body
+        outputParameters:
+        - type: object
+          mapping: $.
+      - method: PATCH
+        name: datacolorthemespartialupdate
+        description: datacolorthemespartialupdate
+        call: posthog-dashboards.datacolorthemespartialupdate
+        with:
+          id: rest.id
+          body: rest.body
+        outputParameters:
+        - type: object
+          mapping: $.
+      - method: DELETE
+        name: datacolorthemesdestroy
+        description: datacolorthemesdestroy
+        call: posthog-dashboards.datacolorthemesdestroy
+        with:
+          id: rest.id
+        outputParameters:
+        - type: object
+          mapping: $.
+  - type: mcp
+    namespace: posthog-dashboards-mcp
+    port: 9090
+    transport: http
+    description: MCP adapter for PostHog API — dashboards. One tool per consumed operation, routed inline through this capability's
+      consumes block.
+    tools:
+    - name: environmentsdashboardslist
+      description: environmentsdashboardslist
+      hints:
+        readOnly: true
+        destructive: false
+        idempotent: true
+      call: posthog-dashboards.environmentsdashboardslist
+      with:
+        format: tools.format
+        limit: tools.limit
+        offset: tools.offset
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: environmentsdashboardscreate
+      description: environmentsdashboardscreate
+      hints:
+        readOnly: false
+        destructive: false
+        idempotent: false
+      call: posthog-dashboards.environmentsdashboardscreate
+      with:
+        format: tools.format
+        body: tools.body
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: bulk-update-tags-multiple-objects
+      description: Bulk update tags on multiple objects.
+      hints:
+        readOnly: false
+        destructive: false
+        idempotent: false
+      call: posthog-dashboards.environmentsdashboardsbulkupdatetagscreate
+      with:
+        format: tools.format
+        body: tools.body
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: environmentsdashboardscreatefromtemplatejsoncreate
+      description: environmentsdashboardscreatefromtemplatejsoncreate
+      hints:
+        readOnly: false
+        destructive: false
+        idempotent: false
+      call: posthog-dashboards.environmentsdashboardscreatefromtemplatejsoncreate
+      with:
+        format: tools.format
+        body: tools.body
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: creates-unlisted-dashboard-template-tag
+      description: Creates an unlisted dashboard from template by tag.
+      hints:
+        readOnly: false
+        destructive: false
+        idempotent: false
+      call: posthog-dashboards.environmentsdashboardscreateunlisteddashboardcreate
+      with:
+        format: tools.format
+        body: tools.body
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: environmentsdashboardscollaboratorslist
+      description: environmentsdashboardscollaboratorslist
+      hints:
+        readOnly: true
+        destructive: false
+        idempotent: true
+      call: posthog-dashboards.environmentsdashboardscollaboratorslist
+      with:
+        dashboard_id: tools.dashboard_id
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: environmentsdashboardscollaboratorscreate
+      description: environmentsdashboardscollaboratorscreate
+      hints:
+        readOnly: false
+        destructive: false
+        idempotent: false
+      call: posthog-dashboards.environmentsdashboardscollaboratorscreate
+      with:
+        dashboard_id: tools.dashboard_id
+        body: tools.body
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: environmentsdashboardscollaboratorsdestroy
+      description: environmentsdashboardscollaboratorsdestroy
+      hints:
+        readOnly: false
+        destructive: true
+        idempotent: true
+      call: posthog-dashboards.environmentsdashboardscollaboratorsdestroy
+      with:
+        dashboard_id: tools.dashboard_id
+        user__uuid: tools.user__uuid
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: environmentsdashboardssharinglist
+      description: environmentsdashboardssharinglist
+      hints:
+        readOnly: true
+        destructive: false
+        idempotent: true
+      call: posthog-dashboards.environmentsdashboardssharinglist
+      with:
+        dashboard_id: tools.dashboard_id
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: create-new-password-sharing-configuration
+      description: Create a new password for the sharing configuration.
+      hints:
+        readOnly: false
+        destructive: false
+        idempotent: false
+      call: posthog-dashboards.environmentsdashboardssharingpasswordscreate
+      with:
+        dashboard_id: tools.dashboard_id
+        body: tools.body
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: delete-password-sharing-configuration
+      description: Delete a password from the sharing configuration.
+      hints:
+        readOnly: false
+        destructive: true
+        idempotent: true
+      call: posthog-dashboards.environmentsdashboardssharingpasswordsdestroy
+      with:
+        dashboard_id: tools.dashboard_id
+        password_id: tools.password_id
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: environmentsdashboardssharingrefreshcreate
+      description: environmentsdashboardssharingrefreshcreate
+      hints:
+        readOnly: false
+        destructive: false
+        idempotent: false
+      call: posthog-dashboards.environmentsdashboardssharingrefreshcreate
+      with:
+        dashboard_id: tools.dashboard_id
+        body: tools.body
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: environmentsdashboardsretrieve
+      description: environmentsdashboardsretrieve
+      hints:
+        readOnly: true
+        destructive: false
+        idempotent: true
+      call: posthog-dashboards.environmentsdashboardsretrieve
+      with:
+        filters_override: tools.filters_override
+        format: tools.format
+        id: tools.id
+        variables_override: tools.variables_override
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: environmentsdashboardsupdate
+      description: environmentsdashboardsupdate
+      hints:
+        readOnly: false
+        destructive: false
+        idempotent: true
+      call: posthog-dashboards.environmentsdashboardsupdate
+      with:
+        format: tools.format
+        id: tools.id
+        body: tools.body
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: environmentsdashboardspartialupdate
+      description: environmentsdashboardspartialupdate
+      hints:
+        readOnly: false
+        destructive: false
+        idempotent: true
+      call: posthog-dashboards.environmentsdashboardspartialupdate
+      with:
+        format: tools.format
+        id: tools.id
+        body: tools.body
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: hard-delete-this-model-is
+      description: Hard delete of this model is not allowed. Use a patch API call to set "deleted" to true
+      hints:
+        readOnly: false
+        destructive: true
+        idempotent: true
+      call: posthog-dashboards.environmentsdashboardsdestroy
+      with:
+        format: tools.format
+        id: tools.id
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: generate-ai-analysis-comparing-before
+      description: Generate AI analysis comparing before/after dashboard refresh.
+      hints:
+        readOnly: false
+        destructive: false
+        idempotent: false
+      call: posthog-dashboards.environmentsdashboardsanalyzerefreshresultcreate
+      with:
+        format: tools.format
+        id: tools.id
+        body: tools.body
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: copy-existing-dashboard-tile-another
+      description: Copy an existing dashboard tile to another dashboard (insight or text card; new tile row).
+      hints:
+        readOnly: false
+        destructive: false
+        idempotent: false
+      call: posthog-dashboards.environmentsdashboardscopytilecreate
+      with:
+        format: tools.format
+        id: tools.id
+        body: tools.body
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: environmentsdashboardsmovetilepartialupdate
+      description: environmentsdashboardsmovetilepartialupdate
+      hints:
+        readOnly: false
+        destructive: false
+        idempotent: true
+      call: posthog-dashboards.environmentsdashboardsmovetilepartialupdate
+      with:
+        format: tools.format
+        id: tools.id
+        body: tools.body
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: environmentsdashboardsreordertilescreate
+      description: environmentsdashboardsreordertilescreate
+      hints:
+        readOnly: false
+        destructive: false
+        idempotent: false
+      call: posthog-dashboards.environmentsdashboardsreordertilescreate
+      with:
+        format: tools.format
+        id: tools.id
+        body: tools.body
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: run-all-insights-dashboard-and
+      description: Run all insights on a dashboard and return their results.
+      hints:
+        readOnly: true
+        destructive: false
+        idempotent: true
+      call: posthog-dashboards.environmentsdashboardsruninsightsretrieve
+      with:
+        filters_override: tools.filters_override
+        format: tools.format
+        id: tools.id
+        output_format: tools.output_format
+        refresh: tools.refresh
+        variables_override: tools.variables_override
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: snapshot-current-dashboard-state-cache
+      description: Snapshot the current dashboard state (from cache) for AI analysis.
+      hints:
+        readOnly: false
+        destructive: false
+        idempotent: false
+      call: posthog-dashboards.environmentsdashboardssnapshotcreate
+      with:
+        format: tools.format
+        id: tools.id
+        body: tools.body
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: stream-dashboard-metadata-and-tiles
+      description: Stream dashboard metadata and tiles via Server-Sent Events. Sends metadata first, then tiles as they are
+        rendered.
+      hints:
+        readOnly: true
+        destructive: false
+        idempotent: true
+      call: posthog-dashboards.environmentsdashboardsstreamtilesretrieve
+      with:
+        filters_override: tools.filters_override
+        format: tools.format
+        id: tools.id
+        layoutSize: tools.layoutSize
+        variables_override: tools.variables_override
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: environmentsdatacolorthemeslist
+      description: environmentsdatacolorthemeslist
+      hints:
+        readOnly: true
+        destructive: false
+        idempotent: true
+      call: posthog-dashboards.environmentsdatacolorthemeslist
+      with:
+        limit: tools.limit
+        offset: tools.offset
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: environmentsdatacolorthemescreate
+      description: environmentsdatacolorthemescreate
+      hints:
+        readOnly: false
+        destructive: false
+        idempotent: false
+      call: posthog-dashboards.environmentsdatacolorthemescreate
+      with:
+        body: tools.body
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: environmentsdatacolorthemesretrieve
+      description: environmentsdatacolorthemesretrieve
+      hints:
+        readOnly: true
+        destructive: false
+        idempotent: true
+      call: posthog-dashboards.environmentsdatacolorthemesretrieve
+      with:
+        id: tools.id
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: environmentsdatacolorthemesupdate
+      description: environmentsdatacolorthemesupdate
+      hints:
+        readOnly: false
+        destructive: false
+        idempotent: true
+      call: posthog-dashboards.environmentsdatacolorthemesupdate
+      with:
+        id: tools.id
+        body: tools.body
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: environmentsdatacolorthemespartialupdate
+      description: environmentsdatacolorthemespartialupdate
+      hints:
+        readOnly: false
+        destructive: false
+        idempotent: true
+      call: posthog-dashboards.environmentsdatacolorthemespartialupdate
+      with:
+        id: tools.id
+        body: tools.body
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: environmentsdatacolorthemesdestroy
+      description: environmentsdatacolorthemesdestroy
+      hints:
+        readOnly: false
+        destructive: true
+        idempotent: true
+      call: posthog-dashboards.environmentsdatacolorthemesdestroy
+      with:
+        id: tools.id
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: dashboardslist
+      description: dashboardslist
+      hints:
+        readOnly: true
+        destructive: false
+        idempotent: true
+      call: posthog-dashboards.dashboardslist
+      with:
+        format: tools.format
+        limit: tools.limit
+        offset: tools.offset
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: dashboardscreate
+      description: dashboardscreate
+      hints:
+        readOnly: false
+        destructive: false
+        idempotent: false
+      call: posthog-dashboards.dashboardscreate
+      with:
+        format: tools.format
+        body: tools.body
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: bulk-update-tags-multiple-objects-2
+      description: Bulk update tags on multiple objects.
+      hints:
+        readOnly: false
+        destructive: false
+        idempotent: false
+      call: posthog-dashboards.dashboardsbulkupdatetagscreate
+      with:
+        format: tools.format
+        body: tools.body
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: dashboardscreatefromtemplatejsoncreate
+      description: dashboardscreatefromtemplatejsoncreate
+      hints:
+        readOnly: false
+        destructive: false
+        idempotent: false
+      call: posthog-dashboards.dashboardscreatefromtemplatejsoncreate
+      with:
+        format: tools.format
+        body: tools.body
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: creates-unlisted-dashboard-template-tag-2
+      description: Creates an unlisted dashboard from template by tag.
+      hints:
+        readOnly: false
+        destructive: false
+        idempotent: false
+      call: posthog-dashboards.dashboardscreateunlisteddashboardcreate
+      with:
+        format: tools.format
+        body: tools.body
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: dashboardscollaboratorslist
+      description: dashboardscollaboratorslist
+      hints:
+        readOnly: true
+        destructive: false
+        idempotent: true
+      call: posthog-dashboards.dashboardscollaboratorslist
+      with:
+        dashboard_id: tools.dashboard_id
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: dashboardscollaboratorscreate
+      description: dashboardscollaboratorscreate
+      hints:
+        readOnly: false
+        destructive: false
+        idempotent: false
+      call: posthog-dashboards.dashboardscollaboratorscreate
+      with:
+        dashboard_id: tools.dashboard_id
+        body: tools.body
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: dashboardscollaboratorsdestroy
+      description: dashboardscollaboratorsdestroy
+      hints:
+        readOnly: false
+        destructive: true
+        idempotent: true
+      call: posthog-dashboards.dashboardscollaboratorsdestroy
+      with:
+        dashboard_id: tools.dashboard_id
+        user__uuid: tools.user__uuid
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: dashboardssharinglist
+      description: dashboardssharinglist
+      hints:
+        readOnly: true
+        destructive: false
+        idempotent: true
+      call: posthog-dashboards.dashboardssharinglist
+      with:
+        dashboard_id: tools.dashboard_id
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: create-new-password-sharing-configuration-2
+      description: Create a new password for the sharing configuration.
+      hints:
+        readOnly: false
+        destructive: false
+        idempotent: false
+      call: posthog-dashboards.dashboardssharingpasswordscreate
+      with:
+        dashboard_id: tools.dashboard_id
+        body: tools.body
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: delete-password-sharing-configuration-2
+      description: Delete a password from the sharing configuration.
+      hints:
+        readOnly: false
+        destructive: true
+        idempotent: true
+      call: posthog-dashboards.dashboardssharingpasswordsdestroy
+      with:
+        dashboard_id: tools.dashboard_id
+        password_id: tools.password_id
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: dashboardssharingrefreshcreate
+      description: dashboardssharingrefreshcreate
+      hints:
+        readOnly: false
+        destructive: false
+        idempotent: false
+      call: posthog-dashboards.dashboardssharingrefreshcreate
+      with:
+        dashboard_id: tools.dashboard_id
+        body: tools.body
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: dashboardsretrieve
+      description: dashboardsretrieve
+      hints:
+        readOnly: true
+        destructive: false
+        idempotent: true
+      call: posthog-dashboards.dashboardsretrieve
+      with:
+        filters_override: tools.filters_override
+        format: tools.format
+        id: tools.id
+        variables_override: tools.variables_override
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: dashboardsupdate
+      description: dashboardsupdate
+      hints:
+        readOnly: false
+        destructive: false
+        idempotent: true
+      call: posthog-dashboards.dashboardsupdate
+      with:
+        format: tools.format
+        id: tools.id
+        body: tools.body
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: dashboardspartialupdate
+      description: dashboardspartialupdate
+      hints:
+        readOnly: false
+        destructive: false
+        idempotent: true
+      call: posthog-dashboards.dashboardspartialupdate
+      with:
+        format: tools.format
+        id: tools.id
+        body: tools.body
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: hard-delete-this-model-is-2
+      description: Hard delete of this model is not allowed. Use a patch API call to set "deleted" to true
+      hints:
+        readOnly: false
+        destructive: true
+        idempotent: true
+      call: posthog-dashboards.dashboardsdestroy
+      with:
+        format: tools.format
+        id: tools.id
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: generate-ai-analysis-comparing-before-2
+      description: Generate AI analysis comparing before/after dashboard refresh.
+      hints:
+        readOnly: false
+        destructive: false
+        idempotent: false
+      call: posthog-dashboards.dashboardsanalyzerefreshresultcreate
+      with:
+        format: tools.format
+        id: tools.id
+        body: tools.body
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: copy-existing-dashboard-tile-another-2
+      description: Copy an existing dashboard tile to another dashboard (insight or text card; new tile row).
+      hints:
+        readOnly: false
+        destructive: false
+        idempotent: false
+      call: posthog-dashboards.dashboardscopytilecreate
+      with:
+        format: tools.format
+        id: tools.id
+        body: tools.body
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: dashboardsmovetilepartialupdate
+      description: dashboardsmovetilepartialupdate
+      hints:
+        readOnly: false
+        destructive: false
+        idempotent: true
+      call: posthog-dashboards.dashboardsmovetilepartialupdate
+      with:
+        format: tools.format
+        id: tools.id
+        body: tools.body
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: dashboardsreordertilescreate
+      description: dashboardsreordertilescreate
+      hints:
+        readOnly: false
+        destructive: false
+        idempotent: false
+      call: posthog-dashboards.dashboardsreordertilescreate
+      with:
+        format: tools.format
+        id: tools.id
+        body: tools.body
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: run-all-insights-dashboard-and-2
+      description: Run all insights on a dashboard and return their results.
+      hints:
+        readOnly: true
+        destructive: false
+        idempotent: true
+      call: posthog-dashboards.dashboardsruninsightsretrieve
+      with:
+        filters_override: tools.filters_override
+        format: tools.format
+        id: tools.id
+        output_format: tools.output_format
+        refresh: tools.refresh
+        variables_override: tools.variables_override
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: snapshot-current-dashboard-state-cache-2
+      description: Snapshot the current dashboard state (from cache) for AI analysis.
+      hints:
+        readOnly: false
+        destructive: false
+        idempotent: false
+      call: posthog-dashboards.dashboardssnapshotcreate
+      with:
+        format: tools.format
+        id: tools.id
+        body: tools.body
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: stream-dashboard-metadata-and-tiles-2
+      description: Stream dashboard metadata and tiles via Server-Sent Events. Sends metadata first, then tiles as they are
+        rendered.
+      hints:
+        readOnly: true
+        destructive: false
+        idempotent: true
+      call: posthog-dashboards.dashboardsstreamtilesretrieve
+      with:
+        filters_override: tools.filters_override
+        format: tools.format
+        id: tools.id
+        layoutSize: tools.layoutSize
+        variables_override: tools.variables_override
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: datacolorthemeslist
+      description: datacolorthemeslist
+      hints:
+        readOnly: true
+        destructive: false
+        idempotent: true
+      call: posthog-dashboards.datacolorthemeslist
+      with:
+        limit: tools.limit
+        offset: tools.offset
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: datacolorthemescreate
+      description: datacolorthemescreate
+      hints:
+        readOnly: false
+        destructive: false
+        idempotent: false
+      call: posthog-dashboards.datacolorthemescreate
+      with:
+        body: tools.body
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: datacolorthemesretrieve
+      description: datacolorthemesretrieve
+      hints:
+        readOnly: true
+        destructive: false
+        idempotent: true
+      call: posthog-dashboards.datacolorthemesretrieve
+      with:
+        id: tools.id
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: datacolorthemesupdate
+      description: datacolorthemesupdate
+      hints:
+        readOnly: false
+        destructive: false
+        idempotent: true
+      call: posthog-dashboards.datacolorthemesupdate
+      with:
+        id: tools.id
+        body: tools.body
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: datacolorthemespartialupdate
+      description: datacolorthemespartialupdate
+      hints:
+        readOnly: false
+        destructive: false
+        idempotent: true
+      call: posthog-dashboards.datacolorthemespartialupdate
+      with:
+        id: tools.id
+        body: tools.body
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: datacolorthemesdestroy
+      description: datacolorthemesdestroy
+      hints:
+        readOnly: false
+        destructive: true
+        idempotent: true
+      call: posthog-dashboards.datacolorthemesdestroy
+      with:
+        id: tools.id
+      outputParameters:
+      - type: object
+        mapping: $.

@@ -1,0 +1,105 @@
+naftiko: 1.0.0-alpha2
+info:
+  label: PostHog API — public_hog_function_templates
+  description: 'PostHog API — public_hog_function_templates. 1 operations. Lead operation: public_hog_function_templates.
+    Self-contained Naftiko capability covering one Posthog business surface.'
+  tags:
+  - Posthog
+  - public_hog_function_templates
+  created: '2026-05-19'
+  modified: '2026-05-19'
+binds:
+- namespace: env
+  keys:
+    POSTHOG_API_KEY: POSTHOG_API_KEY
+capability:
+  consumes:
+  - type: http
+    namespace: posthog-public-hog-function-templates
+    baseUri: ''
+    description: PostHog API — public_hog_function_templates business capability. Self-contained, no shared references.
+    resources:
+    - name: api-public_hog_function_templates
+      path: /api/public_hog_function_templates/
+      operations:
+      - name: publichogfunctiontemplateslist
+        method: GET
+        description: ''
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: limit
+          in: query
+          type: integer
+          description: Number of results to return per page.
+        - name: offset
+          in: query
+          type: integer
+          description: The initial index from which to return the results.
+        - name: template_id
+          in: query
+          type: string
+          description: Filter to a specific template by its template_id. Deprecated templates are excluded from list results;
+            use the retrieve endpoint to look up a template by ID reg
+        - name: type
+          in: query
+          type: string
+          description: Filter by template type (e.g. destination, email, sms_provider, broadcast). Defaults to destination
+            if neither type nor types is provided.
+        - name: types
+          in: query
+          type: string
+          description: Comma-separated list of template types to include (e.g. destination,email,sms_provider).
+    authentication:
+      type: bearer
+      token: '{{env.POSTHOG_API_KEY}}'
+  exposes:
+  - type: rest
+    namespace: posthog-public-hog-function-templates-rest
+    port: 8080
+    description: REST adapter for PostHog API — public_hog_function_templates. One Spectral-compliant resource per consumed
+      operation, prefixed with /v1.
+    resources:
+    - path: /v1/api/public-hog-function-templates
+      name: api-public-hog-function-templates
+      description: REST surface for api-public_hog_function_templates.
+      operations:
+      - method: GET
+        name: publichogfunctiontemplateslist
+        description: publichogfunctiontemplateslist
+        call: posthog-public-hog-function-templates.publichogfunctiontemplateslist
+        with:
+          limit: rest.limit
+          offset: rest.offset
+          template_id: rest.template_id
+          type: rest.type
+          types: rest.types
+        outputParameters:
+        - type: object
+          mapping: $.
+  - type: mcp
+    namespace: posthog-public-hog-function-templates-mcp
+    port: 9090
+    transport: http
+    description: MCP adapter for PostHog API — public_hog_function_templates. One tool per consumed operation, routed inline
+      through this capability's consumes block.
+    tools:
+    - name: publichogfunctiontemplateslist
+      description: publichogfunctiontemplateslist
+      hints:
+        readOnly: true
+        destructive: false
+        idempotent: true
+      call: posthog-public-hog-function-templates.publichogfunctiontemplateslist
+      with:
+        limit: tools.limit
+        offset: tools.offset
+        template_id: tools.template_id
+        type: tools.type
+        types: tools.types
+      outputParameters:
+      - type: object
+        mapping: $.

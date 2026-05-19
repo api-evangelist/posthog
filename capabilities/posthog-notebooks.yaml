@@ -1,0 +1,976 @@
+naftiko: 1.0.0-alpha2
+info:
+  label: PostHog API — notebooks
+  description: 'PostHog API — notebooks. 20 operations. Lead operation: notebooks. Self-contained Naftiko capability covering
+    one Posthog business surface.'
+  tags:
+  - Posthog
+  - notebooks
+  created: '2026-05-19'
+  modified: '2026-05-19'
+binds:
+- namespace: env
+  keys:
+    POSTHOG_API_KEY: POSTHOG_API_KEY
+capability:
+  consumes:
+  - type: http
+    namespace: posthog-notebooks
+    baseUri: ''
+    description: PostHog API — notebooks business capability. Self-contained, no shared references.
+    resources:
+    - name: api-projects-project_id-notebooks
+      path: /api/projects/{project_id}/notebooks/
+      operations:
+      - name: notebookslist
+        method: GET
+        description: The API for interacting with Notebooks. This feature is in early access and the API can have breaking
+          changes without announcement.
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: contains
+          in: query
+          type: string
+          description: Filter for notebooks that match a provided filter.
+        - name: created_by
+          in: query
+          type: string
+          description: The UUID of the Notebook's creator
+        - name: date_from
+          in: query
+          type: string
+          description: Filter for notebooks created after this date & time
+        - name: date_to
+          in: query
+          type: string
+          description: Filter for notebooks created before this date & time
+        - name: limit
+          in: query
+          type: integer
+          description: Number of results to return per page.
+        - name: offset
+          in: query
+          type: integer
+          description: The initial index from which to return the results.
+        - name: user
+          in: query
+          type: string
+          description: If any value is provided for this parameter, return notebooks created by the logged in user.
+      - name: notebookscreate
+        method: POST
+        description: The API for interacting with Notebooks. This feature is in early access and the API can have breaking
+          changes without announcement.
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: body
+          in: body
+          type: object
+          description: Request body (JSON).
+          required: false
+    - name: api-projects-project_id-notebooks-activity
+      path: /api/projects/{project_id}/notebooks/activity/
+      operations:
+      - name: notebooksallactivityretrieve
+        method: GET
+        description: The API for interacting with Notebooks. This feature is in early access and the API can have breaking
+          changes without announcement.
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+    - name: api-projects-project_id-notebooks-recording_comments
+      path: /api/projects/{project_id}/notebooks/recording_comments/
+      operations:
+      - name: notebooksrecordingcommentsretrieve
+        method: GET
+        description: The API for interacting with Notebooks. This feature is in early access and the API can have breaking
+          changes without announcement.
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+    - name: api-projects-project_id-notebooks-short_id
+      path: /api/projects/{project_id}/notebooks/{short_id}/
+      operations:
+      - name: notebooksretrieve
+        method: GET
+        description: The API for interacting with Notebooks. This feature is in early access and the API can have breaking
+          changes without announcement.
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: short_id
+          in: path
+          type: string
+          required: true
+      - name: notebooksupdate
+        method: PUT
+        description: The API for interacting with Notebooks. This feature is in early access and the API can have breaking
+          changes without announcement.
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: short_id
+          in: path
+          type: string
+          required: true
+        - name: body
+          in: body
+          type: object
+          description: Request body (JSON).
+          required: false
+      - name: notebookspartialupdate
+        method: PATCH
+        description: The API for interacting with Notebooks. This feature is in early access and the API can have breaking
+          changes without announcement.
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: short_id
+          in: path
+          type: string
+          required: true
+        - name: body
+          in: body
+          type: object
+          description: Request body (JSON).
+          required: false
+      - name: notebooksdestroy
+        method: DELETE
+        description: Hard delete of this model is not allowed. Use a patch API call to set "deleted" to true
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: short_id
+          in: path
+          type: string
+          required: true
+    - name: api-projects-project_id-notebooks-short_id-activity
+      path: /api/projects/{project_id}/notebooks/{short_id}/activity/
+      operations:
+      - name: notebooksactivityretrieve
+        method: GET
+        description: The API for interacting with Notebooks. This feature is in early access and the API can have breaking
+          changes without announcement.
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: short_id
+          in: path
+          type: string
+          required: true
+    - name: api-projects-project_id-notebooks-short_id-collab-save
+      path: /api/projects/{project_id}/notebooks/{short_id}/collab/save/
+      operations:
+      - name: notebookscollabsavecreate
+        method: POST
+        description: The API for interacting with Notebooks. This feature is in early access and the API can have breaking
+          changes without announcement.
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: short_id
+          in: path
+          type: string
+          required: true
+        - name: body
+          in: body
+          type: object
+          description: Request body (JSON).
+          required: true
+    - name: api-projects-project_id-notebooks-short_id-collab-stream
+      path: /api/projects/{project_id}/notebooks/{short_id}/collab/stream/
+      operations:
+      - name: notebookscollabstreamretrieve
+        method: GET
+        description: The API for interacting with Notebooks. This feature is in early access and the API can have breaking
+          changes without announcement.
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: short_id
+          in: path
+          type: string
+          required: true
+    - name: api-projects-project_id-notebooks-short_id-hogql-execute
+      path: /api/projects/{project_id}/notebooks/{short_id}/hogql/execute/
+      operations:
+      - name: notebookshogqlexecutecreate
+        method: POST
+        description: The API for interacting with Notebooks. This feature is in early access and the API can have breaking
+          changes without announcement.
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: short_id
+          in: path
+          type: string
+          required: true
+        - name: body
+          in: body
+          type: object
+          description: Request body (JSON).
+          required: false
+    - name: api-projects-project_id-notebooks-short_id-kernel-config
+      path: /api/projects/{project_id}/notebooks/{short_id}/kernel/config/
+      operations:
+      - name: notebookskernelconfigcreate
+        method: POST
+        description: The API for interacting with Notebooks. This feature is in early access and the API can have breaking
+          changes without announcement.
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: short_id
+          in: path
+          type: string
+          required: true
+        - name: body
+          in: body
+          type: object
+          description: Request body (JSON).
+          required: false
+    - name: api-projects-project_id-notebooks-short_id-kernel-dataframe
+      path: /api/projects/{project_id}/notebooks/{short_id}/kernel/dataframe/
+      operations:
+      - name: notebookskerneldataframeretrieve
+        method: GET
+        description: The API for interacting with Notebooks. This feature is in early access and the API can have breaking
+          changes without announcement.
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: short_id
+          in: path
+          type: string
+          required: true
+    - name: api-projects-project_id-notebooks-short_id-kernel-execute
+      path: /api/projects/{project_id}/notebooks/{short_id}/kernel/execute/
+      operations:
+      - name: notebookskernelexecutecreate
+        method: POST
+        description: The API for interacting with Notebooks. This feature is in early access and the API can have breaking
+          changes without announcement.
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: short_id
+          in: path
+          type: string
+          required: true
+        - name: body
+          in: body
+          type: object
+          description: Request body (JSON).
+          required: false
+    - name: api-projects-project_id-notebooks-short_id-kernel-execute-stream
+      path: /api/projects/{project_id}/notebooks/{short_id}/kernel/execute/stream/
+      operations:
+      - name: notebookskernelexecutestreamcreate
+        method: POST
+        description: The API for interacting with Notebooks. This feature is in early access and the API can have breaking
+          changes without announcement.
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: short_id
+          in: path
+          type: string
+          required: true
+        - name: body
+          in: body
+          type: object
+          description: Request body (JSON).
+          required: false
+    - name: api-projects-project_id-notebooks-short_id-kernel-restart
+      path: /api/projects/{project_id}/notebooks/{short_id}/kernel/restart/
+      operations:
+      - name: notebookskernelrestartcreate
+        method: POST
+        description: The API for interacting with Notebooks. This feature is in early access and the API can have breaking
+          changes without announcement.
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: short_id
+          in: path
+          type: string
+          required: true
+        - name: body
+          in: body
+          type: object
+          description: Request body (JSON).
+          required: false
+    - name: api-projects-project_id-notebooks-short_id-kernel-start
+      path: /api/projects/{project_id}/notebooks/{short_id}/kernel/start/
+      operations:
+      - name: notebookskernelstartcreate
+        method: POST
+        description: The API for interacting with Notebooks. This feature is in early access and the API can have breaking
+          changes without announcement.
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: short_id
+          in: path
+          type: string
+          required: true
+        - name: body
+          in: body
+          type: object
+          description: Request body (JSON).
+          required: false
+    - name: api-projects-project_id-notebooks-short_id-kernel-status
+      path: /api/projects/{project_id}/notebooks/{short_id}/kernel/status/
+      operations:
+      - name: notebookskernelstatusretrieve
+        method: GET
+        description: The API for interacting with Notebooks. This feature is in early access and the API can have breaking
+          changes without announcement.
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: short_id
+          in: path
+          type: string
+          required: true
+    - name: api-projects-project_id-notebooks-short_id-kernel-stop
+      path: /api/projects/{project_id}/notebooks/{short_id}/kernel/stop/
+      operations:
+      - name: notebookskernelstopcreate
+        method: POST
+        description: The API for interacting with Notebooks. This feature is in early access and the API can have breaking
+          changes without announcement.
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: short_id
+          in: path
+          type: string
+          required: true
+        - name: body
+          in: body
+          type: object
+          description: Request body (JSON).
+          required: false
+    authentication:
+      type: bearer
+      token: '{{env.POSTHOG_API_KEY}}'
+  exposes:
+  - type: rest
+    namespace: posthog-notebooks-rest
+    port: 8080
+    description: REST adapter for PostHog API — notebooks. One Spectral-compliant resource per consumed operation, prefixed
+      with /v1.
+    resources:
+    - path: /v1/api/projects/{project-id}/notebooks
+      name: api-projects-project-id-notebooks
+      description: REST surface for api-projects-project_id-notebooks.
+      operations:
+      - method: GET
+        name: notebookslist
+        description: The API for interacting with Notebooks. This feature is in early access and the API can have breaking
+          changes without announcement.
+        call: posthog-notebooks.notebookslist
+        with:
+          contains: rest.contains
+          created_by: rest.created_by
+          date_from: rest.date_from
+          date_to: rest.date_to
+          limit: rest.limit
+          offset: rest.offset
+          user: rest.user
+        outputParameters:
+        - type: object
+          mapping: $.
+      - method: POST
+        name: notebookscreate
+        description: The API for interacting with Notebooks. This feature is in early access and the API can have breaking
+          changes without announcement.
+        call: posthog-notebooks.notebookscreate
+        with:
+          body: rest.body
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /v1/api/projects/{project-id}/notebooks/activity
+      name: api-projects-project-id-notebooks-activity
+      description: REST surface for api-projects-project_id-notebooks-activity.
+      operations:
+      - method: GET
+        name: notebooksallactivityretrieve
+        description: The API for interacting with Notebooks. This feature is in early access and the API can have breaking
+          changes without announcement.
+        call: posthog-notebooks.notebooksallactivityretrieve
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /v1/api/projects/{project-id}/notebooks/recording-comments
+      name: api-projects-project-id-notebooks-recording-comments
+      description: REST surface for api-projects-project_id-notebooks-recording_comments.
+      operations:
+      - method: GET
+        name: notebooksrecordingcommentsretrieve
+        description: The API for interacting with Notebooks. This feature is in early access and the API can have breaking
+          changes without announcement.
+        call: posthog-notebooks.notebooksrecordingcommentsretrieve
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /v1/api/projects/{project-id}/notebooks/{short-id}
+      name: api-projects-project-id-notebooks-short-id
+      description: REST surface for api-projects-project_id-notebooks-short_id.
+      operations:
+      - method: GET
+        name: notebooksretrieve
+        description: The API for interacting with Notebooks. This feature is in early access and the API can have breaking
+          changes without announcement.
+        call: posthog-notebooks.notebooksretrieve
+        with:
+          short_id: rest.short_id
+        outputParameters:
+        - type: object
+          mapping: $.
+      - method: PUT
+        name: notebooksupdate
+        description: The API for interacting with Notebooks. This feature is in early access and the API can have breaking
+          changes without announcement.
+        call: posthog-notebooks.notebooksupdate
+        with:
+          short_id: rest.short_id
+          body: rest.body
+        outputParameters:
+        - type: object
+          mapping: $.
+      - method: PATCH
+        name: notebookspartialupdate
+        description: The API for interacting with Notebooks. This feature is in early access and the API can have breaking
+          changes without announcement.
+        call: posthog-notebooks.notebookspartialupdate
+        with:
+          short_id: rest.short_id
+          body: rest.body
+        outputParameters:
+        - type: object
+          mapping: $.
+      - method: DELETE
+        name: notebooksdestroy
+        description: Hard delete of this model is not allowed. Use a patch API call to set "deleted" to true
+        call: posthog-notebooks.notebooksdestroy
+        with:
+          short_id: rest.short_id
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /v1/api/projects/{project-id}/notebooks/{short-id}/activity
+      name: api-projects-project-id-notebooks-short-id-activity
+      description: REST surface for api-projects-project_id-notebooks-short_id-activity.
+      operations:
+      - method: GET
+        name: notebooksactivityretrieve
+        description: The API for interacting with Notebooks. This feature is in early access and the API can have breaking
+          changes without announcement.
+        call: posthog-notebooks.notebooksactivityretrieve
+        with:
+          short_id: rest.short_id
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /v1/api/projects/{project-id}/notebooks/{short-id}/collab/save
+      name: api-projects-project-id-notebooks-short-id-collab-save
+      description: REST surface for api-projects-project_id-notebooks-short_id-collab-save.
+      operations:
+      - method: POST
+        name: notebookscollabsavecreate
+        description: The API for interacting with Notebooks. This feature is in early access and the API can have breaking
+          changes without announcement.
+        call: posthog-notebooks.notebookscollabsavecreate
+        with:
+          short_id: rest.short_id
+          body: rest.body
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /v1/api/projects/{project-id}/notebooks/{short-id}/collab/stream
+      name: api-projects-project-id-notebooks-short-id-collab-stream
+      description: REST surface for api-projects-project_id-notebooks-short_id-collab-stream.
+      operations:
+      - method: GET
+        name: notebookscollabstreamretrieve
+        description: The API for interacting with Notebooks. This feature is in early access and the API can have breaking
+          changes without announcement.
+        call: posthog-notebooks.notebookscollabstreamretrieve
+        with:
+          short_id: rest.short_id
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /v1/api/projects/{project-id}/notebooks/{short-id}/hogql/execute
+      name: api-projects-project-id-notebooks-short-id-hogql-execute
+      description: REST surface for api-projects-project_id-notebooks-short_id-hogql-execute.
+      operations:
+      - method: POST
+        name: notebookshogqlexecutecreate
+        description: The API for interacting with Notebooks. This feature is in early access and the API can have breaking
+          changes without announcement.
+        call: posthog-notebooks.notebookshogqlexecutecreate
+        with:
+          short_id: rest.short_id
+          body: rest.body
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /v1/api/projects/{project-id}/notebooks/{short-id}/kernel/config
+      name: api-projects-project-id-notebooks-short-id-kernel-config
+      description: REST surface for api-projects-project_id-notebooks-short_id-kernel-config.
+      operations:
+      - method: POST
+        name: notebookskernelconfigcreate
+        description: The API for interacting with Notebooks. This feature is in early access and the API can have breaking
+          changes without announcement.
+        call: posthog-notebooks.notebookskernelconfigcreate
+        with:
+          short_id: rest.short_id
+          body: rest.body
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /v1/api/projects/{project-id}/notebooks/{short-id}/kernel/dataframe
+      name: api-projects-project-id-notebooks-short-id-kernel-dataframe
+      description: REST surface for api-projects-project_id-notebooks-short_id-kernel-dataframe.
+      operations:
+      - method: GET
+        name: notebookskerneldataframeretrieve
+        description: The API for interacting with Notebooks. This feature is in early access and the API can have breaking
+          changes without announcement.
+        call: posthog-notebooks.notebookskerneldataframeretrieve
+        with:
+          short_id: rest.short_id
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /v1/api/projects/{project-id}/notebooks/{short-id}/kernel/execute
+      name: api-projects-project-id-notebooks-short-id-kernel-execute
+      description: REST surface for api-projects-project_id-notebooks-short_id-kernel-execute.
+      operations:
+      - method: POST
+        name: notebookskernelexecutecreate
+        description: The API for interacting with Notebooks. This feature is in early access and the API can have breaking
+          changes without announcement.
+        call: posthog-notebooks.notebookskernelexecutecreate
+        with:
+          short_id: rest.short_id
+          body: rest.body
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /v1/api/projects/{project-id}/notebooks/{short-id}/kernel/execute/stream
+      name: api-projects-project-id-notebooks-short-id-kernel-execute-stream
+      description: REST surface for api-projects-project_id-notebooks-short_id-kernel-execute-stream.
+      operations:
+      - method: POST
+        name: notebookskernelexecutestreamcreate
+        description: The API for interacting with Notebooks. This feature is in early access and the API can have breaking
+          changes without announcement.
+        call: posthog-notebooks.notebookskernelexecutestreamcreate
+        with:
+          short_id: rest.short_id
+          body: rest.body
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /v1/api/projects/{project-id}/notebooks/{short-id}/kernel/restart
+      name: api-projects-project-id-notebooks-short-id-kernel-restart
+      description: REST surface for api-projects-project_id-notebooks-short_id-kernel-restart.
+      operations:
+      - method: POST
+        name: notebookskernelrestartcreate
+        description: The API for interacting with Notebooks. This feature is in early access and the API can have breaking
+          changes without announcement.
+        call: posthog-notebooks.notebookskernelrestartcreate
+        with:
+          short_id: rest.short_id
+          body: rest.body
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /v1/api/projects/{project-id}/notebooks/{short-id}/kernel/start
+      name: api-projects-project-id-notebooks-short-id-kernel-start
+      description: REST surface for api-projects-project_id-notebooks-short_id-kernel-start.
+      operations:
+      - method: POST
+        name: notebookskernelstartcreate
+        description: The API for interacting with Notebooks. This feature is in early access and the API can have breaking
+          changes without announcement.
+        call: posthog-notebooks.notebookskernelstartcreate
+        with:
+          short_id: rest.short_id
+          body: rest.body
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /v1/api/projects/{project-id}/notebooks/{short-id}/kernel/status
+      name: api-projects-project-id-notebooks-short-id-kernel-status
+      description: REST surface for api-projects-project_id-notebooks-short_id-kernel-status.
+      operations:
+      - method: GET
+        name: notebookskernelstatusretrieve
+        description: The API for interacting with Notebooks. This feature is in early access and the API can have breaking
+          changes without announcement.
+        call: posthog-notebooks.notebookskernelstatusretrieve
+        with:
+          short_id: rest.short_id
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /v1/api/projects/{project-id}/notebooks/{short-id}/kernel/stop
+      name: api-projects-project-id-notebooks-short-id-kernel-stop
+      description: REST surface for api-projects-project_id-notebooks-short_id-kernel-stop.
+      operations:
+      - method: POST
+        name: notebookskernelstopcreate
+        description: The API for interacting with Notebooks. This feature is in early access and the API can have breaking
+          changes without announcement.
+        call: posthog-notebooks.notebookskernelstopcreate
+        with:
+          short_id: rest.short_id
+          body: rest.body
+        outputParameters:
+        - type: object
+          mapping: $.
+  - type: mcp
+    namespace: posthog-notebooks-mcp
+    port: 9090
+    transport: http
+    description: MCP adapter for PostHog API — notebooks. One tool per consumed operation, routed inline through this capability's
+      consumes block.
+    tools:
+    - name: api-interacting-notebooks-this-feature
+      description: The API for interacting with Notebooks. This feature is in early access and the API can have breaking changes
+        without announcement.
+      hints:
+        readOnly: true
+        destructive: false
+        idempotent: true
+      call: posthog-notebooks.notebookslist
+      with:
+        contains: tools.contains
+        created_by: tools.created_by
+        date_from: tools.date_from
+        date_to: tools.date_to
+        limit: tools.limit
+        offset: tools.offset
+        user: tools.user
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: api-interacting-notebooks-this-feature-2
+      description: The API for interacting with Notebooks. This feature is in early access and the API can have breaking changes
+        without announcement.
+      hints:
+        readOnly: false
+        destructive: false
+        idempotent: false
+      call: posthog-notebooks.notebookscreate
+      with:
+        body: tools.body
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: api-interacting-notebooks-this-feature-3
+      description: The API for interacting with Notebooks. This feature is in early access and the API can have breaking changes
+        without announcement.
+      hints:
+        readOnly: true
+        destructive: false
+        idempotent: true
+      call: posthog-notebooks.notebooksallactivityretrieve
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: api-interacting-notebooks-this-feature-4
+      description: The API for interacting with Notebooks. This feature is in early access and the API can have breaking changes
+        without announcement.
+      hints:
+        readOnly: true
+        destructive: false
+        idempotent: true
+      call: posthog-notebooks.notebooksrecordingcommentsretrieve
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: api-interacting-notebooks-this-feature-5
+      description: The API for interacting with Notebooks. This feature is in early access and the API can have breaking changes
+        without announcement.
+      hints:
+        readOnly: true
+        destructive: false
+        idempotent: true
+      call: posthog-notebooks.notebooksretrieve
+      with:
+        short_id: tools.short_id
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: api-interacting-notebooks-this-feature-6
+      description: The API for interacting with Notebooks. This feature is in early access and the API can have breaking changes
+        without announcement.
+      hints:
+        readOnly: false
+        destructive: false
+        idempotent: true
+      call: posthog-notebooks.notebooksupdate
+      with:
+        short_id: tools.short_id
+        body: tools.body
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: api-interacting-notebooks-this-feature-7
+      description: The API for interacting with Notebooks. This feature is in early access and the API can have breaking changes
+        without announcement.
+      hints:
+        readOnly: false
+        destructive: false
+        idempotent: true
+      call: posthog-notebooks.notebookspartialupdate
+      with:
+        short_id: tools.short_id
+        body: tools.body
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: hard-delete-this-model-is
+      description: Hard delete of this model is not allowed. Use a patch API call to set "deleted" to true
+      hints:
+        readOnly: false
+        destructive: true
+        idempotent: true
+      call: posthog-notebooks.notebooksdestroy
+      with:
+        short_id: tools.short_id
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: api-interacting-notebooks-this-feature-8
+      description: The API for interacting with Notebooks. This feature is in early access and the API can have breaking changes
+        without announcement.
+      hints:
+        readOnly: true
+        destructive: false
+        idempotent: true
+      call: posthog-notebooks.notebooksactivityretrieve
+      with:
+        short_id: tools.short_id
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: api-interacting-notebooks-this-feature-9
+      description: The API for interacting with Notebooks. This feature is in early access and the API can have breaking changes
+        without announcement.
+      hints:
+        readOnly: false
+        destructive: false
+        idempotent: false
+      call: posthog-notebooks.notebookscollabsavecreate
+      with:
+        short_id: tools.short_id
+        body: tools.body
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: api-interacting-notebooks-this-feature-10
+      description: The API for interacting with Notebooks. This feature is in early access and the API can have breaking changes
+        without announcement.
+      hints:
+        readOnly: true
+        destructive: false
+        idempotent: true
+      call: posthog-notebooks.notebookscollabstreamretrieve
+      with:
+        short_id: tools.short_id
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: api-interacting-notebooks-this-feature-11
+      description: The API for interacting with Notebooks. This feature is in early access and the API can have breaking changes
+        without announcement.
+      hints:
+        readOnly: false
+        destructive: false
+        idempotent: false
+      call: posthog-notebooks.notebookshogqlexecutecreate
+      with:
+        short_id: tools.short_id
+        body: tools.body
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: api-interacting-notebooks-this-feature-12
+      description: The API for interacting with Notebooks. This feature is in early access and the API can have breaking changes
+        without announcement.
+      hints:
+        readOnly: false
+        destructive: false
+        idempotent: false
+      call: posthog-notebooks.notebookskernelconfigcreate
+      with:
+        short_id: tools.short_id
+        body: tools.body
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: api-interacting-notebooks-this-feature-13
+      description: The API for interacting with Notebooks. This feature is in early access and the API can have breaking changes
+        without announcement.
+      hints:
+        readOnly: true
+        destructive: false
+        idempotent: true
+      call: posthog-notebooks.notebookskerneldataframeretrieve
+      with:
+        short_id: tools.short_id
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: api-interacting-notebooks-this-feature-14
+      description: The API for interacting with Notebooks. This feature is in early access and the API can have breaking changes
+        without announcement.
+      hints:
+        readOnly: false
+        destructive: false
+        idempotent: false
+      call: posthog-notebooks.notebookskernelexecutecreate
+      with:
+        short_id: tools.short_id
+        body: tools.body
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: api-interacting-notebooks-this-feature-15
+      description: The API for interacting with Notebooks. This feature is in early access and the API can have breaking changes
+        without announcement.
+      hints:
+        readOnly: false
+        destructive: false
+        idempotent: false
+      call: posthog-notebooks.notebookskernelexecutestreamcreate
+      with:
+        short_id: tools.short_id
+        body: tools.body
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: api-interacting-notebooks-this-feature-16
+      description: The API for interacting with Notebooks. This feature is in early access and the API can have breaking changes
+        without announcement.
+      hints:
+        readOnly: false
+        destructive: false
+        idempotent: false
+      call: posthog-notebooks.notebookskernelrestartcreate
+      with:
+        short_id: tools.short_id
+        body: tools.body
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: api-interacting-notebooks-this-feature-17
+      description: The API for interacting with Notebooks. This feature is in early access and the API can have breaking changes
+        without announcement.
+      hints:
+        readOnly: false
+        destructive: false
+        idempotent: false
+      call: posthog-notebooks.notebookskernelstartcreate
+      with:
+        short_id: tools.short_id
+        body: tools.body
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: api-interacting-notebooks-this-feature-18
+      description: The API for interacting with Notebooks. This feature is in early access and the API can have breaking changes
+        without announcement.
+      hints:
+        readOnly: true
+        destructive: false
+        idempotent: true
+      call: posthog-notebooks.notebookskernelstatusretrieve
+      with:
+        short_id: tools.short_id
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: api-interacting-notebooks-this-feature-19
+      description: The API for interacting with Notebooks. This feature is in early access and the API can have breaking changes
+        without announcement.
+      hints:
+        readOnly: false
+        destructive: false
+        idempotent: false
+      call: posthog-notebooks.notebookskernelstopcreate
+      with:
+        short_id: tools.short_id
+        body: tools.body
+      outputParameters:
+      - type: object
+        mapping: $.

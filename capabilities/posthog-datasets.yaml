@@ -1,0 +1,560 @@
+naftiko: 1.0.0-alpha2
+info:
+  label: PostHog API — datasets
+  description: 'PostHog API — datasets. 12 operations. Lead operation: datasets. Self-contained Naftiko capability covering
+    one Posthog business surface.'
+  tags:
+  - Posthog
+  - datasets
+  created: '2026-05-19'
+  modified: '2026-05-19'
+binds:
+- namespace: env
+  keys:
+    POSTHOG_API_KEY: POSTHOG_API_KEY
+capability:
+  consumes:
+  - type: http
+    namespace: posthog-datasets
+    baseUri: ''
+    description: PostHog API — datasets business capability. Self-contained, no shared references.
+    resources:
+    - name: api-environments-environment_id-datasets
+      path: /api/environments/{environment_id}/datasets/
+      operations:
+      - name: environmentsdatasetslist
+        method: GET
+        description: ''
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: id__in
+          in: query
+          type: array
+          description: Multiple values may be separated by commas.
+        - name: limit
+          in: query
+          type: integer
+          description: Number of results to return per page.
+        - name: offset
+          in: query
+          type: integer
+          description: The initial index from which to return the results.
+        - name: order_by
+          in: query
+          type: array
+          description: Ordering
+        - name: search
+          in: query
+          type: string
+          description: Search in name, description, or metadata
+      - name: environmentsdatasetscreate
+        method: POST
+        description: ''
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: body
+          in: body
+          type: object
+          description: Request body (JSON).
+          required: true
+    - name: api-environments-environment_id-datasets-id
+      path: /api/environments/{environment_id}/datasets/{id}/
+      operations:
+      - name: environmentsdatasetsretrieve
+        method: GET
+        description: ''
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: id
+          in: path
+          type: string
+          description: A UUID string identifying this dataset.
+          required: true
+      - name: environmentsdatasetsupdate
+        method: PUT
+        description: ''
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: id
+          in: path
+          type: string
+          description: A UUID string identifying this dataset.
+          required: true
+        - name: body
+          in: body
+          type: object
+          description: Request body (JSON).
+          required: true
+      - name: environmentsdatasetspartialupdate
+        method: PATCH
+        description: ''
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: id
+          in: path
+          type: string
+          description: A UUID string identifying this dataset.
+          required: true
+        - name: body
+          in: body
+          type: object
+          description: Request body (JSON).
+          required: false
+      - name: environmentsdatasetsdestroy
+        method: DELETE
+        description: Hard delete of this model is not allowed. Use a patch API call to set "deleted" to true
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: id
+          in: path
+          type: string
+          description: A UUID string identifying this dataset.
+          required: true
+    - name: api-projects-project_id-datasets
+      path: /api/projects/{project_id}/datasets/
+      operations:
+      - name: datasetslist
+        method: GET
+        description: ''
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: id__in
+          in: query
+          type: array
+          description: Multiple values may be separated by commas.
+        - name: limit
+          in: query
+          type: integer
+          description: Number of results to return per page.
+        - name: offset
+          in: query
+          type: integer
+          description: The initial index from which to return the results.
+        - name: order_by
+          in: query
+          type: array
+          description: Ordering
+        - name: search
+          in: query
+          type: string
+          description: Search in name, description, or metadata
+      - name: datasetscreate
+        method: POST
+        description: ''
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: body
+          in: body
+          type: object
+          description: Request body (JSON).
+          required: true
+    - name: api-projects-project_id-datasets-id
+      path: /api/projects/{project_id}/datasets/{id}/
+      operations:
+      - name: datasetsretrieve
+        method: GET
+        description: ''
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: id
+          in: path
+          type: string
+          description: A UUID string identifying this dataset.
+          required: true
+      - name: datasetsupdate
+        method: PUT
+        description: ''
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: id
+          in: path
+          type: string
+          description: A UUID string identifying this dataset.
+          required: true
+        - name: body
+          in: body
+          type: object
+          description: Request body (JSON).
+          required: true
+      - name: datasetspartialupdate
+        method: PATCH
+        description: ''
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: id
+          in: path
+          type: string
+          description: A UUID string identifying this dataset.
+          required: true
+        - name: body
+          in: body
+          type: object
+          description: Request body (JSON).
+          required: false
+      - name: datasetsdestroy
+        method: DELETE
+        description: Hard delete of this model is not allowed. Use a patch API call to set "deleted" to true
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: id
+          in: path
+          type: string
+          description: A UUID string identifying this dataset.
+          required: true
+    authentication:
+      type: bearer
+      token: '{{env.POSTHOG_API_KEY}}'
+  exposes:
+  - type: rest
+    namespace: posthog-datasets-rest
+    port: 8080
+    description: REST adapter for PostHog API — datasets. One Spectral-compliant resource per consumed operation, prefixed
+      with /v1.
+    resources:
+    - path: /v1/api/environments/{environment-id}/datasets
+      name: api-environments-environment-id-datasets
+      description: REST surface for api-environments-environment_id-datasets.
+      operations:
+      - method: GET
+        name: environmentsdatasetslist
+        description: environmentsdatasetslist
+        call: posthog-datasets.environmentsdatasetslist
+        with:
+          id__in: rest.id__in
+          limit: rest.limit
+          offset: rest.offset
+          order_by: rest.order_by
+          search: rest.search
+        outputParameters:
+        - type: object
+          mapping: $.
+      - method: POST
+        name: environmentsdatasetscreate
+        description: environmentsdatasetscreate
+        call: posthog-datasets.environmentsdatasetscreate
+        with:
+          body: rest.body
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /v1/api/environments/{environment-id}/datasets/{id}
+      name: api-environments-environment-id-datasets-id
+      description: REST surface for api-environments-environment_id-datasets-id.
+      operations:
+      - method: GET
+        name: environmentsdatasetsretrieve
+        description: environmentsdatasetsretrieve
+        call: posthog-datasets.environmentsdatasetsretrieve
+        with:
+          id: rest.id
+        outputParameters:
+        - type: object
+          mapping: $.
+      - method: PUT
+        name: environmentsdatasetsupdate
+        description: environmentsdatasetsupdate
+        call: posthog-datasets.environmentsdatasetsupdate
+        with:
+          id: rest.id
+          body: rest.body
+        outputParameters:
+        - type: object
+          mapping: $.
+      - method: PATCH
+        name: environmentsdatasetspartialupdate
+        description: environmentsdatasetspartialupdate
+        call: posthog-datasets.environmentsdatasetspartialupdate
+        with:
+          id: rest.id
+          body: rest.body
+        outputParameters:
+        - type: object
+          mapping: $.
+      - method: DELETE
+        name: environmentsdatasetsdestroy
+        description: Hard delete of this model is not allowed. Use a patch API call to set "deleted" to true
+        call: posthog-datasets.environmentsdatasetsdestroy
+        with:
+          id: rest.id
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /v1/api/projects/{project-id}/datasets
+      name: api-projects-project-id-datasets
+      description: REST surface for api-projects-project_id-datasets.
+      operations:
+      - method: GET
+        name: datasetslist
+        description: datasetslist
+        call: posthog-datasets.datasetslist
+        with:
+          id__in: rest.id__in
+          limit: rest.limit
+          offset: rest.offset
+          order_by: rest.order_by
+          search: rest.search
+        outputParameters:
+        - type: object
+          mapping: $.
+      - method: POST
+        name: datasetscreate
+        description: datasetscreate
+        call: posthog-datasets.datasetscreate
+        with:
+          body: rest.body
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /v1/api/projects/{project-id}/datasets/{id}
+      name: api-projects-project-id-datasets-id
+      description: REST surface for api-projects-project_id-datasets-id.
+      operations:
+      - method: GET
+        name: datasetsretrieve
+        description: datasetsretrieve
+        call: posthog-datasets.datasetsretrieve
+        with:
+          id: rest.id
+        outputParameters:
+        - type: object
+          mapping: $.
+      - method: PUT
+        name: datasetsupdate
+        description: datasetsupdate
+        call: posthog-datasets.datasetsupdate
+        with:
+          id: rest.id
+          body: rest.body
+        outputParameters:
+        - type: object
+          mapping: $.
+      - method: PATCH
+        name: datasetspartialupdate
+        description: datasetspartialupdate
+        call: posthog-datasets.datasetspartialupdate
+        with:
+          id: rest.id
+          body: rest.body
+        outputParameters:
+        - type: object
+          mapping: $.
+      - method: DELETE
+        name: datasetsdestroy
+        description: Hard delete of this model is not allowed. Use a patch API call to set "deleted" to true
+        call: posthog-datasets.datasetsdestroy
+        with:
+          id: rest.id
+        outputParameters:
+        - type: object
+          mapping: $.
+  - type: mcp
+    namespace: posthog-datasets-mcp
+    port: 9090
+    transport: http
+    description: MCP adapter for PostHog API — datasets. One tool per consumed operation, routed inline through this capability's
+      consumes block.
+    tools:
+    - name: environmentsdatasetslist
+      description: environmentsdatasetslist
+      hints:
+        readOnly: true
+        destructive: false
+        idempotent: true
+      call: posthog-datasets.environmentsdatasetslist
+      with:
+        id__in: tools.id__in
+        limit: tools.limit
+        offset: tools.offset
+        order_by: tools.order_by
+        search: tools.search
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: environmentsdatasetscreate
+      description: environmentsdatasetscreate
+      hints:
+        readOnly: false
+        destructive: false
+        idempotent: false
+      call: posthog-datasets.environmentsdatasetscreate
+      with:
+        body: tools.body
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: environmentsdatasetsretrieve
+      description: environmentsdatasetsretrieve
+      hints:
+        readOnly: true
+        destructive: false
+        idempotent: true
+      call: posthog-datasets.environmentsdatasetsretrieve
+      with:
+        id: tools.id
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: environmentsdatasetsupdate
+      description: environmentsdatasetsupdate
+      hints:
+        readOnly: false
+        destructive: false
+        idempotent: true
+      call: posthog-datasets.environmentsdatasetsupdate
+      with:
+        id: tools.id
+        body: tools.body
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: environmentsdatasetspartialupdate
+      description: environmentsdatasetspartialupdate
+      hints:
+        readOnly: false
+        destructive: false
+        idempotent: true
+      call: posthog-datasets.environmentsdatasetspartialupdate
+      with:
+        id: tools.id
+        body: tools.body
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: hard-delete-this-model-is
+      description: Hard delete of this model is not allowed. Use a patch API call to set "deleted" to true
+      hints:
+        readOnly: false
+        destructive: true
+        idempotent: true
+      call: posthog-datasets.environmentsdatasetsdestroy
+      with:
+        id: tools.id
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: datasetslist
+      description: datasetslist
+      hints:
+        readOnly: true
+        destructive: false
+        idempotent: true
+      call: posthog-datasets.datasetslist
+      with:
+        id__in: tools.id__in
+        limit: tools.limit
+        offset: tools.offset
+        order_by: tools.order_by
+        search: tools.search
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: datasetscreate
+      description: datasetscreate
+      hints:
+        readOnly: false
+        destructive: false
+        idempotent: false
+      call: posthog-datasets.datasetscreate
+      with:
+        body: tools.body
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: datasetsretrieve
+      description: datasetsretrieve
+      hints:
+        readOnly: true
+        destructive: false
+        idempotent: true
+      call: posthog-datasets.datasetsretrieve
+      with:
+        id: tools.id
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: datasetsupdate
+      description: datasetsupdate
+      hints:
+        readOnly: false
+        destructive: false
+        idempotent: true
+      call: posthog-datasets.datasetsupdate
+      with:
+        id: tools.id
+        body: tools.body
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: datasetspartialupdate
+      description: datasetspartialupdate
+      hints:
+        readOnly: false
+        destructive: false
+        idempotent: true
+      call: posthog-datasets.datasetspartialupdate
+      with:
+        id: tools.id
+        body: tools.body
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: hard-delete-this-model-is-2
+      description: Hard delete of this model is not allowed. Use a patch API call to set "deleted" to true
+      hints:
+        readOnly: false
+        destructive: true
+        idempotent: true
+      call: posthog-datasets.datasetsdestroy
+      with:
+        id: tools.id
+      outputParameters:
+      - type: object
+        mapping: $.

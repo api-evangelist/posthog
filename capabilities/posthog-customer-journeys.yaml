@@ -1,0 +1,281 @@
+naftiko: 1.0.0-alpha2
+info:
+  label: PostHog API — customer_journeys
+  description: 'PostHog API — customer_journeys. 6 operations. Lead operation: customer_journeys. Self-contained Naftiko capability
+    covering one Posthog business surface.'
+  tags:
+  - Posthog
+  - customer_journeys
+  created: '2026-05-19'
+  modified: '2026-05-19'
+binds:
+- namespace: env
+  keys:
+    POSTHOG_API_KEY: POSTHOG_API_KEY
+capability:
+  consumes:
+  - type: http
+    namespace: posthog-customer-journeys
+    baseUri: ''
+    description: PostHog API — customer_journeys business capability. Self-contained, no shared references.
+    resources:
+    - name: api-environments-project_id-customer_journeys
+      path: /api/environments/{project_id}/customer_journeys/
+      operations:
+      - name: customerjourneyslist
+        method: GET
+        description: ''
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: limit
+          in: query
+          type: integer
+          description: Number of results to return per page.
+        - name: offset
+          in: query
+          type: integer
+          description: The initial index from which to return the results.
+      - name: customerjourneyscreate
+        method: POST
+        description: ''
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: body
+          in: body
+          type: object
+          description: Request body (JSON).
+          required: true
+    - name: api-environments-project_id-customer_journeys-id
+      path: /api/environments/{project_id}/customer_journeys/{id}/
+      operations:
+      - name: customerjourneysretrieve
+        method: GET
+        description: ''
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: id
+          in: path
+          type: string
+          description: A UUID string identifying this customer journey.
+          required: true
+      - name: customerjourneysupdate
+        method: PUT
+        description: ''
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: id
+          in: path
+          type: string
+          description: A UUID string identifying this customer journey.
+          required: true
+        - name: body
+          in: body
+          type: object
+          description: Request body (JSON).
+          required: true
+      - name: customerjourneyspartialupdate
+        method: PATCH
+        description: ''
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: id
+          in: path
+          type: string
+          description: A UUID string identifying this customer journey.
+          required: true
+        - name: body
+          in: body
+          type: object
+          description: Request body (JSON).
+          required: false
+      - name: customerjourneysdestroy
+        method: DELETE
+        description: ''
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: id
+          in: path
+          type: string
+          description: A UUID string identifying this customer journey.
+          required: true
+    authentication:
+      type: bearer
+      token: '{{env.POSTHOG_API_KEY}}'
+  exposes:
+  - type: rest
+    namespace: posthog-customer-journeys-rest
+    port: 8080
+    description: REST adapter for PostHog API — customer_journeys. One Spectral-compliant resource per consumed operation,
+      prefixed with /v1.
+    resources:
+    - path: /v1/api/environments/{project-id}/customer-journeys
+      name: api-environments-project-id-customer-journeys
+      description: REST surface for api-environments-project_id-customer_journeys.
+      operations:
+      - method: GET
+        name: customerjourneyslist
+        description: customerjourneyslist
+        call: posthog-customer-journeys.customerjourneyslist
+        with:
+          limit: rest.limit
+          offset: rest.offset
+        outputParameters:
+        - type: object
+          mapping: $.
+      - method: POST
+        name: customerjourneyscreate
+        description: customerjourneyscreate
+        call: posthog-customer-journeys.customerjourneyscreate
+        with:
+          body: rest.body
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /v1/api/environments/{project-id}/customer-journeys/{id}
+      name: api-environments-project-id-customer-journeys-id
+      description: REST surface for api-environments-project_id-customer_journeys-id.
+      operations:
+      - method: GET
+        name: customerjourneysretrieve
+        description: customerjourneysretrieve
+        call: posthog-customer-journeys.customerjourneysretrieve
+        with:
+          id: rest.id
+        outputParameters:
+        - type: object
+          mapping: $.
+      - method: PUT
+        name: customerjourneysupdate
+        description: customerjourneysupdate
+        call: posthog-customer-journeys.customerjourneysupdate
+        with:
+          id: rest.id
+          body: rest.body
+        outputParameters:
+        - type: object
+          mapping: $.
+      - method: PATCH
+        name: customerjourneyspartialupdate
+        description: customerjourneyspartialupdate
+        call: posthog-customer-journeys.customerjourneyspartialupdate
+        with:
+          id: rest.id
+          body: rest.body
+        outputParameters:
+        - type: object
+          mapping: $.
+      - method: DELETE
+        name: customerjourneysdestroy
+        description: customerjourneysdestroy
+        call: posthog-customer-journeys.customerjourneysdestroy
+        with:
+          id: rest.id
+        outputParameters:
+        - type: object
+          mapping: $.
+  - type: mcp
+    namespace: posthog-customer-journeys-mcp
+    port: 9090
+    transport: http
+    description: MCP adapter for PostHog API — customer_journeys. One tool per consumed operation, routed inline through this
+      capability's consumes block.
+    tools:
+    - name: customerjourneyslist
+      description: customerjourneyslist
+      hints:
+        readOnly: true
+        destructive: false
+        idempotent: true
+      call: posthog-customer-journeys.customerjourneyslist
+      with:
+        limit: tools.limit
+        offset: tools.offset
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: customerjourneyscreate
+      description: customerjourneyscreate
+      hints:
+        readOnly: false
+        destructive: false
+        idempotent: false
+      call: posthog-customer-journeys.customerjourneyscreate
+      with:
+        body: tools.body
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: customerjourneysretrieve
+      description: customerjourneysretrieve
+      hints:
+        readOnly: true
+        destructive: false
+        idempotent: true
+      call: posthog-customer-journeys.customerjourneysretrieve
+      with:
+        id: tools.id
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: customerjourneysupdate
+      description: customerjourneysupdate
+      hints:
+        readOnly: false
+        destructive: false
+        idempotent: true
+      call: posthog-customer-journeys.customerjourneysupdate
+      with:
+        id: tools.id
+        body: tools.body
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: customerjourneyspartialupdate
+      description: customerjourneyspartialupdate
+      hints:
+        readOnly: false
+        destructive: false
+        idempotent: true
+      call: posthog-customer-journeys.customerjourneyspartialupdate
+      with:
+        id: tools.id
+        body: tools.body
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: customerjourneysdestroy
+      description: customerjourneysdestroy
+      hints:
+        readOnly: false
+        destructive: true
+        idempotent: true
+      call: posthog-customer-journeys.customerjourneysdestroy
+      with:
+        id: tools.id
+      outputParameters:
+      - type: object
+        mapping: $.

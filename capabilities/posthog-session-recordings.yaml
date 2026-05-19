@@ -1,0 +1,822 @@
+naftiko: 1.0.0-alpha2
+info:
+  label: PostHog API — session_recordings
+  description: 'PostHog API — session_recordings. 18 operations. Lead operation: session_recordings. Self-contained Naftiko
+    capability covering one Posthog business surface.'
+  tags:
+  - Posthog
+  - session_recordings
+  created: '2026-05-19'
+  modified: '2026-05-19'
+binds:
+- namespace: env
+  keys:
+    POSTHOG_API_KEY: POSTHOG_API_KEY
+capability:
+  consumes:
+  - type: http
+    namespace: posthog-session-recordings
+    baseUri: ''
+    description: PostHog API — session_recordings business capability. Self-contained, no shared references.
+    resources:
+    - name: api-environments-environment_id-session_recordings
+      path: /api/environments/{environment_id}/session_recordings/
+      operations:
+      - name: environmentssessionrecordingslist
+        method: GET
+        description: ''
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: limit
+          in: query
+          type: integer
+          description: Number of results to return per page.
+        - name: offset
+          in: query
+          type: integer
+          description: The initial index from which to return the results.
+    - name: api-environments-environment_id-session_recordings-id
+      path: /api/environments/{environment_id}/session_recordings/{id}/
+      operations:
+      - name: environmentssessionrecordingsretrieve
+        method: GET
+        description: ''
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: id
+          in: path
+          type: string
+          description: A UUID string identifying this session recording.
+          required: true
+      - name: environmentssessionrecordingsupdate
+        method: PUT
+        description: ''
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: id
+          in: path
+          type: string
+          description: A UUID string identifying this session recording.
+          required: true
+        - name: body
+          in: body
+          type: object
+          description: Request body (JSON).
+          required: false
+      - name: environmentssessionrecordingspartialupdate
+        method: PATCH
+        description: ''
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: id
+          in: path
+          type: string
+          description: A UUID string identifying this session recording.
+          required: true
+        - name: body
+          in: body
+          type: object
+          description: Request body (JSON).
+          required: false
+      - name: environmentssessionrecordingsdestroy
+        method: DELETE
+        description: ''
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: id
+          in: path
+          type: string
+          description: A UUID string identifying this session recording.
+          required: true
+    - name: api-environments-environment_id-session_recordings-recording_id-sharing
+      path: /api/environments/{environment_id}/session_recordings/{recording_id}/sharing/
+      operations:
+      - name: environmentssessionrecordingssharinglist
+        method: GET
+        description: ''
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: recording_id
+          in: path
+          type: string
+          required: true
+    - name: api-environments-environment_id-session_recordings-recording_id-sharing-password
+      path: /api/environments/{environment_id}/session_recordings/{recording_id}/sharing/passwords/
+      operations:
+      - name: environmentssessionrecordingssharingpasswordscreate
+        method: POST
+        description: Create a new password for the sharing configuration.
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: recording_id
+          in: path
+          type: string
+          required: true
+        - name: body
+          in: body
+          type: object
+          description: Request body (JSON).
+          required: false
+    - name: api-environments-environment_id-session_recordings-recording_id-sharing-password
+      path: /api/environments/{environment_id}/session_recordings/{recording_id}/sharing/passwords/{password_id}/
+      operations:
+      - name: environmentssessionrecordingssharingpasswordsdestroy
+        method: DELETE
+        description: Delete a password from the sharing configuration.
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: password_id
+          in: path
+          type: string
+          required: true
+        - name: recording_id
+          in: path
+          type: string
+          required: true
+    - name: api-environments-environment_id-session_recordings-recording_id-sharing-refresh
+      path: /api/environments/{environment_id}/session_recordings/{recording_id}/sharing/refresh/
+      operations:
+      - name: environmentssessionrecordingssharingrefreshcreate
+        method: POST
+        description: ''
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: recording_id
+          in: path
+          type: string
+          required: true
+        - name: body
+          in: body
+          type: object
+          description: Request body (JSON).
+          required: false
+    - name: api-projects-project_id-session_recordings
+      path: /api/projects/{project_id}/session_recordings/
+      operations:
+      - name: sessionrecordingslist
+        method: GET
+        description: ''
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: limit
+          in: query
+          type: integer
+          description: Number of results to return per page.
+        - name: offset
+          in: query
+          type: integer
+          description: The initial index from which to return the results.
+    - name: api-projects-project_id-session_recordings-id
+      path: /api/projects/{project_id}/session_recordings/{id}/
+      operations:
+      - name: sessionrecordingsretrieve
+        method: GET
+        description: ''
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: id
+          in: path
+          type: string
+          description: A UUID string identifying this session recording.
+          required: true
+      - name: sessionrecordingsupdate
+        method: PUT
+        description: ''
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: id
+          in: path
+          type: string
+          description: A UUID string identifying this session recording.
+          required: true
+        - name: body
+          in: body
+          type: object
+          description: Request body (JSON).
+          required: false
+      - name: sessionrecordingspartialupdate
+        method: PATCH
+        description: ''
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: id
+          in: path
+          type: string
+          description: A UUID string identifying this session recording.
+          required: true
+        - name: body
+          in: body
+          type: object
+          description: Request body (JSON).
+          required: false
+      - name: sessionrecordingsdestroy
+        method: DELETE
+        description: ''
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: id
+          in: path
+          type: string
+          description: A UUID string identifying this session recording.
+          required: true
+    - name: api-projects-project_id-session_recordings-recording_id-sharing
+      path: /api/projects/{project_id}/session_recordings/{recording_id}/sharing/
+      operations:
+      - name: sessionrecordingssharinglist
+        method: GET
+        description: ''
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: recording_id
+          in: path
+          type: string
+          required: true
+    - name: api-projects-project_id-session_recordings-recording_id-sharing-passwords
+      path: /api/projects/{project_id}/session_recordings/{recording_id}/sharing/passwords/
+      operations:
+      - name: sessionrecordingssharingpasswordscreate
+        method: POST
+        description: Create a new password for the sharing configuration.
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: recording_id
+          in: path
+          type: string
+          required: true
+        - name: body
+          in: body
+          type: object
+          description: Request body (JSON).
+          required: false
+    - name: api-projects-project_id-session_recordings-recording_id-sharing-passwords-passwo
+      path: /api/projects/{project_id}/session_recordings/{recording_id}/sharing/passwords/{password_id}/
+      operations:
+      - name: sessionrecordingssharingpasswordsdestroy
+        method: DELETE
+        description: Delete a password from the sharing configuration.
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: password_id
+          in: path
+          type: string
+          required: true
+        - name: recording_id
+          in: path
+          type: string
+          required: true
+    - name: api-projects-project_id-session_recordings-recording_id-sharing-refresh
+      path: /api/projects/{project_id}/session_recordings/{recording_id}/sharing/refresh/
+      operations:
+      - name: sessionrecordingssharingrefreshcreate
+        method: POST
+        description: ''
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: recording_id
+          in: path
+          type: string
+          required: true
+        - name: body
+          in: body
+          type: object
+          description: Request body (JSON).
+          required: false
+    authentication:
+      type: bearer
+      token: '{{env.POSTHOG_API_KEY}}'
+  exposes:
+  - type: rest
+    namespace: posthog-session-recordings-rest
+    port: 8080
+    description: REST adapter for PostHog API — session_recordings. One Spectral-compliant resource per consumed operation,
+      prefixed with /v1.
+    resources:
+    - path: /v1/api/environments/{environment-id}/session-recordings
+      name: api-environments-environment-id-session-recordings
+      description: REST surface for api-environments-environment_id-session_recordings.
+      operations:
+      - method: GET
+        name: environmentssessionrecordingslist
+        description: environmentssessionrecordingslist
+        call: posthog-session-recordings.environmentssessionrecordingslist
+        with:
+          limit: rest.limit
+          offset: rest.offset
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /v1/api/environments/{environment-id}/session-recordings/{id}
+      name: api-environments-environment-id-session-recordings-id
+      description: REST surface for api-environments-environment_id-session_recordings-id.
+      operations:
+      - method: GET
+        name: environmentssessionrecordingsretrieve
+        description: environmentssessionrecordingsretrieve
+        call: posthog-session-recordings.environmentssessionrecordingsretrieve
+        with:
+          id: rest.id
+        outputParameters:
+        - type: object
+          mapping: $.
+      - method: PUT
+        name: environmentssessionrecordingsupdate
+        description: environmentssessionrecordingsupdate
+        call: posthog-session-recordings.environmentssessionrecordingsupdate
+        with:
+          id: rest.id
+          body: rest.body
+        outputParameters:
+        - type: object
+          mapping: $.
+      - method: PATCH
+        name: environmentssessionrecordingspartialupdate
+        description: environmentssessionrecordingspartialupdate
+        call: posthog-session-recordings.environmentssessionrecordingspartialupdate
+        with:
+          id: rest.id
+          body: rest.body
+        outputParameters:
+        - type: object
+          mapping: $.
+      - method: DELETE
+        name: environmentssessionrecordingsdestroy
+        description: environmentssessionrecordingsdestroy
+        call: posthog-session-recordings.environmentssessionrecordingsdestroy
+        with:
+          id: rest.id
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /v1/api/environments/{environment-id}/session-recordings/{recording-id}/sharing
+      name: api-environments-environment-id-session-recordings-recording-id-sharing
+      description: REST surface for api-environments-environment_id-session_recordings-recording_id-sharing.
+      operations:
+      - method: GET
+        name: environmentssessionrecordingssharinglist
+        description: environmentssessionrecordingssharinglist
+        call: posthog-session-recordings.environmentssessionrecordingssharinglist
+        with:
+          recording_id: rest.recording_id
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /v1/api/environments/{environment-id}/session-recordings/{recording-id}/sharing/passwords
+      name: api-environments-environment-id-session-recordings-recording-id-sharing-password
+      description: REST surface for api-environments-environment_id-session_recordings-recording_id-sharing-password.
+      operations:
+      - method: POST
+        name: environmentssessionrecordingssharingpasswordscreate
+        description: Create a new password for the sharing configuration.
+        call: posthog-session-recordings.environmentssessionrecordingssharingpasswordscreate
+        with:
+          recording_id: rest.recording_id
+          body: rest.body
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /v1/api/environments/{environment-id}/session-recordings/{recording-id}/sharing/passwords/{password-id}
+      name: api-environments-environment-id-session-recordings-recording-id-sharing-password
+      description: REST surface for api-environments-environment_id-session_recordings-recording_id-sharing-password.
+      operations:
+      - method: DELETE
+        name: environmentssessionrecordingssharingpasswordsdestroy
+        description: Delete a password from the sharing configuration.
+        call: posthog-session-recordings.environmentssessionrecordingssharingpasswordsdestroy
+        with:
+          password_id: rest.password_id
+          recording_id: rest.recording_id
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /v1/api/environments/{environment-id}/session-recordings/{recording-id}/sharing/refresh
+      name: api-environments-environment-id-session-recordings-recording-id-sharing-refresh
+      description: REST surface for api-environments-environment_id-session_recordings-recording_id-sharing-refresh.
+      operations:
+      - method: POST
+        name: environmentssessionrecordingssharingrefreshcreate
+        description: environmentssessionrecordingssharingrefreshcreate
+        call: posthog-session-recordings.environmentssessionrecordingssharingrefreshcreate
+        with:
+          recording_id: rest.recording_id
+          body: rest.body
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /v1/api/projects/{project-id}/session-recordings
+      name: api-projects-project-id-session-recordings
+      description: REST surface for api-projects-project_id-session_recordings.
+      operations:
+      - method: GET
+        name: sessionrecordingslist
+        description: sessionrecordingslist
+        call: posthog-session-recordings.sessionrecordingslist
+        with:
+          limit: rest.limit
+          offset: rest.offset
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /v1/api/projects/{project-id}/session-recordings/{id}
+      name: api-projects-project-id-session-recordings-id
+      description: REST surface for api-projects-project_id-session_recordings-id.
+      operations:
+      - method: GET
+        name: sessionrecordingsretrieve
+        description: sessionrecordingsretrieve
+        call: posthog-session-recordings.sessionrecordingsretrieve
+        with:
+          id: rest.id
+        outputParameters:
+        - type: object
+          mapping: $.
+      - method: PUT
+        name: sessionrecordingsupdate
+        description: sessionrecordingsupdate
+        call: posthog-session-recordings.sessionrecordingsupdate
+        with:
+          id: rest.id
+          body: rest.body
+        outputParameters:
+        - type: object
+          mapping: $.
+      - method: PATCH
+        name: sessionrecordingspartialupdate
+        description: sessionrecordingspartialupdate
+        call: posthog-session-recordings.sessionrecordingspartialupdate
+        with:
+          id: rest.id
+          body: rest.body
+        outputParameters:
+        - type: object
+          mapping: $.
+      - method: DELETE
+        name: sessionrecordingsdestroy
+        description: sessionrecordingsdestroy
+        call: posthog-session-recordings.sessionrecordingsdestroy
+        with:
+          id: rest.id
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /v1/api/projects/{project-id}/session-recordings/{recording-id}/sharing
+      name: api-projects-project-id-session-recordings-recording-id-sharing
+      description: REST surface for api-projects-project_id-session_recordings-recording_id-sharing.
+      operations:
+      - method: GET
+        name: sessionrecordingssharinglist
+        description: sessionrecordingssharinglist
+        call: posthog-session-recordings.sessionrecordingssharinglist
+        with:
+          recording_id: rest.recording_id
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /v1/api/projects/{project-id}/session-recordings/{recording-id}/sharing/passwords
+      name: api-projects-project-id-session-recordings-recording-id-sharing-passwords
+      description: REST surface for api-projects-project_id-session_recordings-recording_id-sharing-passwords.
+      operations:
+      - method: POST
+        name: sessionrecordingssharingpasswordscreate
+        description: Create a new password for the sharing configuration.
+        call: posthog-session-recordings.sessionrecordingssharingpasswordscreate
+        with:
+          recording_id: rest.recording_id
+          body: rest.body
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /v1/api/projects/{project-id}/session-recordings/{recording-id}/sharing/passwords/{password-id}
+      name: api-projects-project-id-session-recordings-recording-id-sharing-passwords-passwo
+      description: REST surface for api-projects-project_id-session_recordings-recording_id-sharing-passwords-passwo.
+      operations:
+      - method: DELETE
+        name: sessionrecordingssharingpasswordsdestroy
+        description: Delete a password from the sharing configuration.
+        call: posthog-session-recordings.sessionrecordingssharingpasswordsdestroy
+        with:
+          password_id: rest.password_id
+          recording_id: rest.recording_id
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /v1/api/projects/{project-id}/session-recordings/{recording-id}/sharing/refresh
+      name: api-projects-project-id-session-recordings-recording-id-sharing-refresh
+      description: REST surface for api-projects-project_id-session_recordings-recording_id-sharing-refresh.
+      operations:
+      - method: POST
+        name: sessionrecordingssharingrefreshcreate
+        description: sessionrecordingssharingrefreshcreate
+        call: posthog-session-recordings.sessionrecordingssharingrefreshcreate
+        with:
+          recording_id: rest.recording_id
+          body: rest.body
+        outputParameters:
+        - type: object
+          mapping: $.
+  - type: mcp
+    namespace: posthog-session-recordings-mcp
+    port: 9090
+    transport: http
+    description: MCP adapter for PostHog API — session_recordings. One tool per consumed operation, routed inline through
+      this capability's consumes block.
+    tools:
+    - name: environmentssessionrecordingslist
+      description: environmentssessionrecordingslist
+      hints:
+        readOnly: true
+        destructive: false
+        idempotent: true
+      call: posthog-session-recordings.environmentssessionrecordingslist
+      with:
+        limit: tools.limit
+        offset: tools.offset
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: environmentssessionrecordingsretrieve
+      description: environmentssessionrecordingsretrieve
+      hints:
+        readOnly: true
+        destructive: false
+        idempotent: true
+      call: posthog-session-recordings.environmentssessionrecordingsretrieve
+      with:
+        id: tools.id
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: environmentssessionrecordingsupdate
+      description: environmentssessionrecordingsupdate
+      hints:
+        readOnly: false
+        destructive: false
+        idempotent: true
+      call: posthog-session-recordings.environmentssessionrecordingsupdate
+      with:
+        id: tools.id
+        body: tools.body
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: environmentssessionrecordingspartialupdate
+      description: environmentssessionrecordingspartialupdate
+      hints:
+        readOnly: false
+        destructive: false
+        idempotent: true
+      call: posthog-session-recordings.environmentssessionrecordingspartialupdate
+      with:
+        id: tools.id
+        body: tools.body
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: environmentssessionrecordingsdestroy
+      description: environmentssessionrecordingsdestroy
+      hints:
+        readOnly: false
+        destructive: true
+        idempotent: true
+      call: posthog-session-recordings.environmentssessionrecordingsdestroy
+      with:
+        id: tools.id
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: environmentssessionrecordingssharinglist
+      description: environmentssessionrecordingssharinglist
+      hints:
+        readOnly: true
+        destructive: false
+        idempotent: true
+      call: posthog-session-recordings.environmentssessionrecordingssharinglist
+      with:
+        recording_id: tools.recording_id
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: create-new-password-sharing-configuration
+      description: Create a new password for the sharing configuration.
+      hints:
+        readOnly: false
+        destructive: false
+        idempotent: false
+      call: posthog-session-recordings.environmentssessionrecordingssharingpasswordscreate
+      with:
+        recording_id: tools.recording_id
+        body: tools.body
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: delete-password-sharing-configuration
+      description: Delete a password from the sharing configuration.
+      hints:
+        readOnly: false
+        destructive: true
+        idempotent: true
+      call: posthog-session-recordings.environmentssessionrecordingssharingpasswordsdestroy
+      with:
+        password_id: tools.password_id
+        recording_id: tools.recording_id
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: environmentssessionrecordingssharingrefreshcreate
+      description: environmentssessionrecordingssharingrefreshcreate
+      hints:
+        readOnly: false
+        destructive: false
+        idempotent: false
+      call: posthog-session-recordings.environmentssessionrecordingssharingrefreshcreate
+      with:
+        recording_id: tools.recording_id
+        body: tools.body
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: sessionrecordingslist
+      description: sessionrecordingslist
+      hints:
+        readOnly: true
+        destructive: false
+        idempotent: true
+      call: posthog-session-recordings.sessionrecordingslist
+      with:
+        limit: tools.limit
+        offset: tools.offset
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: sessionrecordingsretrieve
+      description: sessionrecordingsretrieve
+      hints:
+        readOnly: true
+        destructive: false
+        idempotent: true
+      call: posthog-session-recordings.sessionrecordingsretrieve
+      with:
+        id: tools.id
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: sessionrecordingsupdate
+      description: sessionrecordingsupdate
+      hints:
+        readOnly: false
+        destructive: false
+        idempotent: true
+      call: posthog-session-recordings.sessionrecordingsupdate
+      with:
+        id: tools.id
+        body: tools.body
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: sessionrecordingspartialupdate
+      description: sessionrecordingspartialupdate
+      hints:
+        readOnly: false
+        destructive: false
+        idempotent: true
+      call: posthog-session-recordings.sessionrecordingspartialupdate
+      with:
+        id: tools.id
+        body: tools.body
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: sessionrecordingsdestroy
+      description: sessionrecordingsdestroy
+      hints:
+        readOnly: false
+        destructive: true
+        idempotent: true
+      call: posthog-session-recordings.sessionrecordingsdestroy
+      with:
+        id: tools.id
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: sessionrecordingssharinglist
+      description: sessionrecordingssharinglist
+      hints:
+        readOnly: true
+        destructive: false
+        idempotent: true
+      call: posthog-session-recordings.sessionrecordingssharinglist
+      with:
+        recording_id: tools.recording_id
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: create-new-password-sharing-configuration-2
+      description: Create a new password for the sharing configuration.
+      hints:
+        readOnly: false
+        destructive: false
+        idempotent: false
+      call: posthog-session-recordings.sessionrecordingssharingpasswordscreate
+      with:
+        recording_id: tools.recording_id
+        body: tools.body
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: delete-password-sharing-configuration-2
+      description: Delete a password from the sharing configuration.
+      hints:
+        readOnly: false
+        destructive: true
+        idempotent: true
+      call: posthog-session-recordings.sessionrecordingssharingpasswordsdestroy
+      with:
+        password_id: tools.password_id
+        recording_id: tools.recording_id
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: sessionrecordingssharingrefreshcreate
+      description: sessionrecordingssharingrefreshcreate
+      hints:
+        readOnly: false
+        destructive: false
+        idempotent: false
+      call: posthog-session-recordings.sessionrecordingssharingrefreshcreate
+      with:
+        recording_id: tools.recording_id
+        body: tools.body
+      outputParameters:
+      - type: object
+        mapping: $.

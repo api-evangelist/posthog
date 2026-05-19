@@ -1,0 +1,524 @@
+naftiko: 1.0.0-alpha2
+info:
+  label: PostHog API — data_color_themes
+  description: 'PostHog API — data_color_themes. 12 operations. Lead operation: data_color_themes. Self-contained Naftiko
+    capability covering one Posthog business surface.'
+  tags:
+  - Posthog
+  - data_color_themes
+  created: '2026-05-19'
+  modified: '2026-05-19'
+binds:
+- namespace: env
+  keys:
+    POSTHOG_API_KEY: POSTHOG_API_KEY
+capability:
+  consumes:
+  - type: http
+    namespace: posthog-data-color-themes
+    baseUri: ''
+    description: PostHog API — data_color_themes business capability. Self-contained, no shared references.
+    resources:
+    - name: api-environments-environment_id-data_color_themes
+      path: /api/environments/{environment_id}/data_color_themes/
+      operations:
+      - name: environmentsdatacolorthemeslist
+        method: GET
+        description: ''
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: limit
+          in: query
+          type: integer
+          description: Number of results to return per page.
+        - name: offset
+          in: query
+          type: integer
+          description: The initial index from which to return the results.
+      - name: environmentsdatacolorthemescreate
+        method: POST
+        description: ''
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: body
+          in: body
+          type: object
+          description: Request body (JSON).
+          required: true
+    - name: api-environments-environment_id-data_color_themes-id
+      path: /api/environments/{environment_id}/data_color_themes/{id}/
+      operations:
+      - name: environmentsdatacolorthemesretrieve
+        method: GET
+        description: ''
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: id
+          in: path
+          type: integer
+          description: A unique integer value identifying this data color theme.
+          required: true
+      - name: environmentsdatacolorthemesupdate
+        method: PUT
+        description: ''
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: id
+          in: path
+          type: integer
+          description: A unique integer value identifying this data color theme.
+          required: true
+        - name: body
+          in: body
+          type: object
+          description: Request body (JSON).
+          required: true
+      - name: environmentsdatacolorthemespartialupdate
+        method: PATCH
+        description: ''
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: id
+          in: path
+          type: integer
+          description: A unique integer value identifying this data color theme.
+          required: true
+        - name: body
+          in: body
+          type: object
+          description: Request body (JSON).
+          required: false
+      - name: environmentsdatacolorthemesdestroy
+        method: DELETE
+        description: ''
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: id
+          in: path
+          type: integer
+          description: A unique integer value identifying this data color theme.
+          required: true
+    - name: api-projects-project_id-data_color_themes
+      path: /api/projects/{project_id}/data_color_themes/
+      operations:
+      - name: datacolorthemeslist
+        method: GET
+        description: ''
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: limit
+          in: query
+          type: integer
+          description: Number of results to return per page.
+        - name: offset
+          in: query
+          type: integer
+          description: The initial index from which to return the results.
+      - name: datacolorthemescreate
+        method: POST
+        description: ''
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: body
+          in: body
+          type: object
+          description: Request body (JSON).
+          required: true
+    - name: api-projects-project_id-data_color_themes-id
+      path: /api/projects/{project_id}/data_color_themes/{id}/
+      operations:
+      - name: datacolorthemesretrieve
+        method: GET
+        description: ''
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: id
+          in: path
+          type: integer
+          description: A unique integer value identifying this data color theme.
+          required: true
+      - name: datacolorthemesupdate
+        method: PUT
+        description: ''
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: id
+          in: path
+          type: integer
+          description: A unique integer value identifying this data color theme.
+          required: true
+        - name: body
+          in: body
+          type: object
+          description: Request body (JSON).
+          required: true
+      - name: datacolorthemespartialupdate
+        method: PATCH
+        description: ''
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: id
+          in: path
+          type: integer
+          description: A unique integer value identifying this data color theme.
+          required: true
+        - name: body
+          in: body
+          type: object
+          description: Request body (JSON).
+          required: false
+      - name: datacolorthemesdestroy
+        method: DELETE
+        description: ''
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: id
+          in: path
+          type: integer
+          description: A unique integer value identifying this data color theme.
+          required: true
+    authentication:
+      type: bearer
+      token: '{{env.POSTHOG_API_KEY}}'
+  exposes:
+  - type: rest
+    namespace: posthog-data-color-themes-rest
+    port: 8080
+    description: REST adapter for PostHog API — data_color_themes. One Spectral-compliant resource per consumed operation,
+      prefixed with /v1.
+    resources:
+    - path: /v1/api/environments/{environment-id}/data-color-themes
+      name: api-environments-environment-id-data-color-themes
+      description: REST surface for api-environments-environment_id-data_color_themes.
+      operations:
+      - method: GET
+        name: environmentsdatacolorthemeslist
+        description: environmentsdatacolorthemeslist
+        call: posthog-data-color-themes.environmentsdatacolorthemeslist
+        with:
+          limit: rest.limit
+          offset: rest.offset
+        outputParameters:
+        - type: object
+          mapping: $.
+      - method: POST
+        name: environmentsdatacolorthemescreate
+        description: environmentsdatacolorthemescreate
+        call: posthog-data-color-themes.environmentsdatacolorthemescreate
+        with:
+          body: rest.body
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /v1/api/environments/{environment-id}/data-color-themes/{id}
+      name: api-environments-environment-id-data-color-themes-id
+      description: REST surface for api-environments-environment_id-data_color_themes-id.
+      operations:
+      - method: GET
+        name: environmentsdatacolorthemesretrieve
+        description: environmentsdatacolorthemesretrieve
+        call: posthog-data-color-themes.environmentsdatacolorthemesretrieve
+        with:
+          id: rest.id
+        outputParameters:
+        - type: object
+          mapping: $.
+      - method: PUT
+        name: environmentsdatacolorthemesupdate
+        description: environmentsdatacolorthemesupdate
+        call: posthog-data-color-themes.environmentsdatacolorthemesupdate
+        with:
+          id: rest.id
+          body: rest.body
+        outputParameters:
+        - type: object
+          mapping: $.
+      - method: PATCH
+        name: environmentsdatacolorthemespartialupdate
+        description: environmentsdatacolorthemespartialupdate
+        call: posthog-data-color-themes.environmentsdatacolorthemespartialupdate
+        with:
+          id: rest.id
+          body: rest.body
+        outputParameters:
+        - type: object
+          mapping: $.
+      - method: DELETE
+        name: environmentsdatacolorthemesdestroy
+        description: environmentsdatacolorthemesdestroy
+        call: posthog-data-color-themes.environmentsdatacolorthemesdestroy
+        with:
+          id: rest.id
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /v1/api/projects/{project-id}/data-color-themes
+      name: api-projects-project-id-data-color-themes
+      description: REST surface for api-projects-project_id-data_color_themes.
+      operations:
+      - method: GET
+        name: datacolorthemeslist
+        description: datacolorthemeslist
+        call: posthog-data-color-themes.datacolorthemeslist
+        with:
+          limit: rest.limit
+          offset: rest.offset
+        outputParameters:
+        - type: object
+          mapping: $.
+      - method: POST
+        name: datacolorthemescreate
+        description: datacolorthemescreate
+        call: posthog-data-color-themes.datacolorthemescreate
+        with:
+          body: rest.body
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /v1/api/projects/{project-id}/data-color-themes/{id}
+      name: api-projects-project-id-data-color-themes-id
+      description: REST surface for api-projects-project_id-data_color_themes-id.
+      operations:
+      - method: GET
+        name: datacolorthemesretrieve
+        description: datacolorthemesretrieve
+        call: posthog-data-color-themes.datacolorthemesretrieve
+        with:
+          id: rest.id
+        outputParameters:
+        - type: object
+          mapping: $.
+      - method: PUT
+        name: datacolorthemesupdate
+        description: datacolorthemesupdate
+        call: posthog-data-color-themes.datacolorthemesupdate
+        with:
+          id: rest.id
+          body: rest.body
+        outputParameters:
+        - type: object
+          mapping: $.
+      - method: PATCH
+        name: datacolorthemespartialupdate
+        description: datacolorthemespartialupdate
+        call: posthog-data-color-themes.datacolorthemespartialupdate
+        with:
+          id: rest.id
+          body: rest.body
+        outputParameters:
+        - type: object
+          mapping: $.
+      - method: DELETE
+        name: datacolorthemesdestroy
+        description: datacolorthemesdestroy
+        call: posthog-data-color-themes.datacolorthemesdestroy
+        with:
+          id: rest.id
+        outputParameters:
+        - type: object
+          mapping: $.
+  - type: mcp
+    namespace: posthog-data-color-themes-mcp
+    port: 9090
+    transport: http
+    description: MCP adapter for PostHog API — data_color_themes. One tool per consumed operation, routed inline through this
+      capability's consumes block.
+    tools:
+    - name: environmentsdatacolorthemeslist
+      description: environmentsdatacolorthemeslist
+      hints:
+        readOnly: true
+        destructive: false
+        idempotent: true
+      call: posthog-data-color-themes.environmentsdatacolorthemeslist
+      with:
+        limit: tools.limit
+        offset: tools.offset
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: environmentsdatacolorthemescreate
+      description: environmentsdatacolorthemescreate
+      hints:
+        readOnly: false
+        destructive: false
+        idempotent: false
+      call: posthog-data-color-themes.environmentsdatacolorthemescreate
+      with:
+        body: tools.body
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: environmentsdatacolorthemesretrieve
+      description: environmentsdatacolorthemesretrieve
+      hints:
+        readOnly: true
+        destructive: false
+        idempotent: true
+      call: posthog-data-color-themes.environmentsdatacolorthemesretrieve
+      with:
+        id: tools.id
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: environmentsdatacolorthemesupdate
+      description: environmentsdatacolorthemesupdate
+      hints:
+        readOnly: false
+        destructive: false
+        idempotent: true
+      call: posthog-data-color-themes.environmentsdatacolorthemesupdate
+      with:
+        id: tools.id
+        body: tools.body
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: environmentsdatacolorthemespartialupdate
+      description: environmentsdatacolorthemespartialupdate
+      hints:
+        readOnly: false
+        destructive: false
+        idempotent: true
+      call: posthog-data-color-themes.environmentsdatacolorthemespartialupdate
+      with:
+        id: tools.id
+        body: tools.body
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: environmentsdatacolorthemesdestroy
+      description: environmentsdatacolorthemesdestroy
+      hints:
+        readOnly: false
+        destructive: true
+        idempotent: true
+      call: posthog-data-color-themes.environmentsdatacolorthemesdestroy
+      with:
+        id: tools.id
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: datacolorthemeslist
+      description: datacolorthemeslist
+      hints:
+        readOnly: true
+        destructive: false
+        idempotent: true
+      call: posthog-data-color-themes.datacolorthemeslist
+      with:
+        limit: tools.limit
+        offset: tools.offset
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: datacolorthemescreate
+      description: datacolorthemescreate
+      hints:
+        readOnly: false
+        destructive: false
+        idempotent: false
+      call: posthog-data-color-themes.datacolorthemescreate
+      with:
+        body: tools.body
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: datacolorthemesretrieve
+      description: datacolorthemesretrieve
+      hints:
+        readOnly: true
+        destructive: false
+        idempotent: true
+      call: posthog-data-color-themes.datacolorthemesretrieve
+      with:
+        id: tools.id
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: datacolorthemesupdate
+      description: datacolorthemesupdate
+      hints:
+        readOnly: false
+        destructive: false
+        idempotent: true
+      call: posthog-data-color-themes.datacolorthemesupdate
+      with:
+        id: tools.id
+        body: tools.body
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: datacolorthemespartialupdate
+      description: datacolorthemespartialupdate
+      hints:
+        readOnly: false
+        destructive: false
+        idempotent: true
+      call: posthog-data-color-themes.datacolorthemespartialupdate
+      with:
+        id: tools.id
+        body: tools.body
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: datacolorthemesdestroy
+      description: datacolorthemesdestroy
+      hints:
+        readOnly: false
+        destructive: true
+        idempotent: true
+      call: posthog-data-color-themes.datacolorthemesdestroy
+      with:
+        id: tools.id
+      outputParameters:
+      - type: object
+        mapping: $.

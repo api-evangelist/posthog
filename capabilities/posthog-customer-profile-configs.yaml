@@ -1,0 +1,281 @@
+naftiko: 1.0.0-alpha2
+info:
+  label: PostHog API — customer_profile_configs
+  description: 'PostHog API — customer_profile_configs. 6 operations. Lead operation: customer_profile_configs. Self-contained
+    Naftiko capability covering one Posthog business surface.'
+  tags:
+  - Posthog
+  - customer_profile_configs
+  created: '2026-05-19'
+  modified: '2026-05-19'
+binds:
+- namespace: env
+  keys:
+    POSTHOG_API_KEY: POSTHOG_API_KEY
+capability:
+  consumes:
+  - type: http
+    namespace: posthog-customer-profile-configs
+    baseUri: ''
+    description: PostHog API — customer_profile_configs business capability. Self-contained, no shared references.
+    resources:
+    - name: api-environments-project_id-customer_profile_configs
+      path: /api/environments/{project_id}/customer_profile_configs/
+      operations:
+      - name: customerprofileconfigslist
+        method: GET
+        description: ''
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: limit
+          in: query
+          type: integer
+          description: Number of results to return per page.
+        - name: offset
+          in: query
+          type: integer
+          description: The initial index from which to return the results.
+      - name: customerprofileconfigscreate
+        method: POST
+        description: ''
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: body
+          in: body
+          type: object
+          description: Request body (JSON).
+          required: true
+    - name: api-environments-project_id-customer_profile_configs-id
+      path: /api/environments/{project_id}/customer_profile_configs/{id}/
+      operations:
+      - name: customerprofileconfigsretrieve
+        method: GET
+        description: ''
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: id
+          in: path
+          type: string
+          description: A UUID string identifying this customer profile config.
+          required: true
+      - name: customerprofileconfigsupdate
+        method: PUT
+        description: ''
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: id
+          in: path
+          type: string
+          description: A UUID string identifying this customer profile config.
+          required: true
+        - name: body
+          in: body
+          type: object
+          description: Request body (JSON).
+          required: true
+      - name: customerprofileconfigspartialupdate
+        method: PATCH
+        description: ''
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: id
+          in: path
+          type: string
+          description: A UUID string identifying this customer profile config.
+          required: true
+        - name: body
+          in: body
+          type: object
+          description: Request body (JSON).
+          required: false
+      - name: customerprofileconfigsdestroy
+        method: DELETE
+        description: ''
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: id
+          in: path
+          type: string
+          description: A UUID string identifying this customer profile config.
+          required: true
+    authentication:
+      type: bearer
+      token: '{{env.POSTHOG_API_KEY}}'
+  exposes:
+  - type: rest
+    namespace: posthog-customer-profile-configs-rest
+    port: 8080
+    description: REST adapter for PostHog API — customer_profile_configs. One Spectral-compliant resource per consumed operation,
+      prefixed with /v1.
+    resources:
+    - path: /v1/api/environments/{project-id}/customer-profile-configs
+      name: api-environments-project-id-customer-profile-configs
+      description: REST surface for api-environments-project_id-customer_profile_configs.
+      operations:
+      - method: GET
+        name: customerprofileconfigslist
+        description: customerprofileconfigslist
+        call: posthog-customer-profile-configs.customerprofileconfigslist
+        with:
+          limit: rest.limit
+          offset: rest.offset
+        outputParameters:
+        - type: object
+          mapping: $.
+      - method: POST
+        name: customerprofileconfigscreate
+        description: customerprofileconfigscreate
+        call: posthog-customer-profile-configs.customerprofileconfigscreate
+        with:
+          body: rest.body
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /v1/api/environments/{project-id}/customer-profile-configs/{id}
+      name: api-environments-project-id-customer-profile-configs-id
+      description: REST surface for api-environments-project_id-customer_profile_configs-id.
+      operations:
+      - method: GET
+        name: customerprofileconfigsretrieve
+        description: customerprofileconfigsretrieve
+        call: posthog-customer-profile-configs.customerprofileconfigsretrieve
+        with:
+          id: rest.id
+        outputParameters:
+        - type: object
+          mapping: $.
+      - method: PUT
+        name: customerprofileconfigsupdate
+        description: customerprofileconfigsupdate
+        call: posthog-customer-profile-configs.customerprofileconfigsupdate
+        with:
+          id: rest.id
+          body: rest.body
+        outputParameters:
+        - type: object
+          mapping: $.
+      - method: PATCH
+        name: customerprofileconfigspartialupdate
+        description: customerprofileconfigspartialupdate
+        call: posthog-customer-profile-configs.customerprofileconfigspartialupdate
+        with:
+          id: rest.id
+          body: rest.body
+        outputParameters:
+        - type: object
+          mapping: $.
+      - method: DELETE
+        name: customerprofileconfigsdestroy
+        description: customerprofileconfigsdestroy
+        call: posthog-customer-profile-configs.customerprofileconfigsdestroy
+        with:
+          id: rest.id
+        outputParameters:
+        - type: object
+          mapping: $.
+  - type: mcp
+    namespace: posthog-customer-profile-configs-mcp
+    port: 9090
+    transport: http
+    description: MCP adapter for PostHog API — customer_profile_configs. One tool per consumed operation, routed inline through
+      this capability's consumes block.
+    tools:
+    - name: customerprofileconfigslist
+      description: customerprofileconfigslist
+      hints:
+        readOnly: true
+        destructive: false
+        idempotent: true
+      call: posthog-customer-profile-configs.customerprofileconfigslist
+      with:
+        limit: tools.limit
+        offset: tools.offset
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: customerprofileconfigscreate
+      description: customerprofileconfigscreate
+      hints:
+        readOnly: false
+        destructive: false
+        idempotent: false
+      call: posthog-customer-profile-configs.customerprofileconfigscreate
+      with:
+        body: tools.body
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: customerprofileconfigsretrieve
+      description: customerprofileconfigsretrieve
+      hints:
+        readOnly: true
+        destructive: false
+        idempotent: true
+      call: posthog-customer-profile-configs.customerprofileconfigsretrieve
+      with:
+        id: tools.id
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: customerprofileconfigsupdate
+      description: customerprofileconfigsupdate
+      hints:
+        readOnly: false
+        destructive: false
+        idempotent: true
+      call: posthog-customer-profile-configs.customerprofileconfigsupdate
+      with:
+        id: tools.id
+        body: tools.body
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: customerprofileconfigspartialupdate
+      description: customerprofileconfigspartialupdate
+      hints:
+        readOnly: false
+        destructive: false
+        idempotent: true
+      call: posthog-customer-profile-configs.customerprofileconfigspartialupdate
+      with:
+        id: tools.id
+        body: tools.body
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: customerprofileconfigsdestroy
+      description: customerprofileconfigsdestroy
+      hints:
+        readOnly: false
+        destructive: true
+        idempotent: true
+      call: posthog-customer-profile-configs.customerprofileconfigsdestroy
+      with:
+        id: tools.id
+      outputParameters:
+      - type: object
+        mapping: $.

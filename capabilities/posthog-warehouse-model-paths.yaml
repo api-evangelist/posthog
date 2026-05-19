@@ -1,0 +1,127 @@
+naftiko: 1.0.0-alpha2
+info:
+  label: PostHog API — warehouse_model_paths
+  description: 'PostHog API — warehouse_model_paths. 2 operations. Lead operation: warehouse_model_paths. Self-contained Naftiko
+    capability covering one Posthog business surface.'
+  tags:
+  - Posthog
+  - warehouse_model_paths
+  created: '2026-05-19'
+  modified: '2026-05-19'
+binds:
+- namespace: env
+  keys:
+    POSTHOG_API_KEY: POSTHOG_API_KEY
+capability:
+  consumes:
+  - type: http
+    namespace: posthog-warehouse-model-paths
+    baseUri: ''
+    description: PostHog API — warehouse_model_paths business capability. Self-contained, no shared references.
+    resources:
+    - name: api-projects-project_id-warehouse_model_paths
+      path: /api/projects/{project_id}/warehouse_model_paths/
+      operations:
+      - name: warehousemodelpathslist
+        method: GET
+        description: ''
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: limit
+          in: query
+          type: integer
+          description: Number of results to return per page.
+        - name: offset
+          in: query
+          type: integer
+          description: The initial index from which to return the results.
+    - name: api-projects-project_id-warehouse_model_paths-id
+      path: /api/projects/{project_id}/warehouse_model_paths/{id}/
+      operations:
+      - name: warehousemodelpathsretrieve
+        method: GET
+        description: ''
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: id
+          in: path
+          type: string
+          description: A UUID string identifying this data warehouse model path.
+          required: true
+    authentication:
+      type: bearer
+      token: '{{env.POSTHOG_API_KEY}}'
+  exposes:
+  - type: rest
+    namespace: posthog-warehouse-model-paths-rest
+    port: 8080
+    description: REST adapter for PostHog API — warehouse_model_paths. One Spectral-compliant resource per consumed operation,
+      prefixed with /v1.
+    resources:
+    - path: /v1/api/projects/{project-id}/warehouse-model-paths
+      name: api-projects-project-id-warehouse-model-paths
+      description: REST surface for api-projects-project_id-warehouse_model_paths.
+      operations:
+      - method: GET
+        name: warehousemodelpathslist
+        description: warehousemodelpathslist
+        call: posthog-warehouse-model-paths.warehousemodelpathslist
+        with:
+          limit: rest.limit
+          offset: rest.offset
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /v1/api/projects/{project-id}/warehouse-model-paths/{id}
+      name: api-projects-project-id-warehouse-model-paths-id
+      description: REST surface for api-projects-project_id-warehouse_model_paths-id.
+      operations:
+      - method: GET
+        name: warehousemodelpathsretrieve
+        description: warehousemodelpathsretrieve
+        call: posthog-warehouse-model-paths.warehousemodelpathsretrieve
+        with:
+          id: rest.id
+        outputParameters:
+        - type: object
+          mapping: $.
+  - type: mcp
+    namespace: posthog-warehouse-model-paths-mcp
+    port: 9090
+    transport: http
+    description: MCP adapter for PostHog API — warehouse_model_paths. One tool per consumed operation, routed inline through
+      this capability's consumes block.
+    tools:
+    - name: warehousemodelpathslist
+      description: warehousemodelpathslist
+      hints:
+        readOnly: true
+        destructive: false
+        idempotent: true
+      call: posthog-warehouse-model-paths.warehousemodelpathslist
+      with:
+        limit: tools.limit
+        offset: tools.offset
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: warehousemodelpathsretrieve
+      description: warehousemodelpathsretrieve
+      hints:
+        readOnly: true
+        destructive: false
+        idempotent: true
+      call: posthog-warehouse-model-paths.warehousemodelpathsretrieve
+      with:
+        id: tools.id
+      outputParameters:
+      - type: object
+        mapping: $.

@@ -1,0 +1,129 @@
+naftiko: 1.0.0-alpha2
+info:
+  label: PostHog API — user_home_settings
+  description: 'PostHog API — user_home_settings. 2 operations. Lead operation: user_home_settings. Self-contained Naftiko
+    capability covering one Posthog business surface.'
+  tags:
+  - Posthog
+  - user_home_settings
+  created: '2026-05-19'
+  modified: '2026-05-19'
+binds:
+- namespace: env
+  keys:
+    POSTHOG_API_KEY: POSTHOG_API_KEY
+capability:
+  consumes:
+  - type: http
+    namespace: posthog-user-home-settings
+    baseUri: ''
+    description: PostHog API — user_home_settings business capability. Self-contained, no shared references.
+    resources:
+    - name: api-user_home_settings-uuid
+      path: /api/user_home_settings/{uuid}/
+      operations:
+      - name: userhomesettingsretrieve
+        method: GET
+        description: Get the authenticated user's pinned sidebar tabs and configured homepage for the current team. Pass `@me`
+          as the UUID.
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: uuid
+          in: path
+          type: string
+          required: true
+      - name: userhomesettingspartialupdate
+        method: PATCH
+        description: Update the authenticated user's pinned sidebar tabs and/or homepage for the current team. Pass `@me`
+          as the UUID. Send `tabs` to replace the pinned tab list, `homepage` to set the home destination (any PostHog URL
+          — dashboard, insight, sear
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: uuid
+          in: path
+          type: string
+          required: true
+        - name: body
+          in: body
+          type: object
+          description: Request body (JSON).
+          required: false
+    authentication:
+      type: bearer
+      token: '{{env.POSTHOG_API_KEY}}'
+  exposes:
+  - type: rest
+    namespace: posthog-user-home-settings-rest
+    port: 8080
+    description: REST adapter for PostHog API — user_home_settings. One Spectral-compliant resource per consumed operation,
+      prefixed with /v1.
+    resources:
+    - path: /v1/api/user-home-settings/{uuid}
+      name: api-user-home-settings-uuid
+      description: REST surface for api-user_home_settings-uuid.
+      operations:
+      - method: GET
+        name: userhomesettingsretrieve
+        description: Get the authenticated user's pinned sidebar tabs and configured homepage for the current team. Pass `@me`
+          as the UUID.
+        call: posthog-user-home-settings.userhomesettingsretrieve
+        with:
+          uuid: rest.uuid
+        outputParameters:
+        - type: object
+          mapping: $.
+      - method: PATCH
+        name: userhomesettingspartialupdate
+        description: Update the authenticated user's pinned sidebar tabs and/or homepage for the current team. Pass `@me`
+          as the UUID. Send `tabs` to replace the pinned tab list, `homepage` to set the home destination (any PostHog URL
+          — dashboard, insight, sear
+        call: posthog-user-home-settings.userhomesettingspartialupdate
+        with:
+          uuid: rest.uuid
+          body: rest.body
+        outputParameters:
+        - type: object
+          mapping: $.
+  - type: mcp
+    namespace: posthog-user-home-settings-mcp
+    port: 9090
+    transport: http
+    description: MCP adapter for PostHog API — user_home_settings. One tool per consumed operation, routed inline through
+      this capability's consumes block.
+    tools:
+    - name: get-authenticated-user-s-pinned-sidebar
+      description: Get the authenticated user's pinned sidebar tabs and configured homepage for the current team. Pass `@me`
+        as the UUID.
+      hints:
+        readOnly: true
+        destructive: false
+        idempotent: true
+      call: posthog-user-home-settings.userhomesettingsretrieve
+      with:
+        uuid: tools.uuid
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: update-authenticated-user-s-pinned-sidebar
+      description: Update the authenticated user's pinned sidebar tabs and/or homepage for the current team. Pass `@me` as
+        the UUID. Send `tabs` to replace the pinned tab list, `homepage` to set the home destination (any PostHog URL — dashboard,
+        insight, sear
+      hints:
+        readOnly: false
+        destructive: false
+        idempotent: true
+      call: posthog-user-home-settings.userhomesettingspartialupdate
+      with:
+        uuid: tools.uuid
+        body: tools.body
+      outputParameters:
+      - type: object
+        mapping: $.

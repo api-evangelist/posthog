@@ -1,0 +1,70 @@
+naftiko: 1.0.0-alpha2
+info:
+  label: PostHog API — welcome
+  description: 'PostHog API — welcome. 1 operations. Lead operation: welcome. Self-contained Naftiko capability covering one
+    Posthog business surface.'
+  tags:
+  - Posthog
+  - welcome
+  created: '2026-05-19'
+  modified: '2026-05-19'
+binds:
+- namespace: env
+  keys:
+    POSTHOG_API_KEY: POSTHOG_API_KEY
+capability:
+  consumes:
+  - type: http
+    namespace: posthog-welcome
+    baseUri: ''
+    description: PostHog API — welcome business capability. Self-contained, no shared references.
+    resources:
+    - name: api-organizations-organization_id-welcome-current
+      path: /api/organizations/{organization_id}/welcome/current/
+      operations:
+      - name: welcomecurrentretrieve
+        method: GET
+        description: Aggregated payload for the invited-user welcome screen.
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+    authentication:
+      type: bearer
+      token: '{{env.POSTHOG_API_KEY}}'
+  exposes:
+  - type: rest
+    namespace: posthog-welcome-rest
+    port: 8080
+    description: REST adapter for PostHog API — welcome. One Spectral-compliant resource per consumed operation, prefixed
+      with /v1.
+    resources:
+    - path: /v1/api/organizations/{organization-id}/welcome/current
+      name: api-organizations-organization-id-welcome-current
+      description: REST surface for api-organizations-organization_id-welcome-current.
+      operations:
+      - method: GET
+        name: welcomecurrentretrieve
+        description: Aggregated payload for the invited-user welcome screen.
+        call: posthog-welcome.welcomecurrentretrieve
+        outputParameters:
+        - type: object
+          mapping: $.
+  - type: mcp
+    namespace: posthog-welcome-mcp
+    port: 9090
+    transport: http
+    description: MCP adapter for PostHog API — welcome. One tool per consumed operation, routed inline through this capability's
+      consumes block.
+    tools:
+    - name: aggregated-payload-invited-user-welcome
+      description: Aggregated payload for the invited-user welcome screen.
+      hints:
+        readOnly: true
+        destructive: false
+        idempotent: true
+      call: posthog-welcome.welcomecurrentretrieve
+      outputParameters:
+      - type: object
+        mapping: $.

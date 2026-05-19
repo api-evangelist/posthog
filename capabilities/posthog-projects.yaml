@@ -1,0 +1,717 @@
+naftiko: 1.0.0-alpha2
+info:
+  label: PostHog API — projects
+  description: 'PostHog API — projects. 15 operations. Lead operation: projects. Self-contained Naftiko capability covering
+    one Posthog business surface.'
+  tags:
+  - Posthog
+  - projects
+  created: '2026-05-19'
+  modified: '2026-05-19'
+binds:
+- namespace: env
+  keys:
+    POSTHOG_API_KEY: POSTHOG_API_KEY
+capability:
+  consumes:
+  - type: http
+    namespace: posthog-projects
+    baseUri: ''
+    description: PostHog API — projects business capability. Self-contained, no shared references.
+    resources:
+    - name: api-organizations-organization_id-projects
+      path: /api/organizations/{organization_id}/projects/
+      operations:
+      - name: organizationsprojectslist
+        method: GET
+        description: Projects for the current organization.
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: limit
+          in: query
+          type: integer
+          description: Number of results to return per page.
+        - name: offset
+          in: query
+          type: integer
+          description: The initial index from which to return the results.
+        - name: search
+          in: query
+          type: string
+          description: A search term.
+      - name: organizationsprojectscreate
+        method: POST
+        description: Projects for the current organization.
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: body
+          in: body
+          type: object
+          description: Request body (JSON).
+          required: false
+    - name: api-organizations-organization_id-projects-id
+      path: /api/organizations/{organization_id}/projects/{id}/
+      operations:
+      - name: organizationsprojectsretrieve
+        method: GET
+        description: Retrieve a project and its settings.
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: id
+          in: path
+          type: integer
+          description: A unique value identifying this project.
+          required: true
+      - name: organizationsprojectsupdate
+        method: PUT
+        description: Replace a project and its settings. Prefer the PATCH endpoint for partial updates — PUT requires every
+          writable field to be provided.
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: id
+          in: path
+          type: integer
+          description: A unique value identifying this project.
+          required: true
+        - name: body
+          in: body
+          type: object
+          description: Request body (JSON).
+          required: false
+      - name: organizationsprojectspartialupdate
+        method: PATCH
+        description: Update one or more of a project's settings. Only the fields included in the request body are changed.
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: id
+          in: path
+          type: integer
+          description: A unique value identifying this project.
+          required: true
+        - name: body
+          in: body
+          type: object
+          description: Request body (JSON).
+          required: false
+      - name: organizationsprojectsdestroy
+        method: DELETE
+        description: Projects for the current organization.
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: id
+          in: path
+          type: integer
+          description: A unique value identifying this project.
+          required: true
+    - name: api-organizations-organization_id-projects-id-activity
+      path: /api/organizations/{organization_id}/projects/{id}/activity/
+      operations:
+      - name: organizationsprojectsactivityretrieve
+        method: GET
+        description: Projects for the current organization.
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: id
+          in: path
+          type: integer
+          description: A unique value identifying this project.
+          required: true
+    - name: api-organizations-organization_id-projects-id-add_product_intent
+      path: /api/organizations/{organization_id}/projects/{id}/add_product_intent/
+      operations:
+      - name: organizationsprojectsaddproductintentpartialupdate
+        method: PATCH
+        description: Projects for the current organization.
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: id
+          in: path
+          type: integer
+          description: A unique value identifying this project.
+          required: true
+        - name: body
+          in: body
+          type: object
+          description: Request body (JSON).
+          required: false
+    - name: api-organizations-organization_id-projects-id-change_organization
+      path: /api/organizations/{organization_id}/projects/{id}/change_organization/
+      operations:
+      - name: organizationsprojectschangeorganizationcreate
+        method: POST
+        description: Projects for the current organization.
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: id
+          in: path
+          type: integer
+          description: A unique value identifying this project.
+          required: true
+        - name: body
+          in: body
+          type: object
+          description: Request body (JSON).
+          required: false
+    - name: api-organizations-organization_id-projects-id-complete_product_onboarding
+      path: /api/organizations/{organization_id}/projects/{id}/complete_product_onboarding/
+      operations:
+      - name: organizationsprojectscompleteproductonboardingpartialupdate
+        method: PATCH
+        description: Projects for the current organization.
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: id
+          in: path
+          type: integer
+          description: A unique value identifying this project.
+          required: true
+        - name: body
+          in: body
+          type: object
+          description: Request body (JSON).
+          required: false
+    - name: api-organizations-organization_id-projects-id-delete_secret_token_backup
+      path: /api/organizations/{organization_id}/projects/{id}/delete_secret_token_backup/
+      operations:
+      - name: organizationsprojectsdeletesecrettokenbackuppartialupdate
+        method: PATCH
+        description: Projects for the current organization.
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: id
+          in: path
+          type: integer
+          description: A unique value identifying this project.
+          required: true
+        - name: body
+          in: body
+          type: object
+          description: Request body (JSON).
+          required: false
+    - name: api-organizations-organization_id-projects-id-generate_conversations_public_toke
+      path: /api/organizations/{organization_id}/projects/{id}/generate_conversations_public_token/
+      operations:
+      - name: organizationsprojectsgenerateconversationspublictokencreate
+        method: POST
+        description: Projects for the current organization.
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: id
+          in: path
+          type: integer
+          description: A unique value identifying this project.
+          required: true
+        - name: body
+          in: body
+          type: object
+          description: Request body (JSON).
+          required: false
+    - name: api-organizations-organization_id-projects-id-is_generating_demo_data
+      path: /api/organizations/{organization_id}/projects/{id}/is_generating_demo_data/
+      operations:
+      - name: organizationsprojectsisgeneratingdemodataretrieve
+        method: GET
+        description: Projects for the current organization.
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: id
+          in: path
+          type: integer
+          description: A unique value identifying this project.
+          required: true
+    - name: api-organizations-organization_id-projects-id-reset_token
+      path: /api/organizations/{organization_id}/projects/{id}/reset_token/
+      operations:
+      - name: organizationsprojectsresettokenpartialupdate
+        method: PATCH
+        description: Projects for the current organization.
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: id
+          in: path
+          type: integer
+          description: A unique value identifying this project.
+          required: true
+        - name: body
+          in: body
+          type: object
+          description: Request body (JSON).
+          required: false
+    - name: api-organizations-organization_id-projects-id-rotate_secret_token
+      path: /api/organizations/{organization_id}/projects/{id}/rotate_secret_token/
+      operations:
+      - name: organizationsprojectsrotatesecrettokenpartialupdate
+        method: PATCH
+        description: Projects for the current organization.
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: id
+          in: path
+          type: integer
+          description: A unique value identifying this project.
+          required: true
+        - name: body
+          in: body
+          type: object
+          description: Request body (JSON).
+          required: false
+    authentication:
+      type: bearer
+      token: '{{env.POSTHOG_API_KEY}}'
+  exposes:
+  - type: rest
+    namespace: posthog-projects-rest
+    port: 8080
+    description: REST adapter for PostHog API — projects. One Spectral-compliant resource per consumed operation, prefixed
+      with /v1.
+    resources:
+    - path: /v1/api/organizations/{organization-id}/projects
+      name: api-organizations-organization-id-projects
+      description: REST surface for api-organizations-organization_id-projects.
+      operations:
+      - method: GET
+        name: organizationsprojectslist
+        description: Projects for the current organization.
+        call: posthog-projects.organizationsprojectslist
+        with:
+          limit: rest.limit
+          offset: rest.offset
+          search: rest.search
+        outputParameters:
+        - type: object
+          mapping: $.
+      - method: POST
+        name: organizationsprojectscreate
+        description: Projects for the current organization.
+        call: posthog-projects.organizationsprojectscreate
+        with:
+          body: rest.body
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /v1/api/organizations/{organization-id}/projects/{id}
+      name: api-organizations-organization-id-projects-id
+      description: REST surface for api-organizations-organization_id-projects-id.
+      operations:
+      - method: GET
+        name: organizationsprojectsretrieve
+        description: Retrieve a project and its settings.
+        call: posthog-projects.organizationsprojectsretrieve
+        with:
+          id: rest.id
+        outputParameters:
+        - type: object
+          mapping: $.
+      - method: PUT
+        name: organizationsprojectsupdate
+        description: Replace a project and its settings. Prefer the PATCH endpoint for partial updates — PUT requires every
+          writable field to be provided.
+        call: posthog-projects.organizationsprojectsupdate
+        with:
+          id: rest.id
+          body: rest.body
+        outputParameters:
+        - type: object
+          mapping: $.
+      - method: PATCH
+        name: organizationsprojectspartialupdate
+        description: Update one or more of a project's settings. Only the fields included in the request body are changed.
+        call: posthog-projects.organizationsprojectspartialupdate
+        with:
+          id: rest.id
+          body: rest.body
+        outputParameters:
+        - type: object
+          mapping: $.
+      - method: DELETE
+        name: organizationsprojectsdestroy
+        description: Projects for the current organization.
+        call: posthog-projects.organizationsprojectsdestroy
+        with:
+          id: rest.id
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /v1/api/organizations/{organization-id}/projects/{id}/activity
+      name: api-organizations-organization-id-projects-id-activity
+      description: REST surface for api-organizations-organization_id-projects-id-activity.
+      operations:
+      - method: GET
+        name: organizationsprojectsactivityretrieve
+        description: Projects for the current organization.
+        call: posthog-projects.organizationsprojectsactivityretrieve
+        with:
+          id: rest.id
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /v1/api/organizations/{organization-id}/projects/{id}/add-product-intent
+      name: api-organizations-organization-id-projects-id-add-product-intent
+      description: REST surface for api-organizations-organization_id-projects-id-add_product_intent.
+      operations:
+      - method: PATCH
+        name: organizationsprojectsaddproductintentpartialupdate
+        description: Projects for the current organization.
+        call: posthog-projects.organizationsprojectsaddproductintentpartialupdate
+        with:
+          id: rest.id
+          body: rest.body
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /v1/api/organizations/{organization-id}/projects/{id}/change-organization
+      name: api-organizations-organization-id-projects-id-change-organization
+      description: REST surface for api-organizations-organization_id-projects-id-change_organization.
+      operations:
+      - method: POST
+        name: organizationsprojectschangeorganizationcreate
+        description: Projects for the current organization.
+        call: posthog-projects.organizationsprojectschangeorganizationcreate
+        with:
+          id: rest.id
+          body: rest.body
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /v1/api/organizations/{organization-id}/projects/{id}/complete-product-onboarding
+      name: api-organizations-organization-id-projects-id-complete-product-onboarding
+      description: REST surface for api-organizations-organization_id-projects-id-complete_product_onboarding.
+      operations:
+      - method: PATCH
+        name: organizationsprojectscompleteproductonboardingpartialupdate
+        description: Projects for the current organization.
+        call: posthog-projects.organizationsprojectscompleteproductonboardingpartialupdate
+        with:
+          id: rest.id
+          body: rest.body
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /v1/api/organizations/{organization-id}/projects/{id}/delete-secret-token-backup
+      name: api-organizations-organization-id-projects-id-delete-secret-token-backup
+      description: REST surface for api-organizations-organization_id-projects-id-delete_secret_token_backup.
+      operations:
+      - method: PATCH
+        name: organizationsprojectsdeletesecrettokenbackuppartialupdate
+        description: Projects for the current organization.
+        call: posthog-projects.organizationsprojectsdeletesecrettokenbackuppartialupdate
+        with:
+          id: rest.id
+          body: rest.body
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /v1/api/organizations/{organization-id}/projects/{id}/generate-conversations-public-token
+      name: api-organizations-organization-id-projects-id-generate-conversations-public-toke
+      description: REST surface for api-organizations-organization_id-projects-id-generate_conversations_public_toke.
+      operations:
+      - method: POST
+        name: organizationsprojectsgenerateconversationspublictokencreate
+        description: Projects for the current organization.
+        call: posthog-projects.organizationsprojectsgenerateconversationspublictokencreate
+        with:
+          id: rest.id
+          body: rest.body
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /v1/api/organizations/{organization-id}/projects/{id}/is-generating-demo-data
+      name: api-organizations-organization-id-projects-id-is-generating-demo-data
+      description: REST surface for api-organizations-organization_id-projects-id-is_generating_demo_data.
+      operations:
+      - method: GET
+        name: organizationsprojectsisgeneratingdemodataretrieve
+        description: Projects for the current organization.
+        call: posthog-projects.organizationsprojectsisgeneratingdemodataretrieve
+        with:
+          id: rest.id
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /v1/api/organizations/{organization-id}/projects/{id}/reset-token
+      name: api-organizations-organization-id-projects-id-reset-token
+      description: REST surface for api-organizations-organization_id-projects-id-reset_token.
+      operations:
+      - method: PATCH
+        name: organizationsprojectsresettokenpartialupdate
+        description: Projects for the current organization.
+        call: posthog-projects.organizationsprojectsresettokenpartialupdate
+        with:
+          id: rest.id
+          body: rest.body
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /v1/api/organizations/{organization-id}/projects/{id}/rotate-secret-token
+      name: api-organizations-organization-id-projects-id-rotate-secret-token
+      description: REST surface for api-organizations-organization_id-projects-id-rotate_secret_token.
+      operations:
+      - method: PATCH
+        name: organizationsprojectsrotatesecrettokenpartialupdate
+        description: Projects for the current organization.
+        call: posthog-projects.organizationsprojectsrotatesecrettokenpartialupdate
+        with:
+          id: rest.id
+          body: rest.body
+        outputParameters:
+        - type: object
+          mapping: $.
+  - type: mcp
+    namespace: posthog-projects-mcp
+    port: 9090
+    transport: http
+    description: MCP adapter for PostHog API — projects. One tool per consumed operation, routed inline through this capability's
+      consumes block.
+    tools:
+    - name: projects-current-organization
+      description: Projects for the current organization.
+      hints:
+        readOnly: true
+        destructive: false
+        idempotent: true
+      call: posthog-projects.organizationsprojectslist
+      with:
+        limit: tools.limit
+        offset: tools.offset
+        search: tools.search
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: projects-current-organization-2
+      description: Projects for the current organization.
+      hints:
+        readOnly: false
+        destructive: false
+        idempotent: false
+      call: posthog-projects.organizationsprojectscreate
+      with:
+        body: tools.body
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: retrieve-project-and-its-settings
+      description: Retrieve a project and its settings.
+      hints:
+        readOnly: true
+        destructive: false
+        idempotent: true
+      call: posthog-projects.organizationsprojectsretrieve
+      with:
+        id: tools.id
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: replace-project-and-its-settings
+      description: Replace a project and its settings. Prefer the PATCH endpoint for partial updates — PUT requires every
+        writable field to be provided.
+      hints:
+        readOnly: false
+        destructive: false
+        idempotent: true
+      call: posthog-projects.organizationsprojectsupdate
+      with:
+        id: tools.id
+        body: tools.body
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: update-one-more-project-s-settings
+      description: Update one or more of a project's settings. Only the fields included in the request body are changed.
+      hints:
+        readOnly: false
+        destructive: false
+        idempotent: true
+      call: posthog-projects.organizationsprojectspartialupdate
+      with:
+        id: tools.id
+        body: tools.body
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: projects-current-organization-3
+      description: Projects for the current organization.
+      hints:
+        readOnly: false
+        destructive: true
+        idempotent: true
+      call: posthog-projects.organizationsprojectsdestroy
+      with:
+        id: tools.id
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: projects-current-organization-4
+      description: Projects for the current organization.
+      hints:
+        readOnly: true
+        destructive: false
+        idempotent: true
+      call: posthog-projects.organizationsprojectsactivityretrieve
+      with:
+        id: tools.id
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: projects-current-organization-5
+      description: Projects for the current organization.
+      hints:
+        readOnly: false
+        destructive: false
+        idempotent: true
+      call: posthog-projects.organizationsprojectsaddproductintentpartialupdate
+      with:
+        id: tools.id
+        body: tools.body
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: projects-current-organization-6
+      description: Projects for the current organization.
+      hints:
+        readOnly: false
+        destructive: false
+        idempotent: false
+      call: posthog-projects.organizationsprojectschangeorganizationcreate
+      with:
+        id: tools.id
+        body: tools.body
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: projects-current-organization-7
+      description: Projects for the current organization.
+      hints:
+        readOnly: false
+        destructive: false
+        idempotent: true
+      call: posthog-projects.organizationsprojectscompleteproductonboardingpartialupdate
+      with:
+        id: tools.id
+        body: tools.body
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: projects-current-organization-8
+      description: Projects for the current organization.
+      hints:
+        readOnly: false
+        destructive: false
+        idempotent: true
+      call: posthog-projects.organizationsprojectsdeletesecrettokenbackuppartialupdate
+      with:
+        id: tools.id
+        body: tools.body
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: projects-current-organization-9
+      description: Projects for the current organization.
+      hints:
+        readOnly: false
+        destructive: false
+        idempotent: false
+      call: posthog-projects.organizationsprojectsgenerateconversationspublictokencreate
+      with:
+        id: tools.id
+        body: tools.body
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: projects-current-organization-10
+      description: Projects for the current organization.
+      hints:
+        readOnly: true
+        destructive: false
+        idempotent: true
+      call: posthog-projects.organizationsprojectsisgeneratingdemodataretrieve
+      with:
+        id: tools.id
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: projects-current-organization-11
+      description: Projects for the current organization.
+      hints:
+        readOnly: false
+        destructive: false
+        idempotent: true
+      call: posthog-projects.organizationsprojectsresettokenpartialupdate
+      with:
+        id: tools.id
+        body: tools.body
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: projects-current-organization-12
+      description: Projects for the current organization.
+      hints:
+        readOnly: false
+        destructive: false
+        idempotent: true
+      call: posthog-projects.organizationsprojectsrotatesecrettokenpartialupdate
+      with:
+        id: tools.id
+        body: tools.body
+      outputParameters:
+      - type: object
+        mapping: $.

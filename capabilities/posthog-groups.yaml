@@ -1,0 +1,870 @@
+naftiko: 1.0.0-alpha2
+info:
+  label: PostHog API — groups
+  description: 'PostHog API — groups. 18 operations. Lead operation: groups. Self-contained Naftiko capability covering one
+    Posthog business surface.'
+  tags:
+  - Posthog
+  - groups
+  created: '2026-05-19'
+  modified: '2026-05-19'
+binds:
+- namespace: env
+  keys:
+    POSTHOG_API_KEY: POSTHOG_API_KEY
+capability:
+  consumes:
+  - type: http
+    namespace: posthog-groups
+    baseUri: ''
+    description: PostHog API — groups business capability. Self-contained, no shared references.
+    resources:
+    - name: api-environments-environment_id-groups
+      path: /api/environments/{environment_id}/groups/
+      operations:
+      - name: environmentsgroupslist
+        method: GET
+        description: List all groups of a specific group type. You must pass ?group_type_index= in the URL. To get a list
+          of valid group types, call /api/:project_id/groups_types/
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: cursor
+          in: query
+          type: string
+          description: The pagination cursor value.
+        - name: group_type_index
+          in: query
+          type: integer
+          description: Specify the group type to list
+          required: true
+        - name: search
+          in: query
+          type: string
+          description: Search the group name
+          required: true
+      - name: environmentsgroupscreate
+        method: POST
+        description: ''
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: body
+          in: body
+          type: object
+          description: Request body (JSON).
+          required: true
+    - name: api-environments-environment_id-groups-activity
+      path: /api/environments/{environment_id}/groups/activity/
+      operations:
+      - name: environmentsgroupsactivityretrieve
+        method: GET
+        description: ''
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: group_type_index
+          in: query
+          type: integer
+          description: Specify the group type to find
+          required: true
+        - name: id
+          in: query
+          type: string
+          description: Specify the id of the user to find groups for
+          required: true
+    - name: api-environments-environment_id-groups-delete_property
+      path: /api/environments/{environment_id}/groups/delete_property/
+      operations:
+      - name: environmentsgroupsdeletepropertycreate
+        method: POST
+        description: ''
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: group_key
+          in: query
+          type: string
+          description: Specify the key of the group to find
+          required: true
+        - name: group_type_index
+          in: query
+          type: integer
+          description: Specify the group type to find
+          required: true
+        - name: body
+          in: body
+          type: object
+          description: Request body (JSON).
+          required: true
+    - name: api-environments-environment_id-groups-find
+      path: /api/environments/{environment_id}/groups/find/
+      operations:
+      - name: environmentsgroupsfindretrieve
+        method: GET
+        description: ''
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: group_key
+          in: query
+          type: string
+          description: Specify the key of the group to find
+          required: true
+        - name: group_type_index
+          in: query
+          type: integer
+          description: Specify the group type to find
+          required: true
+    - name: api-environments-environment_id-groups-property_definitions
+      path: /api/environments/{environment_id}/groups/property_definitions/
+      operations:
+      - name: environmentsgroupspropertydefinitionsretrieve
+        method: GET
+        description: ''
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+    - name: api-environments-environment_id-groups-property_values
+      path: /api/environments/{environment_id}/groups/property_values/
+      operations:
+      - name: environmentsgroupspropertyvaluesretrieve
+        method: GET
+        description: ''
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+    - name: api-environments-environment_id-groups-related
+      path: /api/environments/{environment_id}/groups/related/
+      operations:
+      - name: environmentsgroupsrelatedretrieve
+        method: GET
+        description: ''
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: group_type_index
+          in: query
+          type: integer
+          description: Specify the group type to find
+          required: true
+        - name: id
+          in: query
+          type: string
+          description: Specify the id of the user to find groups for
+          required: true
+    - name: api-environments-environment_id-groups-update_property
+      path: /api/environments/{environment_id}/groups/update_property/
+      operations:
+      - name: environmentsgroupsupdatepropertycreate
+        method: POST
+        description: ''
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: group_key
+          in: query
+          type: string
+          description: Specify the key of the group to find
+          required: true
+        - name: group_type_index
+          in: query
+          type: integer
+          description: Specify the group type to find
+          required: true
+        - name: body
+          in: body
+          type: object
+          description: Request body (JSON).
+          required: true
+    - name: api-projects-project_id-groups
+      path: /api/projects/{project_id}/groups/
+      operations:
+      - name: groupslist
+        method: GET
+        description: List all groups of a specific group type. You must pass ?group_type_index= in the URL. To get a list
+          of valid group types, call /api/:project_id/groups_types/
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: cursor
+          in: query
+          type: string
+          description: The pagination cursor value.
+        - name: group_type_index
+          in: query
+          type: integer
+          description: Specify the group type to list
+          required: true
+        - name: search
+          in: query
+          type: string
+          description: Search the group name
+          required: true
+      - name: groupscreate
+        method: POST
+        description: ''
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: body
+          in: body
+          type: object
+          description: Request body (JSON).
+          required: true
+    - name: api-projects-project_id-groups-activity
+      path: /api/projects/{project_id}/groups/activity/
+      operations:
+      - name: groupsactivityretrieve
+        method: GET
+        description: ''
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: group_type_index
+          in: query
+          type: integer
+          description: Specify the group type to find
+          required: true
+        - name: id
+          in: query
+          type: string
+          description: Specify the id of the user to find groups for
+          required: true
+    - name: api-projects-project_id-groups-delete_property
+      path: /api/projects/{project_id}/groups/delete_property/
+      operations:
+      - name: groupsdeletepropertycreate
+        method: POST
+        description: ''
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: group_key
+          in: query
+          type: string
+          description: Specify the key of the group to find
+          required: true
+        - name: group_type_index
+          in: query
+          type: integer
+          description: Specify the group type to find
+          required: true
+        - name: body
+          in: body
+          type: object
+          description: Request body (JSON).
+          required: true
+    - name: api-projects-project_id-groups-find
+      path: /api/projects/{project_id}/groups/find/
+      operations:
+      - name: groupsfindretrieve
+        method: GET
+        description: ''
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: group_key
+          in: query
+          type: string
+          description: Specify the key of the group to find
+          required: true
+        - name: group_type_index
+          in: query
+          type: integer
+          description: Specify the group type to find
+          required: true
+    - name: api-projects-project_id-groups-property_definitions
+      path: /api/projects/{project_id}/groups/property_definitions/
+      operations:
+      - name: groupspropertydefinitionsretrieve
+        method: GET
+        description: ''
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+    - name: api-projects-project_id-groups-property_values
+      path: /api/projects/{project_id}/groups/property_values/
+      operations:
+      - name: groupspropertyvaluesretrieve
+        method: GET
+        description: ''
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+    - name: api-projects-project_id-groups-related
+      path: /api/projects/{project_id}/groups/related/
+      operations:
+      - name: groupsrelatedretrieve
+        method: GET
+        description: ''
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: group_type_index
+          in: query
+          type: integer
+          description: Specify the group type to find
+          required: true
+        - name: id
+          in: query
+          type: string
+          description: Specify the id of the user to find groups for
+          required: true
+    - name: api-projects-project_id-groups-update_property
+      path: /api/projects/{project_id}/groups/update_property/
+      operations:
+      - name: groupsupdatepropertycreate
+        method: POST
+        description: ''
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: group_key
+          in: query
+          type: string
+          description: Specify the key of the group to find
+          required: true
+        - name: group_type_index
+          in: query
+          type: integer
+          description: Specify the group type to find
+          required: true
+        - name: body
+          in: body
+          type: object
+          description: Request body (JSON).
+          required: true
+    authentication:
+      type: bearer
+      token: '{{env.POSTHOG_API_KEY}}'
+  exposes:
+  - type: rest
+    namespace: posthog-groups-rest
+    port: 8080
+    description: REST adapter for PostHog API — groups. One Spectral-compliant resource per consumed operation, prefixed with
+      /v1.
+    resources:
+    - path: /v1/api/environments/{environment-id}/groups
+      name: api-environments-environment-id-groups
+      description: REST surface for api-environments-environment_id-groups.
+      operations:
+      - method: GET
+        name: environmentsgroupslist
+        description: List all groups of a specific group type. You must pass ?group_type_index= in the URL. To get a list
+          of valid group types, call /api/:project_id/groups_types/
+        call: posthog-groups.environmentsgroupslist
+        with:
+          cursor: rest.cursor
+          group_type_index: rest.group_type_index
+          search: rest.search
+        outputParameters:
+        - type: object
+          mapping: $.
+      - method: POST
+        name: environmentsgroupscreate
+        description: environmentsgroupscreate
+        call: posthog-groups.environmentsgroupscreate
+        with:
+          body: rest.body
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /v1/api/environments/{environment-id}/groups/activity
+      name: api-environments-environment-id-groups-activity
+      description: REST surface for api-environments-environment_id-groups-activity.
+      operations:
+      - method: GET
+        name: environmentsgroupsactivityretrieve
+        description: environmentsgroupsactivityretrieve
+        call: posthog-groups.environmentsgroupsactivityretrieve
+        with:
+          group_type_index: rest.group_type_index
+          id: rest.id
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /v1/api/environments/{environment-id}/groups/delete-property
+      name: api-environments-environment-id-groups-delete-property
+      description: REST surface for api-environments-environment_id-groups-delete_property.
+      operations:
+      - method: POST
+        name: environmentsgroupsdeletepropertycreate
+        description: environmentsgroupsdeletepropertycreate
+        call: posthog-groups.environmentsgroupsdeletepropertycreate
+        with:
+          group_key: rest.group_key
+          group_type_index: rest.group_type_index
+          body: rest.body
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /v1/api/environments/{environment-id}/groups/find
+      name: api-environments-environment-id-groups-find
+      description: REST surface for api-environments-environment_id-groups-find.
+      operations:
+      - method: GET
+        name: environmentsgroupsfindretrieve
+        description: environmentsgroupsfindretrieve
+        call: posthog-groups.environmentsgroupsfindretrieve
+        with:
+          group_key: rest.group_key
+          group_type_index: rest.group_type_index
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /v1/api/environments/{environment-id}/groups/property-definitions
+      name: api-environments-environment-id-groups-property-definitions
+      description: REST surface for api-environments-environment_id-groups-property_definitions.
+      operations:
+      - method: GET
+        name: environmentsgroupspropertydefinitionsretrieve
+        description: environmentsgroupspropertydefinitionsretrieve
+        call: posthog-groups.environmentsgroupspropertydefinitionsretrieve
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /v1/api/environments/{environment-id}/groups/property-values
+      name: api-environments-environment-id-groups-property-values
+      description: REST surface for api-environments-environment_id-groups-property_values.
+      operations:
+      - method: GET
+        name: environmentsgroupspropertyvaluesretrieve
+        description: environmentsgroupspropertyvaluesretrieve
+        call: posthog-groups.environmentsgroupspropertyvaluesretrieve
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /v1/api/environments/{environment-id}/groups/related
+      name: api-environments-environment-id-groups-related
+      description: REST surface for api-environments-environment_id-groups-related.
+      operations:
+      - method: GET
+        name: environmentsgroupsrelatedretrieve
+        description: environmentsgroupsrelatedretrieve
+        call: posthog-groups.environmentsgroupsrelatedretrieve
+        with:
+          group_type_index: rest.group_type_index
+          id: rest.id
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /v1/api/environments/{environment-id}/groups/update-property
+      name: api-environments-environment-id-groups-update-property
+      description: REST surface for api-environments-environment_id-groups-update_property.
+      operations:
+      - method: POST
+        name: environmentsgroupsupdatepropertycreate
+        description: environmentsgroupsupdatepropertycreate
+        call: posthog-groups.environmentsgroupsupdatepropertycreate
+        with:
+          group_key: rest.group_key
+          group_type_index: rest.group_type_index
+          body: rest.body
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /v1/api/projects/{project-id}/groups
+      name: api-projects-project-id-groups
+      description: REST surface for api-projects-project_id-groups.
+      operations:
+      - method: GET
+        name: groupslist
+        description: List all groups of a specific group type. You must pass ?group_type_index= in the URL. To get a list
+          of valid group types, call /api/:project_id/groups_types/
+        call: posthog-groups.groupslist
+        with:
+          cursor: rest.cursor
+          group_type_index: rest.group_type_index
+          search: rest.search
+        outputParameters:
+        - type: object
+          mapping: $.
+      - method: POST
+        name: groupscreate
+        description: groupscreate
+        call: posthog-groups.groupscreate
+        with:
+          body: rest.body
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /v1/api/projects/{project-id}/groups/activity
+      name: api-projects-project-id-groups-activity
+      description: REST surface for api-projects-project_id-groups-activity.
+      operations:
+      - method: GET
+        name: groupsactivityretrieve
+        description: groupsactivityretrieve
+        call: posthog-groups.groupsactivityretrieve
+        with:
+          group_type_index: rest.group_type_index
+          id: rest.id
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /v1/api/projects/{project-id}/groups/delete-property
+      name: api-projects-project-id-groups-delete-property
+      description: REST surface for api-projects-project_id-groups-delete_property.
+      operations:
+      - method: POST
+        name: groupsdeletepropertycreate
+        description: groupsdeletepropertycreate
+        call: posthog-groups.groupsdeletepropertycreate
+        with:
+          group_key: rest.group_key
+          group_type_index: rest.group_type_index
+          body: rest.body
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /v1/api/projects/{project-id}/groups/find
+      name: api-projects-project-id-groups-find
+      description: REST surface for api-projects-project_id-groups-find.
+      operations:
+      - method: GET
+        name: groupsfindretrieve
+        description: groupsfindretrieve
+        call: posthog-groups.groupsfindretrieve
+        with:
+          group_key: rest.group_key
+          group_type_index: rest.group_type_index
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /v1/api/projects/{project-id}/groups/property-definitions
+      name: api-projects-project-id-groups-property-definitions
+      description: REST surface for api-projects-project_id-groups-property_definitions.
+      operations:
+      - method: GET
+        name: groupspropertydefinitionsretrieve
+        description: groupspropertydefinitionsretrieve
+        call: posthog-groups.groupspropertydefinitionsretrieve
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /v1/api/projects/{project-id}/groups/property-values
+      name: api-projects-project-id-groups-property-values
+      description: REST surface for api-projects-project_id-groups-property_values.
+      operations:
+      - method: GET
+        name: groupspropertyvaluesretrieve
+        description: groupspropertyvaluesretrieve
+        call: posthog-groups.groupspropertyvaluesretrieve
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /v1/api/projects/{project-id}/groups/related
+      name: api-projects-project-id-groups-related
+      description: REST surface for api-projects-project_id-groups-related.
+      operations:
+      - method: GET
+        name: groupsrelatedretrieve
+        description: groupsrelatedretrieve
+        call: posthog-groups.groupsrelatedretrieve
+        with:
+          group_type_index: rest.group_type_index
+          id: rest.id
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /v1/api/projects/{project-id}/groups/update-property
+      name: api-projects-project-id-groups-update-property
+      description: REST surface for api-projects-project_id-groups-update_property.
+      operations:
+      - method: POST
+        name: groupsupdatepropertycreate
+        description: groupsupdatepropertycreate
+        call: posthog-groups.groupsupdatepropertycreate
+        with:
+          group_key: rest.group_key
+          group_type_index: rest.group_type_index
+          body: rest.body
+        outputParameters:
+        - type: object
+          mapping: $.
+  - type: mcp
+    namespace: posthog-groups-mcp
+    port: 9090
+    transport: http
+    description: MCP adapter for PostHog API — groups. One tool per consumed operation, routed inline through this capability's
+      consumes block.
+    tools:
+    - name: list-all-groups-specific-group
+      description: List all groups of a specific group type. You must pass ?group_type_index= in the URL. To get a list of
+        valid group types, call /api/:project_id/groups_types/
+      hints:
+        readOnly: true
+        destructive: false
+        idempotent: true
+      call: posthog-groups.environmentsgroupslist
+      with:
+        cursor: tools.cursor
+        group_type_index: tools.group_type_index
+        search: tools.search
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: environmentsgroupscreate
+      description: environmentsgroupscreate
+      hints:
+        readOnly: false
+        destructive: false
+        idempotent: false
+      call: posthog-groups.environmentsgroupscreate
+      with:
+        body: tools.body
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: environmentsgroupsactivityretrieve
+      description: environmentsgroupsactivityretrieve
+      hints:
+        readOnly: true
+        destructive: false
+        idempotent: true
+      call: posthog-groups.environmentsgroupsactivityretrieve
+      with:
+        group_type_index: tools.group_type_index
+        id: tools.id
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: environmentsgroupsdeletepropertycreate
+      description: environmentsgroupsdeletepropertycreate
+      hints:
+        readOnly: false
+        destructive: false
+        idempotent: false
+      call: posthog-groups.environmentsgroupsdeletepropertycreate
+      with:
+        group_key: tools.group_key
+        group_type_index: tools.group_type_index
+        body: tools.body
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: environmentsgroupsfindretrieve
+      description: environmentsgroupsfindretrieve
+      hints:
+        readOnly: true
+        destructive: false
+        idempotent: true
+      call: posthog-groups.environmentsgroupsfindretrieve
+      with:
+        group_key: tools.group_key
+        group_type_index: tools.group_type_index
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: environmentsgroupspropertydefinitionsretrieve
+      description: environmentsgroupspropertydefinitionsretrieve
+      hints:
+        readOnly: true
+        destructive: false
+        idempotent: true
+      call: posthog-groups.environmentsgroupspropertydefinitionsretrieve
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: environmentsgroupspropertyvaluesretrieve
+      description: environmentsgroupspropertyvaluesretrieve
+      hints:
+        readOnly: true
+        destructive: false
+        idempotent: true
+      call: posthog-groups.environmentsgroupspropertyvaluesretrieve
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: environmentsgroupsrelatedretrieve
+      description: environmentsgroupsrelatedretrieve
+      hints:
+        readOnly: true
+        destructive: false
+        idempotent: true
+      call: posthog-groups.environmentsgroupsrelatedretrieve
+      with:
+        group_type_index: tools.group_type_index
+        id: tools.id
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: environmentsgroupsupdatepropertycreate
+      description: environmentsgroupsupdatepropertycreate
+      hints:
+        readOnly: false
+        destructive: false
+        idempotent: false
+      call: posthog-groups.environmentsgroupsupdatepropertycreate
+      with:
+        group_key: tools.group_key
+        group_type_index: tools.group_type_index
+        body: tools.body
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: list-all-groups-specific-group-2
+      description: List all groups of a specific group type. You must pass ?group_type_index= in the URL. To get a list of
+        valid group types, call /api/:project_id/groups_types/
+      hints:
+        readOnly: true
+        destructive: false
+        idempotent: true
+      call: posthog-groups.groupslist
+      with:
+        cursor: tools.cursor
+        group_type_index: tools.group_type_index
+        search: tools.search
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: groupscreate
+      description: groupscreate
+      hints:
+        readOnly: false
+        destructive: false
+        idempotent: false
+      call: posthog-groups.groupscreate
+      with:
+        body: tools.body
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: groupsactivityretrieve
+      description: groupsactivityretrieve
+      hints:
+        readOnly: true
+        destructive: false
+        idempotent: true
+      call: posthog-groups.groupsactivityretrieve
+      with:
+        group_type_index: tools.group_type_index
+        id: tools.id
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: groupsdeletepropertycreate
+      description: groupsdeletepropertycreate
+      hints:
+        readOnly: false
+        destructive: false
+        idempotent: false
+      call: posthog-groups.groupsdeletepropertycreate
+      with:
+        group_key: tools.group_key
+        group_type_index: tools.group_type_index
+        body: tools.body
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: groupsfindretrieve
+      description: groupsfindretrieve
+      hints:
+        readOnly: true
+        destructive: false
+        idempotent: true
+      call: posthog-groups.groupsfindretrieve
+      with:
+        group_key: tools.group_key
+        group_type_index: tools.group_type_index
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: groupspropertydefinitionsretrieve
+      description: groupspropertydefinitionsretrieve
+      hints:
+        readOnly: true
+        destructive: false
+        idempotent: true
+      call: posthog-groups.groupspropertydefinitionsretrieve
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: groupspropertyvaluesretrieve
+      description: groupspropertyvaluesretrieve
+      hints:
+        readOnly: true
+        destructive: false
+        idempotent: true
+      call: posthog-groups.groupspropertyvaluesretrieve
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: groupsrelatedretrieve
+      description: groupsrelatedretrieve
+      hints:
+        readOnly: true
+        destructive: false
+        idempotent: true
+      call: posthog-groups.groupsrelatedretrieve
+      with:
+        group_type_index: tools.group_type_index
+        id: tools.id
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: groupsupdatepropertycreate
+      description: groupsupdatepropertycreate
+      hints:
+        readOnly: false
+        destructive: false
+        idempotent: false
+      call: posthog-groups.groupsupdatepropertycreate
+      with:
+        group_key: tools.group_key
+        group_type_index: tools.group_type_index
+        body: tools.body
+      outputParameters:
+      - type: object
+        mapping: $.

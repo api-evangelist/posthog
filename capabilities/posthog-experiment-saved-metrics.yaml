@@ -1,0 +1,281 @@
+naftiko: 1.0.0-alpha2
+info:
+  label: PostHog API — experiment_saved_metrics
+  description: 'PostHog API — experiment_saved_metrics. 6 operations. Lead operation: experiment_saved_metrics. Self-contained
+    Naftiko capability covering one Posthog business surface.'
+  tags:
+  - Posthog
+  - experiment_saved_metrics
+  created: '2026-05-19'
+  modified: '2026-05-19'
+binds:
+- namespace: env
+  keys:
+    POSTHOG_API_KEY: POSTHOG_API_KEY
+capability:
+  consumes:
+  - type: http
+    namespace: posthog-experiment-saved-metrics
+    baseUri: ''
+    description: PostHog API — experiment_saved_metrics business capability. Self-contained, no shared references.
+    resources:
+    - name: api-projects-project_id-experiment_saved_metrics
+      path: /api/projects/{project_id}/experiment_saved_metrics/
+      operations:
+      - name: experimentsavedmetricslist
+        method: GET
+        description: ''
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: limit
+          in: query
+          type: integer
+          description: Number of results to return per page.
+        - name: offset
+          in: query
+          type: integer
+          description: The initial index from which to return the results.
+      - name: experimentsavedmetricscreate
+        method: POST
+        description: ''
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: body
+          in: body
+          type: object
+          description: Request body (JSON).
+          required: true
+    - name: api-projects-project_id-experiment_saved_metrics-id
+      path: /api/projects/{project_id}/experiment_saved_metrics/{id}/
+      operations:
+      - name: experimentsavedmetricsretrieve
+        method: GET
+        description: ''
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: id
+          in: path
+          type: integer
+          description: A unique integer value identifying this experiment saved metric.
+          required: true
+      - name: experimentsavedmetricsupdate
+        method: PUT
+        description: ''
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: id
+          in: path
+          type: integer
+          description: A unique integer value identifying this experiment saved metric.
+          required: true
+        - name: body
+          in: body
+          type: object
+          description: Request body (JSON).
+          required: true
+      - name: experimentsavedmetricspartialupdate
+        method: PATCH
+        description: ''
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: id
+          in: path
+          type: integer
+          description: A unique integer value identifying this experiment saved metric.
+          required: true
+        - name: body
+          in: body
+          type: object
+          description: Request body (JSON).
+          required: false
+      - name: experimentsavedmetricsdestroy
+        method: DELETE
+        description: ''
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: id
+          in: path
+          type: integer
+          description: A unique integer value identifying this experiment saved metric.
+          required: true
+    authentication:
+      type: bearer
+      token: '{{env.POSTHOG_API_KEY}}'
+  exposes:
+  - type: rest
+    namespace: posthog-experiment-saved-metrics-rest
+    port: 8080
+    description: REST adapter for PostHog API — experiment_saved_metrics. One Spectral-compliant resource per consumed operation,
+      prefixed with /v1.
+    resources:
+    - path: /v1/api/projects/{project-id}/experiment-saved-metrics
+      name: api-projects-project-id-experiment-saved-metrics
+      description: REST surface for api-projects-project_id-experiment_saved_metrics.
+      operations:
+      - method: GET
+        name: experimentsavedmetricslist
+        description: experimentsavedmetricslist
+        call: posthog-experiment-saved-metrics.experimentsavedmetricslist
+        with:
+          limit: rest.limit
+          offset: rest.offset
+        outputParameters:
+        - type: object
+          mapping: $.
+      - method: POST
+        name: experimentsavedmetricscreate
+        description: experimentsavedmetricscreate
+        call: posthog-experiment-saved-metrics.experimentsavedmetricscreate
+        with:
+          body: rest.body
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /v1/api/projects/{project-id}/experiment-saved-metrics/{id}
+      name: api-projects-project-id-experiment-saved-metrics-id
+      description: REST surface for api-projects-project_id-experiment_saved_metrics-id.
+      operations:
+      - method: GET
+        name: experimentsavedmetricsretrieve
+        description: experimentsavedmetricsretrieve
+        call: posthog-experiment-saved-metrics.experimentsavedmetricsretrieve
+        with:
+          id: rest.id
+        outputParameters:
+        - type: object
+          mapping: $.
+      - method: PUT
+        name: experimentsavedmetricsupdate
+        description: experimentsavedmetricsupdate
+        call: posthog-experiment-saved-metrics.experimentsavedmetricsupdate
+        with:
+          id: rest.id
+          body: rest.body
+        outputParameters:
+        - type: object
+          mapping: $.
+      - method: PATCH
+        name: experimentsavedmetricspartialupdate
+        description: experimentsavedmetricspartialupdate
+        call: posthog-experiment-saved-metrics.experimentsavedmetricspartialupdate
+        with:
+          id: rest.id
+          body: rest.body
+        outputParameters:
+        - type: object
+          mapping: $.
+      - method: DELETE
+        name: experimentsavedmetricsdestroy
+        description: experimentsavedmetricsdestroy
+        call: posthog-experiment-saved-metrics.experimentsavedmetricsdestroy
+        with:
+          id: rest.id
+        outputParameters:
+        - type: object
+          mapping: $.
+  - type: mcp
+    namespace: posthog-experiment-saved-metrics-mcp
+    port: 9090
+    transport: http
+    description: MCP adapter for PostHog API — experiment_saved_metrics. One tool per consumed operation, routed inline through
+      this capability's consumes block.
+    tools:
+    - name: experimentsavedmetricslist
+      description: experimentsavedmetricslist
+      hints:
+        readOnly: true
+        destructive: false
+        idempotent: true
+      call: posthog-experiment-saved-metrics.experimentsavedmetricslist
+      with:
+        limit: tools.limit
+        offset: tools.offset
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: experimentsavedmetricscreate
+      description: experimentsavedmetricscreate
+      hints:
+        readOnly: false
+        destructive: false
+        idempotent: false
+      call: posthog-experiment-saved-metrics.experimentsavedmetricscreate
+      with:
+        body: tools.body
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: experimentsavedmetricsretrieve
+      description: experimentsavedmetricsretrieve
+      hints:
+        readOnly: true
+        destructive: false
+        idempotent: true
+      call: posthog-experiment-saved-metrics.experimentsavedmetricsretrieve
+      with:
+        id: tools.id
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: experimentsavedmetricsupdate
+      description: experimentsavedmetricsupdate
+      hints:
+        readOnly: false
+        destructive: false
+        idempotent: true
+      call: posthog-experiment-saved-metrics.experimentsavedmetricsupdate
+      with:
+        id: tools.id
+        body: tools.body
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: experimentsavedmetricspartialupdate
+      description: experimentsavedmetricspartialupdate
+      hints:
+        readOnly: false
+        destructive: false
+        idempotent: true
+      call: posthog-experiment-saved-metrics.experimentsavedmetricspartialupdate
+      with:
+        id: tools.id
+        body: tools.body
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: experimentsavedmetricsdestroy
+      description: experimentsavedmetricsdestroy
+      hints:
+        readOnly: false
+        destructive: true
+        idempotent: true
+      call: posthog-experiment-saved-metrics.experimentsavedmetricsdestroy
+      with:
+        id: tools.id
+      outputParameters:
+      - type: object
+        mapping: $.

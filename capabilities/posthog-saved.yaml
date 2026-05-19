@@ -1,0 +1,530 @@
+naftiko: 1.0.0-alpha2
+info:
+  label: PostHog API — saved
+  description: 'PostHog API — saved. 12 operations. Lead operation: saved. Self-contained Naftiko capability covering one
+    Posthog business surface.'
+  tags:
+  - Posthog
+  - saved
+  created: '2026-05-19'
+  modified: '2026-05-19'
+binds:
+- namespace: env
+  keys:
+    POSTHOG_API_KEY: POSTHOG_API_KEY
+capability:
+  consumes:
+  - type: http
+    namespace: posthog-saved
+    baseUri: ''
+    description: PostHog API — saved business capability. Self-contained, no shared references.
+    resources:
+    - name: api-environments-environment_id-saved
+      path: /api/environments/{environment_id}/saved/
+      operations:
+      - name: environmentssavedlist
+        method: GET
+        description: ''
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: limit
+          in: query
+          type: integer
+          description: Number of results to return per page.
+        - name: offset
+          in: query
+          type: integer
+          description: The initial index from which to return the results.
+      - name: environmentssavedcreate
+        method: POST
+        description: ''
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: body
+          in: body
+          type: object
+          description: Request body (JSON).
+          required: true
+    - name: api-environments-environment_id-saved-short_id
+      path: /api/environments/{environment_id}/saved/{short_id}/
+      operations:
+      - name: environmentssavedretrieve
+        method: GET
+        description: ''
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: short_id
+          in: path
+          type: string
+          required: true
+      - name: environmentssavedpartialupdate
+        method: PATCH
+        description: ''
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: short_id
+          in: path
+          type: string
+          required: true
+        - name: body
+          in: body
+          type: object
+          description: Request body (JSON).
+          required: false
+      - name: environmentssaveddestroy
+        method: DELETE
+        description: Hard delete of this model is not allowed. Use a patch API call to set "deleted" to true
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: short_id
+          in: path
+          type: string
+          required: true
+    - name: api-environments-environment_id-saved-short_id-regenerate
+      path: /api/environments/{environment_id}/saved/{short_id}/regenerate/
+      operations:
+      - name: environmentssavedregeneratecreate
+        method: POST
+        description: ''
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: short_id
+          in: path
+          type: string
+          required: true
+        - name: body
+          in: body
+          type: object
+          description: Request body (JSON).
+          required: true
+    - name: api-projects-project_id-saved
+      path: /api/projects/{project_id}/saved/
+      operations:
+      - name: savedlist
+        method: GET
+        description: ''
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: limit
+          in: query
+          type: integer
+          description: Number of results to return per page.
+        - name: offset
+          in: query
+          type: integer
+          description: The initial index from which to return the results.
+      - name: savedcreate
+        method: POST
+        description: ''
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: body
+          in: body
+          type: object
+          description: Request body (JSON).
+          required: true
+    - name: api-projects-project_id-saved-short_id
+      path: /api/projects/{project_id}/saved/{short_id}/
+      operations:
+      - name: savedretrieve
+        method: GET
+        description: ''
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: short_id
+          in: path
+          type: string
+          required: true
+      - name: savedpartialupdate
+        method: PATCH
+        description: ''
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: short_id
+          in: path
+          type: string
+          required: true
+        - name: body
+          in: body
+          type: object
+          description: Request body (JSON).
+          required: false
+      - name: saveddestroy
+        method: DELETE
+        description: Hard delete of this model is not allowed. Use a patch API call to set "deleted" to true
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: short_id
+          in: path
+          type: string
+          required: true
+    - name: api-projects-project_id-saved-short_id-regenerate
+      path: /api/projects/{project_id}/saved/{short_id}/regenerate/
+      operations:
+      - name: savedregeneratecreate
+        method: POST
+        description: ''
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: short_id
+          in: path
+          type: string
+          required: true
+        - name: body
+          in: body
+          type: object
+          description: Request body (JSON).
+          required: true
+    authentication:
+      type: bearer
+      token: '{{env.POSTHOG_API_KEY}}'
+  exposes:
+  - type: rest
+    namespace: posthog-saved-rest
+    port: 8080
+    description: REST adapter for PostHog API — saved. One Spectral-compliant resource per consumed operation, prefixed with
+      /v1.
+    resources:
+    - path: /v1/api/environments/{environment-id}/saved
+      name: api-environments-environment-id-saved
+      description: REST surface for api-environments-environment_id-saved.
+      operations:
+      - method: GET
+        name: environmentssavedlist
+        description: environmentssavedlist
+        call: posthog-saved.environmentssavedlist
+        with:
+          limit: rest.limit
+          offset: rest.offset
+        outputParameters:
+        - type: object
+          mapping: $.
+      - method: POST
+        name: environmentssavedcreate
+        description: environmentssavedcreate
+        call: posthog-saved.environmentssavedcreate
+        with:
+          body: rest.body
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /v1/api/environments/{environment-id}/saved/{short-id}
+      name: api-environments-environment-id-saved-short-id
+      description: REST surface for api-environments-environment_id-saved-short_id.
+      operations:
+      - method: GET
+        name: environmentssavedretrieve
+        description: environmentssavedretrieve
+        call: posthog-saved.environmentssavedretrieve
+        with:
+          short_id: rest.short_id
+        outputParameters:
+        - type: object
+          mapping: $.
+      - method: PATCH
+        name: environmentssavedpartialupdate
+        description: environmentssavedpartialupdate
+        call: posthog-saved.environmentssavedpartialupdate
+        with:
+          short_id: rest.short_id
+          body: rest.body
+        outputParameters:
+        - type: object
+          mapping: $.
+      - method: DELETE
+        name: environmentssaveddestroy
+        description: Hard delete of this model is not allowed. Use a patch API call to set "deleted" to true
+        call: posthog-saved.environmentssaveddestroy
+        with:
+          short_id: rest.short_id
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /v1/api/environments/{environment-id}/saved/{short-id}/regenerate
+      name: api-environments-environment-id-saved-short-id-regenerate
+      description: REST surface for api-environments-environment_id-saved-short_id-regenerate.
+      operations:
+      - method: POST
+        name: environmentssavedregeneratecreate
+        description: environmentssavedregeneratecreate
+        call: posthog-saved.environmentssavedregeneratecreate
+        with:
+          short_id: rest.short_id
+          body: rest.body
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /v1/api/projects/{project-id}/saved
+      name: api-projects-project-id-saved
+      description: REST surface for api-projects-project_id-saved.
+      operations:
+      - method: GET
+        name: savedlist
+        description: savedlist
+        call: posthog-saved.savedlist
+        with:
+          limit: rest.limit
+          offset: rest.offset
+        outputParameters:
+        - type: object
+          mapping: $.
+      - method: POST
+        name: savedcreate
+        description: savedcreate
+        call: posthog-saved.savedcreate
+        with:
+          body: rest.body
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /v1/api/projects/{project-id}/saved/{short-id}
+      name: api-projects-project-id-saved-short-id
+      description: REST surface for api-projects-project_id-saved-short_id.
+      operations:
+      - method: GET
+        name: savedretrieve
+        description: savedretrieve
+        call: posthog-saved.savedretrieve
+        with:
+          short_id: rest.short_id
+        outputParameters:
+        - type: object
+          mapping: $.
+      - method: PATCH
+        name: savedpartialupdate
+        description: savedpartialupdate
+        call: posthog-saved.savedpartialupdate
+        with:
+          short_id: rest.short_id
+          body: rest.body
+        outputParameters:
+        - type: object
+          mapping: $.
+      - method: DELETE
+        name: saveddestroy
+        description: Hard delete of this model is not allowed. Use a patch API call to set "deleted" to true
+        call: posthog-saved.saveddestroy
+        with:
+          short_id: rest.short_id
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /v1/api/projects/{project-id}/saved/{short-id}/regenerate
+      name: api-projects-project-id-saved-short-id-regenerate
+      description: REST surface for api-projects-project_id-saved-short_id-regenerate.
+      operations:
+      - method: POST
+        name: savedregeneratecreate
+        description: savedregeneratecreate
+        call: posthog-saved.savedregeneratecreate
+        with:
+          short_id: rest.short_id
+          body: rest.body
+        outputParameters:
+        - type: object
+          mapping: $.
+  - type: mcp
+    namespace: posthog-saved-mcp
+    port: 9090
+    transport: http
+    description: MCP adapter for PostHog API — saved. One tool per consumed operation, routed inline through this capability's
+      consumes block.
+    tools:
+    - name: environmentssavedlist
+      description: environmentssavedlist
+      hints:
+        readOnly: true
+        destructive: false
+        idempotent: true
+      call: posthog-saved.environmentssavedlist
+      with:
+        limit: tools.limit
+        offset: tools.offset
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: environmentssavedcreate
+      description: environmentssavedcreate
+      hints:
+        readOnly: false
+        destructive: false
+        idempotent: false
+      call: posthog-saved.environmentssavedcreate
+      with:
+        body: tools.body
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: environmentssavedretrieve
+      description: environmentssavedretrieve
+      hints:
+        readOnly: true
+        destructive: false
+        idempotent: true
+      call: posthog-saved.environmentssavedretrieve
+      with:
+        short_id: tools.short_id
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: environmentssavedpartialupdate
+      description: environmentssavedpartialupdate
+      hints:
+        readOnly: false
+        destructive: false
+        idempotent: true
+      call: posthog-saved.environmentssavedpartialupdate
+      with:
+        short_id: tools.short_id
+        body: tools.body
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: hard-delete-this-model-is
+      description: Hard delete of this model is not allowed. Use a patch API call to set "deleted" to true
+      hints:
+        readOnly: false
+        destructive: true
+        idempotent: true
+      call: posthog-saved.environmentssaveddestroy
+      with:
+        short_id: tools.short_id
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: environmentssavedregeneratecreate
+      description: environmentssavedregeneratecreate
+      hints:
+        readOnly: false
+        destructive: false
+        idempotent: false
+      call: posthog-saved.environmentssavedregeneratecreate
+      with:
+        short_id: tools.short_id
+        body: tools.body
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: savedlist
+      description: savedlist
+      hints:
+        readOnly: true
+        destructive: false
+        idempotent: true
+      call: posthog-saved.savedlist
+      with:
+        limit: tools.limit
+        offset: tools.offset
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: savedcreate
+      description: savedcreate
+      hints:
+        readOnly: false
+        destructive: false
+        idempotent: false
+      call: posthog-saved.savedcreate
+      with:
+        body: tools.body
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: savedretrieve
+      description: savedretrieve
+      hints:
+        readOnly: true
+        destructive: false
+        idempotent: true
+      call: posthog-saved.savedretrieve
+      with:
+        short_id: tools.short_id
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: savedpartialupdate
+      description: savedpartialupdate
+      hints:
+        readOnly: false
+        destructive: false
+        idempotent: true
+      call: posthog-saved.savedpartialupdate
+      with:
+        short_id: tools.short_id
+        body: tools.body
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: hard-delete-this-model-is-2
+      description: Hard delete of this model is not allowed. Use a patch API call to set "deleted" to true
+      hints:
+        readOnly: false
+        destructive: true
+        idempotent: true
+      call: posthog-saved.saveddestroy
+      with:
+        short_id: tools.short_id
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: savedregeneratecreate
+      description: savedregeneratecreate
+      hints:
+        readOnly: false
+        destructive: false
+        idempotent: false
+      call: posthog-saved.savedregeneratecreate
+      with:
+        short_id: tools.short_id
+        body: tools.body
+      outputParameters:
+      - type: object
+        mapping: $.

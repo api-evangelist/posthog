@@ -1,0 +1,1882 @@
+naftiko: 1.0.0-alpha2
+info:
+  label: PostHog API — experiments
+  description: 'PostHog API — experiments. 44 operations. Lead operation: experiments. Self-contained Naftiko capability covering
+    one Posthog business surface.'
+  tags:
+  - Posthog
+  - experiments
+  created: '2026-05-19'
+  modified: '2026-05-19'
+binds:
+- namespace: env
+  keys:
+    POSTHOG_API_KEY: POSTHOG_API_KEY
+capability:
+  consumes:
+  - type: http
+    namespace: posthog-experiments
+    baseUri: ''
+    description: PostHog API — experiments business capability. Self-contained, no shared references.
+    resources:
+    - name: api-projects-project_id-experiments
+      path: /api/projects/{project_id}/experiments/
+      operations:
+      - name: experimentslist
+        method: GET
+        description: List experiments for the current project. Supports filtering by status and archival state.
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: archived
+          in: query
+          type: boolean
+          description: Filter by archived state. Defaults to non-archived experiments only.
+        - name: created_by_id
+          in: query
+          type: integer
+          description: Filter to experiments created by the given user ID.
+        - name: feature_flag_id
+          in: query
+          type: integer
+          description: Filter to experiments linked to the given feature flag ID.
+        - name: limit
+          in: query
+          type: integer
+          description: Number of results to return per page.
+        - name: offset
+          in: query
+          type: integer
+          description: The initial index from which to return the results.
+        - name: order
+          in: query
+          type: string
+          description: Field to order by. Prefix with '-' for descending. Allowlisted fields include name, created_at, updated_at,
+            start_date, end_date, duration, and status.
+        - name: search
+          in: query
+          type: string
+          description: Free-text search applied to the experiment name (case-insensitive).
+        - name: status
+          in: query
+          type: string
+          description: 'Filter by experiment status. "running" and "paused" are mutually exclusive: "running" returns launched
+            experiments with an active feature flag, "paused" returns'
+      - name: experimentslist
+        method: GET
+        description: List experiments for the current project. Supports filtering by status and archival state.
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: archived
+          in: query
+          type: boolean
+          description: Filter by archived state. Defaults to non-archived experiments only.
+        - name: created_by_id
+          in: query
+          type: integer
+          description: Filter to experiments created by the given user ID.
+        - name: feature_flag_id
+          in: query
+          type: integer
+          description: Filter to experiments linked to the given feature flag ID.
+        - name: limit
+          in: query
+          type: integer
+          description: Number of results to return per page.
+        - name: offset
+          in: query
+          type: integer
+          description: The initial index from which to return the results.
+        - name: order
+          in: query
+          type: string
+          description: Field to order by. Prefix with '-' for descending. Allowlisted fields include name, created_at, updated_at,
+            start_date, end_date, duration, and status.
+        - name: search
+          in: query
+          type: string
+          description: Free-text search applied to the experiment name (case-insensitive).
+        - name: status
+          in: query
+          type: string
+          description: 'Filter by experiment status. "running" and "paused" are mutually exclusive: "running" returns launched
+            experiments with an active feature flag, "paused" returns'
+      - name: experimentscreate
+        method: POST
+        description: Create a new experiment in draft status with optional metrics.
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: body
+          in: body
+          type: object
+          description: Request body (JSON).
+          required: true
+      - name: experimentscreate
+        method: POST
+        description: Create a new experiment in draft status with optional metrics.
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: body
+          in: body
+          type: object
+          description: Request body (JSON).
+          required: true
+    - name: api-projects-project_id-experiments-eligible_feature_flags
+      path: /api/projects/{project_id}/experiments/eligible_feature_flags/
+      operations:
+      - name: experimentseligiblefeatureflagsretrieve
+        method: GET
+        description: Returns a paginated list of feature flags eligible for use in experiments.
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+      - name: experimentseligiblefeatureflagsretrieve
+        method: GET
+        description: Returns a paginated list of feature flags eligible for use in experiments.
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+    - name: api-projects-project_id-experiments-requires_flag_implementation
+      path: /api/projects/{project_id}/experiments/requires_flag_implementation/
+      operations:
+      - name: experimentsrequiresflagimplementationretrieve
+        method: GET
+        description: Mixin for ViewSets to handle ApprovalRequired exceptions from decorated serializers.
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+      - name: experimentsrequiresflagimplementationretrieve
+        method: GET
+        description: Mixin for ViewSets to handle ApprovalRequired exceptions from decorated serializers.
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+    - name: api-projects-project_id-experiments-stats
+      path: /api/projects/{project_id}/experiments/stats/
+      operations:
+      - name: experimentsstatsretrieve
+        method: GET
+        description: Mixin for ViewSets to handle ApprovalRequired exceptions from decorated serializers.
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+      - name: experimentsstatsretrieve
+        method: GET
+        description: Mixin for ViewSets to handle ApprovalRequired exceptions from decorated serializers.
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+    - name: api-projects-project_id-experiments-id
+      path: /api/projects/{project_id}/experiments/{id}/
+      operations:
+      - name: experimentsretrieve
+        method: GET
+        description: Retrieve a single experiment by ID, including its current status, metrics, feature flag, and results
+          metadata.
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: id
+          in: path
+          type: integer
+          description: A unique integer value identifying this experiment.
+          required: true
+      - name: experimentsretrieve
+        method: GET
+        description: Retrieve a single experiment by ID, including its current status, metrics, feature flag, and results
+          metadata.
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: id
+          in: path
+          type: integer
+          description: A unique integer value identifying this experiment.
+          required: true
+      - name: experimentsupdate
+        method: PUT
+        description: Mixin for ViewSets to handle ApprovalRequired exceptions from decorated serializers.
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: id
+          in: path
+          type: integer
+          description: A unique integer value identifying this experiment.
+          required: true
+        - name: body
+          in: body
+          type: object
+          description: Request body (JSON).
+          required: true
+      - name: experimentsupdate
+        method: PUT
+        description: Mixin for ViewSets to handle ApprovalRequired exceptions from decorated serializers.
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: id
+          in: path
+          type: integer
+          description: A unique integer value identifying this experiment.
+          required: true
+        - name: body
+          in: body
+          type: object
+          description: Request body (JSON).
+          required: true
+      - name: experimentspartialupdate
+        method: PATCH
+        description: Update an experiment. Use this to modify experiment properties such as name, description, metrics, variants,
+          and configuration. Metrics can be added, changed and removed at any time.
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: id
+          in: path
+          type: integer
+          description: A unique integer value identifying this experiment.
+          required: true
+        - name: body
+          in: body
+          type: object
+          description: Request body (JSON).
+          required: false
+      - name: experimentspartialupdate
+        method: PATCH
+        description: Update an experiment. Use this to modify experiment properties such as name, description, metrics, variants,
+          and configuration. Metrics can be added, changed and removed at any time.
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: id
+          in: path
+          type: integer
+          description: A unique integer value identifying this experiment.
+          required: true
+        - name: body
+          in: body
+          type: object
+          description: Request body (JSON).
+          required: false
+      - name: experimentsdestroy
+        method: DELETE
+        description: Hard delete of this model is not allowed. Use a patch API call to set "deleted" to true
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: id
+          in: path
+          type: integer
+          description: A unique integer value identifying this experiment.
+          required: true
+      - name: experimentsdestroy
+        method: DELETE
+        description: Hard delete of this model is not allowed. Use a patch API call to set "deleted" to true
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: id
+          in: path
+          type: integer
+          description: A unique integer value identifying this experiment.
+          required: true
+    - name: api-projects-project_id-experiments-id-archive
+      path: /api/projects/{project_id}/experiments/{id}/archive/
+      operations:
+      - name: experimentsarchivecreate
+        method: POST
+        description: Archive an ended experiment.
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: id
+          in: path
+          type: integer
+          description: A unique integer value identifying this experiment.
+          required: true
+      - name: experimentsarchivecreate
+        method: POST
+        description: Archive an ended experiment.
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: id
+          in: path
+          type: integer
+          description: A unique integer value identifying this experiment.
+          required: true
+    - name: api-projects-project_id-experiments-id-copy_to_project
+      path: /api/projects/{project_id}/experiments/{id}/copy_to_project/
+      operations:
+      - name: experimentscopytoprojectcreate
+        method: POST
+        description: Mixin for ViewSets to handle ApprovalRequired exceptions from decorated serializers.
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: id
+          in: path
+          type: integer
+          description: A unique integer value identifying this experiment.
+          required: true
+        - name: body
+          in: body
+          type: object
+          description: Request body (JSON).
+          required: true
+      - name: experimentscopytoprojectcreate
+        method: POST
+        description: Mixin for ViewSets to handle ApprovalRequired exceptions from decorated serializers.
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: id
+          in: path
+          type: integer
+          description: A unique integer value identifying this experiment.
+          required: true
+        - name: body
+          in: body
+          type: object
+          description: Request body (JSON).
+          required: true
+    - name: api-projects-project_id-experiments-id-create_exposure_cohort_for_experiment
+      path: /api/projects/{project_id}/experiments/{id}/create_exposure_cohort_for_experiment/
+      operations:
+      - name: experimentscreateexposurecohortforexperimentcreate
+        method: POST
+        description: Mixin for ViewSets to handle ApprovalRequired exceptions from decorated serializers.
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: id
+          in: path
+          type: integer
+          description: A unique integer value identifying this experiment.
+          required: true
+        - name: body
+          in: body
+          type: object
+          description: Request body (JSON).
+          required: true
+      - name: experimentscreateexposurecohortforexperimentcreate
+        method: POST
+        description: Mixin for ViewSets to handle ApprovalRequired exceptions from decorated serializers.
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: id
+          in: path
+          type: integer
+          description: A unique integer value identifying this experiment.
+          required: true
+        - name: body
+          in: body
+          type: object
+          description: Request body (JSON).
+          required: true
+    - name: api-projects-project_id-experiments-id-duplicate
+      path: /api/projects/{project_id}/experiments/{id}/duplicate/
+      operations:
+      - name: experimentsduplicatecreate
+        method: POST
+        description: Mixin for ViewSets to handle ApprovalRequired exceptions from decorated serializers.
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: id
+          in: path
+          type: integer
+          description: A unique integer value identifying this experiment.
+          required: true
+        - name: body
+          in: body
+          type: object
+          description: Request body (JSON).
+          required: true
+      - name: experimentsduplicatecreate
+        method: POST
+        description: Mixin for ViewSets to handle ApprovalRequired exceptions from decorated serializers.
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: id
+          in: path
+          type: integer
+          description: A unique integer value identifying this experiment.
+          required: true
+        - name: body
+          in: body
+          type: object
+          description: Request body (JSON).
+          required: true
+    - name: api-projects-project_id-experiments-id-end
+      path: /api/projects/{project_id}/experiments/{id}/end/
+      operations:
+      - name: experimentsendcreate
+        method: POST
+        description: End a running experiment without shipping a variant.
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: id
+          in: path
+          type: integer
+          description: A unique integer value identifying this experiment.
+          required: true
+        - name: body
+          in: body
+          type: object
+          description: Request body (JSON).
+          required: false
+      - name: experimentsendcreate
+        method: POST
+        description: End a running experiment without shipping a variant.
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: id
+          in: path
+          type: integer
+          description: A unique integer value identifying this experiment.
+          required: true
+        - name: body
+          in: body
+          type: object
+          description: Request body (JSON).
+          required: false
+    - name: api-projects-project_id-experiments-id-launch
+      path: /api/projects/{project_id}/experiments/{id}/launch/
+      operations:
+      - name: experimentslaunchcreate
+        method: POST
+        description: Launch a draft experiment.
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: id
+          in: path
+          type: integer
+          description: A unique integer value identifying this experiment.
+          required: true
+      - name: experimentslaunchcreate
+        method: POST
+        description: Launch a draft experiment.
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: id
+          in: path
+          type: integer
+          description: A unique integer value identifying this experiment.
+          required: true
+    - name: api-projects-project_id-experiments-id-pause
+      path: /api/projects/{project_id}/experiments/{id}/pause/
+      operations:
+      - name: experimentspausecreate
+        method: POST
+        description: Pause a running experiment.
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: id
+          in: path
+          type: integer
+          description: A unique integer value identifying this experiment.
+          required: true
+      - name: experimentspausecreate
+        method: POST
+        description: Pause a running experiment.
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: id
+          in: path
+          type: integer
+          description: A unique integer value identifying this experiment.
+          required: true
+    - name: api-projects-project_id-experiments-id-recalculate_timeseries
+      path: /api/projects/{project_id}/experiments/{id}/recalculate_timeseries/
+      operations:
+      - name: experimentsrecalculatetimeseriescreate
+        method: POST
+        description: Mixin for ViewSets to handle ApprovalRequired exceptions from decorated serializers.
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: id
+          in: path
+          type: integer
+          description: A unique integer value identifying this experiment.
+          required: true
+        - name: body
+          in: body
+          type: object
+          description: Request body (JSON).
+          required: true
+      - name: experimentsrecalculatetimeseriescreate
+        method: POST
+        description: Mixin for ViewSets to handle ApprovalRequired exceptions from decorated serializers.
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: id
+          in: path
+          type: integer
+          description: A unique integer value identifying this experiment.
+          required: true
+        - name: body
+          in: body
+          type: object
+          description: Request body (JSON).
+          required: true
+    - name: api-projects-project_id-experiments-id-reset
+      path: /api/projects/{project_id}/experiments/{id}/reset/
+      operations:
+      - name: experimentsresetcreate
+        method: POST
+        description: Reset an experiment back to draft state.
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: id
+          in: path
+          type: integer
+          description: A unique integer value identifying this experiment.
+          required: true
+      - name: experimentsresetcreate
+        method: POST
+        description: Reset an experiment back to draft state.
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: id
+          in: path
+          type: integer
+          description: A unique integer value identifying this experiment.
+          required: true
+    - name: api-projects-project_id-experiments-id-resume
+      path: /api/projects/{project_id}/experiments/{id}/resume/
+      operations:
+      - name: experimentsresumecreate
+        method: POST
+        description: Resume a paused experiment.
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: id
+          in: path
+          type: integer
+          description: A unique integer value identifying this experiment.
+          required: true
+      - name: experimentsresumecreate
+        method: POST
+        description: Resume a paused experiment.
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: id
+          in: path
+          type: integer
+          description: A unique integer value identifying this experiment.
+          required: true
+    - name: api-projects-project_id-experiments-id-ship_variant
+      path: /api/projects/{project_id}/experiments/{id}/ship_variant/
+      operations:
+      - name: experimentsshipvariantcreate
+        method: POST
+        description: Ship a variant to 100% of users and (optionally) end the experiment.
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: id
+          in: path
+          type: integer
+          description: A unique integer value identifying this experiment.
+          required: true
+        - name: body
+          in: body
+          type: object
+          description: Request body (JSON).
+          required: true
+      - name: experimentsshipvariantcreate
+        method: POST
+        description: Ship a variant to 100% of users and (optionally) end the experiment.
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: id
+          in: path
+          type: integer
+          description: A unique integer value identifying this experiment.
+          required: true
+        - name: body
+          in: body
+          type: object
+          description: Request body (JSON).
+          required: true
+    - name: api-projects-project_id-experiments-id-timeseries_results
+      path: /api/projects/{project_id}/experiments/{id}/timeseries_results/
+      operations:
+      - name: experimentstimeseriesresultsretrieve
+        method: GET
+        description: Mixin for ViewSets to handle ApprovalRequired exceptions from decorated serializers.
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: fingerprint
+          in: query
+          type: string
+          description: Fingerprint of the metric configuration. Available alongside metric_uuid on each metric in the experiment's
+            metrics array.
+          required: true
+        - name: id
+          in: path
+          type: integer
+          description: A unique integer value identifying this experiment.
+          required: true
+        - name: metric_uuid
+          in: query
+          type: string
+          description: UUID of the metric to fetch timeseries for. Available on each metric in the experiment's metrics array.
+          required: true
+      - name: experimentstimeseriesresultsretrieve
+        method: GET
+        description: Mixin for ViewSets to handle ApprovalRequired exceptions from decorated serializers.
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: fingerprint
+          in: query
+          type: string
+          description: Fingerprint of the metric configuration. Available alongside metric_uuid on each metric in the experiment's
+            metrics array.
+          required: true
+        - name: id
+          in: path
+          type: integer
+          description: A unique integer value identifying this experiment.
+          required: true
+        - name: metric_uuid
+          in: query
+          type: string
+          description: UUID of the metric to fetch timeseries for. Available on each metric in the experiment's metrics array.
+          required: true
+    - name: api-projects-project_id-experiments-id-unarchive
+      path: /api/projects/{project_id}/experiments/{id}/unarchive/
+      operations:
+      - name: experimentsunarchivecreate
+        method: POST
+        description: Unarchive an archived experiment.
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: id
+          in: path
+          type: integer
+          description: A unique integer value identifying this experiment.
+          required: true
+      - name: experimentsunarchivecreate
+        method: POST
+        description: Unarchive an archived experiment.
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: id
+          in: path
+          type: integer
+          description: A unique integer value identifying this experiment.
+          required: true
+    authentication:
+      type: bearer
+      token: '{{env.POSTHOG_API_KEY}}'
+  exposes:
+  - type: rest
+    namespace: posthog-experiments-rest
+    port: 8080
+    description: REST adapter for PostHog API — experiments. One Spectral-compliant resource per consumed operation, prefixed
+      with /v1.
+    resources:
+    - path: /v1/api/projects/{project-id}/experiments
+      name: api-projects-project-id-experiments
+      description: REST surface for api-projects-project_id-experiments.
+      operations:
+      - method: GET
+        name: experimentslist
+        description: List experiments for the current project. Supports filtering by status and archival state.
+        call: posthog-experiments.experimentslist
+        with:
+          archived: rest.archived
+          created_by_id: rest.created_by_id
+          feature_flag_id: rest.feature_flag_id
+          limit: rest.limit
+          offset: rest.offset
+          order: rest.order
+          search: rest.search
+          status: rest.status
+        outputParameters:
+        - type: object
+          mapping: $.
+      - method: GET
+        name: experimentslist
+        description: List experiments for the current project. Supports filtering by status and archival state.
+        call: posthog-experiments.experimentslist
+        with:
+          archived: rest.archived
+          created_by_id: rest.created_by_id
+          feature_flag_id: rest.feature_flag_id
+          limit: rest.limit
+          offset: rest.offset
+          order: rest.order
+          search: rest.search
+          status: rest.status
+        outputParameters:
+        - type: object
+          mapping: $.
+      - method: POST
+        name: experimentscreate
+        description: Create a new experiment in draft status with optional metrics.
+        call: posthog-experiments.experimentscreate
+        with:
+          body: rest.body
+        outputParameters:
+        - type: object
+          mapping: $.
+      - method: POST
+        name: experimentscreate
+        description: Create a new experiment in draft status with optional metrics.
+        call: posthog-experiments.experimentscreate
+        with:
+          body: rest.body
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /v1/api/projects/{project-id}/experiments/eligible-feature-flags
+      name: api-projects-project-id-experiments-eligible-feature-flags
+      description: REST surface for api-projects-project_id-experiments-eligible_feature_flags.
+      operations:
+      - method: GET
+        name: experimentseligiblefeatureflagsretrieve
+        description: Returns a paginated list of feature flags eligible for use in experiments.
+        call: posthog-experiments.experimentseligiblefeatureflagsretrieve
+        outputParameters:
+        - type: object
+          mapping: $.
+      - method: GET
+        name: experimentseligiblefeatureflagsretrieve
+        description: Returns a paginated list of feature flags eligible for use in experiments.
+        call: posthog-experiments.experimentseligiblefeatureflagsretrieve
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /v1/api/projects/{project-id}/experiments/requires-flag-implementation
+      name: api-projects-project-id-experiments-requires-flag-implementation
+      description: REST surface for api-projects-project_id-experiments-requires_flag_implementation.
+      operations:
+      - method: GET
+        name: experimentsrequiresflagimplementationretrieve
+        description: Mixin for ViewSets to handle ApprovalRequired exceptions from decorated serializers.
+        call: posthog-experiments.experimentsrequiresflagimplementationretrieve
+        outputParameters:
+        - type: object
+          mapping: $.
+      - method: GET
+        name: experimentsrequiresflagimplementationretrieve
+        description: Mixin for ViewSets to handle ApprovalRequired exceptions from decorated serializers.
+        call: posthog-experiments.experimentsrequiresflagimplementationretrieve
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /v1/api/projects/{project-id}/experiments/stats
+      name: api-projects-project-id-experiments-stats
+      description: REST surface for api-projects-project_id-experiments-stats.
+      operations:
+      - method: GET
+        name: experimentsstatsretrieve
+        description: Mixin for ViewSets to handle ApprovalRequired exceptions from decorated serializers.
+        call: posthog-experiments.experimentsstatsretrieve
+        outputParameters:
+        - type: object
+          mapping: $.
+      - method: GET
+        name: experimentsstatsretrieve
+        description: Mixin for ViewSets to handle ApprovalRequired exceptions from decorated serializers.
+        call: posthog-experiments.experimentsstatsretrieve
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /v1/api/projects/{project-id}/experiments/{id}
+      name: api-projects-project-id-experiments-id
+      description: REST surface for api-projects-project_id-experiments-id.
+      operations:
+      - method: GET
+        name: experimentsretrieve
+        description: Retrieve a single experiment by ID, including its current status, metrics, feature flag, and results
+          metadata.
+        call: posthog-experiments.experimentsretrieve
+        with:
+          id: rest.id
+        outputParameters:
+        - type: object
+          mapping: $.
+      - method: GET
+        name: experimentsretrieve
+        description: Retrieve a single experiment by ID, including its current status, metrics, feature flag, and results
+          metadata.
+        call: posthog-experiments.experimentsretrieve
+        with:
+          id: rest.id
+        outputParameters:
+        - type: object
+          mapping: $.
+      - method: PUT
+        name: experimentsupdate
+        description: Mixin for ViewSets to handle ApprovalRequired exceptions from decorated serializers.
+        call: posthog-experiments.experimentsupdate
+        with:
+          id: rest.id
+          body: rest.body
+        outputParameters:
+        - type: object
+          mapping: $.
+      - method: PUT
+        name: experimentsupdate
+        description: Mixin for ViewSets to handle ApprovalRequired exceptions from decorated serializers.
+        call: posthog-experiments.experimentsupdate
+        with:
+          id: rest.id
+          body: rest.body
+        outputParameters:
+        - type: object
+          mapping: $.
+      - method: PATCH
+        name: experimentspartialupdate
+        description: Update an experiment. Use this to modify experiment properties such as name, description, metrics, variants,
+          and configuration. Metrics can be added, changed and removed at any time.
+        call: posthog-experiments.experimentspartialupdate
+        with:
+          id: rest.id
+          body: rest.body
+        outputParameters:
+        - type: object
+          mapping: $.
+      - method: PATCH
+        name: experimentspartialupdate
+        description: Update an experiment. Use this to modify experiment properties such as name, description, metrics, variants,
+          and configuration. Metrics can be added, changed and removed at any time.
+        call: posthog-experiments.experimentspartialupdate
+        with:
+          id: rest.id
+          body: rest.body
+        outputParameters:
+        - type: object
+          mapping: $.
+      - method: DELETE
+        name: experimentsdestroy
+        description: Hard delete of this model is not allowed. Use a patch API call to set "deleted" to true
+        call: posthog-experiments.experimentsdestroy
+        with:
+          id: rest.id
+        outputParameters:
+        - type: object
+          mapping: $.
+      - method: DELETE
+        name: experimentsdestroy
+        description: Hard delete of this model is not allowed. Use a patch API call to set "deleted" to true
+        call: posthog-experiments.experimentsdestroy
+        with:
+          id: rest.id
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /v1/api/projects/{project-id}/experiments/{id}/archive
+      name: api-projects-project-id-experiments-id-archive
+      description: REST surface for api-projects-project_id-experiments-id-archive.
+      operations:
+      - method: POST
+        name: experimentsarchivecreate
+        description: Archive an ended experiment.
+        call: posthog-experiments.experimentsarchivecreate
+        with:
+          id: rest.id
+        outputParameters:
+        - type: object
+          mapping: $.
+      - method: POST
+        name: experimentsarchivecreate
+        description: Archive an ended experiment.
+        call: posthog-experiments.experimentsarchivecreate
+        with:
+          id: rest.id
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /v1/api/projects/{project-id}/experiments/{id}/copy-to-project
+      name: api-projects-project-id-experiments-id-copy-to-project
+      description: REST surface for api-projects-project_id-experiments-id-copy_to_project.
+      operations:
+      - method: POST
+        name: experimentscopytoprojectcreate
+        description: Mixin for ViewSets to handle ApprovalRequired exceptions from decorated serializers.
+        call: posthog-experiments.experimentscopytoprojectcreate
+        with:
+          id: rest.id
+          body: rest.body
+        outputParameters:
+        - type: object
+          mapping: $.
+      - method: POST
+        name: experimentscopytoprojectcreate
+        description: Mixin for ViewSets to handle ApprovalRequired exceptions from decorated serializers.
+        call: posthog-experiments.experimentscopytoprojectcreate
+        with:
+          id: rest.id
+          body: rest.body
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /v1/api/projects/{project-id}/experiments/{id}/create-exposure-cohort-for-experiment
+      name: api-projects-project-id-experiments-id-create-exposure-cohort-for-experiment
+      description: REST surface for api-projects-project_id-experiments-id-create_exposure_cohort_for_experiment.
+      operations:
+      - method: POST
+        name: experimentscreateexposurecohortforexperimentcreate
+        description: Mixin for ViewSets to handle ApprovalRequired exceptions from decorated serializers.
+        call: posthog-experiments.experimentscreateexposurecohortforexperimentcreate
+        with:
+          id: rest.id
+          body: rest.body
+        outputParameters:
+        - type: object
+          mapping: $.
+      - method: POST
+        name: experimentscreateexposurecohortforexperimentcreate
+        description: Mixin for ViewSets to handle ApprovalRequired exceptions from decorated serializers.
+        call: posthog-experiments.experimentscreateexposurecohortforexperimentcreate
+        with:
+          id: rest.id
+          body: rest.body
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /v1/api/projects/{project-id}/experiments/{id}/duplicate
+      name: api-projects-project-id-experiments-id-duplicate
+      description: REST surface for api-projects-project_id-experiments-id-duplicate.
+      operations:
+      - method: POST
+        name: experimentsduplicatecreate
+        description: Mixin for ViewSets to handle ApprovalRequired exceptions from decorated serializers.
+        call: posthog-experiments.experimentsduplicatecreate
+        with:
+          id: rest.id
+          body: rest.body
+        outputParameters:
+        - type: object
+          mapping: $.
+      - method: POST
+        name: experimentsduplicatecreate
+        description: Mixin for ViewSets to handle ApprovalRequired exceptions from decorated serializers.
+        call: posthog-experiments.experimentsduplicatecreate
+        with:
+          id: rest.id
+          body: rest.body
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /v1/api/projects/{project-id}/experiments/{id}/end
+      name: api-projects-project-id-experiments-id-end
+      description: REST surface for api-projects-project_id-experiments-id-end.
+      operations:
+      - method: POST
+        name: experimentsendcreate
+        description: End a running experiment without shipping a variant.
+        call: posthog-experiments.experimentsendcreate
+        with:
+          id: rest.id
+          body: rest.body
+        outputParameters:
+        - type: object
+          mapping: $.
+      - method: POST
+        name: experimentsendcreate
+        description: End a running experiment without shipping a variant.
+        call: posthog-experiments.experimentsendcreate
+        with:
+          id: rest.id
+          body: rest.body
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /v1/api/projects/{project-id}/experiments/{id}/launch
+      name: api-projects-project-id-experiments-id-launch
+      description: REST surface for api-projects-project_id-experiments-id-launch.
+      operations:
+      - method: POST
+        name: experimentslaunchcreate
+        description: Launch a draft experiment.
+        call: posthog-experiments.experimentslaunchcreate
+        with:
+          id: rest.id
+        outputParameters:
+        - type: object
+          mapping: $.
+      - method: POST
+        name: experimentslaunchcreate
+        description: Launch a draft experiment.
+        call: posthog-experiments.experimentslaunchcreate
+        with:
+          id: rest.id
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /v1/api/projects/{project-id}/experiments/{id}/pause
+      name: api-projects-project-id-experiments-id-pause
+      description: REST surface for api-projects-project_id-experiments-id-pause.
+      operations:
+      - method: POST
+        name: experimentspausecreate
+        description: Pause a running experiment.
+        call: posthog-experiments.experimentspausecreate
+        with:
+          id: rest.id
+        outputParameters:
+        - type: object
+          mapping: $.
+      - method: POST
+        name: experimentspausecreate
+        description: Pause a running experiment.
+        call: posthog-experiments.experimentspausecreate
+        with:
+          id: rest.id
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /v1/api/projects/{project-id}/experiments/{id}/recalculate-timeseries
+      name: api-projects-project-id-experiments-id-recalculate-timeseries
+      description: REST surface for api-projects-project_id-experiments-id-recalculate_timeseries.
+      operations:
+      - method: POST
+        name: experimentsrecalculatetimeseriescreate
+        description: Mixin for ViewSets to handle ApprovalRequired exceptions from decorated serializers.
+        call: posthog-experiments.experimentsrecalculatetimeseriescreate
+        with:
+          id: rest.id
+          body: rest.body
+        outputParameters:
+        - type: object
+          mapping: $.
+      - method: POST
+        name: experimentsrecalculatetimeseriescreate
+        description: Mixin for ViewSets to handle ApprovalRequired exceptions from decorated serializers.
+        call: posthog-experiments.experimentsrecalculatetimeseriescreate
+        with:
+          id: rest.id
+          body: rest.body
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /v1/api/projects/{project-id}/experiments/{id}/reset
+      name: api-projects-project-id-experiments-id-reset
+      description: REST surface for api-projects-project_id-experiments-id-reset.
+      operations:
+      - method: POST
+        name: experimentsresetcreate
+        description: Reset an experiment back to draft state.
+        call: posthog-experiments.experimentsresetcreate
+        with:
+          id: rest.id
+        outputParameters:
+        - type: object
+          mapping: $.
+      - method: POST
+        name: experimentsresetcreate
+        description: Reset an experiment back to draft state.
+        call: posthog-experiments.experimentsresetcreate
+        with:
+          id: rest.id
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /v1/api/projects/{project-id}/experiments/{id}/resume
+      name: api-projects-project-id-experiments-id-resume
+      description: REST surface for api-projects-project_id-experiments-id-resume.
+      operations:
+      - method: POST
+        name: experimentsresumecreate
+        description: Resume a paused experiment.
+        call: posthog-experiments.experimentsresumecreate
+        with:
+          id: rest.id
+        outputParameters:
+        - type: object
+          mapping: $.
+      - method: POST
+        name: experimentsresumecreate
+        description: Resume a paused experiment.
+        call: posthog-experiments.experimentsresumecreate
+        with:
+          id: rest.id
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /v1/api/projects/{project-id}/experiments/{id}/ship-variant
+      name: api-projects-project-id-experiments-id-ship-variant
+      description: REST surface for api-projects-project_id-experiments-id-ship_variant.
+      operations:
+      - method: POST
+        name: experimentsshipvariantcreate
+        description: Ship a variant to 100% of users and (optionally) end the experiment.
+        call: posthog-experiments.experimentsshipvariantcreate
+        with:
+          id: rest.id
+          body: rest.body
+        outputParameters:
+        - type: object
+          mapping: $.
+      - method: POST
+        name: experimentsshipvariantcreate
+        description: Ship a variant to 100% of users and (optionally) end the experiment.
+        call: posthog-experiments.experimentsshipvariantcreate
+        with:
+          id: rest.id
+          body: rest.body
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /v1/api/projects/{project-id}/experiments/{id}/timeseries-results
+      name: api-projects-project-id-experiments-id-timeseries-results
+      description: REST surface for api-projects-project_id-experiments-id-timeseries_results.
+      operations:
+      - method: GET
+        name: experimentstimeseriesresultsretrieve
+        description: Mixin for ViewSets to handle ApprovalRequired exceptions from decorated serializers.
+        call: posthog-experiments.experimentstimeseriesresultsretrieve
+        with:
+          fingerprint: rest.fingerprint
+          id: rest.id
+          metric_uuid: rest.metric_uuid
+        outputParameters:
+        - type: object
+          mapping: $.
+      - method: GET
+        name: experimentstimeseriesresultsretrieve
+        description: Mixin for ViewSets to handle ApprovalRequired exceptions from decorated serializers.
+        call: posthog-experiments.experimentstimeseriesresultsretrieve
+        with:
+          fingerprint: rest.fingerprint
+          id: rest.id
+          metric_uuid: rest.metric_uuid
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /v1/api/projects/{project-id}/experiments/{id}/unarchive
+      name: api-projects-project-id-experiments-id-unarchive
+      description: REST surface for api-projects-project_id-experiments-id-unarchive.
+      operations:
+      - method: POST
+        name: experimentsunarchivecreate
+        description: Unarchive an archived experiment.
+        call: posthog-experiments.experimentsunarchivecreate
+        with:
+          id: rest.id
+        outputParameters:
+        - type: object
+          mapping: $.
+      - method: POST
+        name: experimentsunarchivecreate
+        description: Unarchive an archived experiment.
+        call: posthog-experiments.experimentsunarchivecreate
+        with:
+          id: rest.id
+        outputParameters:
+        - type: object
+          mapping: $.
+  - type: mcp
+    namespace: posthog-experiments-mcp
+    port: 9090
+    transport: http
+    description: MCP adapter for PostHog API — experiments. One tool per consumed operation, routed inline through this capability's
+      consumes block.
+    tools:
+    - name: list-experiments-current-project-supports
+      description: List experiments for the current project. Supports filtering by status and archival state.
+      hints:
+        readOnly: true
+        destructive: false
+        idempotent: true
+      call: posthog-experiments.experimentslist
+      with:
+        archived: tools.archived
+        created_by_id: tools.created_by_id
+        feature_flag_id: tools.feature_flag_id
+        limit: tools.limit
+        offset: tools.offset
+        order: tools.order
+        search: tools.search
+        status: tools.status
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: list-experiments-current-project-supports-2
+      description: List experiments for the current project. Supports filtering by status and archival state.
+      hints:
+        readOnly: true
+        destructive: false
+        idempotent: true
+      call: posthog-experiments.experimentslist
+      with:
+        archived: tools.archived
+        created_by_id: tools.created_by_id
+        feature_flag_id: tools.feature_flag_id
+        limit: tools.limit
+        offset: tools.offset
+        order: tools.order
+        search: tools.search
+        status: tools.status
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: create-new-experiment-draft-status
+      description: Create a new experiment in draft status with optional metrics.
+      hints:
+        readOnly: false
+        destructive: false
+        idempotent: false
+      call: posthog-experiments.experimentscreate
+      with:
+        body: tools.body
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: create-new-experiment-draft-status-2
+      description: Create a new experiment in draft status with optional metrics.
+      hints:
+        readOnly: false
+        destructive: false
+        idempotent: false
+      call: posthog-experiments.experimentscreate
+      with:
+        body: tools.body
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: returns-paginated-list-feature-flags
+      description: Returns a paginated list of feature flags eligible for use in experiments.
+      hints:
+        readOnly: true
+        destructive: false
+        idempotent: true
+      call: posthog-experiments.experimentseligiblefeatureflagsretrieve
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: returns-paginated-list-feature-flags-2
+      description: Returns a paginated list of feature flags eligible for use in experiments.
+      hints:
+        readOnly: true
+        destructive: false
+        idempotent: true
+      call: posthog-experiments.experimentseligiblefeatureflagsretrieve
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: mixin-viewsets-handle-approvalrequired-exceptions
+      description: Mixin for ViewSets to handle ApprovalRequired exceptions from decorated serializers.
+      hints:
+        readOnly: true
+        destructive: false
+        idempotent: true
+      call: posthog-experiments.experimentsrequiresflagimplementationretrieve
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: mixin-viewsets-handle-approvalrequired-exceptions-2
+      description: Mixin for ViewSets to handle ApprovalRequired exceptions from decorated serializers.
+      hints:
+        readOnly: true
+        destructive: false
+        idempotent: true
+      call: posthog-experiments.experimentsrequiresflagimplementationretrieve
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: mixin-viewsets-handle-approvalrequired-exceptions-3
+      description: Mixin for ViewSets to handle ApprovalRequired exceptions from decorated serializers.
+      hints:
+        readOnly: true
+        destructive: false
+        idempotent: true
+      call: posthog-experiments.experimentsstatsretrieve
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: mixin-viewsets-handle-approvalrequired-exceptions-4
+      description: Mixin for ViewSets to handle ApprovalRequired exceptions from decorated serializers.
+      hints:
+        readOnly: true
+        destructive: false
+        idempotent: true
+      call: posthog-experiments.experimentsstatsretrieve
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: retrieve-single-experiment-id-including
+      description: Retrieve a single experiment by ID, including its current status, metrics, feature flag, and results metadata.
+      hints:
+        readOnly: true
+        destructive: false
+        idempotent: true
+      call: posthog-experiments.experimentsretrieve
+      with:
+        id: tools.id
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: retrieve-single-experiment-id-including-2
+      description: Retrieve a single experiment by ID, including its current status, metrics, feature flag, and results metadata.
+      hints:
+        readOnly: true
+        destructive: false
+        idempotent: true
+      call: posthog-experiments.experimentsretrieve
+      with:
+        id: tools.id
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: mixin-viewsets-handle-approvalrequired-exceptions-5
+      description: Mixin for ViewSets to handle ApprovalRequired exceptions from decorated serializers.
+      hints:
+        readOnly: false
+        destructive: false
+        idempotent: true
+      call: posthog-experiments.experimentsupdate
+      with:
+        id: tools.id
+        body: tools.body
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: mixin-viewsets-handle-approvalrequired-exceptions-6
+      description: Mixin for ViewSets to handle ApprovalRequired exceptions from decorated serializers.
+      hints:
+        readOnly: false
+        destructive: false
+        idempotent: true
+      call: posthog-experiments.experimentsupdate
+      with:
+        id: tools.id
+        body: tools.body
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: update-experiment-use-this-modify
+      description: Update an experiment. Use this to modify experiment properties such as name, description, metrics, variants,
+        and configuration. Metrics can be added, changed and removed at any time.
+      hints:
+        readOnly: false
+        destructive: false
+        idempotent: true
+      call: posthog-experiments.experimentspartialupdate
+      with:
+        id: tools.id
+        body: tools.body
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: update-experiment-use-this-modify-2
+      description: Update an experiment. Use this to modify experiment properties such as name, description, metrics, variants,
+        and configuration. Metrics can be added, changed and removed at any time.
+      hints:
+        readOnly: false
+        destructive: false
+        idempotent: true
+      call: posthog-experiments.experimentspartialupdate
+      with:
+        id: tools.id
+        body: tools.body
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: hard-delete-this-model-is
+      description: Hard delete of this model is not allowed. Use a patch API call to set "deleted" to true
+      hints:
+        readOnly: false
+        destructive: true
+        idempotent: true
+      call: posthog-experiments.experimentsdestroy
+      with:
+        id: tools.id
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: hard-delete-this-model-is-2
+      description: Hard delete of this model is not allowed. Use a patch API call to set "deleted" to true
+      hints:
+        readOnly: false
+        destructive: true
+        idempotent: true
+      call: posthog-experiments.experimentsdestroy
+      with:
+        id: tools.id
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: archive-ended-experiment
+      description: Archive an ended experiment.
+      hints:
+        readOnly: false
+        destructive: false
+        idempotent: false
+      call: posthog-experiments.experimentsarchivecreate
+      with:
+        id: tools.id
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: archive-ended-experiment-2
+      description: Archive an ended experiment.
+      hints:
+        readOnly: false
+        destructive: false
+        idempotent: false
+      call: posthog-experiments.experimentsarchivecreate
+      with:
+        id: tools.id
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: mixin-viewsets-handle-approvalrequired-exceptions-7
+      description: Mixin for ViewSets to handle ApprovalRequired exceptions from decorated serializers.
+      hints:
+        readOnly: false
+        destructive: false
+        idempotent: false
+      call: posthog-experiments.experimentscopytoprojectcreate
+      with:
+        id: tools.id
+        body: tools.body
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: mixin-viewsets-handle-approvalrequired-exceptions-8
+      description: Mixin for ViewSets to handle ApprovalRequired exceptions from decorated serializers.
+      hints:
+        readOnly: false
+        destructive: false
+        idempotent: false
+      call: posthog-experiments.experimentscopytoprojectcreate
+      with:
+        id: tools.id
+        body: tools.body
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: mixin-viewsets-handle-approvalrequired-exceptions-9
+      description: Mixin for ViewSets to handle ApprovalRequired exceptions from decorated serializers.
+      hints:
+        readOnly: false
+        destructive: false
+        idempotent: false
+      call: posthog-experiments.experimentscreateexposurecohortforexperimentcreate
+      with:
+        id: tools.id
+        body: tools.body
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: mixin-viewsets-handle-approvalrequired-exceptions-10
+      description: Mixin for ViewSets to handle ApprovalRequired exceptions from decorated serializers.
+      hints:
+        readOnly: false
+        destructive: false
+        idempotent: false
+      call: posthog-experiments.experimentscreateexposurecohortforexperimentcreate
+      with:
+        id: tools.id
+        body: tools.body
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: mixin-viewsets-handle-approvalrequired-exceptions-11
+      description: Mixin for ViewSets to handle ApprovalRequired exceptions from decorated serializers.
+      hints:
+        readOnly: false
+        destructive: false
+        idempotent: false
+      call: posthog-experiments.experimentsduplicatecreate
+      with:
+        id: tools.id
+        body: tools.body
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: mixin-viewsets-handle-approvalrequired-exceptions-12
+      description: Mixin for ViewSets to handle ApprovalRequired exceptions from decorated serializers.
+      hints:
+        readOnly: false
+        destructive: false
+        idempotent: false
+      call: posthog-experiments.experimentsduplicatecreate
+      with:
+        id: tools.id
+        body: tools.body
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: end-running-experiment-without-shipping
+      description: End a running experiment without shipping a variant.
+      hints:
+        readOnly: false
+        destructive: false
+        idempotent: false
+      call: posthog-experiments.experimentsendcreate
+      with:
+        id: tools.id
+        body: tools.body
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: end-running-experiment-without-shipping-2
+      description: End a running experiment without shipping a variant.
+      hints:
+        readOnly: false
+        destructive: false
+        idempotent: false
+      call: posthog-experiments.experimentsendcreate
+      with:
+        id: tools.id
+        body: tools.body
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: launch-draft-experiment
+      description: Launch a draft experiment.
+      hints:
+        readOnly: false
+        destructive: false
+        idempotent: false
+      call: posthog-experiments.experimentslaunchcreate
+      with:
+        id: tools.id
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: launch-draft-experiment-2
+      description: Launch a draft experiment.
+      hints:
+        readOnly: false
+        destructive: false
+        idempotent: false
+      call: posthog-experiments.experimentslaunchcreate
+      with:
+        id: tools.id
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: pause-running-experiment
+      description: Pause a running experiment.
+      hints:
+        readOnly: false
+        destructive: false
+        idempotent: false
+      call: posthog-experiments.experimentspausecreate
+      with:
+        id: tools.id
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: pause-running-experiment-2
+      description: Pause a running experiment.
+      hints:
+        readOnly: false
+        destructive: false
+        idempotent: false
+      call: posthog-experiments.experimentspausecreate
+      with:
+        id: tools.id
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: mixin-viewsets-handle-approvalrequired-exceptions-13
+      description: Mixin for ViewSets to handle ApprovalRequired exceptions from decorated serializers.
+      hints:
+        readOnly: false
+        destructive: false
+        idempotent: false
+      call: posthog-experiments.experimentsrecalculatetimeseriescreate
+      with:
+        id: tools.id
+        body: tools.body
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: mixin-viewsets-handle-approvalrequired-exceptions-14
+      description: Mixin for ViewSets to handle ApprovalRequired exceptions from decorated serializers.
+      hints:
+        readOnly: false
+        destructive: false
+        idempotent: false
+      call: posthog-experiments.experimentsrecalculatetimeseriescreate
+      with:
+        id: tools.id
+        body: tools.body
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: reset-experiment-back-draft-state
+      description: Reset an experiment back to draft state.
+      hints:
+        readOnly: false
+        destructive: false
+        idempotent: false
+      call: posthog-experiments.experimentsresetcreate
+      with:
+        id: tools.id
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: reset-experiment-back-draft-state-2
+      description: Reset an experiment back to draft state.
+      hints:
+        readOnly: false
+        destructive: false
+        idempotent: false
+      call: posthog-experiments.experimentsresetcreate
+      with:
+        id: tools.id
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: resume-paused-experiment
+      description: Resume a paused experiment.
+      hints:
+        readOnly: false
+        destructive: false
+        idempotent: false
+      call: posthog-experiments.experimentsresumecreate
+      with:
+        id: tools.id
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: resume-paused-experiment-2
+      description: Resume a paused experiment.
+      hints:
+        readOnly: false
+        destructive: false
+        idempotent: false
+      call: posthog-experiments.experimentsresumecreate
+      with:
+        id: tools.id
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: ship-variant-100-users-and
+      description: Ship a variant to 100% of users and (optionally) end the experiment.
+      hints:
+        readOnly: false
+        destructive: false
+        idempotent: false
+      call: posthog-experiments.experimentsshipvariantcreate
+      with:
+        id: tools.id
+        body: tools.body
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: ship-variant-100-users-and-2
+      description: Ship a variant to 100% of users and (optionally) end the experiment.
+      hints:
+        readOnly: false
+        destructive: false
+        idempotent: false
+      call: posthog-experiments.experimentsshipvariantcreate
+      with:
+        id: tools.id
+        body: tools.body
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: mixin-viewsets-handle-approvalrequired-exceptions-15
+      description: Mixin for ViewSets to handle ApprovalRequired exceptions from decorated serializers.
+      hints:
+        readOnly: true
+        destructive: false
+        idempotent: true
+      call: posthog-experiments.experimentstimeseriesresultsretrieve
+      with:
+        fingerprint: tools.fingerprint
+        id: tools.id
+        metric_uuid: tools.metric_uuid
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: mixin-viewsets-handle-approvalrequired-exceptions-16
+      description: Mixin for ViewSets to handle ApprovalRequired exceptions from decorated serializers.
+      hints:
+        readOnly: true
+        destructive: false
+        idempotent: true
+      call: posthog-experiments.experimentstimeseriesresultsretrieve
+      with:
+        fingerprint: tools.fingerprint
+        id: tools.id
+        metric_uuid: tools.metric_uuid
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: unarchive-archived-experiment
+      description: Unarchive an archived experiment.
+      hints:
+        readOnly: false
+        destructive: false
+        idempotent: false
+      call: posthog-experiments.experimentsunarchivecreate
+      with:
+        id: tools.id
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: unarchive-archived-experiment-2
+      description: Unarchive an archived experiment.
+      hints:
+        readOnly: false
+        destructive: false
+        idempotent: false
+      call: posthog-experiments.experimentsunarchivecreate
+      with:
+        id: tools.id
+      outputParameters:
+      - type: object
+        mapping: $.

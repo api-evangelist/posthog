@@ -1,0 +1,354 @@
+naftiko: 1.0.0-alpha2
+info:
+  label: PostHog API — data_modeling_jobs
+  description: 'PostHog API — data_modeling_jobs. 8 operations. Lead operation: data_modeling_jobs. Self-contained Naftiko
+    capability covering one Posthog business surface.'
+  tags:
+  - Posthog
+  - data_modeling_jobs
+  created: '2026-05-19'
+  modified: '2026-05-19'
+binds:
+- namespace: env
+  keys:
+    POSTHOG_API_KEY: POSTHOG_API_KEY
+capability:
+  consumes:
+  - type: http
+    namespace: posthog-data-modeling-jobs
+    baseUri: ''
+    description: PostHog API — data_modeling_jobs business capability. Self-contained, no shared references.
+    resources:
+    - name: api-environments-environment_id-data_modeling_jobs
+      path: /api/environments/{environment_id}/data_modeling_jobs/
+      operations:
+      - name: environmentsdatamodelingjobslist
+        method: GET
+        description: List data modeling jobs which are "runs" for our saved queries.
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: cursor
+          in: query
+          type: string
+          description: The pagination cursor value.
+        - name: limit
+          in: query
+          type: integer
+          description: Number of results to return per page.
+        - name: saved_query_id
+          in: query
+          type: string
+    - name: api-environments-environment_id-data_modeling_jobs-recent
+      path: /api/environments/{environment_id}/data_modeling_jobs/recent/
+      operations:
+      - name: environmentsdatamodelingjobsrecentretrieve
+        method: GET
+        description: Get the most recent non-running job for each saved query from the v2 backend.
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+    - name: api-environments-environment_id-data_modeling_jobs-running
+      path: /api/environments/{environment_id}/data_modeling_jobs/running/
+      operations:
+      - name: environmentsdatamodelingjobsrunningretrieve
+        method: GET
+        description: Get all currently running jobs from the v2 backend.
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+    - name: api-environments-environment_id-data_modeling_jobs-id
+      path: /api/environments/{environment_id}/data_modeling_jobs/{id}/
+      operations:
+      - name: environmentsdatamodelingjobsretrieve
+        method: GET
+        description: List data modeling jobs which are "runs" for our saved queries.
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: id
+          in: path
+          type: string
+          description: A UUID string identifying this data modeling job.
+          required: true
+    - name: api-projects-project_id-data_modeling_jobs
+      path: /api/projects/{project_id}/data_modeling_jobs/
+      operations:
+      - name: datamodelingjobslist
+        method: GET
+        description: List data modeling jobs which are "runs" for our saved queries.
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: cursor
+          in: query
+          type: string
+          description: The pagination cursor value.
+        - name: limit
+          in: query
+          type: integer
+          description: Number of results to return per page.
+        - name: saved_query_id
+          in: query
+          type: string
+    - name: api-projects-project_id-data_modeling_jobs-recent
+      path: /api/projects/{project_id}/data_modeling_jobs/recent/
+      operations:
+      - name: datamodelingjobsrecentretrieve
+        method: GET
+        description: Get the most recent non-running job for each saved query from the v2 backend.
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+    - name: api-projects-project_id-data_modeling_jobs-running
+      path: /api/projects/{project_id}/data_modeling_jobs/running/
+      operations:
+      - name: datamodelingjobsrunningretrieve
+        method: GET
+        description: Get all currently running jobs from the v2 backend.
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+    - name: api-projects-project_id-data_modeling_jobs-id
+      path: /api/projects/{project_id}/data_modeling_jobs/{id}/
+      operations:
+      - name: datamodelingjobsretrieve
+        method: GET
+        description: List data modeling jobs which are "runs" for our saved queries.
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: id
+          in: path
+          type: string
+          description: A UUID string identifying this data modeling job.
+          required: true
+    authentication:
+      type: bearer
+      token: '{{env.POSTHOG_API_KEY}}'
+  exposes:
+  - type: rest
+    namespace: posthog-data-modeling-jobs-rest
+    port: 8080
+    description: REST adapter for PostHog API — data_modeling_jobs. One Spectral-compliant resource per consumed operation,
+      prefixed with /v1.
+    resources:
+    - path: /v1/api/environments/{environment-id}/data-modeling-jobs
+      name: api-environments-environment-id-data-modeling-jobs
+      description: REST surface for api-environments-environment_id-data_modeling_jobs.
+      operations:
+      - method: GET
+        name: environmentsdatamodelingjobslist
+        description: List data modeling jobs which are "runs" for our saved queries.
+        call: posthog-data-modeling-jobs.environmentsdatamodelingjobslist
+        with:
+          cursor: rest.cursor
+          limit: rest.limit
+          saved_query_id: rest.saved_query_id
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /v1/api/environments/{environment-id}/data-modeling-jobs/recent
+      name: api-environments-environment-id-data-modeling-jobs-recent
+      description: REST surface for api-environments-environment_id-data_modeling_jobs-recent.
+      operations:
+      - method: GET
+        name: environmentsdatamodelingjobsrecentretrieve
+        description: Get the most recent non-running job for each saved query from the v2 backend.
+        call: posthog-data-modeling-jobs.environmentsdatamodelingjobsrecentretrieve
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /v1/api/environments/{environment-id}/data-modeling-jobs/running
+      name: api-environments-environment-id-data-modeling-jobs-running
+      description: REST surface for api-environments-environment_id-data_modeling_jobs-running.
+      operations:
+      - method: GET
+        name: environmentsdatamodelingjobsrunningretrieve
+        description: Get all currently running jobs from the v2 backend.
+        call: posthog-data-modeling-jobs.environmentsdatamodelingjobsrunningretrieve
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /v1/api/environments/{environment-id}/data-modeling-jobs/{id}
+      name: api-environments-environment-id-data-modeling-jobs-id
+      description: REST surface for api-environments-environment_id-data_modeling_jobs-id.
+      operations:
+      - method: GET
+        name: environmentsdatamodelingjobsretrieve
+        description: List data modeling jobs which are "runs" for our saved queries.
+        call: posthog-data-modeling-jobs.environmentsdatamodelingjobsretrieve
+        with:
+          id: rest.id
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /v1/api/projects/{project-id}/data-modeling-jobs
+      name: api-projects-project-id-data-modeling-jobs
+      description: REST surface for api-projects-project_id-data_modeling_jobs.
+      operations:
+      - method: GET
+        name: datamodelingjobslist
+        description: List data modeling jobs which are "runs" for our saved queries.
+        call: posthog-data-modeling-jobs.datamodelingjobslist
+        with:
+          cursor: rest.cursor
+          limit: rest.limit
+          saved_query_id: rest.saved_query_id
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /v1/api/projects/{project-id}/data-modeling-jobs/recent
+      name: api-projects-project-id-data-modeling-jobs-recent
+      description: REST surface for api-projects-project_id-data_modeling_jobs-recent.
+      operations:
+      - method: GET
+        name: datamodelingjobsrecentretrieve
+        description: Get the most recent non-running job for each saved query from the v2 backend.
+        call: posthog-data-modeling-jobs.datamodelingjobsrecentretrieve
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /v1/api/projects/{project-id}/data-modeling-jobs/running
+      name: api-projects-project-id-data-modeling-jobs-running
+      description: REST surface for api-projects-project_id-data_modeling_jobs-running.
+      operations:
+      - method: GET
+        name: datamodelingjobsrunningretrieve
+        description: Get all currently running jobs from the v2 backend.
+        call: posthog-data-modeling-jobs.datamodelingjobsrunningretrieve
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /v1/api/projects/{project-id}/data-modeling-jobs/{id}
+      name: api-projects-project-id-data-modeling-jobs-id
+      description: REST surface for api-projects-project_id-data_modeling_jobs-id.
+      operations:
+      - method: GET
+        name: datamodelingjobsretrieve
+        description: List data modeling jobs which are "runs" for our saved queries.
+        call: posthog-data-modeling-jobs.datamodelingjobsretrieve
+        with:
+          id: rest.id
+        outputParameters:
+        - type: object
+          mapping: $.
+  - type: mcp
+    namespace: posthog-data-modeling-jobs-mcp
+    port: 9090
+    transport: http
+    description: MCP adapter for PostHog API — data_modeling_jobs. One tool per consumed operation, routed inline through
+      this capability's consumes block.
+    tools:
+    - name: list-data-modeling-jobs-which
+      description: List data modeling jobs which are "runs" for our saved queries.
+      hints:
+        readOnly: true
+        destructive: false
+        idempotent: true
+      call: posthog-data-modeling-jobs.environmentsdatamodelingjobslist
+      with:
+        cursor: tools.cursor
+        limit: tools.limit
+        saved_query_id: tools.saved_query_id
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: get-most-recent-non-running
+      description: Get the most recent non-running job for each saved query from the v2 backend.
+      hints:
+        readOnly: true
+        destructive: false
+        idempotent: true
+      call: posthog-data-modeling-jobs.environmentsdatamodelingjobsrecentretrieve
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: get-all-currently-running-jobs
+      description: Get all currently running jobs from the v2 backend.
+      hints:
+        readOnly: true
+        destructive: false
+        idempotent: true
+      call: posthog-data-modeling-jobs.environmentsdatamodelingjobsrunningretrieve
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: list-data-modeling-jobs-which-2
+      description: List data modeling jobs which are "runs" for our saved queries.
+      hints:
+        readOnly: true
+        destructive: false
+        idempotent: true
+      call: posthog-data-modeling-jobs.environmentsdatamodelingjobsretrieve
+      with:
+        id: tools.id
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: list-data-modeling-jobs-which-3
+      description: List data modeling jobs which are "runs" for our saved queries.
+      hints:
+        readOnly: true
+        destructive: false
+        idempotent: true
+      call: posthog-data-modeling-jobs.datamodelingjobslist
+      with:
+        cursor: tools.cursor
+        limit: tools.limit
+        saved_query_id: tools.saved_query_id
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: get-most-recent-non-running-2
+      description: Get the most recent non-running job for each saved query from the v2 backend.
+      hints:
+        readOnly: true
+        destructive: false
+        idempotent: true
+      call: posthog-data-modeling-jobs.datamodelingjobsrecentretrieve
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: get-all-currently-running-jobs-2
+      description: Get all currently running jobs from the v2 backend.
+      hints:
+        readOnly: true
+        destructive: false
+        idempotent: true
+      call: posthog-data-modeling-jobs.datamodelingjobsrunningretrieve
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: list-data-modeling-jobs-which-4
+      description: List data modeling jobs which are "runs" for our saved queries.
+      hints:
+        readOnly: true
+        destructive: false
+        idempotent: true
+      call: posthog-data-modeling-jobs.datamodelingjobsretrieve
+      with:
+        id: tools.id
+      outputParameters:
+      - type: object
+        mapping: $.

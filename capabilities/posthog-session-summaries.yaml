@@ -1,0 +1,195 @@
+naftiko: 1.0.0-alpha2
+info:
+  label: PostHog API — session_summaries
+  description: 'PostHog API — session_summaries. 4 operations. Lead operation: session_summaries. Self-contained Naftiko capability
+    covering one Posthog business surface.'
+  tags:
+  - Posthog
+  - session_summaries
+  created: '2026-05-19'
+  modified: '2026-05-19'
+binds:
+- namespace: env
+  keys:
+    POSTHOG_API_KEY: POSTHOG_API_KEY
+capability:
+  consumes:
+  - type: http
+    namespace: posthog-session-summaries
+    baseUri: ''
+    description: PostHog API — session_summaries business capability. Self-contained, no shared references.
+    resources:
+    - name: api-environments-project_id-session_summaries-config
+      path: /api/environments/{project_id}/session_summaries/config/
+      operations:
+      - name: retrievesessionsummariesconfig
+        method: GET
+        description: Retrieve the team's session summaries configuration (product context used to tailor single-session replay
+          summaries).
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+      - name: updatesessionsummariesconfig
+        method: PATCH
+        description: Update the team's session summaries configuration (product context used to tailor single-session replay
+          summaries).
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: body
+          in: body
+          type: object
+          description: Request body (JSON).
+          required: false
+    - name: api-environments-project_id-session_summaries-create_session_summaries
+      path: /api/environments/{project_id}/session_summaries/create_session_summaries/
+      operations:
+      - name: createsessionsummaries
+        method: POST
+        description: Generate AI summary for a group of session recordings to find patterns and generate a notebook.
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: body
+          in: body
+          type: object
+          description: Request body (JSON).
+          required: true
+    - name: api-environments-project_id-session_summaries-create_session_summaries_individua
+      path: /api/environments/{project_id}/session_summaries/create_session_summaries_individually/
+      operations:
+      - name: createsessionsummariesindividually
+        method: POST
+        description: Generate AI individual summary for each session, without grouping.
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: body
+          in: body
+          type: object
+          description: Request body (JSON).
+          required: true
+    authentication:
+      type: bearer
+      token: '{{env.POSTHOG_API_KEY}}'
+  exposes:
+  - type: rest
+    namespace: posthog-session-summaries-rest
+    port: 8080
+    description: REST adapter for PostHog API — session_summaries. One Spectral-compliant resource per consumed operation,
+      prefixed with /v1.
+    resources:
+    - path: /v1/api/environments/{project-id}/session-summaries/config
+      name: api-environments-project-id-session-summaries-config
+      description: REST surface for api-environments-project_id-session_summaries-config.
+      operations:
+      - method: GET
+        name: retrievesessionsummariesconfig
+        description: Retrieve the team's session summaries configuration (product context used to tailor single-session replay
+          summaries).
+        call: posthog-session-summaries.retrievesessionsummariesconfig
+        outputParameters:
+        - type: object
+          mapping: $.
+      - method: PATCH
+        name: updatesessionsummariesconfig
+        description: Update the team's session summaries configuration (product context used to tailor single-session replay
+          summaries).
+        call: posthog-session-summaries.updatesessionsummariesconfig
+        with:
+          body: rest.body
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /v1/api/environments/{project-id}/session-summaries/create-session-summaries
+      name: api-environments-project-id-session-summaries-create-session-summaries
+      description: REST surface for api-environments-project_id-session_summaries-create_session_summaries.
+      operations:
+      - method: POST
+        name: createsessionsummaries
+        description: Generate AI summary for a group of session recordings to find patterns and generate a notebook.
+        call: posthog-session-summaries.createsessionsummaries
+        with:
+          body: rest.body
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /v1/api/environments/{project-id}/session-summaries/create-session-summaries-individually
+      name: api-environments-project-id-session-summaries-create-session-summaries-individua
+      description: REST surface for api-environments-project_id-session_summaries-create_session_summaries_individua.
+      operations:
+      - method: POST
+        name: createsessionsummariesindividually
+        description: Generate AI individual summary for each session, without grouping.
+        call: posthog-session-summaries.createsessionsummariesindividually
+        with:
+          body: rest.body
+        outputParameters:
+        - type: object
+          mapping: $.
+  - type: mcp
+    namespace: posthog-session-summaries-mcp
+    port: 9090
+    transport: http
+    description: MCP adapter for PostHog API — session_summaries. One tool per consumed operation, routed inline through this
+      capability's consumes block.
+    tools:
+    - name: retrieve-team-s-session-summaries-configuration
+      description: Retrieve the team's session summaries configuration (product context used to tailor single-session replay
+        summaries).
+      hints:
+        readOnly: true
+        destructive: false
+        idempotent: true
+      call: posthog-session-summaries.retrievesessionsummariesconfig
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: update-team-s-session-summaries-configuration
+      description: Update the team's session summaries configuration (product context used to tailor single-session replay
+        summaries).
+      hints:
+        readOnly: false
+        destructive: false
+        idempotent: true
+      call: posthog-session-summaries.updatesessionsummariesconfig
+      with:
+        body: tools.body
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: generate-ai-summary-group-session
+      description: Generate AI summary for a group of session recordings to find patterns and generate a notebook.
+      hints:
+        readOnly: true
+        destructive: false
+        idempotent: false
+      call: posthog-session-summaries.createsessionsummaries
+      with:
+        body: tools.body
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: generate-ai-individual-summary-each
+      description: Generate AI individual summary for each session, without grouping.
+      hints:
+        readOnly: false
+        destructive: false
+        idempotent: false
+      call: posthog-session-summaries.createsessionsummariesindividually
+      with:
+        body: tools.body
+      outputParameters:
+      - type: object
+        mapping: $.

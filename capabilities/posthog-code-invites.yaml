@@ -1,0 +1,112 @@
+naftiko: 1.0.0-alpha2
+info:
+  label: PostHog API — code-invites
+  description: 'PostHog API — code-invites. 2 operations. Lead operation: Check access. Self-contained Naftiko capability
+    covering one Posthog business surface.'
+  tags:
+  - Posthog
+  - code-invites
+  created: '2026-05-19'
+  modified: '2026-05-19'
+binds:
+- namespace: env
+  keys:
+    POSTHOG_API_KEY: POSTHOG_API_KEY
+capability:
+  consumes:
+  - type: http
+    namespace: posthog-code-invites
+    baseUri: ''
+    description: PostHog API — code-invites business capability. Self-contained, no shared references.
+    resources:
+    - name: api-code-invites-check-access
+      path: /api/code/invites/check-access/
+      operations:
+      - name: codeinvitescheckaccessretrieve
+        method: GET
+        description: Check access
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+    - name: api-code-invites-redeem
+      path: /api/code/invites/redeem/
+      operations:
+      - name: codeinvitesredeemcreate
+        method: POST
+        description: Redeem invite code
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: body
+          in: body
+          type: object
+          description: Request body (JSON).
+          required: true
+    authentication:
+      type: bearer
+      token: '{{env.POSTHOG_API_KEY}}'
+  exposes:
+  - type: rest
+    namespace: posthog-code-invites-rest
+    port: 8080
+    description: REST adapter for PostHog API — code-invites. One Spectral-compliant resource per consumed operation, prefixed
+      with /v1.
+    resources:
+    - path: /v1/api/code/invites/check-access
+      name: api-code-invites-check-access
+      description: REST surface for api-code-invites-check-access.
+      operations:
+      - method: GET
+        name: codeinvitescheckaccessretrieve
+        description: Check access
+        call: posthog-code-invites.codeinvitescheckaccessretrieve
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /v1/api/code/invites/redeem
+      name: api-code-invites-redeem
+      description: REST surface for api-code-invites-redeem.
+      operations:
+      - method: POST
+        name: codeinvitesredeemcreate
+        description: Redeem invite code
+        call: posthog-code-invites.codeinvitesredeemcreate
+        with:
+          body: rest.body
+        outputParameters:
+        - type: object
+          mapping: $.
+  - type: mcp
+    namespace: posthog-code-invites-mcp
+    port: 9090
+    transport: http
+    description: MCP adapter for PostHog API — code-invites. One tool per consumed operation, routed inline through this capability's
+      consumes block.
+    tools:
+    - name: check-access
+      description: Check access
+      hints:
+        readOnly: true
+        destructive: false
+        idempotent: true
+      call: posthog-code-invites.codeinvitescheckaccessretrieve
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: redeem-invite-code
+      description: Redeem invite code
+      hints:
+        readOnly: false
+        destructive: false
+        idempotent: false
+      call: posthog-code-invites.codeinvitesredeemcreate
+      with:
+        body: tools.body
+      outputParameters:
+      - type: object
+        mapping: $.

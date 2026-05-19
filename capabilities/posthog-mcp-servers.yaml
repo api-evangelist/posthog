@@ -1,0 +1,85 @@
+naftiko: 1.0.0-alpha2
+info:
+  label: PostHog API — mcp_servers
+  description: 'PostHog API — mcp_servers. 1 operations. Lead operation: mcp_servers. Self-contained Naftiko capability covering
+    one Posthog business surface.'
+  tags:
+  - Posthog
+  - mcp_servers
+  created: '2026-05-19'
+  modified: '2026-05-19'
+binds:
+- namespace: env
+  keys:
+    POSTHOG_API_KEY: POSTHOG_API_KEY
+capability:
+  consumes:
+  - type: http
+    namespace: posthog-mcp-servers
+    baseUri: ''
+    description: PostHog API — mcp_servers business capability. Self-contained, no shared references.
+    resources:
+    - name: api-environments-project_id-mcp_servers
+      path: /api/environments/{project_id}/mcp_servers/
+      operations:
+      - name: mcpserverslist
+        method: GET
+        description: Lists curated MCP server templates that users can install with one click.
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: limit
+          in: query
+          type: integer
+          description: Number of results to return per page.
+        - name: offset
+          in: query
+          type: integer
+          description: The initial index from which to return the results.
+    authentication:
+      type: bearer
+      token: '{{env.POSTHOG_API_KEY}}'
+  exposes:
+  - type: rest
+    namespace: posthog-mcp-servers-rest
+    port: 8080
+    description: REST adapter for PostHog API — mcp_servers. One Spectral-compliant resource per consumed operation, prefixed
+      with /v1.
+    resources:
+    - path: /v1/api/environments/{project-id}/mcp-servers
+      name: api-environments-project-id-mcp-servers
+      description: REST surface for api-environments-project_id-mcp_servers.
+      operations:
+      - method: GET
+        name: mcpserverslist
+        description: Lists curated MCP server templates that users can install with one click.
+        call: posthog-mcp-servers.mcpserverslist
+        with:
+          limit: rest.limit
+          offset: rest.offset
+        outputParameters:
+        - type: object
+          mapping: $.
+  - type: mcp
+    namespace: posthog-mcp-servers-mcp
+    port: 9090
+    transport: http
+    description: MCP adapter for PostHog API — mcp_servers. One tool per consumed operation, routed inline through this capability's
+      consumes block.
+    tools:
+    - name: lists-curated-mcp-server-templates
+      description: Lists curated MCP server templates that users can install with one click.
+      hints:
+        readOnly: true
+        destructive: false
+        idempotent: true
+      call: posthog-mcp-servers.mcpserverslist
+      with:
+        limit: tools.limit
+        offset: tools.offset
+      outputParameters:
+      - type: object
+        mapping: $.

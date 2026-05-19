@@ -1,0 +1,806 @@
+naftiko: 1.0.0-alpha2
+info:
+  label: PostHog API — session_recording_playlists
+  description: 'PostHog API — session_recording_playlists. 18 operations. Lead operation: session_recording_playlists. Self-contained
+    Naftiko capability covering one Posthog business surface.'
+  tags:
+  - Posthog
+  - session_recording_playlists
+  created: '2026-05-19'
+  modified: '2026-05-19'
+binds:
+- namespace: env
+  keys:
+    POSTHOG_API_KEY: POSTHOG_API_KEY
+capability:
+  consumes:
+  - type: http
+    namespace: posthog-session-recording-playlists
+    baseUri: ''
+    description: PostHog API — session_recording_playlists business capability. Self-contained, no shared references.
+    resources:
+    - name: api-environments-environment_id-session_recording_playlists
+      path: /api/environments/{environment_id}/session_recording_playlists/
+      operations:
+      - name: environmentssessionrecordingplaylistslist
+        method: GET
+        description: Override list to include synthetic playlists
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: created_by
+          in: query
+          type: integer
+        - name: limit
+          in: query
+          type: integer
+          description: Number of results to return per page.
+        - name: offset
+          in: query
+          type: integer
+          description: The initial index from which to return the results.
+        - name: short_id
+          in: query
+          type: string
+      - name: environmentssessionrecordingplaylistscreate
+        method: POST
+        description: ''
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: body
+          in: body
+          type: object
+          description: Request body (JSON).
+          required: false
+    - name: api-environments-environment_id-session_recording_playlists-short_id
+      path: /api/environments/{environment_id}/session_recording_playlists/{short_id}/
+      operations:
+      - name: environmentssessionrecordingplaylistsretrieve
+        method: GET
+        description: ''
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: short_id
+          in: path
+          type: string
+          required: true
+      - name: environmentssessionrecordingplaylistsupdate
+        method: PUT
+        description: ''
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: short_id
+          in: path
+          type: string
+          required: true
+        - name: body
+          in: body
+          type: object
+          description: Request body (JSON).
+          required: false
+      - name: environmentssessionrecordingplaylistspartialupdate
+        method: PATCH
+        description: ''
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: short_id
+          in: path
+          type: string
+          required: true
+        - name: body
+          in: body
+          type: object
+          description: Request body (JSON).
+          required: false
+      - name: environmentssessionrecordingplaylistsdestroy
+        method: DELETE
+        description: Hard delete of this model is not allowed. Use a patch API call to set "deleted" to true
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: short_id
+          in: path
+          type: string
+          required: true
+    - name: api-environments-environment_id-session_recording_playlists-short_id-recordings
+      path: /api/environments/{environment_id}/session_recording_playlists/{short_id}/recordings/
+      operations:
+      - name: environmentssessionrecordingplaylistsrecordingsretrieve
+        method: GET
+        description: ''
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: short_id
+          in: path
+          type: string
+          required: true
+    - name: api-environments-environment_id-session_recording_playlists-short_id-recordings-
+      path: /api/environments/{environment_id}/session_recording_playlists/{short_id}/recordings/{session_recording_id}/
+      operations:
+      - name: environmentssessionrecordingplaylistsrecordingscreate
+        method: POST
+        description: ''
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: session_recording_id
+          in: path
+          type: string
+          required: true
+        - name: short_id
+          in: path
+          type: string
+          required: true
+        - name: body
+          in: body
+          type: object
+          description: Request body (JSON).
+          required: false
+      - name: environmentssessionrecordingplaylistsrecordingsdestroy
+        method: DELETE
+        description: ''
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: session_recording_id
+          in: path
+          type: string
+          required: true
+        - name: short_id
+          in: path
+          type: string
+          required: true
+    - name: api-projects-project_id-session_recording_playlists
+      path: /api/projects/{project_id}/session_recording_playlists/
+      operations:
+      - name: sessionrecordingplaylistslist
+        method: GET
+        description: Override list to include synthetic playlists
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: created_by
+          in: query
+          type: integer
+        - name: limit
+          in: query
+          type: integer
+          description: Number of results to return per page.
+        - name: offset
+          in: query
+          type: integer
+          description: The initial index from which to return the results.
+        - name: short_id
+          in: query
+          type: string
+      - name: sessionrecordingplaylistscreate
+        method: POST
+        description: ''
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: body
+          in: body
+          type: object
+          description: Request body (JSON).
+          required: false
+    - name: api-projects-project_id-session_recording_playlists-short_id
+      path: /api/projects/{project_id}/session_recording_playlists/{short_id}/
+      operations:
+      - name: sessionrecordingplaylistsretrieve
+        method: GET
+        description: ''
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: short_id
+          in: path
+          type: string
+          required: true
+      - name: sessionrecordingplaylistsupdate
+        method: PUT
+        description: ''
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: short_id
+          in: path
+          type: string
+          required: true
+        - name: body
+          in: body
+          type: object
+          description: Request body (JSON).
+          required: false
+      - name: sessionrecordingplaylistspartialupdate
+        method: PATCH
+        description: ''
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: short_id
+          in: path
+          type: string
+          required: true
+        - name: body
+          in: body
+          type: object
+          description: Request body (JSON).
+          required: false
+      - name: sessionrecordingplaylistsdestroy
+        method: DELETE
+        description: Hard delete of this model is not allowed. Use a patch API call to set "deleted" to true
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: short_id
+          in: path
+          type: string
+          required: true
+    - name: api-projects-project_id-session_recording_playlists-short_id-recordings
+      path: /api/projects/{project_id}/session_recording_playlists/{short_id}/recordings/
+      operations:
+      - name: sessionrecordingplaylistsrecordingsretrieve
+        method: GET
+        description: ''
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: short_id
+          in: path
+          type: string
+          required: true
+    - name: api-projects-project_id-session_recording_playlists-short_id-recordings-session_
+      path: /api/projects/{project_id}/session_recording_playlists/{short_id}/recordings/{session_recording_id}/
+      operations:
+      - name: sessionrecordingplaylistsrecordingscreate
+        method: POST
+        description: ''
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: session_recording_id
+          in: path
+          type: string
+          required: true
+        - name: short_id
+          in: path
+          type: string
+          required: true
+        - name: body
+          in: body
+          type: object
+          description: Request body (JSON).
+          required: false
+      - name: sessionrecordingplaylistsrecordingsdestroy
+        method: DELETE
+        description: ''
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: session_recording_id
+          in: path
+          type: string
+          required: true
+        - name: short_id
+          in: path
+          type: string
+          required: true
+    authentication:
+      type: bearer
+      token: '{{env.POSTHOG_API_KEY}}'
+  exposes:
+  - type: rest
+    namespace: posthog-session-recording-playlists-rest
+    port: 8080
+    description: REST adapter for PostHog API — session_recording_playlists. One Spectral-compliant resource per consumed
+      operation, prefixed with /v1.
+    resources:
+    - path: /v1/api/environments/{environment-id}/session-recording-playlists
+      name: api-environments-environment-id-session-recording-playlists
+      description: REST surface for api-environments-environment_id-session_recording_playlists.
+      operations:
+      - method: GET
+        name: environmentssessionrecordingplaylistslist
+        description: Override list to include synthetic playlists
+        call: posthog-session-recording-playlists.environmentssessionrecordingplaylistslist
+        with:
+          created_by: rest.created_by
+          limit: rest.limit
+          offset: rest.offset
+          short_id: rest.short_id
+        outputParameters:
+        - type: object
+          mapping: $.
+      - method: POST
+        name: environmentssessionrecordingplaylistscreate
+        description: environmentssessionrecordingplaylistscreate
+        call: posthog-session-recording-playlists.environmentssessionrecordingplaylistscreate
+        with:
+          body: rest.body
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /v1/api/environments/{environment-id}/session-recording-playlists/{short-id}
+      name: api-environments-environment-id-session-recording-playlists-short-id
+      description: REST surface for api-environments-environment_id-session_recording_playlists-short_id.
+      operations:
+      - method: GET
+        name: environmentssessionrecordingplaylistsretrieve
+        description: environmentssessionrecordingplaylistsretrieve
+        call: posthog-session-recording-playlists.environmentssessionrecordingplaylistsretrieve
+        with:
+          short_id: rest.short_id
+        outputParameters:
+        - type: object
+          mapping: $.
+      - method: PUT
+        name: environmentssessionrecordingplaylistsupdate
+        description: environmentssessionrecordingplaylistsupdate
+        call: posthog-session-recording-playlists.environmentssessionrecordingplaylistsupdate
+        with:
+          short_id: rest.short_id
+          body: rest.body
+        outputParameters:
+        - type: object
+          mapping: $.
+      - method: PATCH
+        name: environmentssessionrecordingplaylistspartialupdate
+        description: environmentssessionrecordingplaylistspartialupdate
+        call: posthog-session-recording-playlists.environmentssessionrecordingplaylistspartialupdate
+        with:
+          short_id: rest.short_id
+          body: rest.body
+        outputParameters:
+        - type: object
+          mapping: $.
+      - method: DELETE
+        name: environmentssessionrecordingplaylistsdestroy
+        description: Hard delete of this model is not allowed. Use a patch API call to set "deleted" to true
+        call: posthog-session-recording-playlists.environmentssessionrecordingplaylistsdestroy
+        with:
+          short_id: rest.short_id
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /v1/api/environments/{environment-id}/session-recording-playlists/{short-id}/recordings
+      name: api-environments-environment-id-session-recording-playlists-short-id-recordings
+      description: REST surface for api-environments-environment_id-session_recording_playlists-short_id-recordings.
+      operations:
+      - method: GET
+        name: environmentssessionrecordingplaylistsrecordingsretrieve
+        description: environmentssessionrecordingplaylistsrecordingsretrieve
+        call: posthog-session-recording-playlists.environmentssessionrecordingplaylistsrecordingsretrieve
+        with:
+          short_id: rest.short_id
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /v1/api/environments/{environment-id}/session-recording-playlists/{short-id}/recordings/{session-recording-id}
+      name: api-environments-environment-id-session-recording-playlists-short-id-recordings
+      description: REST surface for api-environments-environment_id-session_recording_playlists-short_id-recordings-.
+      operations:
+      - method: POST
+        name: environmentssessionrecordingplaylistsrecordingscreate
+        description: environmentssessionrecordingplaylistsrecordingscreate
+        call: posthog-session-recording-playlists.environmentssessionrecordingplaylistsrecordingscreate
+        with:
+          session_recording_id: rest.session_recording_id
+          short_id: rest.short_id
+          body: rest.body
+        outputParameters:
+        - type: object
+          mapping: $.
+      - method: DELETE
+        name: environmentssessionrecordingplaylistsrecordingsdestroy
+        description: environmentssessionrecordingplaylistsrecordingsdestroy
+        call: posthog-session-recording-playlists.environmentssessionrecordingplaylistsrecordingsdestroy
+        with:
+          session_recording_id: rest.session_recording_id
+          short_id: rest.short_id
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /v1/api/projects/{project-id}/session-recording-playlists
+      name: api-projects-project-id-session-recording-playlists
+      description: REST surface for api-projects-project_id-session_recording_playlists.
+      operations:
+      - method: GET
+        name: sessionrecordingplaylistslist
+        description: Override list to include synthetic playlists
+        call: posthog-session-recording-playlists.sessionrecordingplaylistslist
+        with:
+          created_by: rest.created_by
+          limit: rest.limit
+          offset: rest.offset
+          short_id: rest.short_id
+        outputParameters:
+        - type: object
+          mapping: $.
+      - method: POST
+        name: sessionrecordingplaylistscreate
+        description: sessionrecordingplaylistscreate
+        call: posthog-session-recording-playlists.sessionrecordingplaylistscreate
+        with:
+          body: rest.body
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /v1/api/projects/{project-id}/session-recording-playlists/{short-id}
+      name: api-projects-project-id-session-recording-playlists-short-id
+      description: REST surface for api-projects-project_id-session_recording_playlists-short_id.
+      operations:
+      - method: GET
+        name: sessionrecordingplaylistsretrieve
+        description: sessionrecordingplaylistsretrieve
+        call: posthog-session-recording-playlists.sessionrecordingplaylistsretrieve
+        with:
+          short_id: rest.short_id
+        outputParameters:
+        - type: object
+          mapping: $.
+      - method: PUT
+        name: sessionrecordingplaylistsupdate
+        description: sessionrecordingplaylistsupdate
+        call: posthog-session-recording-playlists.sessionrecordingplaylistsupdate
+        with:
+          short_id: rest.short_id
+          body: rest.body
+        outputParameters:
+        - type: object
+          mapping: $.
+      - method: PATCH
+        name: sessionrecordingplaylistspartialupdate
+        description: sessionrecordingplaylistspartialupdate
+        call: posthog-session-recording-playlists.sessionrecordingplaylistspartialupdate
+        with:
+          short_id: rest.short_id
+          body: rest.body
+        outputParameters:
+        - type: object
+          mapping: $.
+      - method: DELETE
+        name: sessionrecordingplaylistsdestroy
+        description: Hard delete of this model is not allowed. Use a patch API call to set "deleted" to true
+        call: posthog-session-recording-playlists.sessionrecordingplaylistsdestroy
+        with:
+          short_id: rest.short_id
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /v1/api/projects/{project-id}/session-recording-playlists/{short-id}/recordings
+      name: api-projects-project-id-session-recording-playlists-short-id-recordings
+      description: REST surface for api-projects-project_id-session_recording_playlists-short_id-recordings.
+      operations:
+      - method: GET
+        name: sessionrecordingplaylistsrecordingsretrieve
+        description: sessionrecordingplaylistsrecordingsretrieve
+        call: posthog-session-recording-playlists.sessionrecordingplaylistsrecordingsretrieve
+        with:
+          short_id: rest.short_id
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /v1/api/projects/{project-id}/session-recording-playlists/{short-id}/recordings/{session-recording-id}
+      name: api-projects-project-id-session-recording-playlists-short-id-recordings-session
+      description: REST surface for api-projects-project_id-session_recording_playlists-short_id-recordings-session_.
+      operations:
+      - method: POST
+        name: sessionrecordingplaylistsrecordingscreate
+        description: sessionrecordingplaylistsrecordingscreate
+        call: posthog-session-recording-playlists.sessionrecordingplaylistsrecordingscreate
+        with:
+          session_recording_id: rest.session_recording_id
+          short_id: rest.short_id
+          body: rest.body
+        outputParameters:
+        - type: object
+          mapping: $.
+      - method: DELETE
+        name: sessionrecordingplaylistsrecordingsdestroy
+        description: sessionrecordingplaylistsrecordingsdestroy
+        call: posthog-session-recording-playlists.sessionrecordingplaylistsrecordingsdestroy
+        with:
+          session_recording_id: rest.session_recording_id
+          short_id: rest.short_id
+        outputParameters:
+        - type: object
+          mapping: $.
+  - type: mcp
+    namespace: posthog-session-recording-playlists-mcp
+    port: 9090
+    transport: http
+    description: MCP adapter for PostHog API — session_recording_playlists. One tool per consumed operation, routed inline
+      through this capability's consumes block.
+    tools:
+    - name: override-list-include-synthetic-playlists
+      description: Override list to include synthetic playlists
+      hints:
+        readOnly: true
+        destructive: false
+        idempotent: true
+      call: posthog-session-recording-playlists.environmentssessionrecordingplaylistslist
+      with:
+        created_by: tools.created_by
+        limit: tools.limit
+        offset: tools.offset
+        short_id: tools.short_id
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: environmentssessionrecordingplaylistscreate
+      description: environmentssessionrecordingplaylistscreate
+      hints:
+        readOnly: false
+        destructive: false
+        idempotent: false
+      call: posthog-session-recording-playlists.environmentssessionrecordingplaylistscreate
+      with:
+        body: tools.body
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: environmentssessionrecordingplaylistsretrieve
+      description: environmentssessionrecordingplaylistsretrieve
+      hints:
+        readOnly: true
+        destructive: false
+        idempotent: true
+      call: posthog-session-recording-playlists.environmentssessionrecordingplaylistsretrieve
+      with:
+        short_id: tools.short_id
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: environmentssessionrecordingplaylistsupdate
+      description: environmentssessionrecordingplaylistsupdate
+      hints:
+        readOnly: false
+        destructive: false
+        idempotent: true
+      call: posthog-session-recording-playlists.environmentssessionrecordingplaylistsupdate
+      with:
+        short_id: tools.short_id
+        body: tools.body
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: environmentssessionrecordingplaylistspartialupdate
+      description: environmentssessionrecordingplaylistspartialupdate
+      hints:
+        readOnly: false
+        destructive: false
+        idempotent: true
+      call: posthog-session-recording-playlists.environmentssessionrecordingplaylistspartialupdate
+      with:
+        short_id: tools.short_id
+        body: tools.body
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: hard-delete-this-model-is
+      description: Hard delete of this model is not allowed. Use a patch API call to set "deleted" to true
+      hints:
+        readOnly: false
+        destructive: true
+        idempotent: true
+      call: posthog-session-recording-playlists.environmentssessionrecordingplaylistsdestroy
+      with:
+        short_id: tools.short_id
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: environmentssessionrecordingplaylistsrecordingsretrieve
+      description: environmentssessionrecordingplaylistsrecordingsretrieve
+      hints:
+        readOnly: true
+        destructive: false
+        idempotent: true
+      call: posthog-session-recording-playlists.environmentssessionrecordingplaylistsrecordingsretrieve
+      with:
+        short_id: tools.short_id
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: environmentssessionrecordingplaylistsrecordingscreate
+      description: environmentssessionrecordingplaylistsrecordingscreate
+      hints:
+        readOnly: false
+        destructive: false
+        idempotent: false
+      call: posthog-session-recording-playlists.environmentssessionrecordingplaylistsrecordingscreate
+      with:
+        session_recording_id: tools.session_recording_id
+        short_id: tools.short_id
+        body: tools.body
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: environmentssessionrecordingplaylistsrecordingsdestroy
+      description: environmentssessionrecordingplaylistsrecordingsdestroy
+      hints:
+        readOnly: false
+        destructive: true
+        idempotent: true
+      call: posthog-session-recording-playlists.environmentssessionrecordingplaylistsrecordingsdestroy
+      with:
+        session_recording_id: tools.session_recording_id
+        short_id: tools.short_id
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: override-list-include-synthetic-playlists-2
+      description: Override list to include synthetic playlists
+      hints:
+        readOnly: true
+        destructive: false
+        idempotent: true
+      call: posthog-session-recording-playlists.sessionrecordingplaylistslist
+      with:
+        created_by: tools.created_by
+        limit: tools.limit
+        offset: tools.offset
+        short_id: tools.short_id
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: sessionrecordingplaylistscreate
+      description: sessionrecordingplaylistscreate
+      hints:
+        readOnly: false
+        destructive: false
+        idempotent: false
+      call: posthog-session-recording-playlists.sessionrecordingplaylistscreate
+      with:
+        body: tools.body
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: sessionrecordingplaylistsretrieve
+      description: sessionrecordingplaylistsretrieve
+      hints:
+        readOnly: true
+        destructive: false
+        idempotent: true
+      call: posthog-session-recording-playlists.sessionrecordingplaylistsretrieve
+      with:
+        short_id: tools.short_id
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: sessionrecordingplaylistsupdate
+      description: sessionrecordingplaylistsupdate
+      hints:
+        readOnly: false
+        destructive: false
+        idempotent: true
+      call: posthog-session-recording-playlists.sessionrecordingplaylistsupdate
+      with:
+        short_id: tools.short_id
+        body: tools.body
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: sessionrecordingplaylistspartialupdate
+      description: sessionrecordingplaylistspartialupdate
+      hints:
+        readOnly: false
+        destructive: false
+        idempotent: true
+      call: posthog-session-recording-playlists.sessionrecordingplaylistspartialupdate
+      with:
+        short_id: tools.short_id
+        body: tools.body
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: hard-delete-this-model-is-2
+      description: Hard delete of this model is not allowed. Use a patch API call to set "deleted" to true
+      hints:
+        readOnly: false
+        destructive: true
+        idempotent: true
+      call: posthog-session-recording-playlists.sessionrecordingplaylistsdestroy
+      with:
+        short_id: tools.short_id
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: sessionrecordingplaylistsrecordingsretrieve
+      description: sessionrecordingplaylistsrecordingsretrieve
+      hints:
+        readOnly: true
+        destructive: false
+        idempotent: true
+      call: posthog-session-recording-playlists.sessionrecordingplaylistsrecordingsretrieve
+      with:
+        short_id: tools.short_id
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: sessionrecordingplaylistsrecordingscreate
+      description: sessionrecordingplaylistsrecordingscreate
+      hints:
+        readOnly: false
+        destructive: false
+        idempotent: false
+      call: posthog-session-recording-playlists.sessionrecordingplaylistsrecordingscreate
+      with:
+        session_recording_id: tools.session_recording_id
+        short_id: tools.short_id
+        body: tools.body
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: sessionrecordingplaylistsrecordingsdestroy
+      description: sessionrecordingplaylistsrecordingsdestroy
+      hints:
+        readOnly: false
+        destructive: true
+        idempotent: true
+      call: posthog-session-recording-playlists.sessionrecordingplaylistsrecordingsdestroy
+      with:
+        session_recording_id: tools.session_recording_id
+        short_id: tools.short_id
+      outputParameters:
+      - type: object
+        mapping: $.

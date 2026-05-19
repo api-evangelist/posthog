@@ -1,0 +1,392 @@
+naftiko: 1.0.0-alpha2
+info:
+  label: PostHog API — property_definitions
+  description: 'PostHog API — property_definitions. 7 operations. Lead operation: property_definitions. Self-contained Naftiko
+    capability covering one Posthog business surface.'
+  tags:
+  - Posthog
+  - property_definitions
+  created: '2026-05-19'
+  modified: '2026-05-19'
+binds:
+- namespace: env
+  keys:
+    POSTHOG_API_KEY: POSTHOG_API_KEY
+capability:
+  consumes:
+  - type: http
+    namespace: posthog-property-definitions
+    baseUri: ''
+    description: PostHog API — property_definitions business capability. Self-contained, no shared references.
+    resources:
+    - name: api-projects-project_id-property_definitions
+      path: /api/projects/{project_id}/property_definitions/
+      operations:
+      - name: propertydefinitionslist
+        method: GET
+        description: ''
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: event_names
+          in: query
+          type: string
+          description: If sent, response value will have `is_seen_on_filtered_events` populated. JSON-encoded
+        - name: exclude_core_properties
+          in: query
+          type: boolean
+          description: Whether to exclude core properties
+        - name: exclude_hidden
+          in: query
+          type: boolean
+          description: Whether to exclude properties marked as hidden
+        - name: excluded_properties
+          in: query
+          type: string
+          description: JSON-encoded list of excluded properties
+        - name: filter_by_event_names
+          in: query
+          type: boolean
+          description: Whether to return only properties for events in `event_names`
+        - name: group_type_index
+          in: query
+          type: integer
+          description: What group type is the property for. Only should be set if `type=group`
+        - name: is_feature_flag
+          in: query
+          type: boolean
+          description: Whether to return only (or excluding) feature flag properties
+        - name: is_numerical
+          in: query
+          type: boolean
+          description: Whether to return only (or excluding) numerical property definitions
+        - name: limit
+          in: query
+          type: integer
+          description: Number of results to return per page.
+        - name: offset
+          in: query
+          type: integer
+          description: The initial index from which to return the results.
+        - name: properties
+          in: query
+          type: string
+          description: Comma-separated list of properties to filter
+        - name: search
+          in: query
+          type: string
+          description: Searches properties by name
+        - name: type
+          in: query
+          type: string
+          description: What property definitions to return
+        - name: verified
+          in: query
+          type: boolean
+          description: Filter by verified status. True returns only verified, false returns only unverified.
+    - name: api-projects-project_id-property_definitions-bulk_update_tags
+      path: /api/projects/{project_id}/property_definitions/bulk_update_tags/
+      operations:
+      - name: propertydefinitionsbulkupdatetagscreate
+        method: POST
+        description: Bulk update tags on multiple objects.
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: body
+          in: body
+          type: object
+          description: Request body (JSON).
+          required: true
+    - name: api-projects-project_id-property_definitions-seen_together
+      path: /api/projects/{project_id}/property_definitions/seen_together/
+      operations:
+      - name: propertydefinitionsseentogetherretrieve
+        method: GET
+        description: Allows a caller to provide a list of event names and a single property name
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+    - name: api-projects-project_id-property_definitions-id
+      path: /api/projects/{project_id}/property_definitions/{id}/
+      operations:
+      - name: propertydefinitionsretrieve
+        method: GET
+        description: ''
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: id
+          in: path
+          type: string
+          description: A UUID string identifying this property definition.
+          required: true
+      - name: propertydefinitionsupdate
+        method: PUT
+        description: ''
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: id
+          in: path
+          type: string
+          description: A UUID string identifying this property definition.
+          required: true
+        - name: body
+          in: body
+          type: object
+          description: Request body (JSON).
+          required: false
+      - name: propertydefinitionspartialupdate
+        method: PATCH
+        description: ''
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: id
+          in: path
+          type: string
+          description: A UUID string identifying this property definition.
+          required: true
+        - name: body
+          in: body
+          type: object
+          description: Request body (JSON).
+          required: false
+      - name: propertydefinitionsdestroy
+        method: DELETE
+        description: ''
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: id
+          in: path
+          type: string
+          description: A UUID string identifying this property definition.
+          required: true
+    authentication:
+      type: bearer
+      token: '{{env.POSTHOG_API_KEY}}'
+  exposes:
+  - type: rest
+    namespace: posthog-property-definitions-rest
+    port: 8080
+    description: REST adapter for PostHog API — property_definitions. One Spectral-compliant resource per consumed operation,
+      prefixed with /v1.
+    resources:
+    - path: /v1/api/projects/{project-id}/property-definitions
+      name: api-projects-project-id-property-definitions
+      description: REST surface for api-projects-project_id-property_definitions.
+      operations:
+      - method: GET
+        name: propertydefinitionslist
+        description: propertydefinitionslist
+        call: posthog-property-definitions.propertydefinitionslist
+        with:
+          event_names: rest.event_names
+          exclude_core_properties: rest.exclude_core_properties
+          exclude_hidden: rest.exclude_hidden
+          excluded_properties: rest.excluded_properties
+          filter_by_event_names: rest.filter_by_event_names
+          group_type_index: rest.group_type_index
+          is_feature_flag: rest.is_feature_flag
+          is_numerical: rest.is_numerical
+          limit: rest.limit
+          offset: rest.offset
+          properties: rest.properties
+          search: rest.search
+          type: rest.type
+          verified: rest.verified
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /v1/api/projects/{project-id}/property-definitions/bulk-update-tags
+      name: api-projects-project-id-property-definitions-bulk-update-tags
+      description: REST surface for api-projects-project_id-property_definitions-bulk_update_tags.
+      operations:
+      - method: POST
+        name: propertydefinitionsbulkupdatetagscreate
+        description: Bulk update tags on multiple objects.
+        call: posthog-property-definitions.propertydefinitionsbulkupdatetagscreate
+        with:
+          body: rest.body
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /v1/api/projects/{project-id}/property-definitions/seen-together
+      name: api-projects-project-id-property-definitions-seen-together
+      description: REST surface for api-projects-project_id-property_definitions-seen_together.
+      operations:
+      - method: GET
+        name: propertydefinitionsseentogetherretrieve
+        description: Allows a caller to provide a list of event names and a single property name
+        call: posthog-property-definitions.propertydefinitionsseentogetherretrieve
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /v1/api/projects/{project-id}/property-definitions/{id}
+      name: api-projects-project-id-property-definitions-id
+      description: REST surface for api-projects-project_id-property_definitions-id.
+      operations:
+      - method: GET
+        name: propertydefinitionsretrieve
+        description: propertydefinitionsretrieve
+        call: posthog-property-definitions.propertydefinitionsretrieve
+        with:
+          id: rest.id
+        outputParameters:
+        - type: object
+          mapping: $.
+      - method: PUT
+        name: propertydefinitionsupdate
+        description: propertydefinitionsupdate
+        call: posthog-property-definitions.propertydefinitionsupdate
+        with:
+          id: rest.id
+          body: rest.body
+        outputParameters:
+        - type: object
+          mapping: $.
+      - method: PATCH
+        name: propertydefinitionspartialupdate
+        description: propertydefinitionspartialupdate
+        call: posthog-property-definitions.propertydefinitionspartialupdate
+        with:
+          id: rest.id
+          body: rest.body
+        outputParameters:
+        - type: object
+          mapping: $.
+      - method: DELETE
+        name: propertydefinitionsdestroy
+        description: propertydefinitionsdestroy
+        call: posthog-property-definitions.propertydefinitionsdestroy
+        with:
+          id: rest.id
+        outputParameters:
+        - type: object
+          mapping: $.
+  - type: mcp
+    namespace: posthog-property-definitions-mcp
+    port: 9090
+    transport: http
+    description: MCP adapter for PostHog API — property_definitions. One tool per consumed operation, routed inline through
+      this capability's consumes block.
+    tools:
+    - name: propertydefinitionslist
+      description: propertydefinitionslist
+      hints:
+        readOnly: true
+        destructive: false
+        idempotent: true
+      call: posthog-property-definitions.propertydefinitionslist
+      with:
+        event_names: tools.event_names
+        exclude_core_properties: tools.exclude_core_properties
+        exclude_hidden: tools.exclude_hidden
+        excluded_properties: tools.excluded_properties
+        filter_by_event_names: tools.filter_by_event_names
+        group_type_index: tools.group_type_index
+        is_feature_flag: tools.is_feature_flag
+        is_numerical: tools.is_numerical
+        limit: tools.limit
+        offset: tools.offset
+        properties: tools.properties
+        search: tools.search
+        type: tools.type
+        verified: tools.verified
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: bulk-update-tags-multiple-objects
+      description: Bulk update tags on multiple objects.
+      hints:
+        readOnly: false
+        destructive: false
+        idempotent: false
+      call: posthog-property-definitions.propertydefinitionsbulkupdatetagscreate
+      with:
+        body: tools.body
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: allows-caller-provide-list-event
+      description: Allows a caller to provide a list of event names and a single property name
+      hints:
+        readOnly: true
+        destructive: false
+        idempotent: true
+      call: posthog-property-definitions.propertydefinitionsseentogetherretrieve
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: propertydefinitionsretrieve
+      description: propertydefinitionsretrieve
+      hints:
+        readOnly: true
+        destructive: false
+        idempotent: true
+      call: posthog-property-definitions.propertydefinitionsretrieve
+      with:
+        id: tools.id
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: propertydefinitionsupdate
+      description: propertydefinitionsupdate
+      hints:
+        readOnly: false
+        destructive: false
+        idempotent: true
+      call: posthog-property-definitions.propertydefinitionsupdate
+      with:
+        id: tools.id
+        body: tools.body
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: propertydefinitionspartialupdate
+      description: propertydefinitionspartialupdate
+      hints:
+        readOnly: false
+        destructive: false
+        idempotent: true
+      call: posthog-property-definitions.propertydefinitionspartialupdate
+      with:
+        id: tools.id
+        body: tools.body
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: propertydefinitionsdestroy
+      description: propertydefinitionsdestroy
+      hints:
+        readOnly: false
+        destructive: true
+        idempotent: true
+      call: posthog-property-definitions.propertydefinitionsdestroy
+      with:
+        id: tools.id
+      outputParameters:
+      - type: object
+        mapping: $.
