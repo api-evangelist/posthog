@@ -1,0 +1,113 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "#/components/schemas/SignalReport",
+  "title": "SignalReport",
+  "type": "object",
+  "properties": {
+    "id": {
+      "type": "string",
+      "format": "uuid",
+      "readOnly": true
+    },
+    "title": {
+      "type": "string",
+      "readOnly": true,
+      "nullable": true
+    },
+    "summary": {
+      "type": "string",
+      "readOnly": true,
+      "nullable": true
+    },
+    "status": {
+      "allOf": [
+        {
+          "$ref": "#/components/schemas/SignalReportStatusEnum"
+        }
+      ],
+      "readOnly": true
+    },
+    "total_weight": {
+      "type": "number",
+      "format": "double",
+      "readOnly": true
+    },
+    "signal_count": {
+      "type": "integer",
+      "readOnly": true
+    },
+    "signals_at_run": {
+      "type": "integer",
+      "readOnly": true
+    },
+    "created_at": {
+      "type": "string",
+      "format": "date-time",
+      "readOnly": true
+    },
+    "updated_at": {
+      "type": "string",
+      "format": "date-time",
+      "readOnly": true
+    },
+    "artefact_count": {
+      "type": "integer",
+      "readOnly": true
+    },
+    "priority": {
+      "type": "string",
+      "nullable": true,
+      "readOnly": true,
+      "description": "P0\u2013P4 from the latest priority judgment artefact (when present)."
+    },
+    "actionability": {
+      "type": "string",
+      "nullable": true,
+      "readOnly": true,
+      "description": "Actionability choice from the latest actionability judgment artefact (when present)."
+    },
+    "already_addressed": {
+      "type": "boolean",
+      "nullable": true,
+      "readOnly": true,
+      "description": "Whether the issue appears already fixed, from the actionability judgment artefact."
+    },
+    "is_suggested_reviewer": {
+      "type": "boolean",
+      "readOnly": true,
+      "default": false
+    },
+    "source_products": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "readOnly": true,
+      "description": "Distinct source products contributing signals to this report (from ClickHouse)."
+    },
+    "implementation_pr_url": {
+      "type": "string",
+      "nullable": true,
+      "readOnly": true,
+      "description": "PR URL from the latest implementation task run, if available."
+    }
+  },
+  "required": [
+    "actionability",
+    "already_addressed",
+    "artefact_count",
+    "created_at",
+    "id",
+    "implementation_pr_url",
+    "is_suggested_reviewer",
+    "priority",
+    "signal_count",
+    "signals_at_run",
+    "source_products",
+    "status",
+    "summary",
+    "title",
+    "total_weight",
+    "updated_at"
+  ]
+}

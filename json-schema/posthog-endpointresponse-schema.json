@@ -1,0 +1,139 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "#/components/schemas/EndpointResponse",
+  "title": "EndpointResponse",
+  "type": "object",
+  "description": "Full endpoint representation returned by list/retrieve/create/update.",
+  "properties": {
+    "id": {
+      "type": "string",
+      "format": "uuid",
+      "description": "Unique endpoint identifier (UUID)."
+    },
+    "name": {
+      "type": "string",
+      "description": "URL-safe endpoint name, unique per team."
+    },
+    "description": {
+      "type": "string",
+      "nullable": true,
+      "description": "Human-readable description of the endpoint."
+    },
+    "query": {
+      "description": "The HogQL or insight query definition (JSON object with 'kind' key)."
+    },
+    "is_active": {
+      "type": "boolean",
+      "description": "Whether the endpoint can be executed via the API."
+    },
+    "data_freshness_seconds": {
+      "type": "integer",
+      "description": "How fresh the data is, in seconds. One of: 900, 1800, 3600, 21600, 43200, 86400, 604800."
+    },
+    "endpoint_path": {
+      "type": "string",
+      "description": "Relative API path to execute this endpoint (e.g. /api/environments/{team_id}/endpoints/{name}/run)."
+    },
+    "url": {
+      "type": "string",
+      "nullable": true,
+      "description": "Absolute URL to execute this endpoint."
+    },
+    "ui_url": {
+      "type": "string",
+      "nullable": true,
+      "description": "Absolute URL to view this endpoint in the PostHog UI."
+    },
+    "created_at": {
+      "type": "string",
+      "format": "date-time",
+      "description": "When the endpoint was created (ISO 8601)."
+    },
+    "updated_at": {
+      "type": "string",
+      "format": "date-time",
+      "description": "When the endpoint was last updated (ISO 8601)."
+    },
+    "created_by": {
+      "allOf": [
+        {
+          "$ref": "#/components/schemas/UserBasic"
+        }
+      ],
+      "readOnly": true,
+      "description": "User who created the endpoint."
+    },
+    "is_materialized": {
+      "type": "boolean",
+      "description": "Whether the current version's results are pre-computed to S3."
+    },
+    "current_version": {
+      "type": "integer",
+      "description": "Latest version number."
+    },
+    "current_version_id": {
+      "type": "string",
+      "format": "uuid",
+      "nullable": true,
+      "description": "UUID of the current EndpointVersion row."
+    },
+    "versions_count": {
+      "type": "integer",
+      "description": "Total number of versions for this endpoint."
+    },
+    "derived_from_insight": {
+      "type": "string",
+      "nullable": true,
+      "description": "Short ID of the source insight, if derived from one."
+    },
+    "last_executed_at": {
+      "type": "string",
+      "format": "date-time",
+      "nullable": true,
+      "description": "When this endpoint was last executed via the API (ISO 8601), or null if never executed."
+    },
+    "materialization": {
+      "allOf": [
+        {
+          "$ref": "#/components/schemas/EndpointMaterialization"
+        }
+      ],
+      "description": "Materialization status and configuration for the current version."
+    },
+    "bucket_overrides": {
+      "type": "object",
+      "additionalProperties": true,
+      "nullable": true,
+      "description": "Per-column bucket overrides for range variable materialization."
+    },
+    "columns": {
+      "type": "array",
+      "items": {
+        "$ref": "#/components/schemas/EndpointColumn"
+      },
+      "description": "Column names and types from the query's SELECT clause."
+    }
+  },
+  "required": [
+    "bucket_overrides",
+    "columns",
+    "created_at",
+    "created_by",
+    "current_version",
+    "data_freshness_seconds",
+    "derived_from_insight",
+    "description",
+    "endpoint_path",
+    "id",
+    "is_active",
+    "is_materialized",
+    "last_executed_at",
+    "materialization",
+    "name",
+    "query",
+    "ui_url",
+    "updated_at",
+    "url",
+    "versions_count"
+  ]
+}

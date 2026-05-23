@@ -1,0 +1,53 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "#/components/schemas/EvaluationConfig",
+  "title": "EvaluationConfig",
+  "type": "object",
+  "properties": {
+    "trial_eval_limit": {
+      "type": "integer",
+      "readOnly": true,
+      "description": "Maximum number of llm_judge runs the team may execute on PostHog trial credits."
+    },
+    "trial_evals_used": {
+      "type": "integer",
+      "readOnly": true,
+      "description": "Number of llm_judge runs already consumed against the trial credit pool."
+    },
+    "trial_evals_remaining": {
+      "type": "integer",
+      "readOnly": true,
+      "description": "Number of trial evaluation runs remaining before the team must supply its own provider key."
+    },
+    "active_provider_key": {
+      "allOf": [
+        {
+          "$ref": "#/components/schemas/LLMProviderKey"
+        }
+      ],
+      "readOnly": true,
+      "nullable": true,
+      "description": "Provider key currently used to run llm_judge evaluations. Null when the team is on trial credits."
+    },
+    "created_at": {
+      "type": "string",
+      "format": "date-time",
+      "readOnly": true,
+      "description": "Timestamp when the evaluation config row was created."
+    },
+    "updated_at": {
+      "type": "string",
+      "format": "date-time",
+      "readOnly": true,
+      "description": "Timestamp when the evaluation config row was last modified."
+    }
+  },
+  "required": [
+    "active_provider_key",
+    "created_at",
+    "trial_eval_limit",
+    "trial_evals_remaining",
+    "trial_evals_used",
+    "updated_at"
+  ]
+}

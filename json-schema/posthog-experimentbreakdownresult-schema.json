@@ -1,0 +1,58 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "#/components/schemas/ExperimentBreakdownResult",
+  "title": "ExperimentBreakdownResult",
+  "additionalProperties": false,
+  "properties": {
+    "baseline": {
+      "description": "Control variant stats for this breakdown",
+      "allOf": [
+        {
+          "$ref": "#/components/schemas/ExperimentStatsBaseValidated"
+        }
+      ]
+    },
+    "breakdown_value": {
+      "description": "The breakdown values as an array (e.g., [\"MacOS\", \"Chrome\"] for multi-breakdown, [\"Chrome\"] for single) Although `BreakdownKeyType` could be an array, we only use the array form for the breakdown_value. The way `BreakdownKeyType` is defined is problematic. It should be treated as a primitive and allow for the types using it to define if it's and array or an optional value.",
+      "items": {
+        "anyOf": [
+          {
+            "type": "string"
+          },
+          {
+            "type": "number"
+          },
+          {
+            "type": "integer"
+          }
+        ]
+      },
+      "title": "Breakdown Value",
+      "type": "array"
+    },
+    "variants": {
+      "anyOf": [
+        {
+          "items": {
+            "$ref": "#/components/schemas/ExperimentVariantResultFrequentist"
+          },
+          "type": "array"
+        },
+        {
+          "items": {
+            "$ref": "#/components/schemas/ExperimentVariantResultBayesian"
+          },
+          "type": "array"
+        }
+      ],
+      "description": "Test variant results with statistical comparisons for this breakdown",
+      "title": "Variants"
+    }
+  },
+  "required": [
+    "baseline",
+    "breakdown_value",
+    "variants"
+  ],
+  "type": "object"
+}

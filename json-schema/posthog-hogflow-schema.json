@@ -1,0 +1,96 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "#/components/schemas/HogFlow",
+  "title": "HogFlow",
+  "type": "object",
+  "properties": {
+    "id": {
+      "type": "string",
+      "format": "uuid",
+      "readOnly": true
+    },
+    "name": {
+      "type": "string",
+      "nullable": true,
+      "maxLength": 400
+    },
+    "description": {
+      "type": "string"
+    },
+    "version": {
+      "type": "integer",
+      "readOnly": true
+    },
+    "status": {
+      "$ref": "#/components/schemas/HogFlowStatusEnum"
+    },
+    "created_at": {
+      "type": "string",
+      "format": "date-time",
+      "readOnly": true
+    },
+    "created_by": {
+      "allOf": [
+        {
+          "$ref": "#/components/schemas/UserBasic"
+        }
+      ],
+      "readOnly": true
+    },
+    "updated_at": {
+      "type": "string",
+      "format": "date-time",
+      "readOnly": true
+    },
+    "trigger": {},
+    "trigger_masking": {
+      "allOf": [
+        {
+          "$ref": "#/components/schemas/HogFlowMasking"
+        }
+      ],
+      "nullable": true
+    },
+    "conversion": {
+      "nullable": true
+    },
+    "exit_condition": {
+      "$ref": "#/components/schemas/ExitConditionEnum"
+    },
+    "edges": {},
+    "actions": {
+      "type": "array",
+      "items": {
+        "$ref": "#/components/schemas/HogFlowAction"
+      }
+    },
+    "abort_action": {
+      "type": "string",
+      "readOnly": true,
+      "nullable": true
+    },
+    "variables": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": {
+          "type": "string"
+        }
+      }
+    },
+    "billable_action_types": {
+      "readOnly": true,
+      "nullable": true
+    }
+  },
+  "required": [
+    "abort_action",
+    "actions",
+    "billable_action_types",
+    "created_at",
+    "created_by",
+    "id",
+    "updated_at",
+    "version"
+  ]
+}

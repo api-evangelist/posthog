@@ -1,0 +1,61 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "#/components/schemas/InsightVariable",
+  "title": "InsightVariable",
+  "type": "object",
+  "properties": {
+    "id": {
+      "type": "string",
+      "format": "uuid",
+      "readOnly": true,
+      "description": "UUID of the SQL variable."
+    },
+    "name": {
+      "type": "string",
+      "description": "Human-readable name for the SQL variable.",
+      "maxLength": 400
+    },
+    "type": {
+      "allOf": [
+        {
+          "$ref": "#/components/schemas/InsightVariableTypeEnum"
+        }
+      ],
+      "description": "Variable type. Controls how the value is rendered and substituted in HogQL.\n\n* `String` - String\n* `Number` - Number\n* `Boolean` - Boolean\n* `List` - List\n* `Date` - Date"
+    },
+    "default_value": {
+      "nullable": true,
+      "description": "Default value used when a query references this variable."
+    },
+    "created_by": {
+      "type": "integer",
+      "readOnly": true,
+      "nullable": true,
+      "description": "ID of the user who created the SQL variable."
+    },
+    "created_at": {
+      "type": "string",
+      "format": "date-time",
+      "readOnly": true,
+      "description": "Timestamp when the SQL variable was created."
+    },
+    "code_name": {
+      "type": "string",
+      "readOnly": true,
+      "nullable": true,
+      "description": "Generated code-safe name used in HogQL as {variables.code_name}. Derived from name."
+    },
+    "values": {
+      "nullable": true,
+      "description": "Allowed values for List variables. Null for other variable types."
+    }
+  },
+  "required": [
+    "code_name",
+    "created_at",
+    "created_by",
+    "id",
+    "name",
+    "type"
+  ]
+}

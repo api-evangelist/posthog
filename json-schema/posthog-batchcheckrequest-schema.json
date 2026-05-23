@@ -1,0 +1,33 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "#/components/schemas/BatchCheckRequest",
+  "title": "BatchCheckRequest",
+  "type": "object",
+  "properties": {
+    "trace_ids": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "List of trace IDs to check for cached summaries",
+      "maxItems": 100
+    },
+    "mode": {
+      "allOf": [
+        {
+          "$ref": "#/components/schemas/DetailModeValueEnum"
+        }
+      ],
+      "default": "minimal",
+      "description": "Summary detail level to check for\n\n* `minimal` - minimal\n* `detailed` - detailed"
+    },
+    "model": {
+      "type": "string",
+      "nullable": true,
+      "description": "LLM model used for cached summaries"
+    }
+  },
+  "required": [
+    "trace_ids"
+  ]
+}

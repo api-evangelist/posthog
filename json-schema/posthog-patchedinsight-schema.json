@@ -1,0 +1,221 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "#/components/schemas/PatchedInsight",
+  "title": "PatchedInsight",
+  "type": "object",
+  "description": "Simplified serializer to speed response times when loading large amounts of objects.",
+  "properties": {
+    "id": {
+      "type": "integer",
+      "readOnly": true
+    },
+    "short_id": {
+      "type": "string",
+      "readOnly": true
+    },
+    "name": {
+      "type": "string",
+      "nullable": true,
+      "maxLength": 400
+    },
+    "derived_name": {
+      "type": "string",
+      "nullable": true,
+      "maxLength": 400
+    },
+    "query": {
+      "allOf": [
+        {
+          "$ref": "#/components/schemas/_InsightQuerySchema"
+        }
+      ],
+      "nullable": true
+    },
+    "order": {
+      "type": "integer",
+      "maximum": 2147483647,
+      "minimum": -2147483648,
+      "nullable": true
+    },
+    "deleted": {
+      "type": "boolean"
+    },
+    "dashboards": {
+      "type": "array",
+      "items": {
+        "type": "integer"
+      },
+      "description": "\n        DEPRECATED. Will be removed in a future release. Use dashboard_tiles instead.\n        A dashboard ID for each of the dashboards that this insight is displayed on.\n        "
+    },
+    "dashboard_tiles": {
+      "type": "array",
+      "items": {
+        "$ref": "#/components/schemas/DashboardTileBasic"
+      },
+      "readOnly": true,
+      "description": "\n    A dashboard tile ID and dashboard_id for each of the dashboards that this insight is displayed on.\n    "
+    },
+    "last_refresh": {
+      "type": "string",
+      "format": "date-time",
+      "nullable": true,
+      "readOnly": true,
+      "description": "\n    The datetime this insight's results were generated.\n    If added to one or more dashboards the insight can be refreshed separately on each.\n    Returns the appropriate last_refresh datetime for the context the insight is viewed in\n    (see from_dashboard query parameter).\n    "
+    },
+    "cache_target_age": {
+      "type": "string",
+      "format": "date-time",
+      "nullable": true,
+      "readOnly": true,
+      "description": "The target age of the cached results for this insight."
+    },
+    "next_allowed_client_refresh": {
+      "type": "string",
+      "format": "date-time",
+      "nullable": true,
+      "readOnly": true,
+      "description": "\n    The earliest possible datetime at which we'll allow the cached results for this insight to be refreshed\n    by querying the database.\n    "
+    },
+    "result": {
+      "readOnly": true
+    },
+    "hasMore": {
+      "type": "boolean",
+      "nullable": true,
+      "readOnly": true
+    },
+    "columns": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "nullable": true,
+      "readOnly": true
+    },
+    "created_at": {
+      "type": "string",
+      "format": "date-time",
+      "readOnly": true,
+      "nullable": true
+    },
+    "created_by": {
+      "allOf": [
+        {
+          "$ref": "#/components/schemas/UserBasic"
+        }
+      ],
+      "readOnly": true
+    },
+    "description": {
+      "type": "string",
+      "nullable": true,
+      "maxLength": 400
+    },
+    "updated_at": {
+      "type": "string",
+      "format": "date-time",
+      "readOnly": true
+    },
+    "tags": {
+      "type": "array",
+      "items": {}
+    },
+    "favorited": {
+      "type": "boolean"
+    },
+    "last_modified_at": {
+      "type": "string",
+      "format": "date-time",
+      "readOnly": true
+    },
+    "last_modified_by": {
+      "allOf": [
+        {
+          "$ref": "#/components/schemas/UserBasic"
+        }
+      ],
+      "readOnly": true
+    },
+    "is_sample": {
+      "type": "boolean",
+      "readOnly": true
+    },
+    "effective_restriction_level": {
+      "allOf": [
+        {
+          "$ref": "#/components/schemas/EffectivePrivilegeLevelEnum"
+        }
+      ],
+      "readOnly": true
+    },
+    "effective_privilege_level": {
+      "allOf": [
+        {
+          "$ref": "#/components/schemas/EffectivePrivilegeLevelEnum"
+        }
+      ],
+      "readOnly": true
+    },
+    "user_access_level": {
+      "type": "string",
+      "nullable": true,
+      "readOnly": true,
+      "description": "The effective access level the user has for this object"
+    },
+    "timezone": {
+      "type": "string",
+      "nullable": true,
+      "readOnly": true,
+      "description": "The timezone this chart is displayed in."
+    },
+    "is_cached": {
+      "type": "boolean",
+      "readOnly": true
+    },
+    "query_status": {
+      "readOnly": true
+    },
+    "hogql": {
+      "type": "string",
+      "nullable": true,
+      "readOnly": true
+    },
+    "types": {
+      "type": "array",
+      "items": {},
+      "nullable": true,
+      "readOnly": true
+    },
+    "resolved_date_range": {
+      "type": "object",
+      "nullable": true,
+      "properties": {
+        "date_from": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "date_to": {
+          "type": "string",
+          "format": "date-time"
+        }
+      },
+      "readOnly": true
+    },
+    "_create_in_folder": {
+      "type": "string",
+      "writeOnly": true,
+      "title": " create in folder"
+    },
+    "alerts": {
+      "type": "array",
+      "items": {},
+      "readOnly": true
+    },
+    "last_viewed_at": {
+      "type": "string",
+      "format": "date-time",
+      "nullable": true,
+      "readOnly": true
+    }
+  }
+}

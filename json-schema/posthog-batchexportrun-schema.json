@@ -1,0 +1,110 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "#/components/schemas/BatchExportRun",
+  "title": "BatchExportRun",
+  "type": "object",
+  "description": "Serializer for a BatchExportRun model.",
+  "properties": {
+    "id": {
+      "type": "string",
+      "format": "uuid",
+      "readOnly": true
+    },
+    "status": {
+      "allOf": [
+        {
+          "$ref": "#/components/schemas/BatchExportRunStatusEnum"
+        }
+      ],
+      "description": "The status of this run.\n\n* `Cancelled` - Cancelled\n* `Completed` - Completed\n* `ContinuedAsNew` - Continued As New\n* `Failed` - Failed\n* `FailedRetryable` - Failed Retryable\n* `FailedBilling` - Failed Billing\n* `Terminated` - Terminated\n* `TimedOut` - Timedout\n* `Running` - Running\n* `Starting` - Starting"
+    },
+    "records_completed": {
+      "type": "integer",
+      "maximum": 2147483647,
+      "minimum": -2147483648,
+      "nullable": true,
+      "description": "The number of records that have been exported."
+    },
+    "records_failed": {
+      "type": "integer",
+      "maximum": 2147483647,
+      "minimum": -2147483648,
+      "nullable": true,
+      "description": "The number of records that failed downstream processing (e.g. hog function execution errors)."
+    },
+    "latest_error": {
+      "type": "string",
+      "nullable": true,
+      "description": "The latest error that occurred during this run."
+    },
+    "data_interval_start": {
+      "type": "string",
+      "format": "date-time",
+      "nullable": true,
+      "description": "The start of the data interval."
+    },
+    "data_interval_end": {
+      "type": "string",
+      "format": "date-time",
+      "description": "The end of the data interval."
+    },
+    "cursor": {
+      "type": "string",
+      "nullable": true,
+      "description": "An opaque cursor that may be used to resume."
+    },
+    "created_at": {
+      "type": "string",
+      "format": "date-time",
+      "readOnly": true,
+      "description": "The timestamp at which this BatchExportRun was created."
+    },
+    "finished_at": {
+      "type": "string",
+      "format": "date-time",
+      "nullable": true,
+      "description": "The timestamp at which this BatchExportRun finished, successfully or not."
+    },
+    "last_updated_at": {
+      "type": "string",
+      "format": "date-time",
+      "readOnly": true,
+      "description": "The timestamp at which this BatchExportRun was last updated."
+    },
+    "records_total_count": {
+      "type": "integer",
+      "maximum": 2147483647,
+      "minimum": -2147483648,
+      "nullable": true,
+      "description": "The total count of records that should be exported in this BatchExportRun."
+    },
+    "bytes_exported": {
+      "type": "integer",
+      "maximum": 9223372036854775807,
+      "minimum": -9223372036854775808,
+      "format": "int64",
+      "nullable": true,
+      "description": "The number of bytes that have been exported in this BatchExportRun."
+    },
+    "batch_export": {
+      "type": "string",
+      "format": "uuid",
+      "readOnly": true,
+      "description": "The BatchExport this run belongs to."
+    },
+    "backfill": {
+      "type": "string",
+      "format": "uuid",
+      "nullable": true,
+      "description": "The backfill this run belongs to."
+    }
+  },
+  "required": [
+    "batch_export",
+    "created_at",
+    "data_interval_end",
+    "id",
+    "last_updated_at",
+    "status"
+  ]
+}

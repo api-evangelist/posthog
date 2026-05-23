@@ -1,0 +1,74 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "#/components/schemas/PersonPropertiesAtTimeResponse",
+  "title": "PersonPropertiesAtTimeResponse",
+  "type": "object",
+  "description": "Serializer for the point-in-time person properties response.",
+  "properties": {
+    "id": {
+      "type": "integer",
+      "description": "The person ID"
+    },
+    "name": {
+      "type": "string",
+      "description": "The person's display name"
+    },
+    "distinct_ids": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "All distinct IDs associated with this person"
+    },
+    "properties": {
+      "type": "object",
+      "additionalProperties": {
+        "type": "string",
+        "nullable": true
+      },
+      "description": "Person properties as they existed at the specified time"
+    },
+    "created_at": {
+      "type": "string",
+      "format": "date-time",
+      "description": "When the person was first created"
+    },
+    "uuid": {
+      "type": "string",
+      "format": "uuid",
+      "description": "The person's UUID"
+    },
+    "last_seen_at": {
+      "type": "string",
+      "format": "date-time",
+      "nullable": true,
+      "description": "When the person was last seen"
+    },
+    "point_in_time_metadata": {
+      "allOf": [
+        {
+          "$ref": "#/components/schemas/PersonPropertiesAtTimeMetadata"
+        }
+      ],
+      "description": "Metadata about the point-in-time query"
+    },
+    "debug": {
+      "allOf": [
+        {
+          "$ref": "#/components/schemas/PersonPropertiesAtTimeDebug"
+        }
+      ],
+      "description": "Debug information (only available when debug=true and DEBUG=True)"
+    }
+  },
+  "required": [
+    "created_at",
+    "distinct_ids",
+    "id",
+    "last_seen_at",
+    "name",
+    "point_in_time_metadata",
+    "properties",
+    "uuid"
+  ]
+}

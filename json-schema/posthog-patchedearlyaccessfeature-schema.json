@@ -1,0 +1,55 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "#/components/schemas/PatchedEarlyAccessFeature",
+  "title": "PatchedEarlyAccessFeature",
+  "type": "object",
+  "properties": {
+    "id": {
+      "type": "string",
+      "format": "uuid",
+      "readOnly": true
+    },
+    "feature_flag": {
+      "allOf": [
+        {
+          "$ref": "#/components/schemas/MinimalFeatureFlag"
+        }
+      ],
+      "readOnly": true
+    },
+    "name": {
+      "type": "string",
+      "description": "The name of the early access feature.",
+      "maxLength": 200
+    },
+    "description": {
+      "type": "string",
+      "description": "A longer description of what this early access feature does, shown to users in the opt-in UI."
+    },
+    "stage": {
+      "allOf": [
+        {
+          "$ref": "#/components/schemas/StageEnum"
+        }
+      ],
+      "description": "Lifecycle stage. Valid values: draft, concept, alpha, beta, general-availability, archived. Moving to an active stage (alpha/beta/general-availability) enables the feature flag for opted-in users.\n\n* `draft` - draft\n* `concept` - concept\n* `alpha` - alpha\n* `beta` - beta\n* `general-availability` - general availability\n* `archived` - archived"
+    },
+    "documentation_url": {
+      "type": "string",
+      "format": "uri",
+      "description": "URL to external documentation for this feature. Shown to users in the opt-in UI.",
+      "maxLength": 800
+    },
+    "payload": {
+      "type": "object",
+      "additionalProperties": true,
+      "description": "Feature flag payload for this early access feature",
+      "readOnly": true
+    },
+    "created_at": {
+      "type": "string",
+      "format": "date-time",
+      "readOnly": true
+    }
+  }
+}

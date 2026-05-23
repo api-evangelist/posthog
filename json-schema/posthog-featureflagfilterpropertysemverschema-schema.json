@@ -1,0 +1,47 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "#/components/schemas/FeatureFlagFilterPropertySemverSchema",
+  "title": "FeatureFlagFilterPropertySemverSchema",
+  "type": "object",
+  "properties": {
+    "key": {
+      "type": "string",
+      "description": "Property key used in this feature flag condition."
+    },
+    "type": {
+      "allOf": [
+        {
+          "$ref": "#/components/schemas/PropertyGroupTypeEnum"
+        }
+      ],
+      "description": "Property filter type. Common values are 'person' and 'cohort'.\n\n* `cohort` - cohort\n* `person` - person\n* `group` - group"
+    },
+    "cohort_name": {
+      "type": "string",
+      "nullable": true,
+      "description": "Resolved cohort name for cohort-type filters."
+    },
+    "group_type_index": {
+      "type": "integer",
+      "nullable": true,
+      "description": "Group type index when using group-based filters."
+    },
+    "operator": {
+      "allOf": [
+        {
+          "$ref": "#/components/schemas/FeatureFlagFilterPropertySemverSchemaOperatorEnum"
+        }
+      ],
+      "description": "Semantic version comparison operator.\n\n* `semver_gt` - semver_gt\n* `semver_gte` - semver_gte\n* `semver_lt` - semver_lt\n* `semver_lte` - semver_lte\n* `semver_eq` - semver_eq\n* `semver_neq` - semver_neq\n* `semver_tilde` - semver_tilde\n* `semver_caret` - semver_caret\n* `semver_wildcard` - semver_wildcard"
+    },
+    "value": {
+      "type": "string",
+      "description": "Semantic version string."
+    }
+  },
+  "required": [
+    "key",
+    "operator",
+    "value"
+  ]
+}

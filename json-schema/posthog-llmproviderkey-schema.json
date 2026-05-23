@@ -1,0 +1,102 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "#/components/schemas/LLMProviderKey",
+  "title": "LLMProviderKey",
+  "type": "object",
+  "properties": {
+    "id": {
+      "type": "string",
+      "format": "uuid",
+      "readOnly": true
+    },
+    "provider": {
+      "$ref": "#/components/schemas/LLMProviderEnum"
+    },
+    "name": {
+      "type": "string",
+      "maxLength": 255
+    },
+    "state": {
+      "allOf": [
+        {
+          "$ref": "#/components/schemas/LLMProviderKeyStateEnum"
+        }
+      ],
+      "readOnly": true
+    },
+    "error_message": {
+      "type": "string",
+      "readOnly": true,
+      "nullable": true
+    },
+    "api_key": {
+      "type": "string",
+      "writeOnly": true
+    },
+    "api_key_masked": {
+      "type": "string",
+      "readOnly": true
+    },
+    "azure_endpoint": {
+      "type": "string",
+      "format": "uri",
+      "writeOnly": true,
+      "description": "Azure OpenAI endpoint URL"
+    },
+    "api_version": {
+      "type": "string",
+      "writeOnly": true,
+      "description": "Azure OpenAI API version",
+      "maxLength": 20
+    },
+    "azure_endpoint_display": {
+      "type": "string",
+      "nullable": true,
+      "readOnly": true,
+      "description": "Azure endpoint (read-only, for display)"
+    },
+    "api_version_display": {
+      "type": "string",
+      "nullable": true,
+      "readOnly": true,
+      "description": "Azure API version (read-only, for display)"
+    },
+    "set_as_active": {
+      "type": "boolean",
+      "writeOnly": true,
+      "default": false
+    },
+    "created_at": {
+      "type": "string",
+      "format": "date-time",
+      "readOnly": true
+    },
+    "created_by": {
+      "allOf": [
+        {
+          "$ref": "#/components/schemas/UserBasic"
+        }
+      ],
+      "readOnly": true
+    },
+    "last_used_at": {
+      "type": "string",
+      "format": "date-time",
+      "readOnly": true,
+      "nullable": true
+    }
+  },
+  "required": [
+    "api_key_masked",
+    "api_version_display",
+    "azure_endpoint_display",
+    "created_at",
+    "created_by",
+    "error_message",
+    "id",
+    "last_used_at",
+    "name",
+    "provider",
+    "state"
+  ]
+}

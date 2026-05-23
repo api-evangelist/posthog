@@ -1,0 +1,90 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "#/components/schemas/MinimalFeatureFlag",
+  "title": "MinimalFeatureFlag",
+  "type": "object",
+  "properties": {
+    "id": {
+      "type": "integer",
+      "readOnly": true
+    },
+    "team_id": {
+      "type": "integer",
+      "readOnly": true
+    },
+    "name": {
+      "type": "string"
+    },
+    "key": {
+      "type": "string",
+      "maxLength": 400
+    },
+    "filters": {
+      "type": "object",
+      "additionalProperties": true
+    },
+    "deleted": {
+      "type": "boolean"
+    },
+    "active": {
+      "type": "boolean"
+    },
+    "ensure_experience_continuity": {
+      "type": "boolean",
+      "nullable": true
+    },
+    "has_encrypted_payloads": {
+      "type": "boolean",
+      "nullable": true
+    },
+    "version": {
+      "type": "integer",
+      "maximum": 2147483647,
+      "minimum": -2147483648,
+      "nullable": true
+    },
+    "evaluation_runtime": {
+      "nullable": true,
+      "description": "Specifies where this feature flag should be evaluated\n\n* `server` - Server\n* `client` - Client\n* `all` - All",
+      "oneOf": [
+        {
+          "$ref": "#/components/schemas/EvaluationRuntimeEnum"
+        },
+        {
+          "$ref": "#/components/schemas/BlankEnum"
+        },
+        {
+          "$ref": "#/components/schemas/NullEnum"
+        }
+      ]
+    },
+    "bucketing_identifier": {
+      "nullable": true,
+      "description": "Identifier used for bucketing users into rollout and variants\n\n* `distinct_id` - User ID (default)\n* `device_id` - Device ID",
+      "oneOf": [
+        {
+          "$ref": "#/components/schemas/BucketingIdentifierEnum"
+        },
+        {
+          "$ref": "#/components/schemas/BlankEnum"
+        },
+        {
+          "$ref": "#/components/schemas/NullEnum"
+        }
+      ]
+    },
+    "evaluation_contexts": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "readOnly": true
+    }
+  },
+  "required": [
+    "evaluation_contexts",
+    "id",
+    "key",
+    "team_id"
+  ]
+}

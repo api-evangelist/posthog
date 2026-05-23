@@ -1,0 +1,34 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "#/components/schemas/ExistencePropertyFilter",
+  "title": "ExistencePropertyFilter",
+  "type": "object",
+  "description": "Checks whether a property is set or not, without comparing values.",
+  "properties": {
+    "key": {
+      "type": "string",
+      "description": "Key of the property you're filtering on. For example `email` or `$current_url`."
+    },
+    "type": {
+      "allOf": [
+        {
+          "$ref": "#/components/schemas/PropertyFilterTypeEnum"
+        }
+      ],
+      "default": "event",
+      "description": "Property type (event, person, session, etc.).\n\n* `event` - event\n* `event_metadata` - event_metadata\n* `feature` - feature\n* `person` - person\n* `cohort` - cohort\n* `element` - element\n* `static-cohort` - static-cohort\n* `dynamic-cohort` - dynamic-cohort\n* `precalculated-cohort` - precalculated-cohort\n* `group` - group\n* `recording` - recording\n* `log_entry` - log_entry\n* `behavioral` - behavioral\n* `session` - session\n* `hogql` - hogql\n* `data_warehouse` - data_warehouse\n* `data_warehouse_person_property` - data_warehouse_person_property\n* `error_tracking_issue` - error_tracking_issue\n* `log` - log\n* `log_attribute` - log_attribute\n* `log_resource_attribute` - log_resource_attribute\n* `span` - span\n* `span_attribute` - span_attribute\n* `span_resource_attribute` - span_resource_attribute\n* `revenue_analytics` - revenue_analytics\n* `flag` - flag\n* `workflow_variable` - workflow_variable"
+    },
+    "operator": {
+      "allOf": [
+        {
+          "$ref": "#/components/schemas/ExistenceOperatorEnum"
+        }
+      ],
+      "description": "Existence check operator.\n\n* `is_set` - is_set\n* `is_not_set` - is_not_set"
+    }
+  },
+  "required": [
+    "key",
+    "operator"
+  ]
+}

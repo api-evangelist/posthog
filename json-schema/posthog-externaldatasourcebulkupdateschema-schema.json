@@ -1,0 +1,65 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "#/components/schemas/ExternalDataSourceBulkUpdateSchema",
+  "title": "ExternalDataSourceBulkUpdateSchema",
+  "type": "object",
+  "properties": {
+    "id": {
+      "type": "string",
+      "format": "uuid",
+      "description": "Schema identifier to update."
+    },
+    "should_sync": {
+      "type": "boolean",
+      "description": "Whether the schema should be queryable/synced."
+    },
+    "sync_type": {
+      "nullable": true,
+      "description": "Requested sync mode for the schema.\n\n* `full_refresh` - full_refresh\n* `incremental` - incremental\n* `append` - append\n* `webhook` - webhook\n* `cdc` - cdc",
+      "oneOf": [
+        {
+          "$ref": "#/components/schemas/SyncTypeEnum"
+        },
+        {
+          "$ref": "#/components/schemas/NullEnum"
+        }
+      ]
+    },
+    "incremental_field": {
+      "type": "string",
+      "nullable": true,
+      "description": "Incremental cursor field for incremental or append syncs."
+    },
+    "incremental_field_type": {
+      "type": "string",
+      "nullable": true,
+      "description": "Type of the incremental cursor field."
+    },
+    "sync_frequency": {
+      "type": "string",
+      "nullable": true,
+      "description": "Human-readable sync frequency value."
+    },
+    "sync_time_of_day": {
+      "type": "string",
+      "format": "time",
+      "nullable": true,
+      "description": "UTC anchor time for scheduled syncs."
+    },
+    "cdc_table_mode": {
+      "nullable": true,
+      "description": "How CDC-backed tables should be exposed.\n\n* `consolidated` - consolidated\n* `cdc_only` - cdc_only\n* `both` - both",
+      "oneOf": [
+        {
+          "$ref": "#/components/schemas/CdcTableModeEnum"
+        },
+        {
+          "$ref": "#/components/schemas/NullEnum"
+        }
+      ]
+    }
+  },
+  "required": [
+    "id"
+  ]
+}

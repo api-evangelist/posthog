@@ -1,0 +1,63 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "#/components/schemas/ReviewQueueItem",
+  "title": "ReviewQueueItem",
+  "type": "object",
+  "properties": {
+    "id": {
+      "type": "string",
+      "format": "uuid",
+      "readOnly": true
+    },
+    "queue_id": {
+      "type": "string",
+      "format": "uuid",
+      "readOnly": true,
+      "description": "Review queue ID that currently owns this pending trace."
+    },
+    "queue_name": {
+      "type": "string",
+      "readOnly": true,
+      "description": "Human-readable name of the queue that currently owns this pending trace."
+    },
+    "trace_id": {
+      "type": "string",
+      "readOnly": true,
+      "description": "Trace ID currently pending review."
+    },
+    "created_at": {
+      "type": "string",
+      "format": "date-time",
+      "readOnly": true
+    },
+    "updated_at": {
+      "type": "string",
+      "format": "date-time",
+      "readOnly": true,
+      "nullable": true
+    },
+    "created_by": {
+      "allOf": [
+        {
+          "$ref": "#/components/schemas/UserBasic"
+        }
+      ],
+      "readOnly": true,
+      "description": "User who queued this trace."
+    },
+    "team": {
+      "type": "integer",
+      "readOnly": true
+    }
+  },
+  "required": [
+    "created_at",
+    "created_by",
+    "id",
+    "queue_id",
+    "queue_name",
+    "team",
+    "trace_id",
+    "updated_at"
+  ]
+}

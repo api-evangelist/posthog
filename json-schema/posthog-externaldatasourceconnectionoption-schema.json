@@ -1,0 +1,36 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "#/components/schemas/ExternalDataSourceConnectionOption",
+  "title": "ExternalDataSourceConnectionOption",
+  "type": "object",
+  "properties": {
+    "id": {
+      "type": "string",
+      "format": "uuid",
+      "readOnly": true
+    },
+    "prefix": {
+      "type": "string",
+      "readOnly": true,
+      "nullable": true
+    },
+    "engine": {
+      "readOnly": true,
+      "nullable": true,
+      "description": "Backend engine detected for the direct connection.\n\n* `duckdb` - duckdb\n* `postgres` - postgres",
+      "oneOf": [
+        {
+          "$ref": "#/components/schemas/EngineEnum"
+        },
+        {
+          "$ref": "#/components/schemas/NullEnum"
+        }
+      ]
+    }
+  },
+  "required": [
+    "engine",
+    "id",
+    "prefix"
+  ]
+}

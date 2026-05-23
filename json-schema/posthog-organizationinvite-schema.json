@@ -1,0 +1,79 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "#/components/schemas/OrganizationInvite",
+  "title": "OrganizationInvite",
+  "type": "object",
+  "properties": {
+    "id": {
+      "type": "string",
+      "format": "uuid",
+      "readOnly": true
+    },
+    "target_email": {
+      "type": "string",
+      "format": "email",
+      "maxLength": 254
+    },
+    "first_name": {
+      "type": "string",
+      "maxLength": 30
+    },
+    "emailing_attempt_made": {
+      "type": "boolean",
+      "readOnly": true
+    },
+    "level": {
+      "$ref": "#/components/schemas/OrganizationMembershipLevelEnum"
+    },
+    "is_expired": {
+      "type": "boolean",
+      "description": "Check if invite is older than INVITE_DAYS_VALIDITY days.",
+      "readOnly": true
+    },
+    "created_by": {
+      "allOf": [
+        {
+          "$ref": "#/components/schemas/UserBasic"
+        }
+      ],
+      "readOnly": true
+    },
+    "created_at": {
+      "type": "string",
+      "format": "date-time",
+      "readOnly": true
+    },
+    "updated_at": {
+      "type": "string",
+      "format": "date-time",
+      "readOnly": true
+    },
+    "message": {
+      "type": "string",
+      "nullable": true
+    },
+    "private_project_access": {
+      "nullable": true,
+      "description": "List of team IDs and corresponding access levels to private projects."
+    },
+    "send_email": {
+      "type": "boolean",
+      "writeOnly": true,
+      "default": true
+    },
+    "combine_pending_invites": {
+      "type": "boolean",
+      "writeOnly": true,
+      "default": false
+    }
+  },
+  "required": [
+    "created_at",
+    "created_by",
+    "emailing_attempt_made",
+    "id",
+    "is_expired",
+    "target_email",
+    "updated_at"
+  ]
+}

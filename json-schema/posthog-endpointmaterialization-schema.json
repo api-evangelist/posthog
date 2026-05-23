@@ -1,0 +1,45 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "#/components/schemas/EndpointMaterialization",
+  "title": "EndpointMaterialization",
+  "type": "object",
+  "description": "Materialization status for an endpoint version.",
+  "properties": {
+    "name": {
+      "type": "string",
+      "description": "URL-safe endpoint name."
+    },
+    "status": {
+      "type": "string",
+      "description": "Current materialization status (e.g. 'Completed', 'Running')."
+    },
+    "can_materialize": {
+      "type": "boolean",
+      "description": "Whether this endpoint query can be materialized."
+    },
+    "reason": {
+      "type": "string",
+      "nullable": true,
+      "description": "Reason why materialization is not possible (only when can_materialize is false)."
+    },
+    "last_materialized_at": {
+      "type": "string",
+      "nullable": true,
+      "description": "ISO 8601 timestamp of the last successful materialization."
+    },
+    "error": {
+      "type": "string",
+      "description": "Last materialization error message, if any."
+    },
+    "saved_query_id": {
+      "type": "string",
+      "format": "uuid",
+      "nullable": true,
+      "description": "UUID of the underlying saved query backing this materialization. Only populated when the version is materialized."
+    }
+  },
+  "required": [
+    "can_materialize",
+    "name"
+  ]
+}

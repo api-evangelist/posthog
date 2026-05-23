@@ -1,0 +1,79 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "#/components/schemas/HogFunctionTemplate",
+  "title": "HogFunctionTemplate",
+  "type": "object",
+  "properties": {
+    "id": {
+      "type": "string",
+      "description": "Unique template identifier (e.g. 'template-slack')."
+    },
+    "name": {
+      "type": "string",
+      "description": "Display name of the template.",
+      "maxLength": 400
+    },
+    "description": {
+      "type": "string",
+      "nullable": true,
+      "description": "What this template does."
+    },
+    "code": {
+      "type": "string",
+      "description": "Source code of the template."
+    },
+    "code_language": {
+      "type": "string",
+      "description": "Programming language: 'hog' or 'javascript'.",
+      "maxLength": 20
+    },
+    "inputs_schema": {
+      "description": "Schema defining configurable inputs for functions created from this template."
+    },
+    "type": {
+      "type": "string",
+      "description": "Function type this template creates.",
+      "maxLength": 50
+    },
+    "status": {
+      "type": "string",
+      "description": "Lifecycle status: alpha, beta, stable, deprecated, or hidden.",
+      "maxLength": 20
+    },
+    "category": {
+      "description": "Category tags for organizing templates."
+    },
+    "free": {
+      "type": "boolean",
+      "description": "Whether available on free plans."
+    },
+    "icon_url": {
+      "type": "string",
+      "nullable": true,
+      "description": "URL for the template's icon."
+    },
+    "filters": {
+      "nullable": true,
+      "description": "Default event filters."
+    },
+    "masking": {
+      "nullable": true,
+      "description": "Default PII masking configuration."
+    },
+    "mapping_templates": {
+      "type": "array",
+      "items": {
+        "$ref": "#/components/schemas/HogFunctionMappingTemplate"
+      },
+      "nullable": true,
+      "description": "Pre-defined mapping configurations for destination templates."
+    }
+  },
+  "required": [
+    "code",
+    "id",
+    "inputs_schema",
+    "name",
+    "type"
+  ]
+}

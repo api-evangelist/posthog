@@ -1,0 +1,57 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "#/components/schemas/TaskRunArtifactPrepareUploadResponse",
+  "title": "TaskRunArtifactPrepareUploadResponse",
+  "type": "object",
+  "properties": {
+    "id": {
+      "type": "string",
+      "description": "Stable identifier for the prepared artifact within this run"
+    },
+    "name": {
+      "type": "string",
+      "description": "Artifact file name"
+    },
+    "type": {
+      "type": "string",
+      "description": "Artifact classification (plan, context, etc.)"
+    },
+    "source": {
+      "type": "string",
+      "description": "Source of the artifact, such as agent_output or user_attachment"
+    },
+    "size": {
+      "type": "integer",
+      "description": "Expected upload size in bytes"
+    },
+    "content_type": {
+      "type": "string",
+      "description": "Optional MIME type"
+    },
+    "storage_path": {
+      "type": "string",
+      "description": "S3 object key reserved for the artifact"
+    },
+    "expires_in": {
+      "type": "integer",
+      "description": "Presigned POST expiry in seconds"
+    },
+    "presigned_post": {
+      "allOf": [
+        {
+          "$ref": "#/components/schemas/S3PresignedPost"
+        }
+      ],
+      "description": "Presigned S3 POST configuration for uploading the file"
+    }
+  },
+  "required": [
+    "expires_in",
+    "id",
+    "name",
+    "presigned_post",
+    "size",
+    "storage_path",
+    "type"
+  ]
+}

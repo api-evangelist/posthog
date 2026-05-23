@@ -1,0 +1,93 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "#/components/schemas/ExperimentQuery",
+  "title": "ExperimentQuery",
+  "additionalProperties": false,
+  "properties": {
+    "experiment_id": {
+      "default": null,
+      "title": "Experiment Id",
+      "type": "integer",
+      "nullable": true
+    },
+    "kind": {
+      "default": "ExperimentQuery",
+      "title": "Kind",
+      "type": "string",
+      "enum": [
+        "ExperimentQuery"
+      ]
+    },
+    "metric": {
+      "anyOf": [
+        {
+          "$ref": "#/components/schemas/ExperimentMeanMetric"
+        },
+        {
+          "$ref": "#/components/schemas/ExperimentFunnelMetric"
+        },
+        {
+          "$ref": "#/components/schemas/ExperimentRatioMetric"
+        },
+        {
+          "$ref": "#/components/schemas/ExperimentRetentionMetric"
+        }
+      ],
+      "title": "Metric"
+    },
+    "modifiers": {
+      "default": null,
+      "description": "Modifiers used when performing the query",
+      "allOf": [
+        {
+          "$ref": "#/components/schemas/HogQLQueryModifiers"
+        }
+      ],
+      "nullable": true
+    },
+    "name": {
+      "default": null,
+      "title": "Name",
+      "type": "string",
+      "nullable": true
+    },
+    "precomputation_mode": {
+      "default": null,
+      "allOf": [
+        {
+          "$ref": "#/components/schemas/PrecomputationMode"
+        }
+      ],
+      "nullable": true
+    },
+    "response": {
+      "default": null,
+      "allOf": [
+        {
+          "$ref": "#/components/schemas/ExperimentQueryResponse"
+        }
+      ],
+      "nullable": true
+    },
+    "tags": {
+      "default": null,
+      "allOf": [
+        {
+          "$ref": "#/components/schemas/QueryLogTags"
+        }
+      ],
+      "nullable": true
+    },
+    "version": {
+      "default": null,
+      "description": "version of the node, used for schema migrations",
+      "title": "Version",
+      "type": "number",
+      "nullable": true
+    }
+  },
+  "required": [
+    "metric"
+  ],
+  "type": "object"
+}

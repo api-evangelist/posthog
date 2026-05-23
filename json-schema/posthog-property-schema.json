@@ -1,0 +1,26 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "#/components/schemas/Property",
+  "title": "Property",
+  "type": "object",
+  "properties": {
+    "type": {
+      "allOf": [
+        {
+          "$ref": "#/components/schemas/PropertyGroupOperator"
+        }
+      ],
+      "default": "AND",
+      "description": "\n You can use a simplified version:\n```json\n{\n    \"properties\": [\n        {\n            \"key\": \"email\",\n            \"value\": \"x@y.com\",\n            \"operator\": \"exact\",\n            \"type\": \"event\"\n        }\n    ]\n}\n```\n\nOr you can create more complicated queries with AND and OR:\n```json\n{\n    \"properties\": {\n        \"type\": \"AND\",\n        \"values\": [\n            {\n                \"type\": \"OR\",\n                \"values\": [\n                    {\"key\": \"email\", ...},\n                    {\"key\": \"email\", ...}\n                ]\n            },\n            {\n                \"type\": \"AND\",\n                \"values\": [\n                    {\"key\": \"email\", ...},\n                    {\"key\": \"email\", ...}\n                ]\n            }\n        ]\n    ]\n}\n```\n\n\n* `AND` - AND\n* `OR` - OR"
+    },
+    "values": {
+      "type": "array",
+      "items": {
+        "$ref": "#/components/schemas/PropertyItem"
+      }
+    }
+  },
+  "required": [
+    "values"
+  ]
+}

@@ -1,0 +1,85 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "#/components/schemas/RepositoryReadinessResponse",
+  "title": "RepositoryReadinessResponse",
+  "type": "object",
+  "properties": {
+    "repository": {
+      "type": "string",
+      "description": "Normalized repository identifier"
+    },
+    "classification": {
+      "type": "string",
+      "description": "Repository classification"
+    },
+    "excluded": {
+      "type": "boolean",
+      "description": "Whether the repository is excluded from readiness checks"
+    },
+    "coreSuggestions": {
+      "allOf": [
+        {
+          "$ref": "#/components/schemas/CapabilityState"
+        }
+      ],
+      "description": "Tracking capability state"
+    },
+    "replayInsights": {
+      "allOf": [
+        {
+          "$ref": "#/components/schemas/CapabilityState"
+        }
+      ],
+      "description": "Computer vision capability state"
+    },
+    "errorInsights": {
+      "allOf": [
+        {
+          "$ref": "#/components/schemas/CapabilityState"
+        }
+      ],
+      "description": "Error tracking capability state"
+    },
+    "overall": {
+      "type": "string",
+      "description": "Overall readiness state"
+    },
+    "evidenceTaskCount": {
+      "type": "integer",
+      "description": "Count of replay-derived evidence tasks"
+    },
+    "windowDays": {
+      "type": "integer",
+      "description": "Lookback window in days"
+    },
+    "generatedAt": {
+      "type": "string",
+      "description": "ISO timestamp when the response was generated"
+    },
+    "cacheAgeSeconds": {
+      "type": "integer",
+      "description": "Age of cached response in seconds"
+    },
+    "scan": {
+      "allOf": [
+        {
+          "$ref": "#/components/schemas/ScanEvidence"
+        }
+      ],
+      "description": "Scan evidence details"
+    }
+  },
+  "required": [
+    "cacheAgeSeconds",
+    "classification",
+    "coreSuggestions",
+    "errorInsights",
+    "evidenceTaskCount",
+    "excluded",
+    "generatedAt",
+    "overall",
+    "replayInsights",
+    "repository",
+    "windowDays"
+  ]
+}

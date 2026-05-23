@@ -1,0 +1,46 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "#/components/schemas/Message",
+  "title": "Message",
+  "type": "object",
+  "description": "Serializer for appending a message to an existing conversation without triggering AI processing.",
+  "properties": {
+    "content": {
+      "type": "string",
+      "nullable": true,
+      "maxLength": 40000
+    },
+    "conversation": {
+      "type": "string",
+      "format": "uuid"
+    },
+    "contextual_tools": {
+      "type": "object",
+      "additionalProperties": true
+    },
+    "ui_context": {},
+    "billing_context": {},
+    "trace_id": {
+      "type": "string",
+      "format": "uuid"
+    },
+    "session_id": {
+      "type": "string"
+    },
+    "agent_mode": {
+      "$ref": "#/components/schemas/AgentModeEnum"
+    },
+    "is_sandbox": {
+      "type": "boolean",
+      "default": false
+    },
+    "resume_payload": {
+      "nullable": true
+    }
+  },
+  "required": [
+    "content",
+    "conversation",
+    "trace_id"
+  ]
+}

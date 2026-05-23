@@ -1,0 +1,72 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "#/components/schemas/EventPropertyFilter",
+  "title": "EventPropertyFilter",
+  "additionalProperties": false,
+  "properties": {
+    "key": {
+      "title": "Key",
+      "type": "string"
+    },
+    "label": {
+      "default": null,
+      "title": "Label",
+      "type": "string",
+      "nullable": true
+    },
+    "operator": {
+      "default": "exact",
+      "allOf": [
+        {
+          "$ref": "#/components/schemas/PropertyOperator"
+        }
+      ],
+      "nullable": true
+    },
+    "type": {
+      "default": "event",
+      "description": "Event properties",
+      "title": "Type",
+      "type": "string",
+      "enum": [
+        "event"
+      ]
+    },
+    "value": {
+      "default": null,
+      "title": "Value",
+      "anyOf": [
+        {
+          "items": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "number"
+              },
+              {
+                "type": "boolean"
+              }
+            ]
+          },
+          "type": "array"
+        },
+        {
+          "type": "string"
+        },
+        {
+          "type": "number"
+        },
+        {
+          "type": "boolean"
+        }
+      ],
+      "nullable": true
+    }
+  },
+  "required": [
+    "key"
+  ],
+  "type": "object"
+}

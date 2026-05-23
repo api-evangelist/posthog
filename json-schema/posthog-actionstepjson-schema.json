@@ -1,0 +1,90 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "#/components/schemas/ActionStepJSON",
+  "title": "ActionStepJSON",
+  "type": "object",
+  "properties": {
+    "event": {
+      "type": "string",
+      "nullable": true,
+      "description": "Event name to match (e.g. '$pageview', '$autocapture', or a custom event name)."
+    },
+    "properties": {
+      "type": "array",
+      "items": {
+        "$ref": "#/components/schemas/ActionStepPropertyFilter"
+      },
+      "nullable": true,
+      "description": "Event or person property filters. Each item should have 'key' (string), 'value' (string, number, boolean, or array), optional 'operator' (exact, is_not, is_set, is_not_set, icontains, not_icontains, regex, not_regex, gt, gte, lt, lte), and optional 'type' (event, person)."
+    },
+    "selector": {
+      "type": "string",
+      "nullable": true,
+      "description": "CSS selector to match the target element (e.g. 'div > button.cta')."
+    },
+    "selector_regex": {
+      "type": "string",
+      "nullable": true,
+      "readOnly": true
+    },
+    "tag_name": {
+      "type": "string",
+      "nullable": true,
+      "description": "HTML tag name to match (e.g. \"button\", \"a\", \"input\")."
+    },
+    "text": {
+      "type": "string",
+      "nullable": true,
+      "description": "Element text content to match."
+    },
+    "text_matching": {
+      "nullable": true,
+      "description": "How to match the text value. Defaults to exact.\n\n* `contains` - contains\n* `regex` - regex\n* `exact` - exact",
+      "oneOf": [
+        {
+          "$ref": "#/components/schemas/ActionStepMatchingEnum"
+        },
+        {
+          "$ref": "#/components/schemas/NullEnum"
+        }
+      ]
+    },
+    "href": {
+      "type": "string",
+      "nullable": true,
+      "description": "Link href attribute to match."
+    },
+    "href_matching": {
+      "nullable": true,
+      "description": "How to match the href value. Defaults to exact.\n\n* `contains` - contains\n* `regex` - regex\n* `exact` - exact",
+      "oneOf": [
+        {
+          "$ref": "#/components/schemas/ActionStepMatchingEnum"
+        },
+        {
+          "$ref": "#/components/schemas/NullEnum"
+        }
+      ]
+    },
+    "url": {
+      "type": "string",
+      "nullable": true,
+      "description": "Page URL to match."
+    },
+    "url_matching": {
+      "nullable": true,
+      "description": "How to match the URL value. Defaults to contains.\n\n* `contains` - contains\n* `regex` - regex\n* `exact` - exact",
+      "oneOf": [
+        {
+          "$ref": "#/components/schemas/ActionStepMatchingEnum"
+        },
+        {
+          "$ref": "#/components/schemas/NullEnum"
+        }
+      ]
+    }
+  },
+  "required": [
+    "selector_regex"
+  ]
+}

@@ -1,0 +1,34 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "#/components/schemas/TraceReviewCreate",
+  "title": "TraceReviewCreate",
+  "type": "object",
+  "properties": {
+    "trace_id": {
+      "type": "string",
+      "description": "Trace ID for the review. Only one active review can exist per trace and team.",
+      "maxLength": 255
+    },
+    "comment": {
+      "type": "string",
+      "nullable": true,
+      "description": "Optional comment or reasoning for the review."
+    },
+    "scores": {
+      "type": "array",
+      "items": {
+        "$ref": "#/components/schemas/TraceReviewScoreWrite"
+      },
+      "description": "Full desired score set for this review. Omit scorers you want to leave blank."
+    },
+    "queue_id": {
+      "type": "string",
+      "format": "uuid",
+      "nullable": true,
+      "description": "Optional review queue ID for queue-context saves. When provided, the matching pending queue item is cleared after the review is saved. If omitted, any pending queue item for the same trace is cleared."
+    }
+  },
+  "required": [
+    "trace_id"
+  ]
+}

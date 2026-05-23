@@ -1,0 +1,74 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "#/components/schemas/EnsembleDetectorConfig",
+  "title": "EnsembleDetectorConfig",
+  "additionalProperties": false,
+  "properties": {
+    "detectors": {
+      "description": "Sub-detector configurations (minimum 2)",
+      "items": {
+        "anyOf": [
+          {
+            "$ref": "#/components/schemas/ZScoreDetectorConfig"
+          },
+          {
+            "$ref": "#/components/schemas/MADDetectorConfig"
+          },
+          {
+            "$ref": "#/components/schemas/IQRDetectorConfig"
+          },
+          {
+            "$ref": "#/components/schemas/ThresholdDetectorConfig"
+          },
+          {
+            "$ref": "#/components/schemas/ECODDetectorConfig"
+          },
+          {
+            "$ref": "#/components/schemas/COPODDetectorConfig"
+          },
+          {
+            "$ref": "#/components/schemas/IsolationForestDetectorConfig"
+          },
+          {
+            "$ref": "#/components/schemas/KNNDetectorConfig"
+          },
+          {
+            "$ref": "#/components/schemas/HBOSDetectorConfig"
+          },
+          {
+            "$ref": "#/components/schemas/LOFDetectorConfig"
+          },
+          {
+            "$ref": "#/components/schemas/OCSVMDetectorConfig"
+          },
+          {
+            "$ref": "#/components/schemas/PCADetectorConfig"
+          }
+        ]
+      },
+      "title": "Detectors",
+      "type": "array"
+    },
+    "operator": {
+      "description": "How to combine sub-detector results",
+      "allOf": [
+        {
+          "$ref": "#/components/schemas/EnsembleOperator"
+        }
+      ]
+    },
+    "type": {
+      "default": "ensemble",
+      "title": "Type",
+      "type": "string",
+      "enum": [
+        "ensemble"
+      ]
+    }
+  },
+  "required": [
+    "detectors",
+    "operator"
+  ],
+  "type": "object"
+}

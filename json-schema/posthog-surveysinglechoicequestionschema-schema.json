@@ -1,0 +1,65 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "#/components/schemas/SurveySingleChoiceQuestionSchema",
+  "title": "SurveySingleChoiceQuestionSchema",
+  "type": "object",
+  "properties": {
+    "type": {
+      "$ref": "#/components/schemas/SurveySingleChoiceQuestionSchemaTypeEnum"
+    },
+    "question": {
+      "type": "string",
+      "description": "Question text shown to respondents."
+    },
+    "description": {
+      "type": "string",
+      "description": "Optional helper text."
+    },
+    "descriptionContentType": {
+      "allOf": [
+        {
+          "$ref": "#/components/schemas/DescriptionContentTypeEnum"
+        }
+      ],
+      "description": "Format for the description field.\n\n* `text` - text\n* `html` - html"
+    },
+    "optional": {
+      "type": "boolean",
+      "description": "Whether respondents may skip this question."
+    },
+    "buttonText": {
+      "type": "string",
+      "description": "Custom button label."
+    },
+    "choices": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "Array of choice options. Choice indices (0, 1, 2, ...) are used for branching logic.",
+      "maxItems": 20,
+      "minItems": 2
+    },
+    "shuffleOptions": {
+      "type": "boolean",
+      "description": "Whether to randomize the order of choices for each respondent."
+    },
+    "hasOpenChoice": {
+      "type": "boolean",
+      "description": "Whether the final option should be an open-text choice (for example, 'Other')."
+    },
+    "branching": {
+      "allOf": [
+        {
+          "$ref": "#/components/schemas/SurveyBranchingSchema"
+        }
+      ],
+      "nullable": true
+    }
+  },
+  "required": [
+    "choices",
+    "question",
+    "type"
+  ]
+}

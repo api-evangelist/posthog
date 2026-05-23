@@ -1,0 +1,67 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "#/components/schemas/RoleExternalReference",
+  "title": "RoleExternalReference",
+  "type": "object",
+  "properties": {
+    "id": {
+      "type": "string",
+      "format": "uuid",
+      "readOnly": true
+    },
+    "provider": {
+      "type": "string",
+      "description": "Integration kind (e.g., github, linear, jira, slack).",
+      "maxLength": 32
+    },
+    "provider_organization_id": {
+      "type": "string",
+      "description": "Provider organization/workspace/site identifier.",
+      "maxLength": 255
+    },
+    "provider_role_id": {
+      "type": "string",
+      "description": "Stable provider role identifier.",
+      "maxLength": 255
+    },
+    "provider_role_slug": {
+      "type": "string",
+      "nullable": true,
+      "description": "Human-friendly provider role identifier.",
+      "maxLength": 255
+    },
+    "provider_role_name": {
+      "type": "string",
+      "description": "Display name of the provider role.",
+      "maxLength": 255
+    },
+    "role": {
+      "type": "string",
+      "format": "uuid",
+      "description": "PostHog role UUID this external role maps to."
+    },
+    "created_at": {
+      "type": "string",
+      "format": "date-time",
+      "readOnly": true
+    },
+    "created_by": {
+      "allOf": [
+        {
+          "$ref": "#/components/schemas/UserBasic"
+        }
+      ],
+      "readOnly": true
+    }
+  },
+  "required": [
+    "created_at",
+    "created_by",
+    "id",
+    "provider",
+    "provider_organization_id",
+    "provider_role_id",
+    "provider_role_name",
+    "role"
+  ]
+}

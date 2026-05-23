@@ -1,0 +1,91 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "#/components/schemas/TaskRunBootstrapCreateRequest",
+  "title": "TaskRunBootstrapCreateRequest",
+  "type": "object",
+  "description": "Request body for creating a task run without starting execution yet.",
+  "properties": {
+    "environment": {
+      "allOf": [
+        {
+          "$ref": "#/components/schemas/TaskRunBootstrapCreateRequestEnvironmentEnum"
+        }
+      ],
+      "default": "local",
+      "description": "Execution environment for the new run. Use 'cloud' for remote sandbox runs and 'local' for desktop sessions.\n\n* `local` - local\n* `cloud` - cloud"
+    },
+    "mode": {
+      "allOf": [
+        {
+          "$ref": "#/components/schemas/TaskExecutionModeEnum"
+        }
+      ],
+      "default": "background",
+      "description": "Execution mode: 'interactive' for user-connected runs, 'background' for autonomous runs\n\n* `interactive` - interactive\n* `background` - background"
+    },
+    "branch": {
+      "type": "string",
+      "nullable": true,
+      "description": "Git branch to checkout in the sandbox",
+      "maxLength": 255
+    },
+    "sandbox_environment_id": {
+      "type": "string",
+      "format": "uuid",
+      "description": "Optional sandbox environment to apply for this cloud run."
+    },
+    "pr_authorship_mode": {
+      "allOf": [
+        {
+          "$ref": "#/components/schemas/PrAuthorshipModeEnum"
+        }
+      ],
+      "description": "Whether pull requests for this run should be authored by the user or the bot.\n\n* `user` - user\n* `bot` - bot"
+    },
+    "run_source": {
+      "allOf": [
+        {
+          "$ref": "#/components/schemas/RunSourceEnum"
+        }
+      ],
+      "description": "High-level source that triggered this run, used to distinguish manual and signal-based cloud runs.\n\n* `manual` - manual\n* `signal_report` - signal_report"
+    },
+    "signal_report_id": {
+      "type": "string",
+      "description": "Optional signal report identifier when this run was started from Inbox."
+    },
+    "runtime_adapter": {
+      "allOf": [
+        {
+          "$ref": "#/components/schemas/RuntimeAdapterEnum"
+        }
+      ],
+      "description": "Agent runtime adapter to launch for this run. Use 'claude' for the Claude runtime or 'codex' for the Codex runtime.\n\n* `claude` - claude\n* `codex` - codex"
+    },
+    "model": {
+      "type": "string",
+      "description": "LLM model identifier to run in the selected runtime."
+    },
+    "reasoning_effort": {
+      "allOf": [
+        {
+          "$ref": "#/components/schemas/ReasoningEffortEnum"
+        }
+      ],
+      "description": "Reasoning effort to request for models that expose an effort control.\n\n* `low` - low\n* `medium` - medium\n* `high` - high\n* `xhigh` - xhigh\n* `max` - max"
+    },
+    "github_user_token": {
+      "type": "string",
+      "writeOnly": true,
+      "description": "Ephemeral GitHub user token from PostHog Code for user-authored cloud pull requests."
+    },
+    "initial_permission_mode": {
+      "allOf": [
+        {
+          "$ref": "#/components/schemas/TaskRunBootstrapCreateRequestInitialPermissionModeEnum"
+        }
+      ],
+      "description": "Initial permission mode for the agent session. Claude runtimes accept PostHog permission presets like 'plan'. Codex runtimes accept native Codex modes like 'auto' and 'read-only'.\n\n* `default` - default\n* `acceptEdits` - acceptEdits\n* `plan` - plan\n* `bypassPermissions` - bypassPermissions\n* `auto` - auto\n* `read-only` - read-only\n* `full-access` - full-access"
+    }
+  }
+}

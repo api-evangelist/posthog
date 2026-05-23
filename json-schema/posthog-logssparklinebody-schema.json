@@ -1,0 +1,52 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "#/components/schemas/_LogsSparklineBody",
+  "title": "_LogsSparklineBody",
+  "type": "object",
+  "properties": {
+    "dateRange": {
+      "allOf": [
+        {
+          "$ref": "#/components/schemas/_DateRange"
+        }
+      ],
+      "description": "Date range for the sparkline. Defaults to last hour."
+    },
+    "severityLevels": {
+      "type": "array",
+      "items": {
+        "$ref": "#/components/schemas/SeverityLevelsEnum"
+      },
+      "default": [],
+      "description": "Filter by log severity levels."
+    },
+    "serviceNames": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "default": [],
+      "description": "Filter by service names."
+    },
+    "searchTerm": {
+      "type": "string",
+      "description": "Full-text search term to filter log bodies."
+    },
+    "filterGroup": {
+      "type": "array",
+      "items": {
+        "$ref": "#/components/schemas/_LogPropertyFilter"
+      },
+      "default": [],
+      "description": "Property filters for the query."
+    },
+    "sparklineBreakdownBy": {
+      "allOf": [
+        {
+          "$ref": "#/components/schemas/SparklineBreakdownByEnum"
+        }
+      ],
+      "description": "Break down sparkline by \"severity\" (default) or \"service\".\n\n* `severity` - severity\n* `service` - service"
+    }
+  }
+}

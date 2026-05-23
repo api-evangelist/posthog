@@ -1,0 +1,170 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "#/components/schemas/ExperimentQueryResponse",
+  "title": "ExperimentQueryResponse",
+  "additionalProperties": false,
+  "properties": {
+    "baseline": {
+      "default": null,
+      "allOf": [
+        {
+          "$ref": "#/components/schemas/ExperimentStatsBaseValidated"
+        }
+      ],
+      "nullable": true
+    },
+    "breakdown_results": {
+      "default": null,
+      "description": "Results grouped by breakdown value. When present, baseline and variant_results contain aggregated data.",
+      "title": "Breakdown Results",
+      "items": {
+        "$ref": "#/components/schemas/ExperimentBreakdownResult"
+      },
+      "type": "array",
+      "nullable": true
+    },
+    "clickhouse_sql": {
+      "default": null,
+      "title": "Clickhouse Sql",
+      "type": "string",
+      "nullable": true
+    },
+    "credible_intervals": {
+      "default": null,
+      "title": "Credible Intervals",
+      "additionalProperties": {
+        "items": {
+          "type": "number"
+        },
+        "type": "array"
+      },
+      "type": "object",
+      "nullable": true
+    },
+    "hogql": {
+      "default": null,
+      "title": "Hogql",
+      "type": "string",
+      "nullable": true
+    },
+    "insight": {
+      "default": null,
+      "title": "Insight",
+      "items": {
+        "additionalProperties": true,
+        "type": "object"
+      },
+      "type": "array",
+      "nullable": true
+    },
+    "is_precomputed": {
+      "default": null,
+      "description": "Whether exposures were served from the precomputation system",
+      "title": "Is Precomputed",
+      "type": "boolean",
+      "nullable": true
+    },
+    "kind": {
+      "default": "ExperimentQuery",
+      "title": "Kind",
+      "type": "string",
+      "enum": [
+        "ExperimentQuery"
+      ]
+    },
+    "metric": {
+      "default": null,
+      "title": "Metric",
+      "anyOf": [
+        {
+          "$ref": "#/components/schemas/ExperimentMeanMetric"
+        },
+        {
+          "$ref": "#/components/schemas/ExperimentFunnelMetric"
+        },
+        {
+          "$ref": "#/components/schemas/ExperimentRatioMetric"
+        },
+        {
+          "$ref": "#/components/schemas/ExperimentRetentionMetric"
+        }
+      ],
+      "nullable": true
+    },
+    "p_value": {
+      "default": null,
+      "title": "P Value",
+      "type": "number",
+      "nullable": true
+    },
+    "probability": {
+      "default": null,
+      "title": "Probability",
+      "additionalProperties": {
+        "type": "number"
+      },
+      "type": "object",
+      "nullable": true
+    },
+    "significance_code": {
+      "default": null,
+      "allOf": [
+        {
+          "$ref": "#/components/schemas/ExperimentSignificanceCode"
+        }
+      ],
+      "nullable": true
+    },
+    "significant": {
+      "default": null,
+      "title": "Significant",
+      "type": "boolean",
+      "nullable": true
+    },
+    "stats_version": {
+      "default": null,
+      "title": "Stats Version",
+      "type": "integer",
+      "nullable": true
+    },
+    "variant_results": {
+      "default": null,
+      "title": "Variant Results",
+      "anyOf": [
+        {
+          "items": {
+            "$ref": "#/components/schemas/ExperimentVariantResultFrequentist"
+          },
+          "type": "array"
+        },
+        {
+          "items": {
+            "$ref": "#/components/schemas/ExperimentVariantResultBayesian"
+          },
+          "type": "array"
+        }
+      ],
+      "nullable": true
+    },
+    "variants": {
+      "default": null,
+      "title": "Variants",
+      "anyOf": [
+        {
+          "items": {
+            "$ref": "#/components/schemas/ExperimentVariantTrendsBaseStats"
+          },
+          "type": "array"
+        },
+        {
+          "items": {
+            "$ref": "#/components/schemas/ExperimentVariantFunnelsBaseStats"
+          },
+          "type": "array"
+        }
+      ],
+      "nullable": true
+    }
+  },
+  "type": "object"
+}

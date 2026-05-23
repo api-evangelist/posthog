@@ -1,0 +1,74 @@
+{
+  "operationId": "llm_analytics_text_repr_create",
+  "method": "POST",
+  "path": "/api/environments/{project_id}/llm_analytics/text_repr/",
+  "summary": "",
+  "requestExamples": [
+    {
+      "contentType": "application/json",
+      "name": "GenerationExample",
+      "example": {
+        "event_type": "$ai_generation",
+        "data": {
+          "id": "gen_123",
+          "properties": {
+            "$ai_input": [
+              {
+                "role": "user",
+                "content": "What is the capital of France?"
+              }
+            ],
+            "$ai_output_choices": [
+              {
+                "message": {
+                  "role": "assistant",
+                  "content": "The capital of France is Paris."
+                }
+              }
+            ]
+          }
+        },
+        "options": {
+          "max_length": 10000
+        }
+      }
+    },
+    {
+      "contentType": "application/json",
+      "name": "TraceExample",
+      "example": {
+        "event_type": "$ai_trace",
+        "data": {
+          "trace": {
+            "trace_id": "trace_123",
+            "name": "ChatBot Interaction"
+          },
+          "hierarchy": [
+            {
+              "id": "gen_1",
+              "event": "$ai_generation",
+              "children": []
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "responseExamples": [
+    {
+      "status": "200",
+      "contentType": "application/json",
+      "name": "SuccessResponse",
+      "example": {
+        "text": "INPUT:\n\n[1] USER\n\nWhat is the capital of France?\n\n...",
+        "metadata": {
+          "event_type": "$ai_generation",
+          "event_id": "gen_123",
+          "rendering": "detailed",
+          "char_count": 150,
+          "truncated": false
+        }
+      }
+    }
+  ]
+}

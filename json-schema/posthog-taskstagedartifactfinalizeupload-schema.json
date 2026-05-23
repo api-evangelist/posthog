@@ -1,0 +1,47 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "#/components/schemas/TaskStagedArtifactFinalizeUpload",
+  "title": "TaskStagedArtifactFinalizeUpload",
+  "type": "object",
+  "properties": {
+    "id": {
+      "type": "string",
+      "description": "Stable identifier returned by the staged prepare upload endpoint"
+    },
+    "name": {
+      "type": "string",
+      "description": "File name associated with the staged artifact",
+      "maxLength": 255
+    },
+    "type": {
+      "allOf": [
+        {
+          "$ref": "#/components/schemas/TaskRunArtifactTypeEnum"
+        }
+      ],
+      "description": "Classification for the artifact\n\n* `plan` - plan\n* `context` - context\n* `reference` - reference\n* `output` - output\n* `artifact` - artifact\n* `tree_snapshot` - tree_snapshot\n* `user_attachment` - user_attachment"
+    },
+    "source": {
+      "type": "string",
+      "default": "",
+      "description": "Optional source label for the artifact, such as agent_output or user_attachment",
+      "maxLength": 64
+    },
+    "storage_path": {
+      "type": "string",
+      "description": "S3 object key returned by the prepare step",
+      "maxLength": 500
+    },
+    "content_type": {
+      "type": "string",
+      "description": "Optional MIME type recorded for the artifact",
+      "maxLength": 255
+    }
+  },
+  "required": [
+    "id",
+    "name",
+    "storage_path",
+    "type"
+  ]
+}

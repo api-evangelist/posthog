@@ -1,0 +1,36 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "#/components/schemas/LogsAlertStateInterval",
+  "title": "LogsAlertStateInterval",
+  "type": "object",
+  "properties": {
+    "start": {
+      "type": "string",
+      "format": "date-time",
+      "description": "Interval start (UTC, inclusive)."
+    },
+    "end": {
+      "type": "string",
+      "format": "date-time",
+      "description": "Interval end (UTC, exclusive)."
+    },
+    "state": {
+      "allOf": [
+        {
+          "$ref": "#/components/schemas/LogsAlertConfigurationStateEnum"
+        }
+      ],
+      "description": "Alert state during this interval.\n\n* `not_firing` - Not firing\n* `firing` - Firing\n* `pending_resolve` - Pending resolve\n* `errored` - Errored\n* `snoozed` - Snoozed\n* `broken` - Broken"
+    },
+    "enabled": {
+      "type": "boolean",
+      "description": "Whether the alert was enabled during this interval. Disabled alerts keep their state but are inactive."
+    }
+  },
+  "required": [
+    "enabled",
+    "end",
+    "start",
+    "state"
+  ]
+}

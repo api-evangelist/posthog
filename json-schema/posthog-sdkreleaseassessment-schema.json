@@ -1,0 +1,78 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "#/components/schemas/SdkReleaseAssessment",
+  "title": "SdkReleaseAssessment",
+  "type": "object",
+  "properties": {
+    "version": {
+      "type": "string",
+      "description": "In-use SDK version string, e.g. '1.298.0'."
+    },
+    "count": {
+      "type": "integer",
+      "description": "Number of events captured with this version in the last 7 days."
+    },
+    "max_timestamp": {
+      "type": "string",
+      "description": "Timestamp of the most recent event seen for this version (ISO 8601)."
+    },
+    "release_date": {
+      "type": "string",
+      "nullable": true,
+      "description": "When this version was published on GitHub (ISO 8601), or null if unknown."
+    },
+    "days_since_release": {
+      "type": "integer",
+      "nullable": true,
+      "description": "Days since this version was released, or null if unknown."
+    },
+    "released_ago": {
+      "type": "string",
+      "nullable": true,
+      "description": "Human-readable relative release age matching the UI (e.g. '5 months ago'). Null when release_date is unknown."
+    },
+    "is_outdated": {
+      "type": "boolean",
+      "description": "True when this version is flagged as outdated by smart-semver rules."
+    },
+    "is_old": {
+      "type": "boolean",
+      "description": "True when this version is flagged as old by age alone (separate from semver rules)."
+    },
+    "needs_updating": {
+      "type": "boolean",
+      "description": "True if is_outdated OR is_old."
+    },
+    "is_current_or_newer": {
+      "type": "boolean",
+      "description": "True when this version equals or exceeds the latest known published version."
+    },
+    "status_reason": {
+      "type": "string",
+      "description": "Per-version badge tooltip text matching the SDK Doctor UI exactly. Quote verbatim when reporting to users. Varies by state: 'Released X ago. Upgrade recommended.' for outdated versions, 'You have the latest available. Click Releases above to check for any since.' for current versions, or 'Released X ago. Upgrading is a good idea, but it's not urgent yet.' for recent-but-behind versions."
+    },
+    "sql_query": {
+      "type": "string",
+      "description": "SQL SELECT statement for drilling into events for this SDK version over the last 7 days. Suitable to pass to the execute-sql tool or to display as a copy-paste snippet."
+    },
+    "activity_page_url": {
+      "type": "string",
+      "description": "Relative URL path (starting with /project/{id}/) for the Activity > Explore page pre-filtered to events captured with this lib and lib_version over the last 7 days. Combine with the user's PostHog host (e.g. us.posthog.com) for a clickable link."
+    }
+  },
+  "required": [
+    "activity_page_url",
+    "count",
+    "days_since_release",
+    "is_current_or_newer",
+    "is_old",
+    "is_outdated",
+    "max_timestamp",
+    "needs_updating",
+    "release_date",
+    "released_ago",
+    "sql_query",
+    "status_reason",
+    "version"
+  ]
+}

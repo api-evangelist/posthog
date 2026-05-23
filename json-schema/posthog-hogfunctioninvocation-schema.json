@@ -1,0 +1,56 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "#/components/schemas/HogFunctionInvocation",
+  "title": "HogFunctionInvocation",
+  "type": "object",
+  "properties": {
+    "configuration": {
+      "allOf": [
+        {
+          "$ref": "#/components/schemas/HogFunction"
+        }
+      ],
+      "writeOnly": true,
+      "description": "Full function configuration to test."
+    },
+    "globals": {
+      "type": "object",
+      "additionalProperties": true,
+      "writeOnly": true,
+      "description": "Mock global variables available during test invocation."
+    },
+    "clickhouse_event": {
+      "type": "object",
+      "additionalProperties": true,
+      "writeOnly": true,
+      "description": "Mock ClickHouse event data to test the function with."
+    },
+    "mock_async_functions": {
+      "type": "boolean",
+      "writeOnly": true,
+      "default": true,
+      "description": "When true (default), async functions like fetch() are simulated."
+    },
+    "status": {
+      "type": "string",
+      "readOnly": true,
+      "description": "Invocation result status."
+    },
+    "logs": {
+      "type": "array",
+      "items": {},
+      "readOnly": true,
+      "description": "Execution logs from the test invocation."
+    },
+    "invocation_id": {
+      "type": "string",
+      "nullable": true,
+      "description": "Optional invocation ID for correlation."
+    }
+  },
+  "required": [
+    "configuration",
+    "logs",
+    "status"
+  ]
+}

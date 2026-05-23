@@ -1,0 +1,49 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "#/components/schemas/SurveyConditionsSchema",
+  "title": "SurveyConditionsSchema",
+  "type": "object",
+  "properties": {
+    "url": {
+      "type": "string"
+    },
+    "selector": {
+      "type": "string"
+    },
+    "seenSurveyWaitPeriodInDays": {
+      "type": "integer",
+      "minimum": 0,
+      "description": "Don't show this survey to users who saw any survey in the last x days."
+    },
+    "urlMatchType": {
+      "allOf": [
+        {
+          "$ref": "#/components/schemas/StringMatchOperatorEnum"
+        }
+      ],
+      "description": "URL/device matching types: 'regex' (matches regex pattern), 'not_regex' (does not match regex pattern), 'exact' (exact string match), 'is_not' (not exact match), 'icontains' (case-insensitive contains), 'not_icontains' (case-insensitive does not contain).\n\n* `regex` - regex\n* `not_regex` - not_regex\n* `exact` - exact\n* `is_not` - is_not\n* `icontains` - icontains\n* `not_icontains` - not_icontains"
+    },
+    "events": {
+      "$ref": "#/components/schemas/SurveyEventsConditionSchema"
+    },
+    "deviceTypes": {
+      "type": "array",
+      "items": {
+        "$ref": "#/components/schemas/DeviceTypesEnum"
+      },
+      "description": "Device types that should match for this survey to be shown."
+    },
+    "deviceTypesMatchType": {
+      "allOf": [
+        {
+          "$ref": "#/components/schemas/StringMatchOperatorEnum"
+        }
+      ],
+      "description": "URL/device matching types: 'regex' (matches regex pattern), 'not_regex' (does not match regex pattern), 'exact' (exact string match), 'is_not' (not exact match), 'icontains' (case-insensitive contains), 'not_icontains' (case-insensitive does not contain).\n\n* `regex` - regex\n* `not_regex` - not_regex\n* `exact` - exact\n* `is_not` - is_not\n* `icontains` - icontains\n* `not_icontains` - not_icontains"
+    },
+    "linkedFlagVariant": {
+      "type": "string",
+      "description": "The variant of the feature flag linked to this survey."
+    }
+  }
+}

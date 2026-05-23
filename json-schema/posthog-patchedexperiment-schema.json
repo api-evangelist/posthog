@@ -1,0 +1,216 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "#/components/schemas/PatchedExperiment",
+  "title": "PatchedExperiment",
+  "type": "object",
+  "description": "Mixin for serializers to add user access control fields",
+  "properties": {
+    "id": {
+      "type": "integer",
+      "readOnly": true
+    },
+    "name": {
+      "type": "string",
+      "description": "Name of the experiment.",
+      "maxLength": 400
+    },
+    "description": {
+      "type": "string",
+      "nullable": true,
+      "description": "Description of the experiment hypothesis and expected outcomes.",
+      "maxLength": 3000
+    },
+    "start_date": {
+      "type": "string",
+      "format": "date-time",
+      "nullable": true
+    },
+    "end_date": {
+      "type": "string",
+      "format": "date-time",
+      "nullable": true
+    },
+    "feature_flag_key": {
+      "type": "string",
+      "description": "Unique key for the experiment's feature flag. Letters, numbers, hyphens, and underscores only. Search existing flags with the feature-flags-get-all tool first \u2014 reuse an existing flag when possible."
+    },
+    "feature_flag": {
+      "type": "object",
+      "additionalProperties": true,
+      "readOnly": true
+    },
+    "holdout": {
+      "allOf": [
+        {
+          "$ref": "#/components/schemas/ExperimentHoldout"
+        }
+      ],
+      "readOnly": true
+    },
+    "holdout_id": {
+      "type": "integer",
+      "nullable": true,
+      "description": "ID of a holdout group to exclude from the experiment."
+    },
+    "exposure_cohort": {
+      "type": "integer",
+      "readOnly": true,
+      "nullable": true
+    },
+    "parameters": {
+      "allOf": [
+        {
+          "$ref": "#/components/schemas/ExperimentParameters"
+        }
+      ],
+      "nullable": true,
+      "description": "Variant definitions and rollout configuration. Set feature_flag_variants to customize the split (default: 50/50 control/test). Each variant needs a key and split_percent (the variant's share of traffic); percentages must sum to 100. Set rollout_percentage (0-100, default 100) to limit what fraction of users enter the experiment. Set minimum_detectable_effect (percentage, suggest 20-30) to control statistical power."
+    },
+    "secondary_metrics": {
+      "nullable": true
+    },
+    "saved_metrics": {
+      "type": "array",
+      "items": {
+        "$ref": "#/components/schemas/ExperimentToSavedMetric"
+      },
+      "readOnly": true
+    },
+    "saved_metrics_ids": {
+      "type": "array",
+      "items": {},
+      "nullable": true,
+      "description": "IDs of shared saved metrics to attach to this experiment. Each item has 'id' (saved metric ID) and 'metadata' with 'type' (primary or secondary)."
+    },
+    "filters": {},
+    "archived": {
+      "type": "boolean",
+      "default": false,
+      "description": "Whether the experiment is archived."
+    },
+    "deleted": {
+      "type": "boolean",
+      "nullable": true
+    },
+    "created_by": {
+      "allOf": [
+        {
+          "$ref": "#/components/schemas/UserBasic"
+        }
+      ],
+      "readOnly": true
+    },
+    "created_at": {
+      "type": "string",
+      "format": "date-time",
+      "readOnly": true
+    },
+    "updated_at": {
+      "type": "string",
+      "format": "date-time",
+      "readOnly": true
+    },
+    "type": {
+      "nullable": true,
+      "description": "Experiment type: web for frontend UI changes, product for backend/API changes.\n\n* `web` - web\n* `product` - product",
+      "oneOf": [
+        {
+          "$ref": "#/components/schemas/ExperimentTypeEnum"
+        },
+        {
+          "$ref": "#/components/schemas/NullEnum"
+        }
+      ]
+    },
+    "exposure_criteria": {
+      "allOf": [
+        {
+          "$ref": "#/components/schemas/ExperimentApiExposureCriteria"
+        }
+      ],
+      "nullable": true,
+      "description": "Exposure configuration including filter test accounts and custom exposure events."
+    },
+    "metrics": {
+      "allOf": [
+        {
+          "$ref": "#/components/schemas/_ExperimentApiMetricsList"
+        }
+      ],
+      "nullable": true,
+      "description": "Primary experiment metrics. Each metric must have kind='ExperimentMetric' and a metric_type: 'mean' (set source to an EventsNode with an event name), 'funnel' (set series to an array of EventsNode steps), 'ratio' (set numerator and denominator EventsNode entries), or 'retention' (set start_event and completion_event). Use the event-definitions-list tool to find available events in the project."
+    },
+    "metrics_secondary": {
+      "allOf": [
+        {
+          "$ref": "#/components/schemas/_ExperimentApiMetricsList"
+        }
+      ],
+      "nullable": true,
+      "description": "Secondary metrics for additional measurements. Same format as primary metrics."
+    },
+    "stats_config": {
+      "nullable": true
+    },
+    "scheduling_config": {
+      "nullable": true
+    },
+    "allow_unknown_events": {
+      "type": "boolean",
+      "writeOnly": true,
+      "default": false
+    },
+    "_create_in_folder": {
+      "type": "string",
+      "writeOnly": true,
+      "title": " create in folder"
+    },
+    "conclusion": {
+      "nullable": true,
+      "description": "Experiment conclusion: won, lost, inconclusive, stopped_early, or invalid.\n\n* `won` - won\n* `lost` - lost\n* `inconclusive` - inconclusive\n* `stopped_early` - stopped_early\n* `invalid` - invalid",
+      "oneOf": [
+        {
+          "$ref": "#/components/schemas/ConclusionEnum"
+        },
+        {
+          "$ref": "#/components/schemas/NullEnum"
+        }
+      ]
+    },
+    "conclusion_comment": {
+      "type": "string",
+      "nullable": true,
+      "description": "Comment about the experiment conclusion."
+    },
+    "primary_metrics_ordered_uuids": {
+      "nullable": true
+    },
+    "secondary_metrics_ordered_uuids": {
+      "nullable": true
+    },
+    "only_count_matured_users": {
+      "type": "boolean"
+    },
+    "update_feature_flag_params": {
+      "type": "boolean",
+      "writeOnly": true,
+      "default": false,
+      "description": "When true, sync feature flag configuration from parameters to the linked feature flag. Draft experiments always sync regardless of update_feature_flag_params, so only required for non-drafts."
+    },
+    "status": {
+      "allOf": [
+        {
+          "$ref": "#/components/schemas/ExperimentStatusEnum"
+        }
+      ],
+      "readOnly": true,
+      "description": "Experiment lifecycle state: 'draft' (not yet launched), 'running' (launched with active feature flag), 'paused' (running with feature flag deactivated \u2014 virtual state derived from feature_flag.active, not stored), 'stopped' (ended)."
+    },
+    "user_access_level": {
+      "type": "string",
+      "nullable": true,
+      "readOnly": true,
+      "description": "The effective access level the user has for this object"
+    }
+  }
+}

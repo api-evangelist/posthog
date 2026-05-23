@@ -1,0 +1,50 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "#/components/schemas/FeatureFlagFilterPropertyMultiContainsSchema",
+  "title": "FeatureFlagFilterPropertyMultiContainsSchema",
+  "type": "object",
+  "properties": {
+    "key": {
+      "type": "string",
+      "description": "Property key used in this feature flag condition."
+    },
+    "type": {
+      "allOf": [
+        {
+          "$ref": "#/components/schemas/PropertyGroupTypeEnum"
+        }
+      ],
+      "description": "Property filter type. Common values are 'person' and 'cohort'.\n\n* `cohort` - cohort\n* `person` - person\n* `group` - group"
+    },
+    "cohort_name": {
+      "type": "string",
+      "nullable": true,
+      "description": "Resolved cohort name for cohort-type filters."
+    },
+    "group_type_index": {
+      "type": "integer",
+      "nullable": true,
+      "description": "Group type index when using group-based filters."
+    },
+    "operator": {
+      "allOf": [
+        {
+          "$ref": "#/components/schemas/FeatureFlagFilterPropertyMultiContainsSchemaOperatorEnum"
+        }
+      ],
+      "description": "Multi-contains operator.\n\n* `icontains_multi` - icontains_multi\n* `not_icontains_multi` - not_icontains_multi"
+    },
+    "value": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "List of strings to evaluate against."
+    }
+  },
+  "required": [
+    "key",
+    "operator",
+    "value"
+  ]
+}

@@ -1,0 +1,59 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "#/components/schemas/LogsAlertSimulateRequest",
+  "title": "LogsAlertSimulateRequest",
+  "type": "object",
+  "properties": {
+    "filters": {
+      "description": "Filter criteria \u2014 same format as LogsAlertConfiguration.filters."
+    },
+    "threshold_count": {
+      "type": "integer",
+      "minimum": 1,
+      "description": "Threshold count to evaluate against."
+    },
+    "threshold_operator": {
+      "allOf": [
+        {
+          "$ref": "#/components/schemas/ThresholdOperatorEnum"
+        }
+      ],
+      "description": "Whether the alert fires when the count is above or below the threshold.\n\n* `above` - Above\n* `below` - Below"
+    },
+    "window_minutes": {
+      "type": "integer",
+      "description": "Window size in minutes \u2014 determines bucket interval."
+    },
+    "evaluation_periods": {
+      "type": "integer",
+      "maximum": 10,
+      "minimum": 1,
+      "default": 1,
+      "description": "Total check periods in the N-of-M evaluation window (M)."
+    },
+    "datapoints_to_alarm": {
+      "type": "integer",
+      "maximum": 10,
+      "minimum": 1,
+      "default": 1,
+      "description": "How many periods must breach to fire (N in N-of-M)."
+    },
+    "cooldown_minutes": {
+      "type": "integer",
+      "minimum": 0,
+      "default": 0,
+      "description": "Minutes to wait after firing before sending another notification."
+    },
+    "date_from": {
+      "type": "string",
+      "description": "Relative date string for how far back to simulate (e.g. '-24h', '-7d', '-30d')."
+    }
+  },
+  "required": [
+    "date_from",
+    "filters",
+    "threshold_count",
+    "threshold_operator",
+    "window_minutes"
+  ]
+}

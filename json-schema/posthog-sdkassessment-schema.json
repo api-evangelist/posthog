@@ -1,0 +1,78 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "#/components/schemas/SdkAssessment",
+  "title": "SdkAssessment",
+  "type": "object",
+  "properties": {
+    "lib": {
+      "type": "string",
+      "description": "SDK identifier, e.g. 'web', 'posthog-python', 'posthog-node', 'posthog-ios'."
+    },
+    "readable_name": {
+      "type": "string",
+      "description": "Human-readable SDK name matching the SDK Doctor UI (e.g. 'Python', 'Node.js', 'Web', 'iOS')."
+    },
+    "latest_version": {
+      "type": "string",
+      "description": "Most recent published version of this SDK."
+    },
+    "needs_updating": {
+      "type": "boolean",
+      "description": "True if this SDK needs attention (is_outdated OR is_old)."
+    },
+    "is_outdated": {
+      "type": "boolean",
+      "description": "True if the primary in-use version is flagged as outdated."
+    },
+    "is_old": {
+      "type": "boolean",
+      "description": "True if the primary in-use version is flagged as old by age alone."
+    },
+    "severity": {
+      "allOf": [
+        {
+          "$ref": "#/components/schemas/SdkAssessmentSeverityEnum"
+        }
+      ],
+      "description": "UI severity badge \u2014 'none' when healthy, 'warning' when outdated, 'danger' when the majority of team SDKs are outdated.\n\n* `none` - none\n* `warning` - warning\n* `danger` - danger"
+    },
+    "reason": {
+      "type": "string",
+      "description": "Per-SDK programmatic summary (used for ranking/filtering). For user-facing copy, prefer releases[].status_reason (badge tooltip) and banners (top-level alert text) \u2014 those match the UI exactly."
+    },
+    "banners": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "Top-level alert sentences matching the SDK Doctor UI's 'Time for an update!' banner \u2014 one per outdated version with significant traffic. Quote verbatim when surfacing the headline to users."
+    },
+    "releases": {
+      "type": "array",
+      "items": {
+        "$ref": "#/components/schemas/SdkReleaseAssessment"
+      },
+      "description": "Per-version assessment for all versions seen in the last 7 days."
+    },
+    "outdated_traffic_alerts": {
+      "type": "array",
+      "items": {
+        "$ref": "#/components/schemas/OutdatedTrafficAlert"
+      },
+      "description": "Outdated versions that handle a significant share of traffic (above the threshold). Not populated for mobile SDKs."
+    }
+  },
+  "required": [
+    "banners",
+    "is_old",
+    "is_outdated",
+    "latest_version",
+    "lib",
+    "needs_updating",
+    "outdated_traffic_alerts",
+    "readable_name",
+    "reason",
+    "releases",
+    "severity"
+  ]
+}

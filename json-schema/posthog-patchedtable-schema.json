@@ -1,0 +1,77 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "#/components/schemas/PatchedTable",
+  "title": "PatchedTable",
+  "type": "object",
+  "description": "Mixin for serializers to add user access control fields",
+  "properties": {
+    "id": {
+      "type": "string",
+      "format": "uuid",
+      "readOnly": true
+    },
+    "deleted": {
+      "type": "boolean",
+      "nullable": true
+    },
+    "name": {
+      "type": "string",
+      "maxLength": 128
+    },
+    "format": {
+      "$ref": "#/components/schemas/TableFormatEnum"
+    },
+    "created_by": {
+      "allOf": [
+        {
+          "$ref": "#/components/schemas/UserBasic"
+        }
+      ],
+      "readOnly": true
+    },
+    "created_at": {
+      "type": "string",
+      "format": "date-time",
+      "readOnly": true
+    },
+    "url_pattern": {
+      "type": "string",
+      "maxLength": 500
+    },
+    "credential": {
+      "$ref": "#/components/schemas/Credential"
+    },
+    "columns": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": true
+      },
+      "readOnly": true
+    },
+    "external_data_source": {
+      "allOf": [
+        {
+          "$ref": "#/components/schemas/SimpleExternalDataSourceSerializers"
+        }
+      ],
+      "readOnly": true
+    },
+    "external_schema": {
+      "type": "object",
+      "additionalProperties": true,
+      "nullable": true,
+      "readOnly": true
+    },
+    "options": {
+      "type": "object",
+      "additionalProperties": true
+    },
+    "user_access_level": {
+      "type": "string",
+      "nullable": true,
+      "readOnly": true,
+      "description": "The effective access level the user has for this object"
+    }
+  }
+}

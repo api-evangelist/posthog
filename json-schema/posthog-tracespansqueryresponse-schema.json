@@ -1,0 +1,94 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "#/components/schemas/TraceSpansQueryResponse",
+  "title": "TraceSpansQueryResponse",
+  "additionalProperties": false,
+  "properties": {
+    "error": {
+      "default": null,
+      "description": "Query error. Returned only if 'explain' or `modifiers.debug` is true. Throws an error otherwise.",
+      "title": "Error",
+      "type": "string",
+      "nullable": true
+    },
+    "hasMore": {
+      "default": null,
+      "title": "Hasmore",
+      "type": "boolean",
+      "nullable": true
+    },
+    "hogql": {
+      "default": null,
+      "description": "Generated HogQL query.",
+      "title": "Hogql",
+      "type": "string",
+      "nullable": true
+    },
+    "limit": {
+      "default": null,
+      "title": "Limit",
+      "type": "integer",
+      "nullable": true
+    },
+    "modifiers": {
+      "default": null,
+      "description": "Modifiers used when performing the query",
+      "allOf": [
+        {
+          "$ref": "#/components/schemas/HogQLQueryModifiers"
+        }
+      ],
+      "nullable": true
+    },
+    "nextCursor": {
+      "default": null,
+      "description": "Cursor for fetching the next page of results",
+      "title": "Nextcursor",
+      "type": "string",
+      "nullable": true
+    },
+    "offset": {
+      "default": null,
+      "title": "Offset",
+      "type": "integer",
+      "nullable": true
+    },
+    "query_status": {
+      "default": null,
+      "description": "Query status indicates whether next to the provided data, a query is still running.",
+      "allOf": [
+        {
+          "$ref": "#/components/schemas/QueryStatus"
+        }
+      ],
+      "nullable": true
+    },
+    "resolved_date_range": {
+      "default": null,
+      "description": "The date range used for the query",
+      "allOf": [
+        {
+          "$ref": "#/components/schemas/ResolvedDateRangeResponse"
+        }
+      ],
+      "nullable": true
+    },
+    "results": {
+      "title": "Results"
+    },
+    "timings": {
+      "default": null,
+      "description": "Measured timings for different parts of the query generation process",
+      "title": "Timings",
+      "items": {
+        "$ref": "#/components/schemas/QueryTiming"
+      },
+      "type": "array",
+      "nullable": true
+    }
+  },
+  "required": [
+    "results"
+  ],
+  "type": "object"
+}

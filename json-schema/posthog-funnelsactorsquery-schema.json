@@ -1,0 +1,117 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "#/components/schemas/FunnelsActorsQuery",
+  "title": "FunnelsActorsQuery",
+  "additionalProperties": false,
+  "properties": {
+    "funnelStep": {
+      "default": null,
+      "description": "Index of the step for which we want to get the timestamp for, per person. Positive for converted persons, negative for dropped of persons.",
+      "title": "Funnelstep",
+      "type": "integer",
+      "nullable": true
+    },
+    "funnelStepBreakdown": {
+      "default": null,
+      "description": "The breakdown value for which to get persons for. This is an array for person and event properties, a string for groups and an integer for cohorts.",
+      "title": "Funnelstepbreakdown",
+      "anyOf": [
+        {
+          "type": "integer"
+        },
+        {
+          "type": "string"
+        },
+        {
+          "type": "number"
+        },
+        {
+          "items": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "string"
+              },
+              {
+                "type": "number"
+              }
+            ]
+          },
+          "type": "array"
+        }
+      ],
+      "nullable": true
+    },
+    "funnelTrendsDropOff": {
+      "default": null,
+      "title": "Funneltrendsdropoff",
+      "type": "boolean",
+      "nullable": true
+    },
+    "funnelTrendsEntrancePeriodStart": {
+      "default": null,
+      "description": "Used together with `funnelTrendsDropOff` for funnels time conversion date for the persons modal.",
+      "title": "Funneltrendsentranceperiodstart",
+      "type": "string",
+      "nullable": true
+    },
+    "includeRecordings": {
+      "default": null,
+      "title": "Includerecordings",
+      "type": "boolean",
+      "nullable": true
+    },
+    "kind": {
+      "default": "FunnelsActorsQuery",
+      "title": "Kind",
+      "type": "string",
+      "enum": [
+        "FunnelsActorsQuery"
+      ]
+    },
+    "modifiers": {
+      "default": null,
+      "description": "Modifiers used when performing the query",
+      "allOf": [
+        {
+          "$ref": "#/components/schemas/HogQLQueryModifiers"
+        }
+      ],
+      "nullable": true
+    },
+    "response": {
+      "default": null,
+      "allOf": [
+        {
+          "$ref": "#/components/schemas/ActorsQueryResponse"
+        }
+      ],
+      "nullable": true
+    },
+    "source": {
+      "$ref": "#/components/schemas/FunnelsQuery"
+    },
+    "tags": {
+      "default": null,
+      "allOf": [
+        {
+          "$ref": "#/components/schemas/QueryLogTags"
+        }
+      ],
+      "nullable": true
+    },
+    "version": {
+      "default": null,
+      "description": "version of the node, used for schema migrations",
+      "title": "Version",
+      "type": "number",
+      "nullable": true
+    }
+  },
+  "required": [
+    "source"
+  ],
+  "type": "object"
+}

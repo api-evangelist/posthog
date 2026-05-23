@@ -1,0 +1,51 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "#/components/schemas/_LogsServiceAggregate",
+  "title": "_LogsServiceAggregate",
+  "type": "object",
+  "properties": {
+    "service_name": {
+      "type": "string",
+      "description": "Service name, or \"(no value)\" / \"(no service)\" placeholder for unset entries."
+    },
+    "log_count": {
+      "type": "integer",
+      "description": "Total log entries from this service in the window."
+    },
+    "error_count": {
+      "type": "integer",
+      "description": "Count of logs at severity \"error\" or \"fatal\"."
+    },
+    "error_rate": {
+      "type": "number",
+      "format": "double",
+      "description": "Pre-computed error_count / log_count, rounded to 4 decimals. Useful for ranking noisy services."
+    },
+    "volume_share_pct": {
+      "type": "number",
+      "format": "double",
+      "description": "Share of total log volume in the window for this service (0\u2013100)."
+    },
+    "severity_breakdown": {
+      "allOf": [
+        {
+          "$ref": "#/components/schemas/_LogsServiceSeverityBreakdown"
+        }
+      ],
+      "description": "Counts by coarse severity bucket (debug, info, warn, error+fatal)."
+    },
+    "active_rules": {
+      "type": "array",
+      "items": {
+        "$ref": "#/components/schemas/_LogsServiceActiveRule"
+      },
+      "description": "Enabled sampling rules whose scope includes this service."
+    }
+  },
+  "required": [
+    "error_count",
+    "error_rate",
+    "log_count",
+    "service_name"
+  ]
+}

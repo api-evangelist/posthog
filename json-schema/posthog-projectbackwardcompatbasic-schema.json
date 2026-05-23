@@ -1,0 +1,72 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "#/components/schemas/ProjectBackwardCompatBasic",
+  "title": "ProjectBackwardCompatBasic",
+  "type": "object",
+  "description": "Like `ProjectBasicSerializer`, but also works as a drop-in replacement for `TeamBasicSerializer` by way of\npassthrough fields. This allows the meaning of `Team` to change from \"project\" to \"environment\" without breaking\nbackward compatibility of the REST API.\nDo not use this in greenfield endpoints!",
+  "properties": {
+    "id": {
+      "type": "integer",
+      "readOnly": true
+    },
+    "uuid": {
+      "type": "string",
+      "format": "uuid",
+      "readOnly": true
+    },
+    "organization": {
+      "type": "string",
+      "format": "uuid",
+      "readOnly": true
+    },
+    "api_token": {
+      "type": "string",
+      "readOnly": true
+    },
+    "name": {
+      "type": "string",
+      "readOnly": true
+    },
+    "completed_snippet_onboarding": {
+      "type": "boolean",
+      "readOnly": true
+    },
+    "has_completed_onboarding_for": {
+      "readOnly": true,
+      "nullable": true
+    },
+    "ingested_event": {
+      "type": "boolean",
+      "readOnly": true
+    },
+    "is_demo": {
+      "type": "boolean",
+      "readOnly": true
+    },
+    "timezone": {
+      "allOf": [
+        {
+          "$ref": "#/components/schemas/TimezoneEnum"
+        }
+      ],
+      "readOnly": true
+    },
+    "access_control": {
+      "type": "boolean",
+      "readOnly": true
+    }
+  },
+  "required": [
+    "access_control",
+    "api_token",
+    "completed_snippet_onboarding",
+    "has_completed_onboarding_for",
+    "id",
+    "ingested_event",
+    "is_demo",
+    "name",
+    "organization",
+    "timezone",
+    "uuid"
+  ]
+}

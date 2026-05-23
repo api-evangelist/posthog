@@ -1,0 +1,75 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "#/components/schemas/TraceReview",
+  "title": "TraceReview",
+  "type": "object",
+  "properties": {
+    "id": {
+      "type": "string",
+      "format": "uuid",
+      "readOnly": true
+    },
+    "trace_id": {
+      "type": "string",
+      "readOnly": true,
+      "description": "Trace ID for the review."
+    },
+    "comment": {
+      "type": "string",
+      "readOnly": true,
+      "nullable": true,
+      "description": "Optional comment or reasoning for the review."
+    },
+    "created_at": {
+      "type": "string",
+      "format": "date-time",
+      "readOnly": true
+    },
+    "updated_at": {
+      "type": "string",
+      "format": "date-time",
+      "readOnly": true,
+      "nullable": true
+    },
+    "created_by": {
+      "allOf": [
+        {
+          "$ref": "#/components/schemas/UserBasic"
+        }
+      ],
+      "readOnly": true
+    },
+    "reviewed_by": {
+      "allOf": [
+        {
+          "$ref": "#/components/schemas/UserBasic"
+        }
+      ],
+      "readOnly": true,
+      "description": "User who last saved this review."
+    },
+    "scores": {
+      "type": "array",
+      "items": {
+        "$ref": "#/components/schemas/TraceReviewScore"
+      },
+      "readOnly": true,
+      "description": "Saved scorer values for this review."
+    },
+    "team": {
+      "type": "integer",
+      "readOnly": true
+    }
+  },
+  "required": [
+    "comment",
+    "created_at",
+    "created_by",
+    "id",
+    "reviewed_by",
+    "scores",
+    "team",
+    "trace_id",
+    "updated_at"
+  ]
+}

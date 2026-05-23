@@ -1,0 +1,172 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "#/components/schemas/HogFunction",
+  "title": "HogFunction",
+  "type": "object",
+  "properties": {
+    "id": {
+      "type": "string",
+      "format": "uuid",
+      "readOnly": true
+    },
+    "type": {
+      "nullable": true,
+      "description": "Function type: destination, site_destination, internal_destination, source_webhook, warehouse_source_webhook, site_app, or transformation.\n\n* `destination` - Destination\n* `site_destination` - Site Destination\n* `internal_destination` - Internal Destination\n* `source_webhook` - Source Webhook\n* `warehouse_source_webhook` - Warehouse Source Webhook\n* `site_app` - Site App\n* `transformation` - Transformation",
+      "oneOf": [
+        {
+          "$ref": "#/components/schemas/HogFunctionTypeEnum"
+        },
+        {
+          "$ref": "#/components/schemas/NullEnum"
+        }
+      ]
+    },
+    "name": {
+      "type": "string",
+      "nullable": true,
+      "description": "Display name for the function.",
+      "maxLength": 400
+    },
+    "description": {
+      "type": "string",
+      "description": "Human-readable description of what this function does."
+    },
+    "created_at": {
+      "type": "string",
+      "format": "date-time",
+      "readOnly": true
+    },
+    "created_by": {
+      "allOf": [
+        {
+          "$ref": "#/components/schemas/UserBasic"
+        }
+      ],
+      "readOnly": true
+    },
+    "updated_at": {
+      "type": "string",
+      "format": "date-time",
+      "readOnly": true
+    },
+    "enabled": {
+      "type": "boolean",
+      "description": "Whether the function is active and processing events."
+    },
+    "deleted": {
+      "type": "boolean",
+      "writeOnly": true,
+      "description": "Soft-delete flag. Set to true to archive the function."
+    },
+    "hog": {
+      "type": "string",
+      "description": "Source code. Hog language for most types; TypeScript for site_destination and site_app."
+    },
+    "bytecode": {
+      "readOnly": true,
+      "nullable": true
+    },
+    "transpiled": {
+      "type": "string",
+      "readOnly": true,
+      "nullable": true
+    },
+    "inputs_schema": {
+      "type": "array",
+      "items": {
+        "$ref": "#/components/schemas/InputsSchemaItem"
+      },
+      "description": "Schema defining the configurable input parameters for this function."
+    },
+    "inputs": {
+      "type": "object",
+      "additionalProperties": {
+        "$ref": "#/components/schemas/InputsItem"
+      },
+      "description": "Values for each input defined in inputs_schema."
+    },
+    "filters": {
+      "allOf": [
+        {
+          "$ref": "#/components/schemas/HogFunctionFilters"
+        }
+      ],
+      "description": "Event filters that control which events trigger this function."
+    },
+    "masking": {
+      "allOf": [
+        {
+          "$ref": "#/components/schemas/HogFunctionMasking"
+        }
+      ],
+      "nullable": true,
+      "description": "PII masking configuration with TTL, threshold, and hash expression."
+    },
+    "mappings": {
+      "type": "array",
+      "items": {
+        "$ref": "#/components/schemas/Mappings"
+      },
+      "nullable": true,
+      "description": "Event-to-destination field mappings. Only for destination and site_destination types."
+    },
+    "icon_url": {
+      "type": "string",
+      "nullable": true,
+      "description": "URL for the function's icon displayed in the UI."
+    },
+    "template": {
+      "allOf": [
+        {
+          "$ref": "#/components/schemas/HogFunctionTemplate"
+        }
+      ],
+      "readOnly": true
+    },
+    "template_id": {
+      "type": "string",
+      "writeOnly": true,
+      "nullable": true,
+      "description": "ID of the template to create this function from.",
+      "maxLength": 400
+    },
+    "status": {
+      "allOf": [
+        {
+          "$ref": "#/components/schemas/HogFunctionStatus"
+        }
+      ],
+      "readOnly": true,
+      "nullable": true
+    },
+    "execution_order": {
+      "type": "integer",
+      "maximum": 32767,
+      "minimum": 0,
+      "nullable": true,
+      "description": "Execution priority for transformations. Lower values run first."
+    },
+    "_create_in_folder": {
+      "type": "string",
+      "writeOnly": true,
+      "title": " create in folder"
+    },
+    "batch_export_id": {
+      "type": "string",
+      "format": "uuid",
+      "nullable": true,
+      "readOnly": true
+    }
+  },
+  "required": [
+    "batch_export_id",
+    "bytecode",
+    "created_at",
+    "created_by",
+    "id",
+    "status",
+    "template",
+    "transpiled",
+    "updated_at"
+  ]
+}

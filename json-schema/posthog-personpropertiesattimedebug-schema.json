@@ -1,0 +1,40 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "#/components/schemas/PersonPropertiesAtTimeDebug",
+  "title": "PersonPropertiesAtTimeDebug",
+  "type": "object",
+  "description": "Serializer for the debug information (only available to staff users).",
+  "properties": {
+    "query": {
+      "type": "string",
+      "description": "The ClickHouse query that was executed"
+    },
+    "params": {
+      "type": "object",
+      "additionalProperties": true,
+      "description": "The parameters passed to the query"
+    },
+    "events_found": {
+      "type": "integer",
+      "description": "Number of events found"
+    },
+    "events": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": true
+      },
+      "description": "Raw events that were used to build the properties"
+    },
+    "error": {
+      "type": "string",
+      "description": "Error message if debug query failed"
+    }
+  },
+  "required": [
+    "events",
+    "events_found",
+    "params",
+    "query"
+  ]
+}

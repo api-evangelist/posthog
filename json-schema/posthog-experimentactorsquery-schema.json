@@ -1,0 +1,135 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "#/components/schemas/ExperimentActorsQuery",
+  "title": "ExperimentActorsQuery",
+  "additionalProperties": false,
+  "properties": {
+    "exposureConfig": {
+      "default": null,
+      "description": "Exposure configuration for filtering events. Defines when users were first exposed to the experiment.",
+      "title": "Exposureconfig",
+      "anyOf": [
+        {
+          "$ref": "#/components/schemas/ExperimentEventExposureConfig"
+        },
+        {
+          "$ref": "#/components/schemas/ActionsNode"
+        }
+      ],
+      "nullable": true
+    },
+    "featureFlagKey": {
+      "default": null,
+      "description": "Feature flag key for breakdown filtering.",
+      "title": "Featureflagkey",
+      "type": "string",
+      "nullable": true
+    },
+    "funnelStep": {
+      "default": null,
+      "description": "Index of the step for which we want to get actors for, per experiment variant. Positive for converted persons, negative for dropped off persons.",
+      "title": "Funnelstep",
+      "type": "integer",
+      "nullable": true
+    },
+    "funnelStepBreakdown": {
+      "default": null,
+      "description": "The variant key for filtering actors. For experiments, this filters by feature flag variant (e.g., 'control', 'test').",
+      "title": "Funnelstepbreakdown",
+      "anyOf": [
+        {
+          "type": "integer"
+        },
+        {
+          "type": "string"
+        },
+        {
+          "type": "number"
+        },
+        {
+          "items": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "string"
+              },
+              {
+                "type": "number"
+              }
+            ]
+          },
+          "type": "array"
+        }
+      ],
+      "nullable": true
+    },
+    "includeRecordings": {
+      "default": null,
+      "title": "Includerecordings",
+      "type": "boolean",
+      "nullable": true
+    },
+    "kind": {
+      "default": "ExperimentActorsQuery",
+      "title": "Kind",
+      "type": "string",
+      "enum": [
+        "ExperimentActorsQuery"
+      ]
+    },
+    "modifiers": {
+      "default": null,
+      "description": "Modifiers used when performing the query",
+      "allOf": [
+        {
+          "$ref": "#/components/schemas/HogQLQueryModifiers"
+        }
+      ],
+      "nullable": true
+    },
+    "multipleVariantHandling": {
+      "default": null,
+      "description": "How to handle users with multiple variant exposures.",
+      "allOf": [
+        {
+          "$ref": "#/components/schemas/MultipleVariantHandling"
+        }
+      ],
+      "nullable": true
+    },
+    "response": {
+      "default": null,
+      "allOf": [
+        {
+          "$ref": "#/components/schemas/ActorsQueryResponse"
+        }
+      ],
+      "nullable": true
+    },
+    "source": {
+      "$ref": "#/components/schemas/ExperimentQuery"
+    },
+    "tags": {
+      "default": null,
+      "allOf": [
+        {
+          "$ref": "#/components/schemas/QueryLogTags"
+        }
+      ],
+      "nullable": true
+    },
+    "version": {
+      "default": null,
+      "description": "version of the node, used for schema migrations",
+      "title": "Version",
+      "type": "number",
+      "nullable": true
+    }
+  },
+  "required": [
+    "source"
+  ],
+  "type": "object"
+}

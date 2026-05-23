@@ -1,0 +1,181 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "#/components/schemas/Alert",
+  "title": "Alert",
+  "type": "object",
+  "properties": {
+    "id": {
+      "type": "string",
+      "format": "uuid",
+      "readOnly": true
+    },
+    "created_by": {
+      "allOf": [
+        {
+          "$ref": "#/components/schemas/UserBasic"
+        }
+      ],
+      "readOnly": true
+    },
+    "created_at": {
+      "type": "string",
+      "format": "date-time",
+      "readOnly": true
+    },
+    "insight": {
+      "type": "integer",
+      "description": "Insight ID monitored by this alert. Note: Response returns full InsightBasicSerializer object."
+    },
+    "name": {
+      "type": "string",
+      "description": "Human-readable name for the alert."
+    },
+    "subscribed_users": {
+      "type": "array",
+      "items": {
+        "type": "integer"
+      },
+      "description": "User IDs to subscribe to this alert. Note: Response returns full UserBasicSerializer object."
+    },
+    "threshold": {
+      "allOf": [
+        {
+          "$ref": "#/components/schemas/Threshold"
+        }
+      ],
+      "description": "Threshold configuration with bounds and type for evaluating the alert."
+    },
+    "condition": {
+      "allOf": [
+        {
+          "$ref": "#/components/schemas/AlertCondition"
+        }
+      ],
+      "nullable": true,
+      "description": "Alert condition type. Determines how the value is evaluated: absolute_value, relative_increase, or relative_decrease."
+    },
+    "state": {
+      "type": "string",
+      "readOnly": true,
+      "description": "Current alert state: Firing, Not firing, Errored, or Snoozed."
+    },
+    "enabled": {
+      "type": "boolean",
+      "description": "Whether the alert is actively being evaluated."
+    },
+    "last_notified_at": {
+      "type": "string",
+      "format": "date-time",
+      "readOnly": true,
+      "nullable": true
+    },
+    "last_checked_at": {
+      "type": "string",
+      "format": "date-time",
+      "readOnly": true,
+      "nullable": true
+    },
+    "next_check_at": {
+      "type": "string",
+      "format": "date-time",
+      "readOnly": true,
+      "nullable": true
+    },
+    "checks": {
+      "type": "array",
+      "items": {
+        "$ref": "#/components/schemas/AlertCheck"
+      },
+      "readOnly": true,
+      "description": "Alert check results. By default returns the last 5. Use checks_date_from and checks_date_to (e.g. '-24h', '-7d') to get checks within a time window, checks_limit to cap how many are returned (default 5, max 500), and checks_offset to skip the newest N checks for pagination (0-based). Newest checks first. Only populated on retrieve."
+    },
+    "checks_total": {
+      "type": "integer",
+      "nullable": true,
+      "readOnly": true,
+      "description": "Total alert checks matching the retrieve filters (date window). Only set on alert retrieve; omitted otherwise."
+    },
+    "config": {
+      "allOf": [
+        {
+          "$ref": "#/components/schemas/TrendsAlertConfig"
+        }
+      ],
+      "nullable": true,
+      "description": "Trends-specific alert configuration. Includes series_index (which series to monitor) and check_ongoing_interval (whether to check the current incomplete interval)."
+    },
+    "detector_config": {
+      "allOf": [
+        {
+          "$ref": "#/components/schemas/DetectorConfig"
+        }
+      ],
+      "nullable": true
+    },
+    "calculation_interval": {
+      "allOf": [
+        {
+          "$ref": "#/components/schemas/CalculationIntervalEnum"
+        }
+      ],
+      "description": "How often the alert is checked: hourly, daily, weekly, or monthly.\n\n* `hourly` - hourly\n* `daily` - daily\n* `weekly` - weekly\n* `monthly` - monthly"
+    },
+    "snoozed_until": {
+      "type": "string",
+      "nullable": true,
+      "description": "Snooze the alert until this time. Pass a relative date string (e.g. '2h', '1d') or null to unsnooze."
+    },
+    "skip_weekend": {
+      "type": "boolean",
+      "nullable": true,
+      "description": "Skip alert evaluation on weekends (Saturday and Sunday, local to project timezone)."
+    },
+    "schedule_restriction": {
+      "allOf": [
+        {
+          "$ref": "#/components/schemas/AlertScheduleRestriction"
+        }
+      ],
+      "nullable": true,
+      "description": "Blocked local time windows (HH:MM in the project timezone). Interval is half-open [start, end): start inclusive, end exclusive. Use blocked_windows array of {start, end}. Null disables."
+    },
+    "last_value": {
+      "type": "number",
+      "format": "double",
+      "readOnly": true,
+      "nullable": true,
+      "description": "The last calculated value from the most recent alert check."
+    },
+    "investigation_agent_enabled": {
+      "type": "boolean",
+      "description": "When enabled, an investigation agent runs on the state transition to firing and writes findings to a Notebook linked from the alert check. Only effective for detector-based (anomaly) alerts."
+    },
+    "investigation_gates_notifications": {
+      "type": "boolean",
+      "description": "When enabled (and investigation_agent_enabled is on), notification dispatch is held until the investigation agent produces a verdict. Notifications are suppressed when the verdict is false_positive (and optionally when inconclusive). A safety-net task force-fires after a few minutes if the investigation stalls."
+    },
+    "investigation_inconclusive_action": {
+      "allOf": [
+        {
+          "$ref": "#/components/schemas/InvestigationInconclusiveActionEnum"
+        }
+      ],
+      "description": "How to handle an 'inconclusive' verdict when notifications are gated. 'notify' is the safe default \u2014 an agent that can't be sure is itself useful signal.\n\n* `notify` - Notify\n* `suppress` - Suppress"
+    }
+  },
+  "required": [
+    "checks",
+    "checks_total",
+    "created_at",
+    "created_by",
+    "id",
+    "insight",
+    "last_checked_at",
+    "last_notified_at",
+    "last_value",
+    "next_check_at",
+    "state",
+    "subscribed_users",
+    "threshold"
+  ]
+}

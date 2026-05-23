@@ -1,0 +1,253 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "#/components/schemas/User",
+  "title": "User",
+  "type": "object",
+  "properties": {
+    "date_joined": {
+      "type": "string",
+      "format": "date-time",
+      "readOnly": true
+    },
+    "uuid": {
+      "type": "string",
+      "format": "uuid",
+      "readOnly": true
+    },
+    "distinct_id": {
+      "type": "string",
+      "readOnly": true,
+      "nullable": true
+    },
+    "first_name": {
+      "type": "string",
+      "maxLength": 150
+    },
+    "last_name": {
+      "type": "string",
+      "maxLength": 150
+    },
+    "email": {
+      "type": "string",
+      "format": "email",
+      "title": "Email address",
+      "maxLength": 254
+    },
+    "pending_email": {
+      "type": "string",
+      "format": "email",
+      "readOnly": true,
+      "nullable": true,
+      "title": "Pending email address awaiting verification"
+    },
+    "is_email_verified": {
+      "type": "boolean",
+      "readOnly": true,
+      "nullable": true
+    },
+    "notification_settings": {
+      "type": "object",
+      "additionalProperties": true,
+      "description": "Map of notification preferences. Keys include `plugin_disabled`, `all_weekly_report_disabled`, `project_weekly_digest_disabled`, `error_tracking_weekly_digest_project_enabled`, `web_analytics_weekly_digest_project_enabled`, `organization_member_join_email_disabled`, `data_pipeline_error_threshold` (number between 0.0 and 1.0), and other per-topic switches. Values are either booleans, or (for per-project/per-resource keys) a map of IDs to booleans. Only the keys you send are updated \u2014 other preferences stay as-is."
+    },
+    "anonymize_data": {
+      "type": "boolean",
+      "nullable": true,
+      "description": "Whether PostHog should anonymize events captured for this user when identified."
+    },
+    "allow_impersonation": {
+      "type": "boolean",
+      "nullable": true
+    },
+    "toolbar_mode": {
+      "nullable": true,
+      "oneOf": [
+        {
+          "$ref": "#/components/schemas/ToolbarModeEnum"
+        },
+        {
+          "$ref": "#/components/schemas/BlankEnum"
+        },
+        {
+          "$ref": "#/components/schemas/NullEnum"
+        }
+      ]
+    },
+    "has_password": {
+      "type": "boolean",
+      "readOnly": true
+    },
+    "id": {
+      "type": "integer",
+      "readOnly": true
+    },
+    "is_staff": {
+      "type": "boolean",
+      "title": "Staff status",
+      "description": "Designates whether the user can log into this admin site."
+    },
+    "is_impersonated": {
+      "type": "boolean",
+      "nullable": true,
+      "readOnly": true
+    },
+    "is_impersonated_until": {
+      "type": "string",
+      "nullable": true,
+      "readOnly": true
+    },
+    "is_impersonated_read_only": {
+      "type": "boolean",
+      "nullable": true,
+      "readOnly": true
+    },
+    "sensitive_session_expires_at": {
+      "type": "string",
+      "nullable": true,
+      "readOnly": true
+    },
+    "team": {
+      "allOf": [
+        {
+          "$ref": "#/components/schemas/TeamBasic"
+        }
+      ],
+      "readOnly": true
+    },
+    "organization": {
+      "allOf": [
+        {
+          "$ref": "#/components/schemas/Organization"
+        }
+      ],
+      "readOnly": true
+    },
+    "organizations": {
+      "type": "array",
+      "items": {
+        "$ref": "#/components/schemas/OrganizationBasic"
+      },
+      "readOnly": true
+    },
+    "set_current_organization": {
+      "type": "string",
+      "writeOnly": true
+    },
+    "set_current_team": {
+      "type": "string",
+      "writeOnly": true
+    },
+    "password": {
+      "type": "string",
+      "writeOnly": true,
+      "maxLength": 128
+    },
+    "current_password": {
+      "type": "string",
+      "writeOnly": true,
+      "description": "The user's current password. Required when changing `password` if the user already has a usable password set."
+    },
+    "events_column_config": {},
+    "is_2fa_enabled": {
+      "type": "boolean",
+      "readOnly": true
+    },
+    "has_social_auth": {
+      "type": "boolean",
+      "readOnly": true
+    },
+    "has_sso_enforcement": {
+      "type": "boolean",
+      "readOnly": true
+    },
+    "has_seen_product_intro_for": {
+      "nullable": true
+    },
+    "scene_personalisation": {
+      "type": "array",
+      "items": {
+        "$ref": "#/components/schemas/ScenePersonalisationBasic"
+      },
+      "readOnly": true
+    },
+    "theme_mode": {
+      "nullable": true,
+      "oneOf": [
+        {
+          "$ref": "#/components/schemas/ThemeModeEnum"
+        },
+        {
+          "$ref": "#/components/schemas/BlankEnum"
+        },
+        {
+          "$ref": "#/components/schemas/NullEnum"
+        }
+      ]
+    },
+    "hedgehog_config": {
+      "nullable": true
+    },
+    "allow_sidebar_suggestions": {
+      "type": "boolean",
+      "nullable": true
+    },
+    "shortcut_position": {
+      "nullable": true,
+      "oneOf": [
+        {
+          "$ref": "#/components/schemas/ShortcutPositionEnum"
+        },
+        {
+          "$ref": "#/components/schemas/BlankEnum"
+        },
+        {
+          "$ref": "#/components/schemas/NullEnum"
+        }
+      ]
+    },
+    "role_at_organization": {
+      "$ref": "#/components/schemas/RoleAtOrganizationEnum"
+    },
+    "passkeys_enabled_for_2fa": {
+      "type": "boolean",
+      "nullable": true,
+      "description": "Whether passkeys are enabled for 2FA authentication. Users can disable this to use only TOTP for 2FA while keeping passkeys for login."
+    },
+    "is_organization_first_user": {
+      "type": "boolean",
+      "nullable": true,
+      "readOnly": true
+    },
+    "pending_invites": {
+      "type": "array",
+      "items": {
+        "$ref": "#/components/schemas/PendingInvite"
+      },
+      "readOnly": true
+    }
+  },
+  "required": [
+    "date_joined",
+    "distinct_id",
+    "email",
+    "has_password",
+    "has_social_auth",
+    "has_sso_enforcement",
+    "id",
+    "is_2fa_enabled",
+    "is_email_verified",
+    "is_impersonated",
+    "is_impersonated_read_only",
+    "is_impersonated_until",
+    "is_organization_first_user",
+    "organization",
+    "organizations",
+    "password",
+    "pending_email",
+    "pending_invites",
+    "scene_personalisation",
+    "sensitive_session_expires_at",
+    "team",
+    "uuid"
+  ]
+}

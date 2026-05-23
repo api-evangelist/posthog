@@ -1,0 +1,50 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "#/components/schemas/DataWarehouseSavedQueryFolder",
+  "title": "DataWarehouseSavedQueryFolder",
+  "type": "object",
+  "description": "Mixin for serializers to add user access control fields",
+  "properties": {
+    "id": {
+      "type": "string",
+      "format": "uuid",
+      "readOnly": true
+    },
+    "name": {
+      "type": "string",
+      "description": "Display name for the folder used to organize saved queries in the SQL editor sidebar.",
+      "maxLength": 128
+    },
+    "created_at": {
+      "type": "string",
+      "format": "date-time",
+      "readOnly": true
+    },
+    "created_by": {
+      "allOf": [
+        {
+          "$ref": "#/components/schemas/UserBasic"
+        }
+      ],
+      "readOnly": true
+    },
+    "view_count": {
+      "type": "integer",
+      "readOnly": true
+    },
+    "user_access_level": {
+      "type": "string",
+      "nullable": true,
+      "readOnly": true,
+      "description": "The effective access level the user has for this object"
+    }
+  },
+  "required": [
+    "created_at",
+    "created_by",
+    "id",
+    "name",
+    "user_access_level",
+    "view_count"
+  ]
+}

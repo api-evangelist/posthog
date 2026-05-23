@@ -1,0 +1,70 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "#/components/schemas/PatchedTagger",
+  "title": "PatchedTagger",
+  "type": "object",
+  "properties": {
+    "id": {
+      "type": "string",
+      "format": "uuid",
+      "readOnly": true
+    },
+    "name": {
+      "type": "string",
+      "maxLength": 400
+    },
+    "description": {
+      "type": "string"
+    },
+    "enabled": {
+      "type": "boolean"
+    },
+    "tagger_type": {
+      "allOf": [
+        {
+          "$ref": "#/components/schemas/TaggerTypeEnum"
+        }
+      ],
+      "default": "llm"
+    },
+    "tagger_config": {
+      "description": "Tagger configuration (varies by tagger_type)"
+    },
+    "conditions": {
+      "type": "array",
+      "items": {
+        "$ref": "#/components/schemas/TaggerCondition"
+      },
+      "description": "Conditions that scope when the tagger runs"
+    },
+    "model_configuration": {
+      "allOf": [
+        {
+          "$ref": "#/components/schemas/TaggerModelConfiguration"
+        }
+      ],
+      "nullable": true
+    },
+    "created_at": {
+      "type": "string",
+      "format": "date-time",
+      "readOnly": true
+    },
+    "updated_at": {
+      "type": "string",
+      "format": "date-time",
+      "readOnly": true
+    },
+    "created_by": {
+      "allOf": [
+        {
+          "$ref": "#/components/schemas/UserBasic"
+        }
+      ],
+      "readOnly": true
+    },
+    "deleted": {
+      "type": "boolean"
+    }
+  }
+}

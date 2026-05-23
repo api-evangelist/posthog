@@ -1,0 +1,46 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "#/components/schemas/FeatureFlagFilterPropertyGenericSchema",
+  "title": "FeatureFlagFilterPropertyGenericSchema",
+  "type": "object",
+  "properties": {
+    "key": {
+      "type": "string",
+      "description": "Property key used in this feature flag condition."
+    },
+    "type": {
+      "allOf": [
+        {
+          "$ref": "#/components/schemas/PropertyGroupTypeEnum"
+        }
+      ],
+      "description": "Property filter type. Common values are 'person' and 'cohort'.\n\n* `cohort` - cohort\n* `person` - person\n* `group` - group"
+    },
+    "cohort_name": {
+      "type": "string",
+      "nullable": true,
+      "description": "Resolved cohort name for cohort-type filters."
+    },
+    "group_type_index": {
+      "type": "integer",
+      "nullable": true,
+      "description": "Group type index when using group-based filters."
+    },
+    "value": {
+      "description": "Comparison value for the property filter. Supports strings, numbers, booleans, and arrays."
+    },
+    "operator": {
+      "allOf": [
+        {
+          "$ref": "#/components/schemas/FeatureFlagFilterPropertyGenericSchemaOperatorEnum"
+        }
+      ],
+      "description": "Operator used to compare the property value.\n\n* `exact` - exact\n* `is_not` - is_not\n* `icontains` - icontains\n* `not_icontains` - not_icontains\n* `regex` - regex\n* `not_regex` - not_regex\n* `gt` - gt\n* `gte` - gte\n* `lt` - lt\n* `lte` - lte"
+    }
+  },
+  "required": [
+    "key",
+    "operator",
+    "value"
+  ]
+}

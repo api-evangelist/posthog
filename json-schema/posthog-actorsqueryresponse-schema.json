@@ -1,0 +1,110 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "#/components/schemas/ActorsQueryResponse",
+  "title": "ActorsQueryResponse",
+  "additionalProperties": false,
+  "properties": {
+    "columns": {
+      "items": {},
+      "title": "Columns",
+      "type": "array"
+    },
+    "error": {
+      "default": null,
+      "description": "Query error. Returned only if 'explain' or `modifiers.debug` is true. Throws an error otherwise.",
+      "title": "Error",
+      "type": "string",
+      "nullable": true
+    },
+    "hasMore": {
+      "default": null,
+      "title": "Hasmore",
+      "type": "boolean",
+      "nullable": true
+    },
+    "hogql": {
+      "description": "Generated HogQL query.",
+      "title": "Hogql",
+      "type": "string"
+    },
+    "limit": {
+      "title": "Limit",
+      "type": "integer"
+    },
+    "missing_actors_count": {
+      "default": null,
+      "title": "Missing Actors Count",
+      "type": "integer",
+      "nullable": true
+    },
+    "modifiers": {
+      "default": null,
+      "description": "Modifiers used when performing the query",
+      "allOf": [
+        {
+          "$ref": "#/components/schemas/HogQLQueryModifiers"
+        }
+      ],
+      "nullable": true
+    },
+    "offset": {
+      "title": "Offset",
+      "type": "integer"
+    },
+    "query_status": {
+      "default": null,
+      "description": "Query status indicates whether next to the provided data, a query is still running.",
+      "allOf": [
+        {
+          "$ref": "#/components/schemas/QueryStatus"
+        }
+      ],
+      "nullable": true
+    },
+    "resolved_date_range": {
+      "default": null,
+      "description": "The date range used for the query",
+      "allOf": [
+        {
+          "$ref": "#/components/schemas/ResolvedDateRangeResponse"
+        }
+      ],
+      "nullable": true
+    },
+    "results": {
+      "items": {
+        "items": {},
+        "type": "array"
+      },
+      "title": "Results",
+      "type": "array"
+    },
+    "timings": {
+      "default": null,
+      "description": "Measured timings for different parts of the query generation process",
+      "title": "Timings",
+      "items": {
+        "$ref": "#/components/schemas/QueryTiming"
+      },
+      "type": "array",
+      "nullable": true
+    },
+    "types": {
+      "default": null,
+      "title": "Types",
+      "items": {
+        "type": "string"
+      },
+      "type": "array",
+      "nullable": true
+    }
+  },
+  "required": [
+    "columns",
+    "hogql",
+    "limit",
+    "offset",
+    "results"
+  ],
+  "type": "object"
+}

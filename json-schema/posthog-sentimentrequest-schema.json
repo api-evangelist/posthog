@@ -1,0 +1,44 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "#/components/schemas/SentimentRequest",
+  "title": "SentimentRequest",
+  "type": "object",
+  "properties": {
+    "ids": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "Trace IDs or generation IDs to classify, depending on analysis_level.",
+      "maxItems": 5,
+      "minItems": 1
+    },
+    "analysis_level": {
+      "allOf": [
+        {
+          "$ref": "#/components/schemas/SentimentRequestAnalysisLevelEnum"
+        }
+      ],
+      "default": "trace",
+      "description": "Whether the IDs are 'trace' IDs or 'generation' IDs.\n\n* `trace` - trace\n* `generation` - generation"
+    },
+    "force_refresh": {
+      "type": "boolean",
+      "default": false,
+      "description": "If true, bypass cache and reclassify."
+    },
+    "date_from": {
+      "type": "string",
+      "nullable": true,
+      "description": "Start of date range for the lookup (e.g. '-7d' or '2026-01-01'). Defaults to -30d."
+    },
+    "date_to": {
+      "type": "string",
+      "nullable": true,
+      "description": "End of date range for the lookup. Defaults to now."
+    }
+  },
+  "required": [
+    "ids"
+  ]
+}

@@ -1,0 +1,61 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "#/components/schemas/_LogsQueryBody",
+  "title": "_LogsQueryBody",
+  "type": "object",
+  "properties": {
+    "dateRange": {
+      "allOf": [
+        {
+          "$ref": "#/components/schemas/_DateRange"
+        }
+      ],
+      "description": "Date range for the query. Defaults to last hour."
+    },
+    "severityLevels": {
+      "type": "array",
+      "items": {
+        "$ref": "#/components/schemas/SeverityLevelsEnum"
+      },
+      "default": [],
+      "description": "Filter by log severity levels."
+    },
+    "serviceNames": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "default": [],
+      "description": "Filter by service names."
+    },
+    "orderBy": {
+      "allOf": [
+        {
+          "$ref": "#/components/schemas/OrderByEnum"
+        }
+      ],
+      "description": "Order results by timestamp.\n\n* `latest` - latest\n* `earliest` - earliest"
+    },
+    "searchTerm": {
+      "type": "string",
+      "description": "Full-text search term to filter log bodies."
+    },
+    "filterGroup": {
+      "type": "array",
+      "items": {
+        "$ref": "#/components/schemas/_LogPropertyFilter"
+      },
+      "default": [],
+      "description": "Property filters for the query."
+    },
+    "limit": {
+      "type": "integer",
+      "default": 100,
+      "description": "Max results (1-1000)."
+    },
+    "after": {
+      "type": "string",
+      "description": "Pagination cursor from previous response."
+    }
+  }
+}

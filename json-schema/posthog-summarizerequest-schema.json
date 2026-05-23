@@ -1,0 +1,56 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "#/components/schemas/SummarizeRequest",
+  "title": "SummarizeRequest",
+  "type": "object",
+  "properties": {
+    "summarize_type": {
+      "allOf": [
+        {
+          "$ref": "#/components/schemas/SummarizeTypeEnum"
+        }
+      ],
+      "description": "Type of entity to summarize. Inferred automatically when using trace_id or generation_id.\n\n* `trace` - trace\n* `event` - event"
+    },
+    "mode": {
+      "allOf": [
+        {
+          "$ref": "#/components/schemas/DetailModeValueEnum"
+        }
+      ],
+      "default": "minimal",
+      "description": "Summary detail level: 'minimal' for 3-5 points, 'detailed' for 5-10 points\n\n* `minimal` - minimal\n* `detailed` - detailed"
+    },
+    "data": {
+      "description": "Data to summarize. For traces: {trace, hierarchy}. For events: {event}. Not required when using trace_id or generation_id."
+    },
+    "force_refresh": {
+      "type": "boolean",
+      "default": false,
+      "description": "Force regenerate summary, bypassing cache"
+    },
+    "model": {
+      "type": "string",
+      "nullable": true,
+      "description": "LLM model to use (defaults based on provider)"
+    },
+    "trace_id": {
+      "type": "string",
+      "description": "Trace ID to summarize. The backend fetches the trace data automatically. Requires date_from for efficient lookup."
+    },
+    "generation_id": {
+      "type": "string",
+      "description": "Generation event UUID to summarize. The backend fetches the event data automatically. Requires date_from for efficient lookup."
+    },
+    "date_from": {
+      "type": "string",
+      "nullable": true,
+      "description": "Start of date range for ID-based lookup (e.g. '-7d' or '2026-01-01'). Defaults to -30d."
+    },
+    "date_to": {
+      "type": "string",
+      "nullable": true,
+      "description": "End of date range for ID-based lookup. Defaults to now."
+    }
+  }
+}

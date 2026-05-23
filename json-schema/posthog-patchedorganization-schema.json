@@ -1,0 +1,159 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "#/components/schemas/PatchedOrganization",
+  "title": "PatchedOrganization",
+  "type": "object",
+  "properties": {
+    "id": {
+      "type": "string",
+      "format": "uuid",
+      "readOnly": true
+    },
+    "name": {
+      "type": "string",
+      "maxLength": 64
+    },
+    "slug": {
+      "type": "string",
+      "readOnly": true,
+      "pattern": "^[-a-zA-Z0-9_]+$"
+    },
+    "logo_media_id": {
+      "type": "string",
+      "format": "uuid",
+      "nullable": true
+    },
+    "created_at": {
+      "type": "string",
+      "format": "date-time",
+      "readOnly": true
+    },
+    "updated_at": {
+      "type": "string",
+      "format": "date-time",
+      "readOnly": true
+    },
+    "membership_level": {
+      "allOf": [
+        {
+          "$ref": "#/components/schemas/EffectiveMembershipLevelEnum"
+        }
+      ],
+      "nullable": true,
+      "readOnly": true
+    },
+    "plugins_access_level": {
+      "allOf": [
+        {
+          "$ref": "#/components/schemas/PluginsAccessLevelEnum"
+        }
+      ],
+      "readOnly": true
+    },
+    "teams": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": true
+      },
+      "readOnly": true
+    },
+    "projects": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": true
+      },
+      "readOnly": true
+    },
+    "available_product_features": {
+      "type": "array",
+      "items": {},
+      "readOnly": true,
+      "nullable": true
+    },
+    "is_member_join_email_enabled": {
+      "type": "boolean",
+      "readOnly": true,
+      "description": "Legacy field; member-join emails are controlled per user in account notification settings."
+    },
+    "metadata": {
+      "type": "object",
+      "additionalProperties": {
+        "type": "string"
+      },
+      "readOnly": true
+    },
+    "customer_id": {
+      "type": "string",
+      "readOnly": true,
+      "nullable": true
+    },
+    "enforce_2fa": {
+      "type": "boolean",
+      "nullable": true
+    },
+    "members_can_invite": {
+      "type": "boolean",
+      "nullable": true
+    },
+    "members_can_use_personal_api_keys": {
+      "type": "boolean"
+    },
+    "allow_publicly_shared_resources": {
+      "type": "boolean"
+    },
+    "member_count": {
+      "type": "integer",
+      "readOnly": true
+    },
+    "is_ai_data_processing_approved": {
+      "type": "boolean",
+      "nullable": true
+    },
+    "default_experiment_stats_method": {
+      "nullable": true,
+      "description": "Default statistical method for new experiments in this organization.\n\n* `bayesian` - Bayesian\n* `frequentist` - Frequentist",
+      "oneOf": [
+        {
+          "$ref": "#/components/schemas/DefaultExperimentStatsMethodEnum"
+        },
+        {
+          "$ref": "#/components/schemas/BlankEnum"
+        },
+        {
+          "$ref": "#/components/schemas/NullEnum"
+        }
+      ]
+    },
+    "default_anonymize_ips": {
+      "type": "boolean",
+      "description": "Default setting for 'Discard client IP data' for new projects in this organization."
+    },
+    "default_role_id": {
+      "type": "string",
+      "nullable": true,
+      "description": "ID of the role to automatically assign to new members joining the organization"
+    },
+    "is_active": {
+      "type": "boolean",
+      "readOnly": true,
+      "nullable": true,
+      "title": "Active",
+      "description": "Set this to 'No' to temporarily disable an organization."
+    },
+    "is_not_active_reason": {
+      "type": "string",
+      "readOnly": true,
+      "nullable": true,
+      "title": "De-activated reason",
+      "description": "(optional) reason for why the organization has been de-activated. This will be displayed to users on the web app."
+    },
+    "is_pending_deletion": {
+      "type": "boolean",
+      "readOnly": true,
+      "nullable": true,
+      "description": "Set to True when org deletion has been initiated. Blocks all UI access until the async task completes."
+    }
+  }
+}

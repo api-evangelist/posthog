@@ -1,0 +1,69 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "#/components/schemas/PropertyItem",
+  "title": "PropertyItem",
+  "type": "object",
+  "properties": {
+    "key": {
+      "type": "string",
+      "description": "Key of the property you're filtering on. For example `email` or `$current_url`"
+    },
+    "value": {
+      "oneOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "number"
+        },
+        {
+          "type": "boolean"
+        },
+        {
+          "type": "array",
+          "items": {
+            "oneOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "number"
+              }
+            ]
+          }
+        }
+      ],
+      "description": "Value of your filter. For example `test@example.com` or `https://example.com/test/`. Can be an array for an OR query, like `[\"test@example.com\",\"ok@example.com\"]`"
+    },
+    "operator": {
+      "nullable": true,
+      "default": "exact",
+      "oneOf": [
+        {
+          "$ref": "#/components/schemas/PropertyItemOperatorEnum"
+        },
+        {
+          "$ref": "#/components/schemas/BlankEnum"
+        },
+        {
+          "$ref": "#/components/schemas/NullEnum"
+        }
+      ]
+    },
+    "type": {
+      "default": "event",
+      "oneOf": [
+        {
+          "$ref": "#/components/schemas/PropertyFilterTypeEnum"
+        },
+        {
+          "$ref": "#/components/schemas/BlankEnum"
+        }
+      ]
+    }
+  },
+  "required": [
+    "key",
+    "value"
+  ]
+}

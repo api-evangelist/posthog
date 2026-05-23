@@ -1,0 +1,53 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "#/components/schemas/PatchedTaskRunUpdate",
+  "title": "PatchedTaskRunUpdate",
+  "type": "object",
+  "properties": {
+    "status": {
+      "allOf": [
+        {
+          "$ref": "#/components/schemas/TaskRunUpdateStatusEnum"
+        }
+      ],
+      "description": "Current execution status\n\n* `not_started` - not_started\n* `queued` - queued\n* `in_progress` - in_progress\n* `completed` - completed\n* `failed` - failed\n* `cancelled` - cancelled"
+    },
+    "branch": {
+      "type": "string",
+      "nullable": true,
+      "description": "Git branch name to associate with the task"
+    },
+    "stage": {
+      "type": "string",
+      "nullable": true,
+      "description": "Current stage of the run (e.g. research, plan, build)"
+    },
+    "output": {
+      "nullable": true,
+      "description": "Output from the run"
+    },
+    "state": {
+      "description": "State of the run"
+    },
+    "state_remove_keys": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "State keys to remove atomically before applying any state updates."
+    },
+    "error_message": {
+      "type": "string",
+      "nullable": true,
+      "description": "Error message if execution failed"
+    },
+    "environment": {
+      "allOf": [
+        {
+          "$ref": "#/components/schemas/TaskRunUpdateEnvironmentEnum"
+        }
+      ],
+      "description": "Transition a cloud run to local. Use the resume_in_cloud action to move a run into cloud.\n\n* `local` - local"
+    }
+  }
+}

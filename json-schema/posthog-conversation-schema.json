@@ -1,0 +1,120 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "#/components/schemas/Conversation",
+  "title": "Conversation",
+  "type": "object",
+  "properties": {
+    "id": {
+      "type": "string",
+      "format": "uuid",
+      "readOnly": true
+    },
+    "status": {
+      "allOf": [
+        {
+          "$ref": "#/components/schemas/ConversationStatus"
+        }
+      ],
+      "readOnly": true
+    },
+    "title": {
+      "type": "string",
+      "readOnly": true,
+      "nullable": true,
+      "description": "Title of the conversation."
+    },
+    "user": {
+      "allOf": [
+        {
+          "$ref": "#/components/schemas/UserBasic"
+        }
+      ],
+      "readOnly": true
+    },
+    "created_at": {
+      "type": "string",
+      "format": "date-time",
+      "readOnly": true,
+      "nullable": true
+    },
+    "updated_at": {
+      "type": "string",
+      "format": "date-time",
+      "readOnly": true,
+      "nullable": true
+    },
+    "type": {
+      "allOf": [
+        {
+          "$ref": "#/components/schemas/ConversationType"
+        }
+      ],
+      "readOnly": true
+    },
+    "is_internal": {
+      "type": "boolean",
+      "readOnly": true,
+      "nullable": true,
+      "description": "Whether this conversation was created during an impersonated session (e.g., by support agents). Internal conversations are hidden from customers."
+    },
+    "slack_thread_key": {
+      "type": "string",
+      "readOnly": true,
+      "nullable": true,
+      "description": "Unique key for Slack thread: '{workspace_id}:{channel}:{thread_ts}'"
+    },
+    "slack_workspace_domain": {
+      "type": "string",
+      "readOnly": true,
+      "nullable": true,
+      "description": "Slack workspace subdomain (e.g. 'posthog' for posthog.slack.com)"
+    },
+    "messages": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": true
+      },
+      "readOnly": true
+    },
+    "has_unsupported_content": {
+      "type": "boolean",
+      "readOnly": true
+    },
+    "agent_mode": {
+      "type": "string",
+      "nullable": true,
+      "readOnly": true
+    },
+    "is_sandbox": {
+      "type": "boolean",
+      "readOnly": true
+    },
+    "pending_approvals": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": true
+      },
+      "description": "Return pending approval cards as structured data.\n\nCombines metadata from conversation.approval_decisions with payload from checkpoint\ninterrupts (single source of truth for payload data).",
+      "readOnly": true
+    }
+  },
+  "required": [
+    "agent_mode",
+    "created_at",
+    "has_unsupported_content",
+    "id",
+    "is_internal",
+    "is_sandbox",
+    "messages",
+    "pending_approvals",
+    "slack_thread_key",
+    "slack_workspace_domain",
+    "status",
+    "title",
+    "type",
+    "updated_at",
+    "user"
+  ]
+}

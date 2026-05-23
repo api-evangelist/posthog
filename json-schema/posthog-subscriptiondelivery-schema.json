@@ -1,0 +1,127 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "#/components/schemas/SubscriptionDelivery",
+  "title": "SubscriptionDelivery",
+  "type": "object",
+  "properties": {
+    "id": {
+      "type": "string",
+      "format": "uuid",
+      "readOnly": true,
+      "description": "Primary key for this delivery row."
+    },
+    "subscription": {
+      "type": "integer",
+      "readOnly": true,
+      "description": "Parent subscription id."
+    },
+    "temporal_workflow_id": {
+      "type": "string",
+      "readOnly": true,
+      "description": "Temporal workflow id for this delivery run."
+    },
+    "idempotency_key": {
+      "type": "string",
+      "readOnly": true,
+      "description": "Dedupes activity retries for the same logical run."
+    },
+    "trigger_type": {
+      "type": "string",
+      "readOnly": true,
+      "description": "Why the run started (e.g. scheduled, manual, target_change)."
+    },
+    "scheduled_at": {
+      "type": "string",
+      "format": "date-time",
+      "readOnly": true,
+      "nullable": true,
+      "description": "Planned send time when applicable."
+    },
+    "target_type": {
+      "type": "string",
+      "readOnly": true,
+      "description": "Channel snapshot at send time (email, slack, webhook)."
+    },
+    "target_value": {
+      "type": "string",
+      "readOnly": true,
+      "description": "Destination snapshot at send time (emails, channel id, URL)."
+    },
+    "exported_asset_ids": {
+      "type": "array",
+      "items": {
+        "type": "integer",
+        "maximum": 2147483647,
+        "minimum": -2147483648
+      },
+      "readOnly": true,
+      "description": "ExportedAsset ids generated for this send."
+    },
+    "content_snapshot": {
+      "readOnly": true,
+      "description": "Snapshot at send time: dashboard metadata, total_insight_count, and per-exported-insight entries (id, short_id, name, query_hash, cache_key, query_results, optional query_error)."
+    },
+    "recipient_results": {
+      "readOnly": true,
+      "description": "Per-destination outcomes; items use status success, failed, or partial."
+    },
+    "status": {
+      "allOf": [
+        {
+          "$ref": "#/components/schemas/SubscriptionDeliveryStatusEnum"
+        }
+      ],
+      "readOnly": true,
+      "description": "Overall run status: starting, completed, failed, or skipped.\n\n* `starting` - Starting\n* `completed` - Completed\n* `failed` - Failed\n* `skipped` - Skipped"
+    },
+    "error": {
+      "readOnly": true,
+      "nullable": true,
+      "description": "Top-level failure payload when status is failed, if any."
+    },
+    "created_at": {
+      "type": "string",
+      "format": "date-time",
+      "readOnly": true,
+      "description": "When the delivery row was created."
+    },
+    "last_updated_at": {
+      "type": "string",
+      "format": "date-time",
+      "readOnly": true,
+      "description": "Last ORM update to this row."
+    },
+    "finished_at": {
+      "type": "string",
+      "format": "date-time",
+      "readOnly": true,
+      "nullable": true,
+      "description": "When the run finished, if applicable."
+    },
+    "change_summary": {
+      "type": "string",
+      "readOnly": true,
+      "nullable": true,
+      "description": "AI-generated summary included in this delivery, when one was produced."
+    }
+  },
+  "required": [
+    "change_summary",
+    "content_snapshot",
+    "created_at",
+    "error",
+    "exported_asset_ids",
+    "finished_at",
+    "id",
+    "idempotency_key",
+    "last_updated_at",
+    "recipient_results",
+    "scheduled_at",
+    "status",
+    "subscription",
+    "target_type",
+    "target_value",
+    "temporal_workflow_id",
+    "trigger_type"
+  ]
+}

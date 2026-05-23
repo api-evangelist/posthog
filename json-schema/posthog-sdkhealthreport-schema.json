@@ -1,0 +1,46 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "#/components/schemas/SdkHealthReport",
+  "title": "SdkHealthReport",
+  "type": "object",
+  "properties": {
+    "overall_health": {
+      "allOf": [
+        {
+          "$ref": "#/components/schemas/OverallHealthEnum"
+        }
+      ],
+      "description": "'healthy' when no SDKs need updating, 'needs_attention' otherwise.\n\n* `healthy` - healthy\n* `needs_attention` - needs_attention"
+    },
+    "health": {
+      "allOf": [
+        {
+          "$ref": "#/components/schemas/HealthEnum"
+        }
+      ],
+      "description": "UI-level status \u2014 'success' when healthy, 'warning' when some SDKs are outdated, 'danger' when the majority are outdated.\n\n* `success` - success\n* `warning` - warning\n* `danger` - danger"
+    },
+    "needs_updating_count": {
+      "type": "integer",
+      "description": "Number of SDKs that need updating."
+    },
+    "team_sdk_count": {
+      "type": "integer",
+      "description": "Number of distinct PostHog SDKs the project is actively using."
+    },
+    "sdks": {
+      "type": "array",
+      "items": {
+        "$ref": "#/components/schemas/SdkAssessment"
+      },
+      "description": "Per-SDK health assessments."
+    }
+  },
+  "required": [
+    "health",
+    "needs_updating_count",
+    "overall_health",
+    "sdks",
+    "team_sdk_count"
+  ]
+}

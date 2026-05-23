@@ -1,0 +1,69 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "#/components/schemas/EvaluationReportRun",
+  "title": "EvaluationReportRun",
+  "type": "object",
+  "properties": {
+    "id": {
+      "type": "string",
+      "format": "uuid",
+      "readOnly": true,
+      "description": "UUID of this report run."
+    },
+    "report": {
+      "type": "string",
+      "format": "uuid",
+      "readOnly": true,
+      "description": "UUID of the report config that generated this run."
+    },
+    "content": {
+      "readOnly": true,
+      "description": "Generated report content (markdown or structured text)."
+    },
+    "metadata": {
+      "readOnly": true,
+      "description": "Run metadata including model used, token counts, and generation stats."
+    },
+    "period_start": {
+      "type": "string",
+      "format": "date-time",
+      "readOnly": true,
+      "description": "Start of the evaluation window covered by this report."
+    },
+    "period_end": {
+      "type": "string",
+      "format": "date-time",
+      "readOnly": true,
+      "description": "End of the evaluation window covered by this report."
+    },
+    "delivery_status": {
+      "allOf": [
+        {
+          "$ref": "#/components/schemas/DeliveryStatusEnum"
+        }
+      ],
+      "readOnly": true,
+      "description": "'pending', 'delivered', or 'failed'.\n\n* `pending` - Pending\n* `delivered` - Delivered\n* `partial_failure` - Partial Failure\n* `failed` - Failed"
+    },
+    "delivery_errors": {
+      "readOnly": true,
+      "description": "List of delivery error messages if delivery failed."
+    },
+    "created_at": {
+      "type": "string",
+      "format": "date-time",
+      "readOnly": true
+    }
+  },
+  "required": [
+    "content",
+    "created_at",
+    "delivery_errors",
+    "delivery_status",
+    "id",
+    "metadata",
+    "period_end",
+    "period_start",
+    "report"
+  ]
+}

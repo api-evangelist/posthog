@@ -1,0 +1,131 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "#/components/schemas/FeatureFlagVersionResponse",
+  "title": "FeatureFlagVersionResponse",
+  "type": "object",
+  "description": "Feature flag state at a given version plus reconstruction metadata.",
+  "properties": {
+    "id": {
+      "type": "integer",
+      "readOnly": true
+    },
+    "key": {
+      "type": "string",
+      "maxLength": 400
+    },
+    "name": {
+      "type": "string"
+    },
+    "filters": {
+      "type": "object",
+      "additionalProperties": true,
+      "readOnly": true
+    },
+    "active": {
+      "type": "boolean"
+    },
+    "deleted": {
+      "type": "boolean"
+    },
+    "version": {
+      "type": "integer",
+      "maximum": 2147483647,
+      "minimum": -2147483648,
+      "nullable": true
+    },
+    "rollback_conditions": {
+      "nullable": true
+    },
+    "performed_rollback": {
+      "type": "boolean",
+      "nullable": true
+    },
+    "ensure_experience_continuity": {
+      "type": "boolean",
+      "nullable": true
+    },
+    "has_enriched_analytics": {
+      "type": "boolean",
+      "nullable": true
+    },
+    "is_remote_configuration": {
+      "type": "boolean",
+      "nullable": true
+    },
+    "has_encrypted_payloads": {
+      "type": "boolean",
+      "nullable": true
+    },
+    "evaluation_runtime": {
+      "nullable": true,
+      "description": "Specifies where this feature flag should be evaluated\n\n* `server` - Server\n* `client` - Client\n* `all` - All",
+      "oneOf": [
+        {
+          "$ref": "#/components/schemas/EvaluationRuntimeEnum"
+        },
+        {
+          "$ref": "#/components/schemas/BlankEnum"
+        },
+        {
+          "$ref": "#/components/schemas/NullEnum"
+        }
+      ]
+    },
+    "bucketing_identifier": {
+      "nullable": true,
+      "description": "Identifier used for bucketing users into rollout and variants\n\n* `distinct_id` - User ID (default)\n* `device_id` - Device ID",
+      "oneOf": [
+        {
+          "$ref": "#/components/schemas/BucketingIdentifierEnum"
+        },
+        {
+          "$ref": "#/components/schemas/BlankEnum"
+        },
+        {
+          "$ref": "#/components/schemas/NullEnum"
+        }
+      ]
+    },
+    "last_called_at": {
+      "type": "string",
+      "format": "date-time",
+      "nullable": true,
+      "description": "Last time this feature flag was called (from $feature_flag_called events)"
+    },
+    "created_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "created_by": {
+      "type": "integer",
+      "readOnly": true,
+      "nullable": true
+    },
+    "is_historical": {
+      "type": "boolean",
+      "readOnly": true,
+      "description": "False for the current version; true for reconstructed historical versions."
+    },
+    "version_timestamp": {
+      "type": "string",
+      "format": "date-time",
+      "readOnly": true,
+      "nullable": true
+    },
+    "modified_by": {
+      "type": "integer",
+      "readOnly": true,
+      "nullable": true,
+      "description": "User from the activity log entry that produced this version."
+    }
+  },
+  "required": [
+    "created_by",
+    "filters",
+    "id",
+    "is_historical",
+    "key",
+    "modified_by",
+    "version_timestamp"
+  ]
+}

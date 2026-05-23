@@ -1,0 +1,51 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "#/components/schemas/UserGitHubIntegrationItem",
+  "title": "UserGitHubIntegrationItem",
+  "type": "object",
+  "properties": {
+    "id": {
+      "type": "string",
+      "format": "uuid",
+      "description": "PostHog UserIntegration row id."
+    },
+    "kind": {
+      "type": "string",
+      "description": "Integration kind; always `github` for this API."
+    },
+    "installation_id": {
+      "type": "string",
+      "description": "GitHub App installation id."
+    },
+    "repository_selection": {
+      "type": "string",
+      "nullable": true,
+      "description": "Repository selection mode from GitHub (e.g. selected or all)."
+    },
+    "account": {
+      "allOf": [
+        {
+          "$ref": "#/components/schemas/UserGitHubAccount"
+        }
+      ],
+      "nullable": true,
+      "description": "Installation account metadata from GitHub."
+    },
+    "uses_shared_installation": {
+      "type": "boolean",
+      "description": "True when this installation id matches a team-level GitHub integration on the active project."
+    },
+    "created_at": {
+      "type": "string",
+      "format": "date-time",
+      "description": "When this integration row was created."
+    }
+  },
+  "required": [
+    "created_at",
+    "id",
+    "installation_id",
+    "kind",
+    "uses_shared_installation"
+  ]
+}

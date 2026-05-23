@@ -1,0 +1,85 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "#/components/schemas/ConversationMinimal",
+  "title": "ConversationMinimal",
+  "type": "object",
+  "properties": {
+    "id": {
+      "type": "string",
+      "format": "uuid",
+      "readOnly": true
+    },
+    "status": {
+      "allOf": [
+        {
+          "$ref": "#/components/schemas/ConversationStatus"
+        }
+      ],
+      "readOnly": true
+    },
+    "title": {
+      "type": "string",
+      "readOnly": true,
+      "nullable": true,
+      "description": "Title of the conversation."
+    },
+    "user": {
+      "allOf": [
+        {
+          "$ref": "#/components/schemas/UserBasic"
+        }
+      ],
+      "readOnly": true
+    },
+    "created_at": {
+      "type": "string",
+      "format": "date-time",
+      "readOnly": true,
+      "nullable": true
+    },
+    "updated_at": {
+      "type": "string",
+      "format": "date-time",
+      "readOnly": true,
+      "nullable": true
+    },
+    "type": {
+      "allOf": [
+        {
+          "$ref": "#/components/schemas/ConversationType"
+        }
+      ],
+      "readOnly": true
+    },
+    "is_internal": {
+      "type": "boolean",
+      "readOnly": true,
+      "nullable": true,
+      "description": "Whether this conversation was created during an impersonated session (e.g., by support agents). Internal conversations are hidden from customers."
+    },
+    "slack_thread_key": {
+      "type": "string",
+      "readOnly": true,
+      "nullable": true,
+      "description": "Unique key for Slack thread: '{workspace_id}:{channel}:{thread_ts}'"
+    },
+    "slack_workspace_domain": {
+      "type": "string",
+      "readOnly": true,
+      "nullable": true,
+      "description": "Slack workspace subdomain (e.g. 'posthog' for posthog.slack.com)"
+    }
+  },
+  "required": [
+    "created_at",
+    "id",
+    "is_internal",
+    "slack_thread_key",
+    "slack_workspace_domain",
+    "status",
+    "title",
+    "type",
+    "updated_at",
+    "user"
+  ]
+}

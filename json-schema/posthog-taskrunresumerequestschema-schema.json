@@ -1,0 +1,62 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "#/components/schemas/TaskRunResumeRequestSchema",
+  "title": "TaskRunResumeRequestSchema",
+  "type": "object",
+  "properties": {
+    "mode": {
+      "allOf": [
+        {
+          "$ref": "#/components/schemas/TaskExecutionModeEnum"
+        }
+      ],
+      "default": "background",
+      "description": "Execution mode: 'interactive' for user-connected runs, 'background' for autonomous runs\n\n* `interactive` - interactive\n* `background` - background"
+    },
+    "branch": {
+      "type": "string",
+      "nullable": true,
+      "description": "Git branch to checkout in the sandbox",
+      "maxLength": 255
+    },
+    "resume_from_run_id": {
+      "type": "string",
+      "format": "uuid",
+      "description": "ID of a previous run to resume from. Must belong to the same task."
+    },
+    "pending_user_message": {
+      "type": "string",
+      "description": "Initial or follow-up user message to include in the run prompt."
+    },
+    "sandbox_environment_id": {
+      "type": "string",
+      "format": "uuid",
+      "description": "Optional sandbox environment to apply for this cloud run."
+    },
+    "pr_authorship_mode": {
+      "allOf": [
+        {
+          "$ref": "#/components/schemas/PrAuthorshipModeEnum"
+        }
+      ],
+      "description": "Whether pull requests for this run should be authored by the user or the bot.\n\n* `user` - user\n* `bot` - bot"
+    },
+    "run_source": {
+      "allOf": [
+        {
+          "$ref": "#/components/schemas/RunSourceEnum"
+        }
+      ],
+      "description": "High-level source that triggered this run, used to distinguish manual and signal-based cloud runs.\n\n* `manual` - manual\n* `signal_report` - signal_report"
+    },
+    "signal_report_id": {
+      "type": "string",
+      "description": "Optional signal report identifier when this run was started from Inbox."
+    },
+    "github_user_token": {
+      "type": "string",
+      "writeOnly": true,
+      "description": "Optional GitHub user token from PostHog Code for user-authored cloud pull requests. Prefer linking GitHub from Settings \u2192 Linked accounts so the server can manage tokens; this field remains supported for callers that still manage their own tokens."
+    }
+  }
+}

@@ -1,0 +1,50 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "#/components/schemas/TaskRunArtifactUpload",
+  "title": "TaskRunArtifactUpload",
+  "type": "object",
+  "properties": {
+    "name": {
+      "type": "string",
+      "description": "File name to associate with the artifact",
+      "maxLength": 255
+    },
+    "type": {
+      "allOf": [
+        {
+          "$ref": "#/components/schemas/TaskRunArtifactTypeEnum"
+        }
+      ],
+      "description": "Classification for the artifact\n\n* `plan` - plan\n* `context` - context\n* `reference` - reference\n* `output` - output\n* `artifact` - artifact\n* `tree_snapshot` - tree_snapshot\n* `user_attachment` - user_attachment"
+    },
+    "source": {
+      "type": "string",
+      "default": "",
+      "description": "Optional source label for the artifact, such as agent_output or user_attachment",
+      "maxLength": 64
+    },
+    "content": {
+      "type": "string",
+      "description": "Artifact contents encoded according to content_encoding"
+    },
+    "content_encoding": {
+      "allOf": [
+        {
+          "$ref": "#/components/schemas/ContentEncodingEnum"
+        }
+      ],
+      "default": "utf-8",
+      "description": "Encoding used for content. Use base64 for binary files and utf-8 for text payloads.\n\n* `utf-8` - utf-8\n* `base64` - base64"
+    },
+    "content_type": {
+      "type": "string",
+      "description": "Optional MIME type for the artifact",
+      "maxLength": 255
+    }
+  },
+  "required": [
+    "content",
+    "name",
+    "type"
+  ]
+}

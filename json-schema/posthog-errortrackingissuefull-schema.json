@@ -1,0 +1,57 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "#/components/schemas/ErrorTrackingIssueFull",
+  "title": "ErrorTrackingIssueFull",
+  "type": "object",
+  "properties": {
+    "id": {
+      "type": "string",
+      "format": "uuid",
+      "readOnly": true
+    },
+    "status": {
+      "$ref": "#/components/schemas/ErrorTrackingIssueFullStatusEnum"
+    },
+    "name": {
+      "type": "string",
+      "nullable": true
+    },
+    "description": {
+      "type": "string",
+      "nullable": true
+    },
+    "first_seen": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "assignee": {
+      "$ref": "#/components/schemas/ErrorTrackingIssueAssignment"
+    },
+    "external_issues": {
+      "type": "array",
+      "items": {
+        "$ref": "#/components/schemas/ErrorTrackingExternalReferenceResult"
+      }
+    },
+    "cohort": {
+      "type": "object",
+      "nullable": true,
+      "properties": {
+        "id": {
+          "type": "integer"
+        },
+        "name": {
+          "type": "string"
+        }
+      },
+      "readOnly": true
+    }
+  },
+  "required": [
+    "assignee",
+    "cohort",
+    "external_issues",
+    "first_seen",
+    "id"
+  ]
+}

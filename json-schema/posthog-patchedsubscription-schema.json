@@ -1,0 +1,150 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "#/components/schemas/PatchedSubscription",
+  "title": "PatchedSubscription",
+  "type": "object",
+  "description": "Standard Subscription serializer.",
+  "properties": {
+    "id": {
+      "type": "integer",
+      "readOnly": true
+    },
+    "dashboard": {
+      "type": "integer",
+      "nullable": true,
+      "description": "Dashboard ID to subscribe to (mutually exclusive with insight on create)."
+    },
+    "insight": {
+      "type": "integer",
+      "nullable": true,
+      "description": "Insight ID to subscribe to (mutually exclusive with dashboard on create)."
+    },
+    "insight_short_id": {
+      "type": "string",
+      "nullable": true,
+      "readOnly": true
+    },
+    "resource_name": {
+      "type": "string",
+      "nullable": true,
+      "readOnly": true
+    },
+    "dashboard_export_insights": {
+      "type": "array",
+      "items": {
+        "type": "integer"
+      },
+      "description": "List of insight IDs from the dashboard to include. Required for dashboard subscriptions, max 6."
+    },
+    "target_type": {
+      "allOf": [
+        {
+          "$ref": "#/components/schemas/TargetTypeEnum"
+        }
+      ],
+      "description": "Delivery channel: email, slack, or webhook.\n\n* `email` - Email\n* `slack` - Slack\n* `webhook` - Webhook"
+    },
+    "target_value": {
+      "type": "string",
+      "description": "Recipient(s): comma-separated email addresses for email, Slack channel name/ID for slack, or full URL for webhook."
+    },
+    "frequency": {
+      "allOf": [
+        {
+          "$ref": "#/components/schemas/SubscriptionFrequencyEnum"
+        }
+      ],
+      "description": "How often to deliver: daily, weekly, monthly, or yearly.\n\n* `daily` - Daily\n* `weekly` - Weekly\n* `monthly` - Monthly\n* `yearly` - Yearly"
+    },
+    "interval": {
+      "type": "integer",
+      "maximum": 2147483647,
+      "minimum": -2147483648,
+      "description": "Interval multiplier (e.g. 2 with weekly frequency means every 2 weeks). Default 1."
+    },
+    "byweekday": {
+      "type": "array",
+      "items": {
+        "$ref": "#/components/schemas/ByweekdayEnum"
+      },
+      "nullable": true,
+      "description": "Days of week for weekly subscriptions: monday, tuesday, wednesday, thursday, friday, saturday, sunday."
+    },
+    "bysetpos": {
+      "type": "integer",
+      "maximum": 2147483647,
+      "minimum": -2147483648,
+      "nullable": true,
+      "description": "Position within byweekday set for monthly frequency (e.g. 1 for first, -1 for last)."
+    },
+    "count": {
+      "type": "integer",
+      "maximum": 2147483647,
+      "minimum": -2147483648,
+      "nullable": true,
+      "description": "Total number of deliveries before the subscription stops. Null for unlimited."
+    },
+    "start_date": {
+      "type": "string",
+      "format": "date-time",
+      "description": "When to start delivering (ISO 8601 datetime)."
+    },
+    "until_date": {
+      "type": "string",
+      "format": "date-time",
+      "nullable": true,
+      "description": "When to stop delivering (ISO 8601 datetime). Null for indefinite."
+    },
+    "created_at": {
+      "type": "string",
+      "format": "date-time",
+      "readOnly": true
+    },
+    "created_by": {
+      "allOf": [
+        {
+          "$ref": "#/components/schemas/UserBasic"
+        }
+      ],
+      "readOnly": true
+    },
+    "deleted": {
+      "type": "boolean",
+      "description": "Set to true to soft-delete. Subscriptions cannot be hard-deleted."
+    },
+    "title": {
+      "type": "string",
+      "nullable": true,
+      "description": "Human-readable name for this subscription.",
+      "maxLength": 100
+    },
+    "summary": {
+      "type": "string",
+      "readOnly": true,
+      "description": "Human-readable schedule summary, e.g. 'sent daily'."
+    },
+    "next_delivery_date": {
+      "type": "string",
+      "format": "date-time",
+      "readOnly": true,
+      "nullable": true
+    },
+    "integration_id": {
+      "type": "integer",
+      "nullable": true,
+      "description": "ID of a connected Slack integration. Required when target_type is slack."
+    },
+    "invite_message": {
+      "type": "string",
+      "nullable": true,
+      "description": "Optional message included in the invitation email when adding new recipients."
+    },
+    "summary_enabled": {
+      "type": "boolean"
+    },
+    "summary_prompt_guide": {
+      "type": "string",
+      "maxLength": 500
+    }
+  }
+}

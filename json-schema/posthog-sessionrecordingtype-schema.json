@@ -1,0 +1,211 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "#/components/schemas/SessionRecordingType",
+  "title": "SessionRecordingType",
+  "additionalProperties": false,
+  "properties": {
+    "active_seconds": {
+      "default": null,
+      "title": "Active Seconds",
+      "type": "number",
+      "nullable": true
+    },
+    "activity_score": {
+      "default": null,
+      "description": "calculated on the backend so that we can sort by it, definition may change over time",
+      "title": "Activity Score",
+      "type": "number",
+      "nullable": true
+    },
+    "click_count": {
+      "default": null,
+      "title": "Click Count",
+      "type": "number",
+      "nullable": true
+    },
+    "console_error_count": {
+      "default": null,
+      "title": "Console Error Count",
+      "type": "number",
+      "nullable": true
+    },
+    "console_log_count": {
+      "default": null,
+      "title": "Console Log Count",
+      "type": "number",
+      "nullable": true
+    },
+    "console_warn_count": {
+      "default": null,
+      "title": "Console Warn Count",
+      "type": "number",
+      "nullable": true
+    },
+    "distinct_id": {
+      "default": null,
+      "title": "Distinct Id",
+      "type": "string",
+      "nullable": true
+    },
+    "email": {
+      "default": null,
+      "title": "Email",
+      "type": "string",
+      "nullable": true
+    },
+    "end_time": {
+      "description": "When the recording ends in ISO format.",
+      "title": "End Time",
+      "type": "string"
+    },
+    "expiry_time": {
+      "default": null,
+      "description": "When the recording expires, in ISO format.",
+      "title": "Expiry Time",
+      "type": "string",
+      "nullable": true
+    },
+    "external_references": {
+      "default": null,
+      "description": "External references to third party issues.",
+      "title": "External References",
+      "items": {
+        "$ref": "#/components/schemas/SessionRecordingExternalReference"
+      },
+      "type": "array",
+      "nullable": true
+    },
+    "has_summary": {
+      "default": null,
+      "title": "Has Summary",
+      "type": "boolean",
+      "nullable": true
+    },
+    "id": {
+      "title": "Id",
+      "type": "string"
+    },
+    "inactive_seconds": {
+      "default": null,
+      "title": "Inactive Seconds",
+      "type": "number",
+      "nullable": true
+    },
+    "keypress_count": {
+      "default": null,
+      "title": "Keypress Count",
+      "type": "number",
+      "nullable": true
+    },
+    "matching_events": {
+      "default": null,
+      "description": "List of matching events. *",
+      "title": "Matching Events",
+      "items": {
+        "$ref": "#/components/schemas/MatchedRecording"
+      },
+      "type": "array",
+      "nullable": true
+    },
+    "mouse_activity_count": {
+      "default": null,
+      "description": "count of all mouse activity in the recording, not just clicks",
+      "title": "Mouse Activity Count",
+      "type": "number",
+      "nullable": true
+    },
+    "ongoing": {
+      "default": null,
+      "description": "whether we have received data for this recording in the last 5 minutes (assumes the recording was loaded from ClickHouse)\n*",
+      "title": "Ongoing",
+      "type": "boolean",
+      "nullable": true
+    },
+    "person": {
+      "default": null,
+      "allOf": [
+        {
+          "$ref": "#/components/schemas/PersonType"
+        }
+      ],
+      "nullable": true
+    },
+    "recording_duration": {
+      "description": "Length of recording in seconds.",
+      "title": "Recording Duration",
+      "type": "number"
+    },
+    "recording_ttl": {
+      "default": null,
+      "description": "Number of whole days left until the recording expires.",
+      "title": "Recording Ttl",
+      "type": "number",
+      "nullable": true
+    },
+    "retention_period_days": {
+      "default": null,
+      "description": "retention period for this recording",
+      "title": "Retention Period Days",
+      "type": "number",
+      "nullable": true
+    },
+    "snapshot_library": {
+      "default": null,
+      "title": "Snapshot Library",
+      "type": "string",
+      "nullable": true
+    },
+    "snapshot_source": {
+      "$ref": "#/components/schemas/SnapshotSource"
+    },
+    "start_time": {
+      "description": "When the recording starts in ISO format.",
+      "title": "Start Time",
+      "type": "string"
+    },
+    "start_url": {
+      "default": null,
+      "title": "Start Url",
+      "type": "string",
+      "nullable": true
+    },
+    "summary": {
+      "default": null,
+      "title": "Summary",
+      "type": "string",
+      "nullable": true
+    },
+    "summary_outcome": {
+      "default": null,
+      "allOf": [
+        {
+          "$ref": "#/components/schemas/SummaryOutcome"
+        }
+      ],
+      "nullable": true
+    },
+    "viewed": {
+      "description": "Whether this recording has been viewed by you already.",
+      "title": "Viewed",
+      "type": "boolean"
+    },
+    "viewers": {
+      "description": "user ids of other users who have viewed this recording",
+      "items": {
+        "type": "string"
+      },
+      "title": "Viewers",
+      "type": "array"
+    }
+  },
+  "required": [
+    "end_time",
+    "id",
+    "recording_duration",
+    "snapshot_source",
+    "start_time",
+    "viewed",
+    "viewers"
+  ],
+  "type": "object"
+}

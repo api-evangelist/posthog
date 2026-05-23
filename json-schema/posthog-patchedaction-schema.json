@@ -1,0 +1,103 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "#/components/schemas/PatchedAction",
+  "title": "PatchedAction",
+  "type": "object",
+  "description": "Serializer mixin that handles tags for objects.",
+  "properties": {
+    "id": {
+      "type": "integer",
+      "readOnly": true
+    },
+    "name": {
+      "type": "string",
+      "nullable": true,
+      "description": "Name of the action (must be unique within the project).",
+      "maxLength": 400
+    },
+    "description": {
+      "type": "string",
+      "description": "Human-readable description of what this action represents."
+    },
+    "tags": {
+      "type": "array",
+      "items": {}
+    },
+    "post_to_slack": {
+      "type": "boolean",
+      "description": "Whether to post a notification to Slack when this action is triggered."
+    },
+    "slack_message_format": {
+      "type": "string",
+      "description": "Custom Slack message format. Supports templates with event properties.",
+      "maxLength": 1200
+    },
+    "steps": {
+      "type": "array",
+      "items": {
+        "$ref": "#/components/schemas/ActionStepJSON"
+      },
+      "description": "Action steps defining trigger conditions. Each step matches events by name, properties, URL, or element attributes. Multiple steps are OR-ed together."
+    },
+    "created_at": {
+      "type": "string",
+      "format": "date-time",
+      "readOnly": true
+    },
+    "created_by": {
+      "allOf": [
+        {
+          "$ref": "#/components/schemas/UserBasic"
+        }
+      ],
+      "readOnly": true
+    },
+    "deleted": {
+      "type": "boolean"
+    },
+    "is_calculating": {
+      "type": "boolean",
+      "readOnly": true
+    },
+    "last_calculated_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "team_id": {
+      "type": "integer",
+      "readOnly": true
+    },
+    "is_action": {
+      "type": "boolean",
+      "readOnly": true,
+      "default": true
+    },
+    "bytecode_error": {
+      "type": "string",
+      "readOnly": true,
+      "nullable": true
+    },
+    "pinned_at": {
+      "type": "string",
+      "format": "date-time",
+      "nullable": true,
+      "description": "ISO 8601 timestamp when the action was pinned, or null if not pinned. Set any value to pin, null to unpin."
+    },
+    "creation_context": {
+      "type": "string",
+      "nullable": true,
+      "readOnly": true
+    },
+    "_create_in_folder": {
+      "type": "string",
+      "writeOnly": true,
+      "title": " create in folder"
+    },
+    "user_access_level": {
+      "type": "string",
+      "nullable": true,
+      "readOnly": true,
+      "description": "The effective access level the user has for this object"
+    }
+  }
+}

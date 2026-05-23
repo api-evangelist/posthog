@@ -1,0 +1,102 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "#/components/schemas/PatchedTask",
+  "title": "PatchedTask",
+  "type": "object",
+  "properties": {
+    "id": {
+      "type": "string",
+      "format": "uuid",
+      "readOnly": true
+    },
+    "task_number": {
+      "type": "integer",
+      "readOnly": true,
+      "nullable": true
+    },
+    "slug": {
+      "type": "string",
+      "readOnly": true
+    },
+    "title": {
+      "type": "string",
+      "maxLength": 255
+    },
+    "title_manually_set": {
+      "type": "boolean"
+    },
+    "description": {
+      "type": "string"
+    },
+    "origin_product": {
+      "$ref": "#/components/schemas/OriginProductEnum"
+    },
+    "repository": {
+      "type": "string",
+      "nullable": true,
+      "maxLength": 255
+    },
+    "github_integration": {
+      "type": "integer",
+      "nullable": true,
+      "description": "GitHub integration for this task"
+    },
+    "github_user_integration": {
+      "type": "string",
+      "format": "uuid",
+      "nullable": true,
+      "description": "User-scoped GitHub integration to use for user-authored cloud runs."
+    },
+    "signal_report": {
+      "type": "string",
+      "format": "uuid",
+      "nullable": true
+    },
+    "signal_report_task_relationship": {
+      "allOf": [
+        {
+          "$ref": "#/components/schemas/SignalReportTaskRelationshipEnum"
+        }
+      ],
+      "writeOnly": true
+    },
+    "json_schema": {
+      "nullable": true,
+      "description": "JSON schema for the task. This is used to validate the output of the task."
+    },
+    "internal": {
+      "type": "boolean",
+      "description": "If true, this task is for internal use and should not be exposed to end users."
+    },
+    "latest_run": {
+      "type": "object",
+      "additionalProperties": true,
+      "nullable": true,
+      "description": "Latest run details for this task",
+      "readOnly": true
+    },
+    "created_at": {
+      "type": "string",
+      "format": "date-time",
+      "readOnly": true
+    },
+    "updated_at": {
+      "type": "string",
+      "format": "date-time",
+      "readOnly": true
+    },
+    "created_by": {
+      "allOf": [
+        {
+          "$ref": "#/components/schemas/UserBasic"
+        }
+      ],
+      "readOnly": true
+    },
+    "ci_prompt": {
+      "type": "string",
+      "nullable": true,
+      "description": "Custom prompt for CI fixes. If blank, a default prompt will be used."
+    }
+  }
+}

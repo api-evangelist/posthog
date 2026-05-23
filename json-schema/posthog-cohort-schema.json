@@ -1,0 +1,143 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "#/components/schemas/Cohort",
+  "title": "Cohort",
+  "type": "object",
+  "properties": {
+    "id": {
+      "type": "integer",
+      "readOnly": true
+    },
+    "name": {
+      "type": "string",
+      "nullable": true,
+      "maxLength": 400
+    },
+    "description": {
+      "type": "string",
+      "maxLength": 1000
+    },
+    "groups": {},
+    "deleted": {
+      "type": "boolean"
+    },
+    "filters": {
+      "allOf": [
+        {
+          "$ref": "#/components/schemas/CohortFilters"
+        }
+      ],
+      "nullable": true
+    },
+    "query": {
+      "nullable": true
+    },
+    "version": {
+      "type": "integer",
+      "readOnly": true,
+      "nullable": true
+    },
+    "pending_version": {
+      "type": "integer",
+      "readOnly": true,
+      "nullable": true
+    },
+    "is_calculating": {
+      "type": "boolean",
+      "readOnly": true
+    },
+    "created_by": {
+      "allOf": [
+        {
+          "$ref": "#/components/schemas/UserBasic"
+        }
+      ],
+      "readOnly": true
+    },
+    "created_at": {
+      "type": "string",
+      "format": "date-time",
+      "readOnly": true,
+      "nullable": true
+    },
+    "last_calculation": {
+      "type": "string",
+      "format": "date-time",
+      "readOnly": true,
+      "nullable": true
+    },
+    "last_backfill_person_properties_at": {
+      "type": "string",
+      "format": "date-time",
+      "readOnly": true,
+      "nullable": true
+    },
+    "errors_calculating": {
+      "type": "integer",
+      "readOnly": true
+    },
+    "last_error_message": {
+      "type": "string",
+      "nullable": true,
+      "readOnly": true
+    },
+    "count": {
+      "type": "integer",
+      "readOnly": true,
+      "nullable": true
+    },
+    "is_static": {
+      "type": "boolean"
+    },
+    "cohort_type": {
+      "nullable": true,
+      "description": "Type of cohort based on filter complexity\n\n* `static` - static\n* `person_property` - person_property\n* `behavioral` - behavioral\n* `realtime` - realtime\n* `analytical` - analytical",
+      "oneOf": [
+        {
+          "$ref": "#/components/schemas/CohortTypeEnum"
+        },
+        {
+          "$ref": "#/components/schemas/BlankEnum"
+        },
+        {
+          "$ref": "#/components/schemas/NullEnum"
+        }
+      ]
+    },
+    "experiment_set": {
+      "type": "array",
+      "items": {
+        "type": "integer"
+      },
+      "readOnly": true
+    },
+    "_create_in_folder": {
+      "type": "string",
+      "writeOnly": true,
+      "title": " create in folder"
+    },
+    "_create_static_person_ids": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "writeOnly": true,
+      "default": [],
+      "title": " create static person ids"
+    }
+  },
+  "required": [
+    "count",
+    "created_at",
+    "created_by",
+    "errors_calculating",
+    "experiment_set",
+    "id",
+    "is_calculating",
+    "last_backfill_person_properties_at",
+    "last_calculation",
+    "last_error_message",
+    "pending_version",
+    "version"
+  ]
+}

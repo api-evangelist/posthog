@@ -1,0 +1,38 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "#/components/schemas/CreateLegalDocument",
+  "title": "CreateLegalDocument",
+  "type": "object",
+  "description": "Input serializer for POST. Mirrors the submittable fields on the model plus\ncross-field rules (BAA addon, DPA mode, uniqueness). The view supplies the\norganization and submitting user.",
+  "properties": {
+    "document_type": {
+      "allOf": [
+        {
+          "$ref": "#/components/schemas/DocumentTypeEnum"
+        }
+      ],
+      "description": "Either 'BAA' or 'DPA'.\n\n* `BAA` - BAA\n* `DPA` - DPA"
+    },
+    "company_name": {
+      "type": "string",
+      "description": "The customer legal entity entering the agreement (PandaDoc's Client.Company).",
+      "maxLength": 255
+    },
+    "company_address": {
+      "type": "string",
+      "description": "The customer address (PandaDoc's Client.StreetAddress).",
+      "maxLength": 512
+    },
+    "representative_email": {
+      "type": "string",
+      "format": "email",
+      "description": "Email the signed PandaDoc envelope is sent to (PandaDoc's Client.Email)."
+    }
+  },
+  "required": [
+    "company_address",
+    "company_name",
+    "document_type",
+    "representative_email"
+  ]
+}

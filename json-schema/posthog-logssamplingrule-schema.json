@@ -1,0 +1,91 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "#/components/schemas/LogsSamplingRule",
+  "title": "LogsSamplingRule",
+  "type": "object",
+  "properties": {
+    "id": {
+      "type": "string",
+      "format": "uuid",
+      "readOnly": true,
+      "description": "Unique identifier for this sampling rule."
+    },
+    "name": {
+      "type": "string",
+      "description": "User-visible label for this rule.",
+      "maxLength": 255
+    },
+    "enabled": {
+      "type": "boolean",
+      "default": false,
+      "description": "When false, the rule is ignored by ingestion and listing UIs that show active rules only."
+    },
+    "priority": {
+      "type": "integer",
+      "minimum": 0,
+      "nullable": true,
+      "description": "Lower numbers are evaluated first; the first matching rule wins. Omit to append after existing rules."
+    },
+    "rule_type": {
+      "allOf": [
+        {
+          "$ref": "#/components/schemas/RuleTypeEnum"
+        }
+      ],
+      "description": "Rule kind: severity_sampling, path_drop, or rate_limit (rate_limit reserved for a future release).\n\n* `severity_sampling` - Severity-based reduction\n* `path_drop` - Path exclusion\n* `rate_limit` - Rate limit"
+    },
+    "scope_service": {
+      "type": "string",
+      "nullable": true,
+      "description": "If set, the rule applies only to this service name; null means all services.",
+      "maxLength": 512
+    },
+    "scope_path_pattern": {
+      "type": "string",
+      "nullable": true,
+      "description": "Optional regex matched against a path-like log attribute when present.",
+      "maxLength": 1024
+    },
+    "scope_attribute_filters": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": true
+      },
+      "description": "Optional list of predicates over string attributes, e.g. [{\"key\":\"http.route\",\"op\":\"eq\",\"value\":\"/api\"}]."
+    },
+    "config": {
+      "description": "Type-specific JSON. For path_drop: object with required `patterns` (list of regex strings) and optional `match_attribute_key` (string). When `match_attribute_key` is omitted or empty, patterns match the same virtual path string as ingestion (url.path, http.path, http.route, path). When set, each pattern is tested only against that string attribute on the log record. For severity_sampling: object with `actions` per severity level and optional `always_keep`. rate_limit is reserved."
+    },
+    "version": {
+      "type": "integer",
+      "readOnly": true,
+      "description": "Incremented on each update for worker cache coherency."
+    },
+    "created_by": {
+      "type": "integer",
+      "readOnly": true
+    },
+    "created_at": {
+      "type": "string",
+      "format": "date-time",
+      "readOnly": true
+    },
+    "updated_at": {
+      "type": "string",
+      "format": "date-time",
+      "readOnly": true,
+      "nullable": true
+    }
+  },
+  "required": [
+    "config",
+    "created_at",
+    "created_by",
+    "id",
+    "name",
+    "rule_type",
+    "updated_at",
+    "version"
+  ]
+}

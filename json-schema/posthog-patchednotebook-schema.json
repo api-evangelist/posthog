@@ -1,0 +1,81 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "#/components/schemas/PatchedNotebook",
+  "title": "PatchedNotebook",
+  "type": "object",
+  "properties": {
+    "id": {
+      "type": "string",
+      "format": "uuid",
+      "readOnly": true,
+      "description": "UUID of the notebook."
+    },
+    "short_id": {
+      "type": "string",
+      "readOnly": true,
+      "description": "Short alphanumeric identifier used in URLs and API lookups."
+    },
+    "title": {
+      "type": "string",
+      "nullable": true,
+      "description": "Title of the notebook.",
+      "maxLength": 256
+    },
+    "content": {
+      "nullable": true,
+      "description": "Notebook content as a ProseMirror JSON document structure."
+    },
+    "text_content": {
+      "type": "string",
+      "nullable": true,
+      "description": "Plain text representation of the notebook content for search."
+    },
+    "version": {
+      "type": "integer",
+      "maximum": 2147483647,
+      "minimum": -2147483648,
+      "description": "Version number for optimistic concurrency control. Must match the current version when updating content."
+    },
+    "deleted": {
+      "type": "boolean",
+      "description": "Whether the notebook has been soft-deleted."
+    },
+    "created_at": {
+      "type": "string",
+      "format": "date-time",
+      "readOnly": true
+    },
+    "created_by": {
+      "allOf": [
+        {
+          "$ref": "#/components/schemas/UserBasic"
+        }
+      ],
+      "readOnly": true
+    },
+    "last_modified_at": {
+      "type": "string",
+      "format": "date-time",
+      "readOnly": true
+    },
+    "last_modified_by": {
+      "allOf": [
+        {
+          "$ref": "#/components/schemas/UserBasic"
+        }
+      ],
+      "readOnly": true
+    },
+    "user_access_level": {
+      "type": "string",
+      "nullable": true,
+      "readOnly": true,
+      "description": "The effective access level the user has for this object"
+    },
+    "_create_in_folder": {
+      "type": "string",
+      "writeOnly": true,
+      "title": " create in folder"
+    }
+  }
+}

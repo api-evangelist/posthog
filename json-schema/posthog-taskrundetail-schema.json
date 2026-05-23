@@ -1,0 +1,141 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "#/components/schemas/TaskRunDetail",
+  "title": "TaskRunDetail",
+  "type": "object",
+  "properties": {
+    "id": {
+      "type": "string",
+      "format": "uuid",
+      "readOnly": true
+    },
+    "task": {
+      "type": "string",
+      "format": "uuid",
+      "readOnly": true
+    },
+    "stage": {
+      "type": "string",
+      "nullable": true,
+      "description": "Current stage for this run (e.g., 'research', 'plan', 'build')",
+      "maxLength": 100
+    },
+    "branch": {
+      "type": "string",
+      "nullable": true,
+      "description": "Branch name for the run",
+      "maxLength": 255
+    },
+    "status": {
+      "$ref": "#/components/schemas/TaskRunDetailStatusEnum"
+    },
+    "environment": {
+      "allOf": [
+        {
+          "$ref": "#/components/schemas/TaskRunDetailEnvironmentEnum"
+        }
+      ],
+      "description": "Execution environment\n\n* `local` - Local\n* `cloud` - Cloud"
+    },
+    "runtime_adapter": {
+      "nullable": true,
+      "description": "Configured runtime adapter for this run, such as 'claude' or 'codex'.",
+      "readOnly": true,
+      "oneOf": [
+        {
+          "$ref": "#/components/schemas/RuntimeAdapterEnum"
+        },
+        {
+          "$ref": "#/components/schemas/NullEnum"
+        }
+      ]
+    },
+    "provider": {
+      "nullable": true,
+      "description": "Configured LLM provider for this run, such as 'anthropic' or 'openai'.",
+      "readOnly": true,
+      "oneOf": [
+        {
+          "$ref": "#/components/schemas/TaskRunDetailProviderEnum"
+        },
+        {
+          "$ref": "#/components/schemas/NullEnum"
+        }
+      ]
+    },
+    "model": {
+      "type": "string",
+      "nullable": true,
+      "description": "Configured LLM model identifier for this run.",
+      "readOnly": true
+    },
+    "reasoning_effort": {
+      "nullable": true,
+      "description": "Configured reasoning effort for this run when the selected model supports it.",
+      "readOnly": true,
+      "oneOf": [
+        {
+          "$ref": "#/components/schemas/ReasoningEffortEnum"
+        },
+        {
+          "$ref": "#/components/schemas/NullEnum"
+        }
+      ]
+    },
+    "log_url": {
+      "type": "string",
+      "format": "uri",
+      "nullable": true,
+      "description": "Presigned S3 URL for log access (valid for 1 hour).",
+      "readOnly": true
+    },
+    "error_message": {
+      "type": "string",
+      "nullable": true,
+      "description": "Error message if execution failed"
+    },
+    "output": {
+      "nullable": true,
+      "description": "Run output data (e.g., PR URL, commit SHA, etc.)"
+    },
+    "state": {
+      "description": "Run state data for resuming or tracking execution state"
+    },
+    "artifacts": {
+      "type": "array",
+      "items": {
+        "$ref": "#/components/schemas/TaskRunArtifactResponse"
+      },
+      "readOnly": true
+    },
+    "created_at": {
+      "type": "string",
+      "format": "date-time",
+      "readOnly": true
+    },
+    "updated_at": {
+      "type": "string",
+      "format": "date-time",
+      "readOnly": true
+    },
+    "completed_at": {
+      "type": "string",
+      "format": "date-time",
+      "readOnly": true,
+      "nullable": true
+    }
+  },
+  "required": [
+    "artifacts",
+    "completed_at",
+    "created_at",
+    "id",
+    "log_url",
+    "model",
+    "provider",
+    "reasoning_effort",
+    "runtime_adapter",
+    "task",
+    "updated_at"
+  ]
+}

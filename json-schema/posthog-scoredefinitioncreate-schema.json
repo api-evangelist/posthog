@@ -1,0 +1,44 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "#/components/schemas/ScoreDefinitionCreate",
+  "title": "ScoreDefinitionCreate",
+  "type": "object",
+  "properties": {
+    "name": {
+      "type": "string",
+      "description": "Human-readable scorer name.",
+      "maxLength": 255
+    },
+    "description": {
+      "type": "string",
+      "nullable": true,
+      "description": "Optional human-readable description."
+    },
+    "kind": {
+      "allOf": [
+        {
+          "$ref": "#/components/schemas/ExperimentMetricKindEnum"
+        }
+      ],
+      "description": "Scorer kind. This cannot be changed after creation.\n\n* `categorical` - categorical\n* `numeric` - numeric\n* `boolean` - boolean"
+    },
+    "archived": {
+      "type": "boolean",
+      "default": false,
+      "description": "New scorers are always created as active."
+    },
+    "config": {
+      "allOf": [
+        {
+          "$ref": "#/components/schemas/ScoreDefinitionConfig"
+        }
+      ],
+      "description": "Initial immutable scorer configuration."
+    }
+  },
+  "required": [
+    "config",
+    "kind",
+    "name"
+  ]
+}

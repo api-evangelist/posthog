@@ -1,0 +1,32 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "#/components/schemas/LLMSkillFileCreate",
+  "title": "LLMSkillFileCreate",
+  "type": "object",
+  "properties": {
+    "path": {
+      "type": "string",
+      "description": "File path relative to skill root, e.g. 'scripts/setup.sh' or 'references/guide.md'.",
+      "maxLength": 500
+    },
+    "content": {
+      "type": "string",
+      "description": "Text content of the file."
+    },
+    "content_type": {
+      "type": "string",
+      "default": "text/plain",
+      "description": "MIME type of the file content.",
+      "maxLength": 100
+    },
+    "base_version": {
+      "type": "integer",
+      "minimum": 1,
+      "description": "Latest version you are editing from. If provided, the request fails with 409 when another write has landed in the meantime."
+    }
+  },
+  "required": [
+    "content",
+    "path"
+  ]
+}

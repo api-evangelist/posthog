@@ -1,0 +1,101 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "#/components/schemas/TraceReviewScore",
+  "title": "TraceReviewScore",
+  "type": "object",
+  "properties": {
+    "id": {
+      "type": "string",
+      "format": "uuid",
+      "readOnly": true
+    },
+    "definition_id": {
+      "type": "string",
+      "format": "uuid",
+      "readOnly": true,
+      "description": "Stable scorer definition ID."
+    },
+    "definition_name": {
+      "type": "string",
+      "readOnly": true,
+      "description": "Human-readable scorer name."
+    },
+    "definition_kind": {
+      "type": "string",
+      "readOnly": true,
+      "description": "Scorer kind for this saved score."
+    },
+    "definition_archived": {
+      "type": "boolean",
+      "readOnly": true,
+      "description": "Whether the scorer is currently archived."
+    },
+    "definition_version_id": {
+      "type": "string",
+      "format": "uuid",
+      "readOnly": true,
+      "description": "Immutable scorer version ID used to validate this score."
+    },
+    "definition_version": {
+      "type": "integer",
+      "readOnly": true,
+      "description": "Immutable scorer version number used to validate this score."
+    },
+    "definition_config": {
+      "allOf": [
+        {
+          "$ref": "#/components/schemas/ScoreDefinitionConfig"
+        }
+      ],
+      "readOnly": true,
+      "description": "Immutable scorer configuration snapshot used to validate this score."
+    },
+    "categorical_values": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "readOnly": true,
+      "nullable": true,
+      "description": "Categorical option keys selected for this score."
+    },
+    "numeric_value": {
+      "type": "string",
+      "format": "decimal",
+      "pattern": "^-?\\d{0,6}(?:\\.\\d{0,6})?$",
+      "readOnly": true,
+      "nullable": true
+    },
+    "boolean_value": {
+      "type": "boolean",
+      "readOnly": true,
+      "nullable": true
+    },
+    "created_at": {
+      "type": "string",
+      "format": "date-time",
+      "readOnly": true
+    },
+    "updated_at": {
+      "type": "string",
+      "format": "date-time",
+      "readOnly": true,
+      "nullable": true
+    }
+  },
+  "required": [
+    "boolean_value",
+    "categorical_values",
+    "created_at",
+    "definition_archived",
+    "definition_config",
+    "definition_id",
+    "definition_kind",
+    "definition_name",
+    "definition_version",
+    "definition_version_id",
+    "id",
+    "numeric_value",
+    "updated_at"
+  ]
+}

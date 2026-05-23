@@ -1,0 +1,153 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "#/components/schemas/PatchedDataWarehouseSavedQuery",
+  "title": "PatchedDataWarehouseSavedQuery",
+  "type": "object",
+  "description": "Shared methods for DataWarehouseSavedQuery serializers.\n\nThis mixin is intended to be used with serializers.ModelSerializer subclasses.",
+  "properties": {
+    "id": {
+      "type": "string",
+      "format": "uuid",
+      "readOnly": true
+    },
+    "deleted": {
+      "type": "boolean",
+      "nullable": true
+    },
+    "name": {
+      "type": "string",
+      "description": "Unique name for the view. Used as the table name in HogQL queries and the node name in the data modeling Node.",
+      "maxLength": 128
+    },
+    "query": {
+      "nullable": true,
+      "description": "HogQL query definition as a JSON object with a \"query\" key containing the SQL string and a \"kind\" key containing the query type. Example: {\"query\": \"SELECT * FROM events LIMIT 100\", \"kind\": \"HogQLQuery\"}"
+    },
+    "created_by": {
+      "allOf": [
+        {
+          "$ref": "#/components/schemas/UserBasic"
+        }
+      ],
+      "readOnly": true
+    },
+    "created_at": {
+      "type": "string",
+      "format": "date-time",
+      "readOnly": true
+    },
+    "sync_frequency": {
+      "type": "string",
+      "nullable": true,
+      "readOnly": true
+    },
+    "columns": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": true
+      },
+      "readOnly": true
+    },
+    "status": {
+      "readOnly": true,
+      "nullable": true,
+      "description": "The status of when this SavedQuery last ran.\n\n* `Cancelled` - Cancelled\n* `Modified` - Modified\n* `Completed` - Completed\n* `Failed` - Failed\n* `Running` - Running",
+      "oneOf": [
+        {
+          "$ref": "#/components/schemas/SavedQueryStatusEnum"
+        },
+        {
+          "$ref": "#/components/schemas/NullEnum"
+        }
+      ]
+    },
+    "last_run_at": {
+      "type": "string",
+      "format": "date-time",
+      "nullable": true,
+      "readOnly": true
+    },
+    "managed_viewset_kind": {
+      "type": "string",
+      "nullable": true,
+      "readOnly": true
+    },
+    "folder_id": {
+      "type": "string",
+      "format": "uuid",
+      "nullable": true,
+      "description": "Optional folder ID used to organize this view in the SQL editor sidebar."
+    },
+    "folder_name": {
+      "type": "string",
+      "readOnly": true,
+      "nullable": true,
+      "description": "Folder name used to organize this view in the SQL editor sidebar."
+    },
+    "latest_error": {
+      "type": "string",
+      "readOnly": true,
+      "nullable": true
+    },
+    "edited_history_id": {
+      "type": "string",
+      "writeOnly": true,
+      "nullable": true,
+      "description": "Activity log ID from the last known edit. Used for conflict detection."
+    },
+    "latest_history_id": {
+      "type": "integer",
+      "nullable": true,
+      "readOnly": true
+    },
+    "soft_update": {
+      "type": "boolean",
+      "writeOnly": true,
+      "nullable": true,
+      "description": "If true, skip column inference and validation. For saving drafts."
+    },
+    "dag_id": {
+      "type": "string",
+      "format": "uuid",
+      "writeOnly": true,
+      "nullable": true,
+      "description": "Optional DAG to place this view into"
+    },
+    "is_materialized": {
+      "type": "boolean",
+      "readOnly": true,
+      "nullable": true
+    },
+    "origin": {
+      "readOnly": true,
+      "nullable": true,
+      "description": "Where this SavedQuery is created.\n\n* `data_warehouse` - Data Warehouse\n* `endpoint` - Endpoint\n* `managed_viewset` - Managed Viewset",
+      "oneOf": [
+        {
+          "$ref": "#/components/schemas/OriginEnum"
+        },
+        {
+          "$ref": "#/components/schemas/NullEnum"
+        }
+      ]
+    },
+    "is_test": {
+      "type": "boolean",
+      "description": "Whether this view is for testing only and will auto-expire."
+    },
+    "expires_at": {
+      "type": "string",
+      "format": "date-time",
+      "readOnly": true,
+      "nullable": true,
+      "description": "When this test view should be automatically deleted."
+    },
+    "user_access_level": {
+      "type": "string",
+      "nullable": true,
+      "readOnly": true,
+      "description": "The effective access level the user has for this object"
+    }
+  }
+}

@@ -1,0 +1,29 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "#/components/schemas/_InsightQuerySchema",
+  "title": "_InsightQuerySchema",
+  "description": "The query definition for this insight. The `kind` field determines the query type:\n- `InsightVizNode` \u2014 product analytics (trends, funnels, retention, paths, stickiness, lifecycle)\n- `DataVisualizationNode` \u2014 SQL insights using HogQL\n- `DataTableNode` \u2014 raw data tables\n- `HogQuery` \u2014 Hog language queries",
+  "discriminator": {
+    "mapping": {
+      "DataTableNode": "#/components/schemas/DataTableNode",
+      "DataVisualizationNode": "#/components/schemas/DataVisualizationNode",
+      "HogQuery": "#/components/schemas/HogQuery",
+      "InsightVizNode": "#/components/schemas/InsightVizNode"
+    },
+    "propertyName": "kind"
+  },
+  "oneOf": [
+    {
+      "$ref": "#/components/schemas/InsightVizNode"
+    },
+    {
+      "$ref": "#/components/schemas/DataTableNode"
+    },
+    {
+      "$ref": "#/components/schemas/DataVisualizationNode"
+    },
+    {
+      "$ref": "#/components/schemas/HogQuery"
+    }
+  ]
+}

@@ -1,0 +1,96 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "#/components/schemas/HeatmapScreenshotResponse",
+  "title": "HeatmapScreenshotResponse",
+  "type": "object",
+  "properties": {
+    "id": {
+      "type": "string",
+      "format": "uuid",
+      "readOnly": true
+    },
+    "short_id": {
+      "type": "string",
+      "readOnly": true
+    },
+    "name": {
+      "type": "string",
+      "nullable": true,
+      "maxLength": 400
+    },
+    "url": {
+      "type": "string",
+      "format": "uri",
+      "maxLength": 2000
+    },
+    "data_url": {
+      "type": "string",
+      "format": "uri",
+      "nullable": true,
+      "description": "URL for fetching heatmap data",
+      "maxLength": 2000
+    },
+    "target_widths": {},
+    "type": {
+      "$ref": "#/components/schemas/HeatmapScreenshotResponseTypeEnum"
+    },
+    "status": {
+      "allOf": [
+        {
+          "$ref": "#/components/schemas/HeatmapScreenshotResponseStatusEnum"
+        }
+      ],
+      "readOnly": true
+    },
+    "has_content": {
+      "type": "boolean",
+      "readOnly": true
+    },
+    "snapshots": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": true
+      },
+      "readOnly": true
+    },
+    "deleted": {
+      "type": "boolean"
+    },
+    "created_by": {
+      "allOf": [
+        {
+          "$ref": "#/components/schemas/UserBasic"
+        }
+      ],
+      "readOnly": true
+    },
+    "created_at": {
+      "type": "string",
+      "format": "date-time",
+      "readOnly": true
+    },
+    "updated_at": {
+      "type": "string",
+      "format": "date-time",
+      "readOnly": true
+    },
+    "exception": {
+      "type": "string",
+      "readOnly": true,
+      "nullable": true
+    }
+  },
+  "required": [
+    "created_at",
+    "created_by",
+    "exception",
+    "has_content",
+    "id",
+    "short_id",
+    "snapshots",
+    "status",
+    "updated_at",
+    "url"
+  ]
+}

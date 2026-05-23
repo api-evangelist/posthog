@@ -1,0 +1,33 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "#/components/schemas/NumericMetric",
+  "title": "NumericMetric",
+  "type": "object",
+  "properties": {
+    "current": {
+      "type": "number",
+      "format": "double",
+      "description": "Value for the most recent period."
+    },
+    "previous": {
+      "type": "number",
+      "format": "double",
+      "nullable": true,
+      "description": "Value for the prior period, if available."
+    },
+    "change": {
+      "allOf": [
+        {
+          "$ref": "#/components/schemas/WoWChange"
+        }
+      ],
+      "nullable": true,
+      "description": "Period-over-period change, null when not meaningful."
+    }
+  },
+  "required": [
+    "change",
+    "current",
+    "previous"
+  ]
+}

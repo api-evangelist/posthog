@@ -1,0 +1,130 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "#/components/schemas/BatchExport",
+  "title": "BatchExport",
+  "type": "object",
+  "description": "Serializer for a BatchExport model.",
+  "properties": {
+    "id": {
+      "type": "string",
+      "format": "uuid",
+      "readOnly": true
+    },
+    "team_id": {
+      "type": "integer",
+      "description": "The team this belongs to.",
+      "readOnly": true
+    },
+    "name": {
+      "type": "string",
+      "description": "A human-readable name for this BatchExport."
+    },
+    "model": {
+      "nullable": true,
+      "description": "Which model this BatchExport is exporting.\n\n* `events` - Events\n* `persons` - Persons\n* `sessions` - Sessions",
+      "oneOf": [
+        {
+          "$ref": "#/components/schemas/ModelEnum"
+        },
+        {
+          "$ref": "#/components/schemas/BlankEnum"
+        },
+        {
+          "$ref": "#/components/schemas/NullEnum"
+        }
+      ]
+    },
+    "destination": {
+      "$ref": "#/components/schemas/BatchExportDestination"
+    },
+    "interval": {
+      "$ref": "#/components/schemas/IntervalEnum"
+    },
+    "paused": {
+      "type": "boolean",
+      "description": "Whether this BatchExport is paused or not."
+    },
+    "created_at": {
+      "type": "string",
+      "format": "date-time",
+      "readOnly": true,
+      "description": "The timestamp at which this BatchExport was created."
+    },
+    "last_updated_at": {
+      "type": "string",
+      "format": "date-time",
+      "readOnly": true,
+      "description": "The timestamp at which this BatchExport was last updated."
+    },
+    "last_paused_at": {
+      "type": "string",
+      "format": "date-time",
+      "nullable": true,
+      "description": "The timestamp at which this BatchExport was last paused."
+    },
+    "start_at": {
+      "type": "string",
+      "format": "date-time",
+      "nullable": true,
+      "description": "Time before which any Batch Export runs won't be triggered."
+    },
+    "end_at": {
+      "type": "string",
+      "format": "date-time",
+      "nullable": true,
+      "description": "Time after which any Batch Export runs won't be triggered."
+    },
+    "latest_runs": {
+      "type": "array",
+      "items": {
+        "$ref": "#/components/schemas/BatchExportRun"
+      },
+      "readOnly": true
+    },
+    "hogql_query": {
+      "type": "string"
+    },
+    "schema": {
+      "readOnly": true,
+      "nullable": true,
+      "description": "A schema of custom fields to select when exporting data."
+    },
+    "filters": {
+      "nullable": true
+    },
+    "timezone": {
+      "nullable": true,
+      "oneOf": [
+        {
+          "$ref": "#/components/schemas/TimezoneEnum"
+        },
+        {
+          "$ref": "#/components/schemas/NullEnum"
+        }
+      ]
+    },
+    "offset_day": {
+      "type": "integer",
+      "maximum": 6,
+      "minimum": 0,
+      "nullable": true
+    },
+    "offset_hour": {
+      "type": "integer",
+      "maximum": 23,
+      "minimum": 0,
+      "nullable": true
+    }
+  },
+  "required": [
+    "created_at",
+    "destination",
+    "id",
+    "interval",
+    "last_updated_at",
+    "latest_runs",
+    "name",
+    "schema",
+    "team_id"
+  ]
+}

@@ -1,0 +1,34 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "#/components/schemas/_LogsServicesResponse",
+  "title": "_LogsServicesResponse",
+  "type": "object",
+  "properties": {
+    "services": {
+      "type": "array",
+      "items": {
+        "$ref": "#/components/schemas/_LogsServiceAggregate"
+      },
+      "description": "Per-service aggregates, ordered by log_count descending. Capped at 25 services."
+    },
+    "sparkline": {
+      "type": "array",
+      "items": {
+        "$ref": "#/components/schemas/_LogsServicesSparklineBucket"
+      },
+      "description": "Time-bucketed counts broken down by service, for plotting volume over time."
+    },
+    "summary": {
+      "allOf": [
+        {
+          "$ref": "#/components/schemas/_LogsServicesSummary"
+        }
+      ],
+      "description": "Roll-up stats for the Services tab header."
+    }
+  },
+  "required": [
+    "services",
+    "sparkline"
+  ]
+}

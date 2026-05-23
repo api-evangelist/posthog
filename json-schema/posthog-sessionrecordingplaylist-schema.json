@@ -1,0 +1,118 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "#/components/schemas/SessionRecordingPlaylist",
+  "title": "SessionRecordingPlaylist",
+  "type": "object",
+  "properties": {
+    "id": {
+      "type": "integer",
+      "readOnly": true
+    },
+    "short_id": {
+      "type": "string",
+      "readOnly": true
+    },
+    "name": {
+      "type": "string",
+      "nullable": true,
+      "description": "Human-readable name for the playlist.",
+      "maxLength": 400
+    },
+    "derived_name": {
+      "type": "string",
+      "nullable": true,
+      "maxLength": 400
+    },
+    "description": {
+      "type": "string",
+      "description": "Optional description of the playlist's purpose or contents."
+    },
+    "pinned": {
+      "type": "boolean",
+      "description": "Whether this playlist is pinned to the top of the list."
+    },
+    "created_at": {
+      "type": "string",
+      "format": "date-time",
+      "readOnly": true
+    },
+    "created_by": {
+      "allOf": [
+        {
+          "$ref": "#/components/schemas/UserBasic"
+        }
+      ],
+      "readOnly": true
+    },
+    "deleted": {
+      "type": "boolean",
+      "description": "Set to true to soft-delete the playlist."
+    },
+    "filters": {
+      "description": "JSON object with recording filter criteria. Only used when type is 'filters'. Defines which recordings match this saved filter view. When updating a filters-type playlist, you must include the existing filters alongside any other changes \u2014 omitting filters will be treated as removing them."
+    },
+    "last_modified_at": {
+      "type": "string",
+      "format": "date-time",
+      "readOnly": true
+    },
+    "last_modified_by": {
+      "allOf": [
+        {
+          "$ref": "#/components/schemas/UserBasic"
+        }
+      ],
+      "readOnly": true
+    },
+    "recordings_counts": {
+      "type": "object",
+      "additionalProperties": {
+        "type": "object",
+        "additionalProperties": {
+          "oneOf": [
+            {
+              "type": "integer"
+            },
+            {
+              "type": "boolean"
+            }
+          ],
+          "nullable": true
+        }
+      },
+      "readOnly": true
+    },
+    "type": {
+      "nullable": true,
+      "description": "Playlist type: 'collection' for manually curated recordings, 'filters' for saved filter views. Required on create, cannot be changed after.\n\n* `collection` - Collection\n* `filters` - Filters",
+      "oneOf": [
+        {
+          "$ref": "#/components/schemas/SessionRecordingPlaylistTypeEnum"
+        },
+        {
+          "$ref": "#/components/schemas/NullEnum"
+        }
+      ]
+    },
+    "is_synthetic": {
+      "type": "boolean",
+      "description": "Return whether this is a synthetic playlist",
+      "readOnly": true
+    },
+    "_create_in_folder": {
+      "type": "string",
+      "writeOnly": true,
+      "title": " create in folder"
+    }
+  },
+  "required": [
+    "created_at",
+    "created_by",
+    "id",
+    "is_synthetic",
+    "last_modified_at",
+    "last_modified_by",
+    "recordings_counts",
+    "short_id"
+  ]
+}

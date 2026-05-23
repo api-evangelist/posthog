@@ -1,0 +1,33 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "#/components/schemas/_LogAttributeEntry",
+  "title": "_LogAttributeEntry",
+  "type": "object",
+  "properties": {
+    "name": {
+      "type": "string"
+    },
+    "propertyFilterType": {
+      "type": "string",
+      "description": "Property filter type: \"log_attribute\" or \"log_resource_attribute\". Use this as the `type` field when filtering."
+    },
+    "matchedOn": {
+      "allOf": [
+        {
+          "$ref": "#/components/schemas/MatchedOnEnum"
+        }
+      ],
+      "description": "How the search query matched this row: \"key\" if the attribute key matched, \"value\" if a value matched.\n\n* `key` - key\n* `value` - value"
+    },
+    "matchedValue": {
+      "type": "string",
+      "nullable": true,
+      "description": "Sample matching value \u2014 only set when matchedOn is \"value\"."
+    }
+  },
+  "required": [
+    "matchedOn",
+    "name",
+    "propertyFilterType"
+  ]
+}

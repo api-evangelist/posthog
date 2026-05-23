@@ -1,0 +1,85 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "#/components/schemas/EventDefinitionRecord",
+  "title": "EventDefinitionRecord",
+  "type": "object",
+  "description": "Serializer mixin that handles tags for objects.",
+  "properties": {
+    "id": {
+      "type": "string",
+      "format": "uuid",
+      "readOnly": true
+    },
+    "name": {
+      "type": "string",
+      "maxLength": 400
+    },
+    "created_at": {
+      "type": "string",
+      "format": "date-time",
+      "nullable": true
+    },
+    "last_seen_at": {
+      "type": "string",
+      "format": "date-time",
+      "nullable": true
+    },
+    "last_updated_at": {
+      "type": "string",
+      "format": "date-time",
+      "readOnly": true
+    },
+    "tags": {
+      "type": "array",
+      "items": {}
+    },
+    "enforcement_mode": {
+      "$ref": "#/components/schemas/EnforcementModeEnum"
+    },
+    "promoted_property": {
+      "type": "string",
+      "nullable": true,
+      "description": "Name of a single property on this event that PostHog UIs should display alongside the event (for example `$pathname` on `$pageview`). When set, surfaces like the session replay inspector show the property's value next to the event name without the user having to open the event.",
+      "maxLength": 400
+    },
+    "is_action": {
+      "type": "boolean",
+      "readOnly": true
+    },
+    "action_id": {
+      "type": "integer",
+      "readOnly": true
+    },
+    "is_calculating": {
+      "type": "boolean",
+      "readOnly": true
+    },
+    "last_calculated_at": {
+      "type": "string",
+      "format": "date-time",
+      "readOnly": true
+    },
+    "created_by": {
+      "allOf": [
+        {
+          "$ref": "#/components/schemas/UserBasic"
+        }
+      ],
+      "readOnly": true
+    },
+    "post_to_slack": {
+      "type": "boolean",
+      "default": false
+    }
+  },
+  "required": [
+    "action_id",
+    "created_by",
+    "id",
+    "is_action",
+    "is_calculating",
+    "last_calculated_at",
+    "last_updated_at",
+    "name"
+  ]
+}

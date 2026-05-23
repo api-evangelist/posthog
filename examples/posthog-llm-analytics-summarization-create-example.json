@@ -1,0 +1,91 @@
+{
+  "operationId": "llm_analytics_summarization_create",
+  "method": "POST",
+  "path": "/api/environments/{project_id}/llm_analytics/summarization/",
+  "summary": "",
+  "requestExamples": [
+    {
+      "contentType": "application/json",
+      "name": "TraceSummarization",
+      "example": {
+        "summarize_type": "trace",
+        "data": {
+          "trace": {
+            "id": "trace_123",
+            "properties": {
+              "$ai_span_name": "ChatBot Interaction"
+            }
+          },
+          "hierarchy": [
+            {
+              "event": {
+                "id": "gen_1",
+                "event": "$ai_generation",
+                "properties": {
+                  "$ai_input": [
+                    {
+                      "role": "user",
+                      "content": "Hello"
+                    }
+                  ],
+                  "$ai_output_choices": [
+                    {
+                      "message": {
+                        "role": "assistant",
+                        "content": "Hi there!"
+                      }
+                    }
+                  ]
+                }
+              },
+              "children": []
+            }
+          ]
+        }
+      }
+    },
+    {
+      "contentType": "application/json",
+      "name": "EventSummarization",
+      "example": {
+        "summarize_type": "event",
+        "data": {
+          "event": {
+            "id": "gen_456",
+            "event": "$ai_generation",
+            "properties": {
+              "$ai_input": [
+                {
+                  "role": "user",
+                  "content": "Explain Python"
+                }
+              ],
+              "$ai_output_choices": [
+                {
+                  "message": {
+                    "role": "assistant",
+                    "content": "Python is..."
+                  }
+                }
+              ]
+            }
+          }
+        }
+      }
+    }
+  ],
+  "responseExamples": [
+    {
+      "status": "200",
+      "contentType": "application/json",
+      "name": "SuccessResponse",
+      "example": {
+        "summary": "## Summary\n- User initiated conversation with greeting [L5-8]\n- Assistant responded with friendly message [L12-15]\n\n## Interesting Notes\n- Standard greeting pattern with no errors",
+        "metadata": {
+          "text_repr_length": 450,
+          "model": "gpt-4.1"
+        }
+      }
+    }
+  ]
+}

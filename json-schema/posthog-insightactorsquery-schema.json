@@ -1,0 +1,163 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "#/components/schemas/InsightActorsQuery",
+  "title": "InsightActorsQuery",
+  "additionalProperties": false,
+  "properties": {
+    "breakdown": {
+      "default": null,
+      "title": "Breakdown",
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "items": {
+            "type": "string"
+          },
+          "type": "array"
+        },
+        {
+          "type": "integer"
+        }
+      ],
+      "nullable": true
+    },
+    "compare": {
+      "default": null,
+      "allOf": [
+        {
+          "$ref": "#/components/schemas/Compare"
+        }
+      ],
+      "nullable": true
+    },
+    "day": {
+      "default": null,
+      "title": "Day",
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "integer"
+        }
+      ],
+      "nullable": true
+    },
+    "includeRecordings": {
+      "default": null,
+      "title": "Includerecordings",
+      "type": "boolean",
+      "nullable": true
+    },
+    "interval": {
+      "default": null,
+      "description": "An interval selected out of available intervals in source query.",
+      "title": "Interval",
+      "type": "integer",
+      "nullable": true
+    },
+    "kind": {
+      "default": "InsightActorsQuery",
+      "title": "Kind",
+      "type": "string",
+      "enum": [
+        "InsightActorsQuery"
+      ]
+    },
+    "modifiers": {
+      "default": null,
+      "description": "Modifiers used when performing the query",
+      "allOf": [
+        {
+          "$ref": "#/components/schemas/HogQLQueryModifiers"
+        }
+      ],
+      "nullable": true
+    },
+    "response": {
+      "default": null,
+      "allOf": [
+        {
+          "$ref": "#/components/schemas/ActorsQueryResponse"
+        }
+      ],
+      "nullable": true
+    },
+    "series": {
+      "default": null,
+      "title": "Series",
+      "type": "integer",
+      "nullable": true
+    },
+    "source": {
+      "discriminator": {
+        "mapping": {
+          "FunnelsQuery": "#/components/schemas/FunnelsQuery",
+          "LifecycleQuery": "#/components/schemas/LifecycleQuery",
+          "PathsQuery": "#/components/schemas/PathsQuery",
+          "RetentionQuery": "#/components/schemas/RetentionQuery",
+          "StickinessQuery": "#/components/schemas/StickinessQuery",
+          "TrendsQuery": "#/components/schemas/TrendsQuery",
+          "WebOverviewQuery": "#/components/schemas/WebOverviewQuery",
+          "WebStatsTableQuery": "#/components/schemas/WebStatsTableQuery"
+        },
+        "propertyName": "kind"
+      },
+      "oneOf": [
+        {
+          "$ref": "#/components/schemas/TrendsQuery"
+        },
+        {
+          "$ref": "#/components/schemas/FunnelsQuery"
+        },
+        {
+          "$ref": "#/components/schemas/RetentionQuery"
+        },
+        {
+          "$ref": "#/components/schemas/PathsQuery"
+        },
+        {
+          "$ref": "#/components/schemas/StickinessQuery"
+        },
+        {
+          "$ref": "#/components/schemas/LifecycleQuery"
+        },
+        {
+          "$ref": "#/components/schemas/WebStatsTableQuery"
+        },
+        {
+          "$ref": "#/components/schemas/WebOverviewQuery"
+        }
+      ],
+      "title": "Source"
+    },
+    "status": {
+      "default": null,
+      "title": "Status",
+      "type": "string",
+      "nullable": true
+    },
+    "tags": {
+      "default": null,
+      "allOf": [
+        {
+          "$ref": "#/components/schemas/QueryLogTags"
+        }
+      ],
+      "nullable": true
+    },
+    "version": {
+      "default": null,
+      "description": "version of the node, used for schema migrations",
+      "title": "Version",
+      "type": "number",
+      "nullable": true
+    }
+  },
+  "required": [
+    "source"
+  ],
+  "type": "object"
+}

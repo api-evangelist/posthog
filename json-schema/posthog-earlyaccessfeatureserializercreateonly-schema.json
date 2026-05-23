@@ -1,0 +1,69 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "#/components/schemas/EarlyAccessFeatureSerializerCreateOnly",
+  "title": "EarlyAccessFeatureSerializerCreateOnly",
+  "type": "object",
+  "properties": {
+    "id": {
+      "type": "string",
+      "format": "uuid",
+      "readOnly": true
+    },
+    "name": {
+      "type": "string",
+      "description": "The name of the early access feature.",
+      "maxLength": 200
+    },
+    "description": {
+      "type": "string",
+      "description": "A longer description of what this early access feature does, shown to users in the opt-in UI."
+    },
+    "stage": {
+      "allOf": [
+        {
+          "$ref": "#/components/schemas/StageEnum"
+        }
+      ],
+      "description": "Lifecycle stage. Valid values: draft, concept, alpha, beta, general-availability, archived. Moving to an active stage (alpha/beta/general-availability) enables the feature flag for opted-in users.\n\n* `draft` - draft\n* `concept` - concept\n* `alpha` - alpha\n* `beta` - beta\n* `general-availability` - general availability\n* `archived` - archived"
+    },
+    "documentation_url": {
+      "type": "string",
+      "format": "uri",
+      "description": "URL to external documentation for this feature. Shown to users in the opt-in UI.",
+      "maxLength": 800
+    },
+    "payload": {
+      "description": "Arbitrary JSON metadata associated with this feature."
+    },
+    "created_at": {
+      "type": "string",
+      "format": "date-time",
+      "readOnly": true
+    },
+    "feature_flag_id": {
+      "type": "integer",
+      "writeOnly": true,
+      "description": "Optional ID of an existing feature flag to link. If omitted, a new flag is auto-created from the feature name. The flag must not already be linked to another feature, must not be group-based, and must not be multivariate."
+    },
+    "feature_flag": {
+      "allOf": [
+        {
+          "$ref": "#/components/schemas/MinimalFeatureFlag"
+        }
+      ],
+      "readOnly": true
+    },
+    "_create_in_folder": {
+      "type": "string",
+      "writeOnly": true,
+      "title": " create in folder"
+    }
+  },
+  "required": [
+    "created_at",
+    "feature_flag",
+    "id",
+    "name",
+    "stage"
+  ]
+}

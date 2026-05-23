@@ -1,0 +1,66 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "#/components/schemas/OrganizationBasic",
+  "title": "OrganizationBasic",
+  "type": "object",
+  "description": "Serializer for `Organization` model with minimal attributes to speeed up loading and transfer times.\nAlso used for nested serializers.",
+  "properties": {
+    "id": {
+      "type": "string",
+      "format": "uuid",
+      "readOnly": true
+    },
+    "name": {
+      "type": "string",
+      "maxLength": 64
+    },
+    "slug": {
+      "type": "string",
+      "maxLength": 48,
+      "pattern": "^[-a-zA-Z0-9_]+$"
+    },
+    "logo_media_id": {
+      "type": "string",
+      "format": "uuid",
+      "nullable": true,
+      "readOnly": true
+    },
+    "membership_level": {
+      "allOf": [
+        {
+          "$ref": "#/components/schemas/EffectiveMembershipLevelEnum"
+        }
+      ],
+      "nullable": true,
+      "readOnly": true
+    },
+    "members_can_use_personal_api_keys": {
+      "type": "boolean"
+    },
+    "is_active": {
+      "type": "boolean",
+      "nullable": true,
+      "title": "Active",
+      "description": "Set this to 'No' to temporarily disable an organization."
+    },
+    "is_not_active_reason": {
+      "type": "string",
+      "nullable": true,
+      "title": "De-activated reason",
+      "description": "(optional) reason for why the organization has been de-activated. This will be displayed to users on the web app.",
+      "maxLength": 200
+    },
+    "is_pending_deletion": {
+      "type": "boolean",
+      "nullable": true,
+      "description": "Set to True when org deletion has been initiated. Blocks all UI access until the async task completes."
+    }
+  },
+  "required": [
+    "id",
+    "logo_media_id",
+    "membership_level",
+    "name",
+    "slug"
+  ]
+}

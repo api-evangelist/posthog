@@ -1,0 +1,38 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "#/components/schemas/EventFilterConfig",
+  "title": "EventFilterConfig",
+  "type": "object",
+  "properties": {
+    "id": {
+      "type": "string",
+      "format": "uuid",
+      "readOnly": true
+    },
+    "mode": {
+      "$ref": "#/components/schemas/EventFilterConfigModeEnum"
+    },
+    "filter_tree": {
+      "nullable": true,
+      "description": "Boolean expression tree. Nodes: {\"type\": \"and\"|\"or\", \"children\": [...]}, {\"type\": \"not\", \"child\": {...}}, {\"type\": \"condition\", \"field\": \"event_name\"|\"distinct_id\", \"operator\": \"exact\"|\"contains\", \"value\": \"<string>\"}"
+    },
+    "test_cases": {
+      "description": "Test events to validate the filter. Each: {\"event_name\": \"...\", \"distinct_id\": \"...\", \"expected_result\": \"drop\"|\"ingest\"}"
+    },
+    "created_at": {
+      "type": "string",
+      "format": "date-time",
+      "readOnly": true
+    },
+    "updated_at": {
+      "type": "string",
+      "format": "date-time",
+      "readOnly": true
+    }
+  },
+  "required": [
+    "created_at",
+    "id",
+    "updated_at"
+  ]
+}

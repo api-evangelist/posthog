@@ -1,0 +1,124 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "#/components/schemas/PatchedExternalDataSchema",
+  "title": "PatchedExternalDataSchema",
+  "type": "object",
+  "properties": {
+    "id": {
+      "type": "string",
+      "format": "uuid",
+      "readOnly": true
+    },
+    "name": {
+      "type": "string",
+      "readOnly": true
+    },
+    "label": {
+      "type": "string",
+      "readOnly": true,
+      "nullable": true
+    },
+    "table": {
+      "type": "object",
+      "additionalProperties": true,
+      "nullable": true,
+      "readOnly": true
+    },
+    "should_sync": {
+      "type": "boolean"
+    },
+    "last_synced_at": {
+      "type": "string",
+      "format": "date-time",
+      "readOnly": true,
+      "nullable": true
+    },
+    "latest_error": {
+      "type": "string",
+      "readOnly": true,
+      "nullable": true,
+      "description": "The latest error that occurred when syncing this schema."
+    },
+    "incremental": {
+      "type": "boolean",
+      "readOnly": true
+    },
+    "status": {
+      "type": "string",
+      "nullable": true,
+      "readOnly": true
+    },
+    "sync_type": {
+      "nullable": true,
+      "description": "Sync strategy: incremental, full_refresh, append, or cdc.\n\n* `full_refresh` - full_refresh\n* `incremental` - incremental\n* `append` - append\n* `webhook` - webhook\n* `cdc` - cdc",
+      "oneOf": [
+        {
+          "$ref": "#/components/schemas/SyncTypeEnum"
+        },
+        {
+          "$ref": "#/components/schemas/NullEnum"
+        }
+      ]
+    },
+    "incremental_field": {
+      "type": "string",
+      "nullable": true,
+      "description": "Column name used to track sync progress."
+    },
+    "incremental_field_type": {
+      "nullable": true,
+      "description": "Data type of the incremental field.\n\n* `integer` - integer\n* `numeric` - numeric\n* `datetime` - datetime\n* `date` - date\n* `timestamp` - timestamp\n* `objectid` - objectid",
+      "oneOf": [
+        {
+          "$ref": "#/components/schemas/IncrementalFieldTypeEnum"
+        },
+        {
+          "$ref": "#/components/schemas/NullEnum"
+        }
+      ]
+    },
+    "sync_frequency": {
+      "nullable": true,
+      "description": "How often to sync.\n\n* `never` - never\n* `1min` - 1min\n* `5min` - 5min\n* `15min` - 15min\n* `30min` - 30min\n* `1hour` - 1hour\n* `6hour` - 6hour\n* `12hour` - 12hour\n* `24hour` - 24hour\n* `7day` - 7day\n* `30day` - 30day",
+      "oneOf": [
+        {
+          "$ref": "#/components/schemas/SyncFrequencyEnum"
+        },
+        {
+          "$ref": "#/components/schemas/NullEnum"
+        }
+      ]
+    },
+    "sync_time_of_day": {
+      "type": "string",
+      "format": "time",
+      "nullable": true,
+      "description": "UTC time of day to run the sync (HH:MM:SS)."
+    },
+    "description": {
+      "type": "string",
+      "readOnly": true,
+      "nullable": true
+    },
+    "primary_key_columns": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "nullable": true,
+      "description": "Column names for primary key deduplication."
+    },
+    "cdc_table_mode": {
+      "nullable": true,
+      "description": "For CDC syncs: consolidated, cdc_only, or both.\n\n* `consolidated` - consolidated\n* `cdc_only` - cdc_only\n* `both` - both",
+      "oneOf": [
+        {
+          "$ref": "#/components/schemas/CdcTableModeEnum"
+        },
+        {
+          "$ref": "#/components/schemas/NullEnum"
+        }
+      ]
+    }
+  }
+}

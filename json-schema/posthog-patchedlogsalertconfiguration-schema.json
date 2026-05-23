@@ -1,0 +1,163 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "#/components/schemas/PatchedLogsAlertConfiguration",
+  "title": "PatchedLogsAlertConfiguration",
+  "type": "object",
+  "properties": {
+    "id": {
+      "type": "string",
+      "format": "uuid",
+      "readOnly": true,
+      "description": "Unique identifier for this alert."
+    },
+    "name": {
+      "type": "string",
+      "description": "Human-readable name for this alert. Defaults to 'Untitled alert' on create when omitted.",
+      "maxLength": 255
+    },
+    "enabled": {
+      "type": "boolean",
+      "default": true,
+      "description": "Whether the alert is actively being evaluated. Disabling resets the state to not_firing."
+    },
+    "filters": {
+      "description": "Filter criteria \u2014 subset of LogsViewerFilters. Must contain at least one of: severityLevels (list of severity strings), serviceNames (list of service name strings), or filterGroup (property filter group object). May be empty on draft alerts (enabled=false)."
+    },
+    "threshold_count": {
+      "type": "integer",
+      "minimum": 1,
+      "default": 100,
+      "description": "Number of matching log entries that constitutes a threshold breach within the evaluation window. Defaults to 100."
+    },
+    "threshold_operator": {
+      "allOf": [
+        {
+          "$ref": "#/components/schemas/ThresholdOperatorEnum"
+        }
+      ],
+      "default": "above",
+      "description": "Whether the alert fires when the count is above or below the threshold.\n\n* `above` - Above\n* `below` - Below"
+    },
+    "window_minutes": {
+      "type": "integer",
+      "default": 5,
+      "description": "Time window in minutes over which log entries are counted. Allowed values: 5, 10, 15, 30, 60."
+    },
+    "check_interval_minutes": {
+      "type": "integer",
+      "readOnly": true,
+      "description": "How often the alert is evaluated, in minutes. Server-managed."
+    },
+    "state": {
+      "allOf": [
+        {
+          "$ref": "#/components/schemas/LogsAlertConfigurationStateEnum"
+        }
+      ],
+      "readOnly": true,
+      "description": "Current alert state: not_firing, firing, pending_resolve, errored, or snoozed. Server-managed.\n\n* `not_firing` - Not firing\n* `firing` - Firing\n* `pending_resolve` - Pending resolve\n* `errored` - Errored\n* `snoozed` - Snoozed\n* `broken` - Broken"
+    },
+    "evaluation_periods": {
+      "type": "integer",
+      "maximum": 10,
+      "minimum": 1,
+      "default": 1,
+      "description": "Total number of check periods in the sliding evaluation window for firing (M in N-of-M)."
+    },
+    "datapoints_to_alarm": {
+      "type": "integer",
+      "maximum": 10,
+      "minimum": 1,
+      "default": 1,
+      "description": "How many periods within the evaluation window must breach the threshold to fire (N in N-of-M)."
+    },
+    "cooldown_minutes": {
+      "type": "integer",
+      "minimum": 0,
+      "default": 0,
+      "description": "Minimum minutes between repeated notifications after the alert fires. 0 means no cooldown."
+    },
+    "snooze_until": {
+      "type": "string",
+      "format": "date-time",
+      "nullable": true,
+      "description": "ISO 8601 timestamp until which the alert is snoozed. Set to null to unsnooze."
+    },
+    "next_check_at": {
+      "type": "string",
+      "format": "date-time",
+      "readOnly": true,
+      "nullable": true,
+      "description": "When the next evaluation is scheduled. Server-managed."
+    },
+    "last_notified_at": {
+      "type": "string",
+      "format": "date-time",
+      "readOnly": true,
+      "nullable": true,
+      "description": "When the last notification was sent. Server-managed."
+    },
+    "last_checked_at": {
+      "type": "string",
+      "format": "date-time",
+      "readOnly": true,
+      "nullable": true,
+      "description": "When the alert was last evaluated. Server-managed."
+    },
+    "consecutive_failures": {
+      "type": "integer",
+      "readOnly": true,
+      "description": "Number of consecutive evaluation failures. Resets on success. Server-managed."
+    },
+    "last_error_message": {
+      "type": "string",
+      "nullable": true,
+      "readOnly": true,
+      "description": "Error message from the most recent errored check, or null if the alert's most recent check was successful. Sourced from LogsAlertEvent without denormalization so retention-aware cleanup rules stay the only source of truth."
+    },
+    "state_timeline": {
+      "type": "array",
+      "items": {
+        "$ref": "#/components/schemas/LogsAlertStateInterval"
+      },
+      "readOnly": true,
+      "description": "Continuous state intervals over the last 24h, ordered oldest-first. Each interval covers a span during which (state, enabled) was constant. Derived from LogsAlertEvent rows walked in chronological order; consecutive identical intervals are collapsed. Drives the 'Last 24h' status bar on the alert list."
+    },
+    "destination_types": {
+      "type": "array",
+      "items": {
+        "$ref": "#/components/schemas/NotificationDestinationTypeEnum"
+      },
+      "readOnly": true,
+      "description": "Notification destination types configured for this alert \u2014 e.g. 'slack', 'webhook'. Empty list means no notifications will fire. One or more destinations should be added after creating an alert."
+    },
+    "first_enabled_at": {
+      "type": "string",
+      "format": "date-time",
+      "readOnly": true,
+      "nullable": true,
+      "description": "When the alert was first enabled. Null means the alert is still in draft state."
+    },
+    "created_at": {
+      "type": "string",
+      "format": "date-time",
+      "readOnly": true,
+      "description": "When the alert was created."
+    },
+    "created_by": {
+      "allOf": [
+        {
+          "$ref": "#/components/schemas/UserBasic"
+        }
+      ],
+      "readOnly": true
+    },
+    "updated_at": {
+      "type": "string",
+      "format": "date-time",
+      "readOnly": true,
+      "nullable": true,
+      "description": "When the alert was last modified."
+    }
+  }
+}

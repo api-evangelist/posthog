@@ -1,0 +1,61 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "#/components/schemas/PatchedGroupUsageMetric",
+  "title": "PatchedGroupUsageMetric",
+  "type": "object",
+  "properties": {
+    "id": {
+      "type": "string",
+      "format": "uuid",
+      "readOnly": true
+    },
+    "name": {
+      "type": "string",
+      "description": "Name of the usage metric. Must be unique per group type within the project.",
+      "maxLength": 255
+    },
+    "format": {
+      "allOf": [
+        {
+          "$ref": "#/components/schemas/GroupUsageMetricFormatEnum"
+        }
+      ],
+      "default": "numeric",
+      "description": "How the metric value is formatted in the UI. One of `numeric` or `currency`.\n\n* `numeric` - numeric\n* `currency` - currency"
+    },
+    "interval": {
+      "type": "integer",
+      "default": 7,
+      "description": "Rolling time window in days used to compute the metric. Defaults to 7."
+    },
+    "display": {
+      "allOf": [
+        {
+          "$ref": "#/components/schemas/GroupUsageMetricDisplayEnum"
+        }
+      ],
+      "default": "number",
+      "description": "Visual representation in the UI. One of `number` or `sparkline`.\n\n* `number` - number\n* `sparkline` - sparkline"
+    },
+    "filters": {
+      "type": "object",
+      "additionalProperties": true,
+      "description": "Filter definition for the metric. Two shapes are accepted, discriminated by an optional `source` key.\n\n**Events** (default, when `source` is missing or `\"events\"`): HogFunction filter shape \u2014 `events: [...]`, optional `actions: [...]`, `properties: [...]`, `filter_test_accounts: bool`.\n\n**Data warehouse** (`source: \"data_warehouse\"`): `table_name` (synced DW table), `timestamp_field` (timestamp column or HogQL expression), `key_field` (column whose value matches the entity key). Currently DW metrics only render on group profiles \u2014 person profiles are not yet supported."
+    },
+    "math": {
+      "allOf": [
+        {
+          "$ref": "#/components/schemas/MathEnum"
+        }
+      ],
+      "default": "count",
+      "description": "Aggregation function. `count` counts matching events; `sum` sums the value of `math_property` on matching events.\n\n* `count` - count\n* `sum` - sum"
+    },
+    "math_property": {
+      "type": "string",
+      "nullable": true,
+      "description": "Required when `math` is `sum`; must be empty when `math` is `count`. For events metrics this is an event property name. For data warehouse metrics this is the column name (or HogQL expression) to sum on the DW table.",
+      "maxLength": 255
+    }
+  }
+}

@@ -1,0 +1,113 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "#/components/schemas/HogQLQuery",
+  "title": "HogQLQuery",
+  "additionalProperties": false,
+  "properties": {
+    "connectionId": {
+      "default": null,
+      "description": "Optional direct external data source id for running against a specific source",
+      "title": "Connectionid",
+      "type": "string",
+      "nullable": true
+    },
+    "explain": {
+      "default": null,
+      "title": "Explain",
+      "type": "boolean",
+      "nullable": true
+    },
+    "filters": {
+      "default": null,
+      "allOf": [
+        {
+          "$ref": "#/components/schemas/HogQLFilters"
+        }
+      ],
+      "nullable": true
+    },
+    "kind": {
+      "default": "HogQLQuery",
+      "title": "Kind",
+      "type": "string",
+      "enum": [
+        "HogQLQuery"
+      ]
+    },
+    "modifiers": {
+      "default": null,
+      "description": "Modifiers used when performing the query",
+      "allOf": [
+        {
+          "$ref": "#/components/schemas/HogQLQueryModifiers"
+        }
+      ],
+      "nullable": true
+    },
+    "name": {
+      "default": null,
+      "description": "Client provided name of the query",
+      "title": "Name",
+      "type": "string",
+      "nullable": true
+    },
+    "query": {
+      "title": "Query",
+      "type": "string"
+    },
+    "response": {
+      "default": null,
+      "allOf": [
+        {
+          "$ref": "#/components/schemas/HogQLQueryResponse"
+        }
+      ],
+      "nullable": true
+    },
+    "sendRawQuery": {
+      "default": null,
+      "description": "Run the selected connection query directly without translating it through HogQL first",
+      "title": "Sendrawquery",
+      "type": "boolean",
+      "nullable": true
+    },
+    "tags": {
+      "default": null,
+      "allOf": [
+        {
+          "$ref": "#/components/schemas/QueryLogTags"
+        }
+      ],
+      "nullable": true
+    },
+    "values": {
+      "default": null,
+      "description": "Constant values that can be referenced with the {placeholder} syntax in the query",
+      "title": "Values",
+      "additionalProperties": true,
+      "type": "object",
+      "nullable": true
+    },
+    "variables": {
+      "default": null,
+      "description": "Variables to be substituted into the query",
+      "title": "Variables",
+      "additionalProperties": {
+        "$ref": "#/components/schemas/HogQLVariable"
+      },
+      "type": "object",
+      "nullable": true
+    },
+    "version": {
+      "default": null,
+      "description": "version of the node, used for schema migrations",
+      "title": "Version",
+      "type": "number",
+      "nullable": true
+    }
+  },
+  "required": [
+    "query"
+  ],
+  "type": "object"
+}

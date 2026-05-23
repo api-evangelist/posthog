@@ -1,0 +1,31 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "#/components/schemas/TextReprRequest",
+  "title": "TextReprRequest",
+  "type": "object",
+  "properties": {
+    "event_type": {
+      "allOf": [
+        {
+          "$ref": "#/components/schemas/EventTypeEnum"
+        }
+      ],
+      "description": "Type of LLM event to stringify\n\n* `$ai_generation` - $ai_generation\n* `$ai_span` - $ai_span\n* `$ai_embedding` - $ai_embedding\n* `$ai_trace` - $ai_trace"
+    },
+    "data": {
+      "description": "Event data to stringify. For traces, should include 'trace' and 'hierarchy' fields."
+    },
+    "options": {
+      "allOf": [
+        {
+          "$ref": "#/components/schemas/TextReprOptions"
+        }
+      ],
+      "description": "Optional configuration for text generation"
+    }
+  },
+  "required": [
+    "data",
+    "event_type"
+  ]
+}

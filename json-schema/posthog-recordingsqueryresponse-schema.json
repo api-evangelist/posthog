@@ -1,0 +1,85 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "#/components/schemas/RecordingsQueryResponse",
+  "title": "RecordingsQueryResponse",
+  "additionalProperties": false,
+  "properties": {
+    "error": {
+      "default": null,
+      "description": "Query error. Returned only if 'explain' or `modifiers.debug` is true. Throws an error otherwise.",
+      "title": "Error",
+      "type": "string",
+      "nullable": true
+    },
+    "has_next": {
+      "title": "Has Next",
+      "type": "boolean"
+    },
+    "hogql": {
+      "default": null,
+      "description": "Generated HogQL query.",
+      "title": "Hogql",
+      "type": "string",
+      "nullable": true
+    },
+    "modifiers": {
+      "default": null,
+      "description": "Modifiers used when performing the query",
+      "allOf": [
+        {
+          "$ref": "#/components/schemas/HogQLQueryModifiers"
+        }
+      ],
+      "nullable": true
+    },
+    "next_cursor": {
+      "default": null,
+      "description": "Cursor for the next page. Contains the ordering value and session_id from the last record.",
+      "title": "Next Cursor",
+      "type": "string",
+      "nullable": true
+    },
+    "query_status": {
+      "default": null,
+      "description": "Query status indicates whether next to the provided data, a query is still running.",
+      "allOf": [
+        {
+          "$ref": "#/components/schemas/QueryStatus"
+        }
+      ],
+      "nullable": true
+    },
+    "resolved_date_range": {
+      "default": null,
+      "description": "The date range used for the query",
+      "allOf": [
+        {
+          "$ref": "#/components/schemas/ResolvedDateRangeResponse"
+        }
+      ],
+      "nullable": true
+    },
+    "results": {
+      "items": {
+        "$ref": "#/components/schemas/SessionRecordingType"
+      },
+      "title": "Results",
+      "type": "array"
+    },
+    "timings": {
+      "default": null,
+      "description": "Measured timings for different parts of the query generation process",
+      "title": "Timings",
+      "items": {
+        "$ref": "#/components/schemas/QueryTiming"
+      },
+      "type": "array",
+      "nullable": true
+    }
+  },
+  "required": [
+    "has_next",
+    "results"
+  ],
+  "type": "object"
+}

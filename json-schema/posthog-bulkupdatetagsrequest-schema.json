@@ -1,0 +1,36 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "#/components/schemas/BulkUpdateTagsRequest",
+  "title": "BulkUpdateTagsRequest",
+  "type": "object",
+  "properties": {
+    "ids": {
+      "type": "array",
+      "items": {
+        "type": "integer"
+      },
+      "description": "List of object IDs to update tags on.",
+      "maxItems": 500
+    },
+    "action": {
+      "allOf": [
+        {
+          "$ref": "#/components/schemas/ActionEnum"
+        }
+      ],
+      "description": "'add' merges with existing tags, 'remove' deletes specific tags, 'set' replaces all tags.\n\n* `add` - add\n* `remove` - remove\n* `set` - set"
+    },
+    "tags": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "Tag names to add, remove, or set."
+    }
+  },
+  "required": [
+    "action",
+    "ids",
+    "tags"
+  ]
+}

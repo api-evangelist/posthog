@@ -1,0 +1,212 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "#/components/schemas/ErrorTrackingQuery",
+  "title": "ErrorTrackingQuery",
+  "additionalProperties": false,
+  "properties": {
+    "assignee": {
+      "default": null,
+      "allOf": [
+        {
+          "$ref": "#/components/schemas/ErrorTrackingIssueAssignee"
+        }
+      ],
+      "nullable": true
+    },
+    "dateRange": {
+      "description": "Date range to filter results.",
+      "allOf": [
+        {
+          "$ref": "#/components/schemas/DateRange"
+        }
+      ]
+    },
+    "filterGroup": {
+      "default": null,
+      "allOf": [
+        {
+          "$ref": "#/components/schemas/PropertyGroupFilter"
+        }
+      ],
+      "nullable": true
+    },
+    "filterTestAccounts": {
+      "default": null,
+      "description": "Whether to filter out test accounts.",
+      "title": "Filtertestaccounts",
+      "type": "boolean",
+      "nullable": true
+    },
+    "groupKey": {
+      "default": null,
+      "title": "Groupkey",
+      "type": "string",
+      "nullable": true
+    },
+    "groupTypeIndex": {
+      "default": null,
+      "title": "Grouptypeindex",
+      "type": "integer",
+      "nullable": true
+    },
+    "issueId": {
+      "default": null,
+      "description": "Filter to a specific error tracking issue by ID.",
+      "title": "Issueid",
+      "type": "string",
+      "nullable": true
+    },
+    "kind": {
+      "default": "ErrorTrackingQuery",
+      "title": "Kind",
+      "type": "string",
+      "enum": [
+        "ErrorTrackingQuery"
+      ]
+    },
+    "limit": {
+      "default": null,
+      "title": "Limit",
+      "type": "integer",
+      "nullable": true
+    },
+    "modifiers": {
+      "default": null,
+      "description": "Modifiers used when performing the query",
+      "allOf": [
+        {
+          "$ref": "#/components/schemas/HogQLQueryModifiers"
+        }
+      ],
+      "nullable": true
+    },
+    "offset": {
+      "default": null,
+      "title": "Offset",
+      "type": "integer",
+      "nullable": true
+    },
+    "orderBy": {
+      "description": "Field to sort results by.",
+      "allOf": [
+        {
+          "$ref": "#/components/schemas/ErrorTrackingOrderBy"
+        }
+      ]
+    },
+    "orderDirection": {
+      "default": null,
+      "description": "Sort direction.",
+      "allOf": [
+        {
+          "$ref": "#/components/schemas/OrderDirection2"
+        }
+      ],
+      "nullable": true
+    },
+    "pendingFingerprintIssueStateUpdates": {
+      "default": null,
+      "description": "Pending fingerprint issue state updates UNIONed into the fingerprint issue state subquery (V3 only). The backend caps the list at 50 entries; extras are dropped silently.",
+      "title": "Pendingfingerprintissuestateupdates",
+      "items": {
+        "$ref": "#/components/schemas/ErrorTrackingPendingFingerprintIssueStateUpdate"
+      },
+      "type": "array",
+      "nullable": true
+    },
+    "personId": {
+      "default": null,
+      "title": "Personid",
+      "type": "string",
+      "nullable": true
+    },
+    "response": {
+      "default": null,
+      "allOf": [
+        {
+          "$ref": "#/components/schemas/ErrorTrackingQueryResponse"
+        }
+      ],
+      "nullable": true
+    },
+    "searchQuery": {
+      "default": null,
+      "description": "Free-text search across exception type, message, and stack frames.",
+      "title": "Searchquery",
+      "type": "string",
+      "nullable": true
+    },
+    "status": {
+      "default": null,
+      "description": "Filter by issue status.",
+      "title": "ErrorTrackingQueryStatus",
+      "anyOf": [
+        {
+          "$ref": "#/components/schemas/ErrorTrackingIssueStatus"
+        },
+        {
+          "type": "string"
+        }
+      ],
+      "nullable": true
+    },
+    "tags": {
+      "default": null,
+      "allOf": [
+        {
+          "$ref": "#/components/schemas/QueryLogTags"
+        }
+      ],
+      "nullable": true
+    },
+    "useQueryV2": {
+      "default": null,
+      "description": "Use V2 query path (ClickHouse postgres connector join instead of separate Postgres queries)",
+      "title": "Usequeryv2",
+      "type": "boolean",
+      "nullable": true
+    },
+    "useQueryV3": {
+      "default": null,
+      "description": "Use V3 query path (denormalized ClickHouse table, no Postgres joins)",
+      "title": "Usequeryv3",
+      "type": "boolean",
+      "nullable": true
+    },
+    "version": {
+      "default": null,
+      "description": "version of the node, used for schema migrations",
+      "title": "Version",
+      "type": "number",
+      "nullable": true
+    },
+    "volumeResolution": {
+      "title": "Volumeresolution",
+      "type": "integer"
+    },
+    "withAggregations": {
+      "default": null,
+      "title": "Withaggregations",
+      "type": "boolean",
+      "nullable": true
+    },
+    "withFirstEvent": {
+      "default": null,
+      "title": "Withfirstevent",
+      "type": "boolean",
+      "nullable": true
+    },
+    "withLastEvent": {
+      "default": null,
+      "title": "Withlastevent",
+      "type": "boolean",
+      "nullable": true
+    }
+  },
+  "required": [
+    "dateRange",
+    "orderBy",
+    "volumeResolution"
+  ],
+  "type": "object"
+}

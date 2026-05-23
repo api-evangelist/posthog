@@ -1,0 +1,100 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "#/components/schemas/ProductTourSerializerCreateUpdateOnly",
+  "title": "ProductTourSerializerCreateUpdateOnly",
+  "type": "object",
+  "description": "Serializer for creating and updating ProductTour.",
+  "properties": {
+    "id": {
+      "type": "string",
+      "format": "uuid",
+      "readOnly": true
+    },
+    "name": {
+      "type": "string",
+      "maxLength": 400
+    },
+    "description": {
+      "type": "string"
+    },
+    "internal_targeting_flag": {
+      "allOf": [
+        {
+          "$ref": "#/components/schemas/MinimalFeatureFlag"
+        }
+      ],
+      "readOnly": true
+    },
+    "linked_flag": {
+      "allOf": [
+        {
+          "$ref": "#/components/schemas/MinimalFeatureFlag"
+        }
+      ],
+      "readOnly": true
+    },
+    "linked_flag_id": {
+      "type": "integer",
+      "writeOnly": true,
+      "nullable": true
+    },
+    "targeting_flag_filters": {
+      "writeOnly": true,
+      "nullable": true
+    },
+    "content": {},
+    "auto_launch": {
+      "type": "boolean"
+    },
+    "start_date": {
+      "type": "string",
+      "format": "date-time",
+      "nullable": true
+    },
+    "end_date": {
+      "type": "string",
+      "format": "date-time",
+      "nullable": true
+    },
+    "created_at": {
+      "type": "string",
+      "format": "date-time",
+      "readOnly": true
+    },
+    "created_by": {
+      "allOf": [
+        {
+          "$ref": "#/components/schemas/UserBasic"
+        }
+      ],
+      "readOnly": true
+    },
+    "updated_at": {
+      "type": "string",
+      "format": "date-time",
+      "readOnly": true
+    },
+    "archived": {
+      "type": "boolean"
+    },
+    "creation_context": {
+      "allOf": [
+        {
+          "$ref": "#/components/schemas/ProductTourSerializerCreateUpdateOnlyCreationContextEnum"
+        }
+      ],
+      "writeOnly": true,
+      "default": "app",
+      "description": "Where the tour was created/updated from\n\n* `app` - app\n* `toolbar` - toolbar"
+    }
+  },
+  "required": [
+    "created_at",
+    "created_by",
+    "id",
+    "internal_targeting_flag",
+    "linked_flag",
+    "name",
+    "updated_at"
+  ]
+}

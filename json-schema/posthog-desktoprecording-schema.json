@@ -1,0 +1,144 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "#/components/schemas/DesktopRecording",
+  "title": "DesktopRecording",
+  "type": "object",
+  "properties": {
+    "id": {
+      "type": "string",
+      "format": "uuid",
+      "readOnly": true
+    },
+    "team": {
+      "type": "integer",
+      "readOnly": true
+    },
+    "created_by": {
+      "type": "integer",
+      "readOnly": true,
+      "nullable": true
+    },
+    "sdk_upload_id": {
+      "type": "string",
+      "format": "uuid",
+      "readOnly": true
+    },
+    "recall_recording_id": {
+      "type": "string",
+      "format": "uuid",
+      "nullable": true
+    },
+    "platform": {
+      "$ref": "#/components/schemas/MeetingPlatformEnum"
+    },
+    "meeting_title": {
+      "type": "string",
+      "nullable": true,
+      "maxLength": 255
+    },
+    "meeting_url": {
+      "type": "string",
+      "format": "uri",
+      "nullable": true,
+      "maxLength": 200
+    },
+    "duration_seconds": {
+      "type": "integer",
+      "maximum": 2147483647,
+      "minimum": -2147483648,
+      "nullable": true
+    },
+    "status": {
+      "$ref": "#/components/schemas/DesktopRecordingStatusEnum"
+    },
+    "notes": {
+      "type": "string",
+      "nullable": true
+    },
+    "error_message": {
+      "type": "string",
+      "nullable": true
+    },
+    "video_url": {
+      "type": "string",
+      "format": "uri",
+      "nullable": true,
+      "maxLength": 200
+    },
+    "video_size_bytes": {
+      "type": "integer",
+      "maximum": 9223372036854775807,
+      "minimum": -9223372036854775808,
+      "format": "int64",
+      "nullable": true
+    },
+    "participants": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "List of participant names"
+    },
+    "transcript_text": {
+      "type": "string",
+      "readOnly": true
+    },
+    "transcript_segments": {
+      "type": "array",
+      "items": {
+        "$ref": "#/components/schemas/TranscriptSegment"
+      },
+      "description": "Transcript segments with timestamps"
+    },
+    "summary": {
+      "type": "string",
+      "nullable": true
+    },
+    "extracted_tasks": {
+      "type": "array",
+      "items": {
+        "$ref": "#/components/schemas/DesktopRecordingTask"
+      },
+      "description": "AI-extracted tasks from transcript"
+    },
+    "tasks_generated_at": {
+      "type": "string",
+      "format": "date-time",
+      "nullable": true
+    },
+    "summary_generated_at": {
+      "type": "string",
+      "format": "date-time",
+      "nullable": true
+    },
+    "started_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "completed_at": {
+      "type": "string",
+      "format": "date-time",
+      "nullable": true
+    },
+    "created_at": {
+      "type": "string",
+      "format": "date-time",
+      "readOnly": true
+    },
+    "updated_at": {
+      "type": "string",
+      "format": "date-time",
+      "readOnly": true
+    }
+  },
+  "required": [
+    "created_at",
+    "created_by",
+    "id",
+    "platform",
+    "sdk_upload_id",
+    "team",
+    "transcript_text",
+    "updated_at"
+  ]
+}

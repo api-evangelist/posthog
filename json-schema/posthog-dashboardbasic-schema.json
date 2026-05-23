@@ -1,0 +1,139 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "#/components/schemas/DashboardBasic",
+  "title": "DashboardBasic",
+  "type": "object",
+  "description": "Serializer mixin that handles tags for objects.",
+  "properties": {
+    "id": {
+      "type": "integer",
+      "readOnly": true
+    },
+    "name": {
+      "type": "string",
+      "readOnly": true,
+      "nullable": true,
+      "description": "Name of the dashboard."
+    },
+    "description": {
+      "type": "string",
+      "readOnly": true,
+      "description": "Description of the dashboard."
+    },
+    "pinned": {
+      "type": "boolean",
+      "readOnly": true,
+      "description": "Whether the dashboard is pinned to the top of the list."
+    },
+    "created_at": {
+      "type": "string",
+      "format": "date-time",
+      "readOnly": true
+    },
+    "created_by": {
+      "allOf": [
+        {
+          "$ref": "#/components/schemas/UserBasic"
+        }
+      ],
+      "readOnly": true
+    },
+    "last_accessed_at": {
+      "type": "string",
+      "format": "date-time",
+      "readOnly": true,
+      "nullable": true
+    },
+    "last_viewed_at": {
+      "type": "string",
+      "format": "date-time",
+      "readOnly": true,
+      "nullable": true
+    },
+    "is_shared": {
+      "type": "boolean",
+      "readOnly": true
+    },
+    "deleted": {
+      "type": "boolean",
+      "readOnly": true
+    },
+    "creation_mode": {
+      "allOf": [
+        {
+          "$ref": "#/components/schemas/CreationModeEnum"
+        }
+      ],
+      "readOnly": true
+    },
+    "tags": {
+      "type": "array",
+      "items": {}
+    },
+    "restriction_level": {
+      "allOf": [
+        {
+          "$ref": "#/components/schemas/RestrictionLevelEnum"
+        }
+      ],
+      "readOnly": true,
+      "description": "Controls who can edit the dashboard.\n\n* `21` - Everyone in the project can edit\n* `37` - Only those invited to this dashboard can edit"
+    },
+    "effective_restriction_level": {
+      "allOf": [
+        {
+          "$ref": "#/components/schemas/EffectivePrivilegeLevelEnum"
+        }
+      ],
+      "readOnly": true
+    },
+    "effective_privilege_level": {
+      "allOf": [
+        {
+          "$ref": "#/components/schemas/EffectivePrivilegeLevelEnum"
+        }
+      ],
+      "readOnly": true
+    },
+    "user_access_level": {
+      "type": "string",
+      "nullable": true,
+      "readOnly": true,
+      "description": "The effective access level the user has for this object"
+    },
+    "access_control_version": {
+      "type": "string",
+      "readOnly": true
+    },
+    "last_refresh": {
+      "type": "string",
+      "format": "date-time",
+      "readOnly": true,
+      "nullable": true
+    },
+    "team_id": {
+      "type": "integer",
+      "readOnly": true
+    }
+  },
+  "required": [
+    "access_control_version",
+    "created_at",
+    "created_by",
+    "creation_mode",
+    "deleted",
+    "description",
+    "effective_privilege_level",
+    "effective_restriction_level",
+    "id",
+    "is_shared",
+    "last_accessed_at",
+    "last_refresh",
+    "last_viewed_at",
+    "name",
+    "pinned",
+    "restriction_level",
+    "team_id",
+    "user_access_level"
+  ]
+}

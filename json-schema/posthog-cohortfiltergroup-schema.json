@@ -1,0 +1,52 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "#/components/schemas/CohortFilterGroup",
+  "title": "CohortFilterGroup",
+  "additionalProperties": false,
+  "description": "AND/OR group containing cohort filters. Named to avoid collision with analytics Group model.",
+  "properties": {
+    "type": {
+      "allOf": [
+        {
+          "$ref": "#/components/schemas/PropertyGroupOperator"
+        }
+      ],
+      "title": "Type"
+    },
+    "values": {
+      "items": {
+        "discriminator": {
+          "mapping": {
+            "AND": "#/components/schemas/CohortFilterGroup",
+            "OR": "#/components/schemas/CohortFilterGroup",
+            "behavioral": "#/components/schemas/BehavioralFilter",
+            "cohort": "#/components/schemas/CohortFilter",
+            "person": "#/components/schemas/PersonFilter"
+          },
+          "propertyName": "type"
+        },
+        "oneOf": [
+          {
+            "$ref": "#/components/schemas/BehavioralFilter"
+          },
+          {
+            "$ref": "#/components/schemas/CohortFilter"
+          },
+          {
+            "$ref": "#/components/schemas/PersonFilter"
+          },
+          {
+            "$ref": "#/components/schemas/CohortFilterGroup"
+          }
+        ]
+      },
+      "title": "Values",
+      "type": "array"
+    }
+  },
+  "required": [
+    "type",
+    "values"
+  ],
+  "type": "object"
+}

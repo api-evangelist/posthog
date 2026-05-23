@@ -1,0 +1,207 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "#/components/schemas/Ticket",
+  "title": "Ticket",
+  "type": "object",
+  "description": "Serializer mixin that handles tags for objects.",
+  "properties": {
+    "id": {
+      "type": "string",
+      "format": "uuid",
+      "readOnly": true
+    },
+    "ticket_number": {
+      "type": "integer",
+      "readOnly": true
+    },
+    "channel_source": {
+      "allOf": [
+        {
+          "$ref": "#/components/schemas/ChannelSourceEnum"
+        }
+      ],
+      "readOnly": true
+    },
+    "channel_detail": {
+      "readOnly": true,
+      "nullable": true,
+      "oneOf": [
+        {
+          "$ref": "#/components/schemas/ChannelDetailEnum"
+        },
+        {
+          "$ref": "#/components/schemas/NullEnum"
+        }
+      ]
+    },
+    "distinct_id": {
+      "type": "string",
+      "readOnly": true
+    },
+    "status": {
+      "allOf": [
+        {
+          "$ref": "#/components/schemas/TicketStatusEnum"
+        }
+      ],
+      "description": "Ticket status: new, open, pending, on_hold, or resolved\n\n* `new` - New\n* `open` - Open\n* `pending` - Pending\n* `on_hold` - On hold\n* `resolved` - Resolved"
+    },
+    "priority": {
+      "nullable": true,
+      "description": "Ticket priority: low, medium, or high. Null if unset.\n\n* `low` - Low\n* `medium` - Medium\n* `high` - High",
+      "oneOf": [
+        {
+          "$ref": "#/components/schemas/PriorityEnum"
+        },
+        {
+          "$ref": "#/components/schemas/BlankEnum"
+        },
+        {
+          "$ref": "#/components/schemas/NullEnum"
+        }
+      ]
+    },
+    "assignee": {
+      "allOf": [
+        {
+          "$ref": "#/components/schemas/TicketAssignment"
+        }
+      ],
+      "readOnly": true
+    },
+    "anonymous_traits": {
+      "description": "Customer-provided traits such as name and email"
+    },
+    "ai_resolved": {
+      "type": "boolean"
+    },
+    "escalation_reason": {
+      "type": "string",
+      "nullable": true
+    },
+    "created_at": {
+      "type": "string",
+      "format": "date-time",
+      "readOnly": true
+    },
+    "updated_at": {
+      "type": "string",
+      "format": "date-time",
+      "readOnly": true
+    },
+    "message_count": {
+      "type": "integer",
+      "readOnly": true
+    },
+    "last_message_at": {
+      "type": "string",
+      "format": "date-time",
+      "readOnly": true,
+      "nullable": true
+    },
+    "last_message_text": {
+      "type": "string",
+      "readOnly": true,
+      "nullable": true
+    },
+    "unread_team_count": {
+      "type": "integer",
+      "readOnly": true
+    },
+    "unread_customer_count": {
+      "type": "integer",
+      "readOnly": true
+    },
+    "session_id": {
+      "type": "string",
+      "readOnly": true,
+      "nullable": true
+    },
+    "session_context": {
+      "readOnly": true
+    },
+    "sla_due_at": {
+      "type": "string",
+      "format": "date-time",
+      "nullable": true,
+      "description": "SLA deadline set via workflows. Null means no SLA."
+    },
+    "snoozed_until": {
+      "type": "string",
+      "format": "date-time",
+      "nullable": true
+    },
+    "slack_channel_id": {
+      "type": "string",
+      "readOnly": true,
+      "nullable": true
+    },
+    "slack_thread_ts": {
+      "type": "string",
+      "readOnly": true,
+      "nullable": true
+    },
+    "slack_team_id": {
+      "type": "string",
+      "readOnly": true,
+      "nullable": true
+    },
+    "email_subject": {
+      "type": "string",
+      "readOnly": true,
+      "nullable": true
+    },
+    "email_from": {
+      "type": "string",
+      "format": "email",
+      "readOnly": true,
+      "nullable": true
+    },
+    "email_to": {
+      "type": "string",
+      "nullable": true,
+      "readOnly": true
+    },
+    "cc_participants": {
+      "readOnly": true
+    },
+    "person": {
+      "allOf": [
+        {
+          "$ref": "#/components/schemas/TicketPerson"
+        }
+      ],
+      "readOnly": true,
+      "nullable": true
+    },
+    "tags": {
+      "type": "array",
+      "items": {}
+    }
+  },
+  "required": [
+    "assignee",
+    "cc_participants",
+    "channel_detail",
+    "channel_source",
+    "created_at",
+    "distinct_id",
+    "email_from",
+    "email_subject",
+    "email_to",
+    "id",
+    "last_message_at",
+    "last_message_text",
+    "message_count",
+    "person",
+    "session_context",
+    "session_id",
+    "slack_channel_id",
+    "slack_team_id",
+    "slack_thread_ts",
+    "ticket_number",
+    "unread_customer_count",
+    "unread_team_count",
+    "updated_at"
+  ]
+}

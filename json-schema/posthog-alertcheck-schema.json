@@ -1,0 +1,120 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "#/components/schemas/AlertCheck",
+  "title": "AlertCheck",
+  "type": "object",
+  "properties": {
+    "id": {
+      "type": "string",
+      "format": "uuid",
+      "readOnly": true
+    },
+    "created_at": {
+      "type": "string",
+      "format": "date-time",
+      "readOnly": true
+    },
+    "calculated_value": {
+      "type": "number",
+      "format": "double",
+      "readOnly": true,
+      "nullable": true
+    },
+    "state": {
+      "allOf": [
+        {
+          "$ref": "#/components/schemas/AlertCheckStateEnum"
+        }
+      ],
+      "readOnly": true
+    },
+    "targets_notified": {
+      "type": "boolean",
+      "readOnly": true
+    },
+    "anomaly_scores": {
+      "readOnly": true,
+      "nullable": true
+    },
+    "triggered_points": {
+      "readOnly": true,
+      "nullable": true
+    },
+    "triggered_dates": {
+      "readOnly": true,
+      "nullable": true
+    },
+    "interval": {
+      "type": "string",
+      "readOnly": true,
+      "nullable": true
+    },
+    "triggered_metadata": {
+      "readOnly": true,
+      "nullable": true
+    },
+    "investigation_status": {
+      "readOnly": true,
+      "nullable": true,
+      "oneOf": [
+        {
+          "$ref": "#/components/schemas/InvestigationStatusEnum"
+        },
+        {
+          "$ref": "#/components/schemas/NullEnum"
+        }
+      ]
+    },
+    "investigation_verdict": {
+      "readOnly": true,
+      "nullable": true,
+      "oneOf": [
+        {
+          "$ref": "#/components/schemas/InvestigationVerdictEnum"
+        },
+        {
+          "$ref": "#/components/schemas/NullEnum"
+        }
+      ]
+    },
+    "investigation_summary": {
+      "type": "string",
+      "readOnly": true,
+      "nullable": true
+    },
+    "investigation_notebook_short_id": {
+      "type": "string",
+      "nullable": true,
+      "readOnly": true,
+      "description": "Short ID of the Notebook produced by the investigation agent, when the agent ran for this check."
+    },
+    "notification_sent_at": {
+      "type": "string",
+      "format": "date-time",
+      "readOnly": true,
+      "nullable": true
+    },
+    "notification_suppressed_by_agent": {
+      "type": "boolean",
+      "readOnly": true
+    }
+  },
+  "required": [
+    "anomaly_scores",
+    "calculated_value",
+    "created_at",
+    "id",
+    "interval",
+    "investigation_notebook_short_id",
+    "investigation_status",
+    "investigation_summary",
+    "investigation_verdict",
+    "notification_sent_at",
+    "notification_suppressed_by_agent",
+    "state",
+    "targets_notified",
+    "triggered_dates",
+    "triggered_metadata",
+    "triggered_points"
+  ]
+}

@@ -1,0 +1,45 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "#/components/schemas/FeatureFlagFilterPropertyExistsSchema",
+  "title": "FeatureFlagFilterPropertyExistsSchema",
+  "type": "object",
+  "properties": {
+    "key": {
+      "type": "string",
+      "description": "Property key used in this feature flag condition."
+    },
+    "type": {
+      "allOf": [
+        {
+          "$ref": "#/components/schemas/PropertyGroupTypeEnum"
+        }
+      ],
+      "description": "Property filter type. Common values are 'person' and 'cohort'.\n\n* `cohort` - cohort\n* `person` - person\n* `group` - group"
+    },
+    "cohort_name": {
+      "type": "string",
+      "nullable": true,
+      "description": "Resolved cohort name for cohort-type filters."
+    },
+    "group_type_index": {
+      "type": "integer",
+      "nullable": true,
+      "description": "Group type index when using group-based filters."
+    },
+    "operator": {
+      "allOf": [
+        {
+          "$ref": "#/components/schemas/ExistenceOperatorEnum"
+        }
+      ],
+      "description": "Existence operator.\n\n* `is_set` - is_set\n* `is_not_set` - is_not_set"
+    },
+    "value": {
+      "description": "Optional value. Runtime behavior determines whether this is ignored."
+    }
+  },
+  "required": [
+    "key",
+    "operator"
+  ]
+}

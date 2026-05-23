@@ -1,0 +1,43 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "#/components/schemas/TaskRunArtifactPrepareUpload",
+  "title": "TaskRunArtifactPrepareUpload",
+  "type": "object",
+  "properties": {
+    "name": {
+      "type": "string",
+      "description": "File name to associate with the artifact",
+      "maxLength": 255
+    },
+    "type": {
+      "allOf": [
+        {
+          "$ref": "#/components/schemas/TaskRunArtifactTypeEnum"
+        }
+      ],
+      "description": "Classification for the artifact\n\n* `plan` - plan\n* `context` - context\n* `reference` - reference\n* `output` - output\n* `artifact` - artifact\n* `tree_snapshot` - tree_snapshot\n* `user_attachment` - user_attachment"
+    },
+    "source": {
+      "type": "string",
+      "default": "",
+      "description": "Optional source label for the artifact, such as agent_output or user_attachment",
+      "maxLength": 64
+    },
+    "size": {
+      "type": "integer",
+      "maximum": 31457280,
+      "minimum": 1,
+      "description": "Expected upload size in bytes (max 31457280 bytes)"
+    },
+    "content_type": {
+      "type": "string",
+      "description": "Optional MIME type for the artifact upload",
+      "maxLength": 255
+    }
+  },
+  "required": [
+    "name",
+    "size",
+    "type"
+  ]
+}

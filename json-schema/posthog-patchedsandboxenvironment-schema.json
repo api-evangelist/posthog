@@ -1,0 +1,84 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "#/components/schemas/PatchedSandboxEnvironment",
+  "title": "PatchedSandboxEnvironment",
+  "type": "object",
+  "properties": {
+    "id": {
+      "type": "string",
+      "format": "uuid",
+      "readOnly": true
+    },
+    "name": {
+      "type": "string",
+      "maxLength": 255
+    },
+    "network_access_level": {
+      "$ref": "#/components/schemas/NetworkAccessLevelEnum"
+    },
+    "allowed_domains": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "maxLength": 255
+      },
+      "description": "List of allowed domains for custom network access"
+    },
+    "include_default_domains": {
+      "type": "boolean",
+      "description": "Whether to include default trusted domains (GitHub, npm, PyPI)"
+    },
+    "repositories": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "maxLength": 255
+      },
+      "description": "List of repositories this environment applies to (format: org/repo)"
+    },
+    "environment_variables": {
+      "writeOnly": true,
+      "description": "Encrypted environment variables (write-only, never returned in responses)"
+    },
+    "has_environment_variables": {
+      "type": "boolean",
+      "readOnly": true,
+      "description": "Whether this environment has any environment variables set"
+    },
+    "private": {
+      "type": "boolean",
+      "description": "If true, only the creator can see this environment. Otherwise visible to whole team."
+    },
+    "internal": {
+      "type": "boolean",
+      "readOnly": true,
+      "description": "If true, this environment is for internal use (e.g. signals pipeline) and should not be exposed to end users."
+    },
+    "effective_domains": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "readOnly": true,
+      "description": "Computed domain allowlist based on network_access_level and allowed_domains"
+    },
+    "created_by": {
+      "allOf": [
+        {
+          "$ref": "#/components/schemas/UserBasic"
+        }
+      ],
+      "readOnly": true
+    },
+    "created_at": {
+      "type": "string",
+      "format": "date-time",
+      "readOnly": true
+    },
+    "updated_at": {
+      "type": "string",
+      "format": "date-time",
+      "readOnly": true
+    }
+  }
+}

@@ -1,0 +1,49 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "#/components/schemas/FeatureFlagFiltersSchema",
+  "title": "FeatureFlagFiltersSchema",
+  "type": "object",
+  "properties": {
+    "groups": {
+      "type": "array",
+      "items": {
+        "$ref": "#/components/schemas/FeatureFlagConditionGroupSchema"
+      },
+      "description": "Release condition groups for the feature flag."
+    },
+    "multivariate": {
+      "allOf": [
+        {
+          "$ref": "#/components/schemas/FeatureFlagMultivariateSchema"
+        }
+      ],
+      "nullable": true,
+      "description": "Multivariate configuration for variant-based rollouts."
+    },
+    "aggregation_group_type_index": {
+      "type": "integer",
+      "nullable": true,
+      "description": "Group type index for group-based feature flags."
+    },
+    "payloads": {
+      "type": "object",
+      "additionalProperties": {
+        "type": "string"
+      },
+      "description": "Optional payload values keyed by variant key."
+    },
+    "super_groups": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": true
+      },
+      "description": "Additional super condition groups used by experiments."
+    },
+    "feature_enrollment": {
+      "type": "boolean",
+      "nullable": true,
+      "description": "Whether this flag has early access feature enrollment enabled. When true, the flag is evaluated against the person property $feature_enrollment/{flag_key}."
+    }
+  }
+}

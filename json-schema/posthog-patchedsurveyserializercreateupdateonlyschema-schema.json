@@ -1,0 +1,247 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "#/components/schemas/PatchedSurveySerializerCreateUpdateOnlySchema",
+  "title": "PatchedSurveySerializerCreateUpdateOnlySchema",
+  "type": "object",
+  "properties": {
+    "id": {
+      "type": "string",
+      "format": "uuid",
+      "readOnly": true
+    },
+    "name": {
+      "type": "string",
+      "description": "Survey name.",
+      "maxLength": 400,
+      "minLength": 1
+    },
+    "description": {
+      "type": "string",
+      "description": "Survey description."
+    },
+    "type": {
+      "allOf": [
+        {
+          "$ref": "#/components/schemas/SurveyType"
+        }
+      ],
+      "description": "Survey type.\n\n* `popover` - popover\n* `widget` - widget\n* `external_survey` - external survey\n* `api` - api"
+    },
+    "schedule": {
+      "nullable": true,
+      "description": "Survey scheduling behavior: 'once' = show once per user (default), 'recurring' = repeat based on iteration_count and iteration_frequency_days settings, 'always' = show every time conditions are met (mainly for widget surveys)\n\n* `once` - once\n* `recurring` - recurring\n* `always` - always",
+      "oneOf": [
+        {
+          "$ref": "#/components/schemas/ScheduleEnum"
+        },
+        {
+          "$ref": "#/components/schemas/NullEnum"
+        }
+      ]
+    },
+    "linked_flag": {
+      "allOf": [
+        {
+          "$ref": "#/components/schemas/MinimalFeatureFlag"
+        }
+      ],
+      "readOnly": true
+    },
+    "linked_flag_id": {
+      "type": "integer",
+      "writeOnly": true,
+      "nullable": true,
+      "description": "The feature flag linked to this survey."
+    },
+    "linked_insight_id": {
+      "type": "integer",
+      "writeOnly": true,
+      "nullable": true
+    },
+    "targeting_flag_id": {
+      "type": "integer",
+      "writeOnly": true,
+      "description": "An existing targeting flag to use for this survey."
+    },
+    "targeting_flag": {
+      "allOf": [
+        {
+          "$ref": "#/components/schemas/MinimalFeatureFlag"
+        }
+      ],
+      "readOnly": true
+    },
+    "internal_targeting_flag": {
+      "allOf": [
+        {
+          "$ref": "#/components/schemas/MinimalFeatureFlag"
+        }
+      ],
+      "readOnly": true
+    },
+    "targeting_flag_filters": {
+      "allOf": [
+        {
+          "$ref": "#/components/schemas/FeatureFlagFiltersSchema"
+        }
+      ],
+      "writeOnly": true,
+      "nullable": true,
+      "description": "Target specific users based on their properties. Example: {groups: [{properties: [{key: 'email', value: ['@company.com'], operator: 'icontains'}], rollout_percentage: 100}]}"
+    },
+    "remove_targeting_flag": {
+      "type": "boolean",
+      "writeOnly": true,
+      "nullable": true,
+      "description": "Set to true to completely remove all targeting filters from the survey, making it visible to all users (subject to other display conditions like URL matching)."
+    },
+    "questions": {
+      "type": "array",
+      "items": {
+        "$ref": "#/components/schemas/SurveyQuestionInputSchema"
+      },
+      "nullable": true,
+      "description": "\n        The `array` of questions included in the survey. Each question must conform to one of the defined question types: Basic, Link, Rating, or Multiple Choice.\n\n        Basic (open-ended question)\n        - `id`: The question ID\n        - `type`: `open`\n        - `question`: The text of the question.\n        - `description`: Optional description of the question.\n        - `descriptionContentType`: Content type of the description (`html` or `text`).\n        - `optional`: Whether the question is optional (`boolean`).\n        - `buttonText`: Text displayed on the submit button.\n        - `branching`: Branching logic for the question. See branching types below for details.\n\n        Link (a question with a link)\n        - `id`: The question ID\n        - `type`: `link`\n        - `question`: The text of the question.\n        - `description`: Optional description of the question.\n        - `descriptionContentType`: Content type of the description (`html` or `text`).\n        - `optional`: Whether the question is optional (`boolean`).\n        - `buttonText`: Text displayed on the submit button.\n        - `link`: The URL associated with the question.\n        - `branching`: Branching logic for the question. See branching types below for details.\n\n        Rating (a question with a rating scale)\n        - `id`: The question ID\n        - `type`: `rating`\n        - `question`: The text of the question.\n        - `description`: Optional description of the question.\n        - `descriptionContentType`: Content type of the description (`html` or `text`).\n        - `optional`: Whether the question is optional (`boolean`).\n        - `buttonText`: Text displayed on the submit button.\n        - `display`: Display style of the rating (`number` or `emoji`).\n        - `scale`: The scale of the rating (`number`).\n        - `lowerBoundLabel`: Label for the lower bound of the scale.\n        - `upperBoundLabel`: Label for the upper bound of the scale.\n        - `isNpsQuestion`: Whether the question is an NPS rating.\n        - `branching`: Branching logic for the question. See branching types below for details.\n\n        Multiple choice\n        - `id`: The question ID\n        - `type`: `single_choice` or `multiple_choice`\n        - `question`: The text of the question.\n        - `description`: Optional description of the question.\n        - `descriptionContentType`: Content type of the description (`html` or `text`).\n        - `optional`: Whether the question is optional (`boolean`).\n        - `buttonText`: Text displayed on the submit button.\n        - `choices`: An array of choices for the question.\n        - `shuffleOptions`: Whether to shuffle the order of the choices (`boolean`).\n        - `hasOpenChoice`: Whether the question allows an open-ended response (`boolean`).\n        - `branching`: Branching logic for the question. See branching types below for details.\n\n        Branching logic can be one of the following types:\n\n        Next question: Proceeds to the next question\n        ```json\n        {\n            \"type\": \"next_question\"\n        }\n        ```\n\n        End: Ends the survey, optionally displaying a confirmation message.\n        ```json\n        {\n            \"type\": \"end\"\n        }\n        ```\n\n        Response-based: Branches based on the response values. Available for the `rating` and `single_choice` question types.\n        ```json\n        {\n            \"type\": \"response_based\",\n            \"responseValues\": {\n                \"responseKey\": \"value\"\n            }\n        }\n        ```\n\n        Specific question: Proceeds to a specific question by index.\n        ```json\n        {\n            \"type\": \"specific_question\",\n            \"index\": 2\n        }\n        ```\n\n        Translations: Each question can include inline translations.\n        - `translations`: Object mapping language codes to translated fields.\n        - Language codes: Any string - allows customers to use their own language keys (e.g., \"es\", \"es-MX\", \"english\", \"french\")\n        - Translatable fields: `question`, `description`, `buttonText`, `choices`, `lowerBoundLabel`, `upperBoundLabel`, `link`\n\n        Example with translations:\n        ```json\n        {\n            \"id\": \"uuid\",\n            \"type\": \"rating\",\n            \"question\": \"How satisfied are you?\",\n            \"lowerBoundLabel\": \"Not satisfied\",\n            \"upperBoundLabel\": \"Very satisfied\",\n            \"translations\": {\n                \"es\": {\n                    \"question\": \"\u00bfQu\u00e9 tan satisfecho est\u00e1s?\",\n                    \"lowerBoundLabel\": \"No satisfecho\",\n                    \"upperBoundLabel\": \"Muy satisfecho\"\n                },\n                \"fr\": {\n                    \"question\": \"Dans quelle mesure \u00eates-vous satisfait?\"\n                }\n            }\n        }\n        ```\n        "
+    },
+    "conditions": {
+      "allOf": [
+        {
+          "$ref": "#/components/schemas/SurveyConditionsSchema"
+        }
+      ],
+      "nullable": true,
+      "description": "Display and targeting conditions for the survey."
+    },
+    "appearance": {
+      "allOf": [
+        {
+          "$ref": "#/components/schemas/SurveyAppearanceSchema"
+        }
+      ],
+      "nullable": true,
+      "description": "Survey appearance customization."
+    },
+    "created_at": {
+      "type": "string",
+      "format": "date-time",
+      "readOnly": true
+    },
+    "created_by": {
+      "allOf": [
+        {
+          "$ref": "#/components/schemas/UserBasic"
+        }
+      ],
+      "readOnly": true
+    },
+    "start_date": {
+      "type": "string",
+      "format": "date-time",
+      "nullable": true,
+      "description": "Setting this will launch the survey immediately. Don't add a start_date unless explicitly requested to do so."
+    },
+    "end_date": {
+      "type": "string",
+      "format": "date-time",
+      "nullable": true,
+      "description": "When the survey stopped being shown to users. Setting this will complete the survey."
+    },
+    "archived": {
+      "type": "boolean",
+      "description": "Archive state for the survey."
+    },
+    "responses_limit": {
+      "type": "integer",
+      "nullable": true,
+      "description": "The maximum number of responses before automatically stopping the survey."
+    },
+    "iteration_count": {
+      "type": "integer",
+      "maximum": 500,
+      "minimum": 1,
+      "nullable": true,
+      "description": "For a recurring schedule, this field specifies the number of times the survey should be shown to the user. Use 1 for 'once every X days', higher numbers for multiple repetitions. Works together with iteration_frequency_days to determine the overall survey schedule."
+    },
+    "iteration_frequency_days": {
+      "type": "integer",
+      "maximum": 365,
+      "minimum": 1,
+      "nullable": true,
+      "description": "For a recurring schedule, this field specifies the interval in days between each survey instance shown to the user, used alongside iteration_count for precise scheduling."
+    },
+    "iteration_start_dates": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "format": "date-time",
+        "nullable": true
+      },
+      "nullable": true
+    },
+    "current_iteration": {
+      "type": "integer",
+      "maximum": 2147483647,
+      "minimum": 0,
+      "nullable": true
+    },
+    "current_iteration_start_date": {
+      "type": "string",
+      "format": "date-time",
+      "nullable": true
+    },
+    "response_sampling_start_date": {
+      "type": "string",
+      "format": "date-time",
+      "nullable": true
+    },
+    "response_sampling_interval_type": {
+      "nullable": true,
+      "oneOf": [
+        {
+          "$ref": "#/components/schemas/ResponseSamplingIntervalTypeEnum"
+        },
+        {
+          "$ref": "#/components/schemas/BlankEnum"
+        },
+        {
+          "$ref": "#/components/schemas/NullEnum"
+        }
+      ]
+    },
+    "response_sampling_interval": {
+      "type": "integer",
+      "maximum": 2147483647,
+      "minimum": 0,
+      "nullable": true
+    },
+    "response_sampling_limit": {
+      "type": "integer",
+      "maximum": 2147483647,
+      "minimum": 0,
+      "nullable": true
+    },
+    "response_sampling_daily_limits": {
+      "nullable": true
+    },
+    "enable_partial_responses": {
+      "type": "boolean",
+      "nullable": true,
+      "description": "When at least one question is answered, the response is stored (true). The response is stored when all questions are answered (false)."
+    },
+    "enable_iframe_embedding": {
+      "type": "boolean",
+      "nullable": true
+    },
+    "translations": {
+      "nullable": true
+    },
+    "_create_in_folder": {
+      "type": "string",
+      "writeOnly": true,
+      "title": " create in folder"
+    },
+    "form_content": {
+      "nullable": true
+    }
+  }
+}

@@ -1,0 +1,58 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "#/components/schemas/HogFlowAction",
+  "title": "HogFlowAction",
+  "type": "object",
+  "properties": {
+    "id": {
+      "type": "string"
+    },
+    "name": {
+      "type": "string",
+      "maxLength": 400
+    },
+    "description": {
+      "type": "string",
+      "default": ""
+    },
+    "on_error": {
+      "nullable": true,
+      "oneOf": [
+        {
+          "$ref": "#/components/schemas/OnErrorEnum"
+        },
+        {
+          "$ref": "#/components/schemas/NullEnum"
+        }
+      ]
+    },
+    "created_at": {
+      "type": "integer"
+    },
+    "updated_at": {
+      "type": "integer"
+    },
+    "filters": {
+      "allOf": [
+        {
+          "$ref": "#/components/schemas/HogFunctionFilters"
+        }
+      ],
+      "nullable": true
+    },
+    "type": {
+      "type": "string",
+      "maxLength": 100
+    },
+    "config": {},
+    "output_variable": {
+      "nullable": true
+    }
+  },
+  "required": [
+    "config",
+    "id",
+    "name",
+    "type"
+  ]
+}
