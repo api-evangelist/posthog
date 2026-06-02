@@ -1,0 +1,258 @@
+asyncapi: 2.6.0
+info:
+  title: PostHog Webhook Destinations
+  description: >-
+    PostHog's Customer Data Platform (CDP) exposes a webhook destination that
+    sends event and person data from PostHog to any external HTTP endpoint in
+    real time. The generic Webhook destination supports custom HTTP methods,
+    URLs, headers, and a Hog-templated JSON body. PostHog also ships a set of
+    pre-configured webhook-style destinations (Slack, Hubspot, Intercom, and
+    others) that fire on PostHog events or person updates. This AsyncAPI
+    document models the outbound HTTP messages PostHog publishes to subscriber
+    endpoints when destinations are triggered, based on the publicly documented
+    behavior at https://posthog.com/docs/cdp/destinations/webhook,
+    https://posthog.com/docs/cdp/destinations/slack, and the upstream webhook
+    template source in the PostHog repository.
+  version: '1.0.0'
+  contact:
+    name: PostHog
+    url: https://posthog.com
+  license:
+    name: MIT
+    url: https://github.com/PostHog/posthog/blob/master/LICENSE
+  externalDocs:
+    description: PostHog Webhook destination documentation
+    url: https://posthog.com/docs/cdp/destinations/webhook
+defaultContentType: application/json
+servers:
+  subscriber:
+    url: '{webhookUrl}'
+    protocol: https
+    description: >-
+      The external HTTPS endpoint that the PostHog Webhook destination delivers
+      messages to. The URL is configured per-destination in the PostHog Data
+      Pipeline UI.
+    variables:
+      webhookUrl:
+        description: >-
+          The fully qualified URL of the subscriber endpoint receiving PostHog
+          webhook deliveries (for example a custom backend, an internal
+          service, or a Slack Incoming Webhook URL).
+  slack:
+    url: 'hooks.slack.com'
+    protocol: https
+    description: >-
+      Slack Incoming Webhook host used by the PostHog Slack destination when a
+      Slack workspace is connected through the Data Pipeline.
+  posthog-cloud:
+    url: 'app.posthog.com'
+    protocol: https
+    description: >-
+      PostHog Cloud (US) host that originates webhook deliveries from the CDP
+      hog function runtime.
+channels:
+  /webhook:
+    description: >-
+      Generic Webhook destination channel. PostHog publishes one HTTP request
+      per matched event or person update to the configured subscriber URL. By
+      default the request is a POST with header `Content-Type: application/json`
+      and body `{ "event": "{event}", "person": "{person}" }`, where the
+      `{event}` and `{person}` placeholders are expanded by the Hog template
+      engine. The HTTP method, URL, headers, and body are user-configurable per
+      destination, and PostHog treats any response status >= 400 as a delivery
+      error.
+    bindings:
+      http:
+        bindingVersion: '0.3.0'
+        method: POST
+    subscribe:
+      operationId: receiveWebhookEvent
+      summary: Receive an event or person update from a PostHog Webhook destination.
+      description: >-
+        Delivered when a configured filter on the Webhook destination matches
+        an incoming PostHog event or person property update. The default
+        payload contains the `event` and `person` objects from the Hog global
+        scope; the body can be fully customized in the destination
+        configuration.
+      message:
+        oneOf:
+          - $ref: '#/components/messages/EventTriggered'
+          - $ref: '#/components/messages/PersonUpdated'
+  /slack:
+    description: >-
+      Slack destination channel. When connected to a Slack workspace, PostHog
+      POSTs Slack-compatible JSON (plain `text` or Block Kit `blocks`) to a
+      Slack Incoming Webhook URL each time a configured event filter or person
+      property update matches. Message bodies are written using PostHog's `{}`
+      template syntax against the `event` and `person` global objects.
+    bindings:
+      http:
+        bindingVersion: '0.3.0'
+        method: POST
+    subscribe:
+      operationId: receiveSlackMessage
+      summary: Receive a Slack-formatted message from the PostHog Slack destination.
+      description: >-
+        Fires on matching PostHog events or person updates, posting a Slack
+        message constructed from the destination's configured template.
+      message:
+        $ref: '#/components/messages/SlackMessage'
+  /hubspot:
+    description: >-
+      Hubspot destination channel. The Hubspot destination is pre-configured to
+      fire on `$identify` events and pushes person data to a connected Hubspot
+      account so that the Contacts list is populated.
+    bindings:
+      http:
+        bindingVersion: '0.3.0'
+        method: POST
+    subscribe:
+      operationId: receiveHubspotIdentify
+      summary: Receive an identify event forwarded to Hubspot.
+      description: >-
+        Delivered when an identify event is captured in PostHog and forwarded
+        to the connected Hubspot workspace via the CDP destination.
+      message:
+        $ref: '#/components/messages/PersonUpdated'
+  /intercom:
+    description: >-
+      Intercom destination channel. Pre-configured to fire on identify events,
+      forwarding person properties to the connected Intercom workspace.
+    bindings:
+      http:
+        bindingVersion: '0.3.0'
+        method: POST
+    subscribe:
+      operationId: receiveIntercomIdentify
+      summary: Receive an identify event forwarded to Intercom.
+      description: >-
+        Delivered when an identify event is captured in PostHog and forwarded
+        to the connected Intercom workspace via the CDP destination.
+      message:
+        $ref: '#/components/messages/PersonUpdated'
+components:
+  messages:
+    EventTriggered:
+      name: eventTriggered
+      title: Event Triggered
+      summary: >-
+        Fired when a PostHog event matches a destination filter. Carries the
+        default Webhook destination payload of `event` and `person` objects.
+      contentType: application/json
+      payload:
+        $ref: '#/components/schemas/WebhookEventPayload'
+    PersonUpdated:
+      name: personUpdated
+      title: Person Updated
+      summary: >-
+        Fired when a person's properties are updated and match a destination
+        filter. Carries the default Webhook destination payload of `event` and
+        `person` objects.
+      contentType: application/json
+      payload:
+        $ref: '#/components/schemas/WebhookEventPayload'
+    SlackMessage:
+      name: slackMessage
+      title: Slack Message
+      summary: >-
+        Slack-formatted webhook delivery built from a PostHog destination
+        template. The body conforms to the Slack Incoming Webhook contract and
+        may contain plain `text` and/or Block Kit `blocks`.
+      contentType: application/json
+      payload:
+        $ref: '#/components/schemas/SlackMessagePayload'
+  schemas:
+    WebhookEventPayload:
+      type: object
+      description: >-
+        Default JSON body posted by the PostHog Webhook destination. The body
+        is fully user-configurable in the destination UI; the shape below
+        reflects the default template
+        `{ "event": "{event}", "person": "{person}" }` from the upstream
+        source at
+        https://github.com/PostHog/posthog/blob/master/nodejs/src/cdp/templates/_destinations/webhook/webhook.template.ts.
+      properties:
+        event:
+          $ref: '#/components/schemas/Event'
+        person:
+          $ref: '#/components/schemas/Person'
+    Event:
+      type: object
+      description: >-
+        PostHog event object as documented at
+        https://posthog.com/docs/data/events. PostHog auto-injects properties
+        prefixed with `$` (such as `$current_url` and `$lib`).
+      properties:
+        event:
+          type: string
+          description: >-
+            The event name, for example `$pageview`, `$identify`, or a custom
+            event name like `query completed`.
+          example: $pageview
+        distinct_id:
+          type: string
+          description: >-
+            Unique identifier for the person who triggered the event. Commonly
+            a UUIDv7 value.
+          example: 018daf23-89b3-7cf8-a4f1-94064c96df90
+        timestamp:
+          type: string
+          format: date-time
+          description: >-
+            ISO 8601 timestamp recording when the event occurred on the
+            client.
+          example: '2024-05-22T17:09:29.220Z'
+        properties:
+          type: object
+          description: >-
+            Arbitrary event properties captured with the event. Properties
+            beginning with `$` are PostHog-managed defaults.
+          additionalProperties: true
+        uuid:
+          type: string
+          description: Server-assigned unique identifier for the event row.
+        created_at:
+          type: string
+          format: date-time
+          description: >-
+            ISO 8601 timestamp recording when the PostHog ingestion pipeline
+            received the event.
+    Person:
+      type: object
+      description: >-
+        PostHog person object exposed to Hog templates as the `person` global.
+      properties:
+        id:
+          type: string
+          description: Internal PostHog person identifier.
+        uuid:
+          type: string
+          description: UUID of the person record.
+        distinct_id:
+          type: string
+          description: Primary distinct ID associated with the person.
+        properties:
+          type: object
+          description: Person-level properties accumulated from identify and set calls.
+          additionalProperties: true
+    SlackMessagePayload:
+      type: object
+      description: >-
+        Body shape posted by the PostHog Slack destination. Follows the Slack
+        Incoming Webhook contract; either `text`, `blocks`, or both are
+        present.
+      properties:
+        text:
+          type: string
+          description: >-
+            Plain-text message body. May contain text expanded from PostHog
+            `{event.event}` and `{person.name}` style template variables.
+          example: 'Hello, {person.name}! You have a new message from {event.event}.'
+        blocks:
+          type: array
+          description: >-
+            Slack Block Kit structure used when the destination is configured
+            with the Block Kit template.
+          items:
+            type: object
+            additionalProperties: true
