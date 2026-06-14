@@ -1,0 +1,1630 @@
+"""
+PostHog GraphQL Schema
+======================
+PostHog does not expose a public GraphQL endpoint. Its primary API surface is
+REST (https://posthog.com/docs/api) plus HogQL — a SQL-like query language
+executed via the POST /api/projects/:project_id/query endpoint.
+
+This document represents the canonical domain model extracted from PostHog's
+open-source type definitions:
+  - frontend/src/queries/schema/schema-general.ts
+  - frontend/src/queries/schema/schema-surveys.ts
+  - posthog/schema.py  (generated from the TypeScript source)
+
+It is provided as a GraphQL SDL for discovery, tooling, and documentation
+purposes.
+
+Source: https://github.com/PostHog/posthog
+Docs:   https://posthog.com/docs/api
+"""
+
+# ---------------------------------------------------------------------------
+# Scalars
+# ---------------------------------------------------------------------------
+
+scalar DateTime
+scalar JSON
+scalar UUID
+
+# ---------------------------------------------------------------------------
+# Enums
+# ---------------------------------------------------------------------------
+
+enum NodeKind {
+  EventsNode
+  GroupNode
+  ActionsNode
+  DataWarehouseNode
+  FunnelsDataWarehouseNode
+  LifecycleDataWarehouseNode
+  EventsQuery
+  SessionsQuery
+  PersonsNode
+  HogQuery
+  HogQLQuery
+  HogQLMetadata
+  HogQLAutocomplete
+  ActorsQuery
+  GroupsQuery
+  FunnelsActorsQuery
+  FunnelCorrelationActorsQuery
+  SessionsTimelineQuery
+  RecordingsQuery
+  SessionAttributionExplorerQuery
+  ErrorTrackingQuery
+  LogsQuery
+  DataTableNode
+  DataVisualizationNode
+  SavedInsightNode
+  InsightVizNode
+  TrendsQuery
+  FunnelsQuery
+  RetentionQuery
+  PathsQuery
+  StickinessQuery
+  LifecycleQuery
+  FunnelCorrelationQuery
+  WebOverviewQuery
+  WebStatsTableQuery
+  WebGoalsQuery
+  WebVitalsQuery
+  RevenueAnalyticsOverviewQuery
+  ExperimentQuery
+  ExperimentFunnelsQuery
+  ExperimentTrendsQuery
+  DatabaseSchemaQuery
+  TracesQuery
+  TraceQuery
+  PropertyValuesQuery
+}
+
+enum IntervalType {
+  minute
+  hour
+  day
+  week
+  month
+}
+
+enum BreakdownType {
+  cohort
+  person
+  event
+  group
+  session
+  hogql
+  data_warehouse
+  data_warehouse_person_property
+}
+
+enum FilterLogicalOperator {
+  AND
+  OR
+}
+
+enum PropertyOperator {
+  Exact
+  IsNot
+  IContains
+  NotIContains
+  Regex
+  NotRegex
+  GreaterThan
+  GreaterThanOrEqual
+  LessThan
+  LessThanOrEqual
+  IsSet
+  IsNotSet
+  IsDateExact
+  IsDateBefore
+  IsDateAfter
+  Between
+  NotBetween
+  Minimum
+  Maximum
+  In
+  NotIn
+}
+
+enum FunnelVizType {
+  steps
+  time_to_convert
+  trends
+}
+
+enum FunnelOrderType {
+  ordered
+  unordered
+  strict
+}
+
+enum RetentionType {
+  retention_recurring
+  retention_first_time
+}
+
+enum PathType {
+  pageview
+  autocapture
+  screen
+  custom_event
+  hogql
+}
+
+enum StepOrderValue {
+  ordered
+  unordered
+  strict
+}
+
+enum InsightNodeKind {
+  TrendsQuery
+  FunnelsQuery
+  RetentionQuery
+  PathsQuery
+  StickinessQuery
+  LifecycleQuery
+}
+
+enum HogLanguage {
+  hog
+  hogJson
+  hogQL
+  hogQLExpr
+  hogTemplate
+  liquid
+}
+
+enum LifecycleToggle {
+  new
+  resurrecting
+  returning
+  dormant
+}
+
+enum ExperimentSignificanceCode {
+  significant
+  not_enough_exposure
+  low_win_probability
+  high_loss_probability
+}
+
+enum ExperimentMetricType {
+  primary
+  secondary
+  guardrail
+}
+
+enum ExperimentStatsMethod {
+  bayesian
+  frequentist
+}
+
+enum AlertState {
+  firing
+  not_firing
+  errored
+  snoozed
+}
+
+enum AlertConditionType {
+  absolute_value
+  relative_increase
+  relative_decrease
+}
+
+enum AlertCalculationInterval {
+  hourly
+  daily
+  weekly
+  monthly
+}
+
+enum BaseMathType {
+  total
+  dau
+  weekly_active
+  monthly_active
+  unique_session
+}
+
+enum FunnelMathType {
+  first_touch
+  last_touch
+}
+
+enum CountPerActorMathType {
+  avg
+  min
+  max
+  median
+  p90
+  p95
+  p99
+}
+
+enum ChartDisplayType {
+  ActionsLineGraph
+  ActionsLineGraphCumulative
+  ActionsAreaGraph
+  ActionsTable
+  ActionsPie
+  ActionsBar
+  ActionsBarValue
+  WorldMap
+  BoldNumber
+}
+
+enum ErrorTrackingIssueStatus {
+  active
+  archived
+  resolved
+  pending_release
+  suppressed
+}
+
+enum ExternalDataSourceType {
+  Stripe
+  Hubspot
+  Salesforce
+  Zendesk
+  Postgres
+  MySQL
+  MSSQL
+  BigQuery
+  Redshift
+  Snowflake
+  MongoDB
+  Shopify
+  S3
+  Braintree
+  Linear
+  Monday
+}
+
+# ---------------------------------------------------------------------------
+# Core domain types
+# ---------------------------------------------------------------------------
+
+"""
+A captured product analytics event stored in ClickHouse.
+"""
+type Event {
+  id: UUID!
+  uuid: UUID!
+  event: String!
+  timestamp: DateTime!
+  distinct_id: String!
+  person: Person
+  properties: JSON
+  elements: [Element]
+  team_id: Int!
+  site_url: String
+  created_at: DateTime!
+}
+
+"""
+Represents a known user (person) identified by one or more distinct IDs.
+"""
+type Person {
+  id: UUID!
+  uuid: UUID!
+  name: String
+  distinct_ids: [String!]!
+  properties: JSON
+  created_at: DateTime!
+  is_identified: Boolean!
+  team_id: Int!
+}
+
+"""
+A group of users sharing a common identifier (e.g. company, org, workspace).
+"""
+type Group {
+  index: Int!
+  key: String!
+  type: String!
+  properties: JSON
+  created_at: DateTime!
+  team_id: Int!
+}
+
+"""
+A browser/mobile session captured via session replay.
+"""
+type Session {
+  id: UUID!
+  session_id: String!
+  person: Person
+  distinct_id: String!
+  start_time: DateTime!
+  end_time: DateTime
+  duration: Int
+  click_count: Int
+  keypress_count: Int
+  mouse_activity_count: Int
+  console_error_count: Int
+  active_seconds: Int
+  inactive_seconds: Int
+  team_id: Int!
+  properties: JSON
+}
+
+"""
+A static or dynamic group of persons defined by shared properties or behaviour.
+"""
+type Cohort {
+  id: Int!
+  name: String!
+  description: String
+  filters: JSON
+  is_static: Boolean!
+  count: Int
+  created_by: User
+  created_at: DateTime!
+  deleted: Boolean!
+  team_id: Int!
+}
+
+"""
+A feature flag that can be conditionally enabled for users or groups.
+"""
+type FeatureFlag {
+  id: Int!
+  key: String!
+  name: String
+  filters: FeatureFlagFilters
+  rollout_percentage: Float
+  active: Boolean!
+  deleted: Boolean!
+  is_simple_flag: Boolean!
+  has_enriched_analytics: Boolean
+  team_id: Int!
+  created_by: User
+  created_at: DateTime!
+}
+
+"""
+The rollout conditions for a feature flag.
+"""
+type FeatureFlagFilters {
+  groups: [FeatureFlagCondition]
+  payloads: JSON
+  multivariate: MultivariateOptions
+  aggregation_group_type_index: Int
+  super_groups: [FeatureFlagCondition]
+}
+
+"""
+A single rollout condition group within a feature flag.
+"""
+type FeatureFlagCondition {
+  properties: [PropertyFilter]
+  rollout_percentage: Float
+  variant: String
+}
+
+"""
+Options for multivariate (A/B/n) feature flags.
+"""
+type MultivariateOptions {
+  variants: [MultiVariateVariant]
+}
+
+type MultiVariateVariant {
+  key: String!
+  name: String
+  rollout_percentage: Float!
+}
+
+"""
+A saved analytics insight (trend, funnel, retention, paths, etc.).
+"""
+type Insight {
+  id: Int!
+  short_id: String!
+  name: String
+  description: String
+  filters: JSON
+  query: JSON
+  result: JSON
+  created_at: DateTime!
+  last_modified_at: DateTime
+  saved: Boolean!
+  favorited: Boolean!
+  deleted: Boolean!
+  created_by: User
+  dashboards: [Int]
+  tags: [String]
+  team_id: Int!
+}
+
+"""
+A dashboard containing one or more insight tiles.
+"""
+type Dashboard {
+  id: Int!
+  name: String!
+  description: String
+  created_at: DateTime!
+  created_by: User
+  pinned: Boolean!
+  deleted: Boolean!
+  tags: [String]
+  tiles: [DashboardTile]
+  team_id: Int!
+}
+
+"""
+A tile on a dashboard, referencing a saved insight.
+"""
+type DashboardTile {
+  id: Int!
+  insight: Insight
+  text: DashboardText
+  layouts: JSON
+  color: String
+  filters_hash: String
+  deleted: Boolean
+  last_refresh: DateTime
+}
+
+type DashboardText {
+  id: Int!
+  body: String
+}
+
+"""
+An annotation that marks a significant event on charts.
+"""
+type Annotation {
+  id: Int!
+  content: String!
+  date_marker: DateTime!
+  creation_type: String!
+  scope: String!
+  created_by: User
+  created_at: DateTime!
+  updated_at: DateTime!
+  deleted: Boolean!
+  dashboard_item: Int
+  team_id: Int!
+}
+
+"""
+A saved action (set of event matching rules) used for filtering and analytics.
+"""
+type Action {
+  id: Int!
+  name: String!
+  description: String
+  steps: [ActionStep]
+  post_to_slack: Boolean!
+  slack_message_format: String
+  is_calculating: Boolean!
+  last_calculated_at: DateTime
+  created_at: DateTime!
+  created_by: User
+  deleted: Boolean!
+  tags: [String]
+  team_id: Int!
+}
+
+"""
+A single step (event matching rule) within an action definition.
+"""
+type ActionStep {
+  id: Int!
+  event: String
+  text: String
+  text_matching: String
+  href: String
+  href_matching: String
+  url: String
+  url_matching: String
+  selector: String
+  properties: [PropertyFilter]
+}
+
+"""
+A DOM element captured during autocapture.
+"""
+type Element {
+  tag_name: String
+  text: String
+  attr_class: [String]
+  href: String
+  attr_id: String
+  nth_child: Int
+  nth_of_type: Int
+  attributes: JSON
+  order: Int
+}
+
+"""
+A PostHog plugin (data pipeline app or connector).
+"""
+type Plugin {
+  id: Int!
+  name: String!
+  description: String
+  url: String
+  tag: String
+  latest_tag: String
+  is_global: Boolean!
+  is_preinstalled: Boolean!
+  organization_id: UUID!
+  capabilities: JSON
+  metrics: JSON
+  config_schema: JSON
+}
+
+"""
+An installed and configured plugin instance for a project.
+"""
+type PluginConfig {
+  id: Int!
+  plugin: Plugin
+  enabled: Boolean!
+  order: Int
+  config: JSON
+  team_id: Int!
+  created_at: DateTime!
+  updated_at: DateTime!
+}
+
+"""
+An A/B experiment tied to a feature flag.
+"""
+type Experiment {
+  id: Int!
+  name: String!
+  description: String
+  start_date: DateTime
+  end_date: DateTime
+  feature_flag: FeatureFlag
+  feature_flag_key: String!
+  parameters: ExperimentParameters
+  secondary_metrics: [ExperimentMetric]
+  metrics: [ExperimentMetric]
+  stats_config: ExperimentStatsConfig
+  created_by: User
+  created_at: DateTime!
+  updated_at: DateTime!
+  archived: Boolean!
+  team_id: Int!
+}
+
+type ExperimentParameters {
+  minimum_detectable_effect: Float
+  confidence_level: Float
+  recommended_running_time: Float
+  recommended_sample_size: Int
+  feature_flag_variants: [MultiVariateVariant]
+  custom_exposure_filter: JSON
+}
+
+type ExperimentMetric {
+  kind: NodeKind
+  metric_type: ExperimentMetricType
+  name: String
+}
+
+type ExperimentStatsConfig {
+  version: Int
+  stats_method: ExperimentStatsMethod
+}
+
+"""
+Results of a completed experiment including significance and variant statistics.
+"""
+type ExperimentResult {
+  experiment_id: Int!
+  significance_code: ExperimentSignificanceCode
+  p_value: Float
+  probability: JSON
+  loss: Float
+  credible_intervals: JSON
+  variants: [ExperimentVariantResult]
+}
+
+type ExperimentVariantResult {
+  key: String!
+  count: Int!
+  exposure: Float!
+  mean: Float!
+  conversions: Int
+  failure_count: Int
+}
+
+"""
+Webhook configuration for sending PostHog action events to external services.
+"""
+type WebhookConfig {
+  id: Int!
+  target_url: String!
+  secret: String
+  description: String
+  created_by: User
+  created_at: DateTime!
+  updated_at: DateTime!
+  team_id: Int!
+}
+
+"""
+A property filter used to match or segment users, events, or groups.
+"""
+type PropertyFilter {
+  key: String!
+  value: JSON
+  operator: PropertyOperator
+  type: String
+  negation: Boolean
+}
+
+"""
+A group of property filters combined with AND/OR logic.
+"""
+type PropertyGroup {
+  type: FilterLogicalOperator!
+  values: [PropertyGroupValue]
+}
+
+type PropertyGroupValue {
+  type: FilterLogicalOperator
+  values: [PropertyFilter]
+}
+
+"""
+A funnel step definition.
+"""
+type FunnelStep {
+  event: String
+  id: Int
+  type: String
+  order: Int
+  name: String
+  custom_name: String
+  math: String
+  math_property: String
+  math_group_type_index: Int
+  properties: [PropertyFilter]
+}
+
+"""
+Filters for path (user flow) analytics.
+"""
+type PathFilter {
+  date_from: String
+  date_to: String
+  filter_test_accounts: Boolean
+  path_type: PathType
+  include_event_types: [PathType]
+  start_point: String
+  end_point: String
+  path_groupings: [String]
+  funnel_paths: String
+  funnel_filter: JSON
+  exclude_events: [String]
+  step_limit: Int
+  path_start_key: String
+  path_end_key: String
+  path_dropoff_key: String
+  paths_hogql_expression: String
+  edge_limit: Int
+  min_edge_weight: Int
+  max_edge_weight: Int
+  local_path_cleaning_filters: [JSON]
+  breakdown: String
+  breakdown_type: BreakdownType
+  insight: String
+  interval: IntervalType
+  aggregation_group_type_index: Int
+}
+
+"""
+A retention (stickiness over time) query result row.
+"""
+type RetentionResult {
+  date: DateTime!
+  label: String
+  cohort_size: Int!
+  values: [RetentionDataPoint]
+}
+
+type RetentionDataPoint {
+  count: Int!
+  percentage: Float
+}
+
+"""
+HogQL (SQL-like) query executed against PostHog event data.
+"""
+type HogQLQuery {
+  kind: NodeKind!
+  query: String!
+  filters: HogQLFilters
+  explain: Boolean
+  name: String
+}
+
+"""
+Response from a HogQL query execution.
+"""
+type HogQLQueryResponse {
+  results: JSON!
+  columns: [String]
+  types: [String]
+  query: String
+  clickhouse: String
+  explain: [String]
+  hasMore: Boolean
+  limit: Int
+  offset: Int
+}
+
+"""
+Filter object for scoping a HogQL query by properties and date range.
+"""
+type HogQLFilters {
+  properties: [PropertyFilter]
+  dateRange: DateRange
+  filterTestAccounts: Boolean
+}
+
+"""
+A named variable that can be substituted into a HogQL query.
+"""
+type HogQLVariable {
+  variableId: String!
+  code_name: String!
+  value: JSON
+  isNull: Boolean
+}
+
+"""
+Date range specification for queries.
+"""
+type DateRange {
+  date_from: String
+  date_to: String
+  explicitDate: Boolean
+}
+
+"""
+A subscription to a PostHog insight, delivered via email or Slack.
+"""
+type Subscription {
+  id: Int!
+  insight: Insight
+  dashboard: Dashboard
+  title: String
+  target_type: String!
+  target_value: String!
+  frequency: String!
+  interval: Int
+  byweekday: [String]
+  bysetpos: Int
+  start_date: DateTime
+  until_date: DateTime
+  enabled: Boolean!
+  created_by: User
+  created_at: DateTime!
+  updated_at: DateTime!
+  team_id: Int!
+}
+
+"""
+An alert that monitors an insight metric and fires when a threshold is crossed.
+"""
+type AlertThreshold {
+  id: UUID!
+  name: String!
+  insight: Insight
+  condition: AlertCondition!
+  thresholds: [AlertThresholdBound]
+  calculation_interval: AlertCalculationInterval
+  state: AlertState!
+  is_calculating: Boolean!
+  last_notified_at: DateTime
+  last_checked_at: DateTime
+  created_by: User
+  created_at: DateTime!
+  enabled: Boolean!
+  config: JSON
+  team_id: Int!
+}
+
+type AlertCondition {
+  type: AlertConditionType!
+}
+
+type AlertThresholdBound {
+  id: UUID!
+  alert: UUID!
+  type: String!
+  value: Float
+}
+
+"""
+An early access feature gated behind a feature flag.
+"""
+type EarlyAccessFeature {
+  id: UUID!
+  name: String!
+  description: String
+  stage: String
+  feature_flag: FeatureFlag
+  documentation_url: String
+  created_at: DateTime!
+  team_id: Int!
+}
+
+"""
+A user survey with one or more questions.
+"""
+type Survey {
+  id: UUID!
+  name: String!
+  description: String
+  type: String!
+  questions: [SurveyQuestion]
+  conditions: SurveyConditions
+  appearance: JSON
+  linked_flag: FeatureFlag
+  targeting_flag: FeatureFlag
+  start_date: DateTime
+  end_date: DateTime
+  archived: Boolean!
+  created_by: User
+  created_at: DateTime!
+  updated_at: DateTime!
+  team_id: Int!
+}
+
+"""
+A single question within a survey.
+"""
+type SurveyQuestion {
+  id: String!
+  type: String!
+  question: String!
+  description: String
+  choices: [String]
+  display: String
+  optional: Boolean
+  required: Boolean
+  link: String
+  branching: JSON
+  scale: Int
+  lower_bound_label: String
+  upper_bound_label: String
+}
+
+type SurveyConditions {
+  url: String
+  selector: String
+  seenSurveyWaitPeriodInDays: Int
+  urlMatchType: String
+}
+
+"""
+A PostHog Notebook (document-style collaborative analytics page).
+"""
+type Notebook {
+  short_id: String!
+  title: String
+  content: JSON
+  version: Int!
+  created_by: User
+  last_modified_by: User
+  created_at: DateTime!
+  last_modified_at: DateTime!
+  deleted: Boolean!
+  team_id: Int!
+}
+
+"""
+A comment left on a notebook, insight, dashboard, or recording.
+"""
+type Comment {
+  id: UUID!
+  content: String!
+  version: Int!
+  source_comment: UUID
+  created_by: User
+  created_at: DateTime!
+  updated_at: DateTime!
+  deleted: Boolean!
+  scope: String!
+  item_id: String!
+  item_context: JSON
+  team_id: Int!
+}
+
+"""
+An events query with column selection and filtering.
+"""
+type EventsQuery {
+  kind: NodeKind!
+  select: [String]!
+  where: [String]
+  properties: [PropertyFilter]
+  fixedProperties: [PropertyFilter]
+  event: String
+  actionId: Int
+  personId: String
+  distinctId: String
+  before: String
+  after: String
+  limit: Int
+  orderBy: [String]
+  filterTestAccounts: Boolean
+}
+
+"""
+An actors (persons) query.
+"""
+type ActorsQuery {
+  kind: NodeKind!
+  source: JSON
+  properties: [PropertyFilter]
+  fixedProperties: [PropertyFilter]
+  search: String
+  select: [String]
+  orderBy: [String]
+  limit: Int
+  offset: Int
+}
+
+"""
+A trends insight query (line/bar chart over time).
+"""
+type TrendsQuery {
+  kind: NodeKind!
+  dateRange: DateRange
+  interval: IntervalType
+  series: [EventsNode]
+  breakdownFilter: BreakdownFilter
+  trendsFilter: TrendsFilter
+  filterTestAccounts: Boolean
+  properties: PropertyGroup
+  samplingFactor: Float
+}
+
+type EventsNode {
+  kind: NodeKind!
+  event: String
+  name: String
+  custom_name: String
+  math: String
+  math_property: String
+  math_hogql: String
+  math_group_type_index: Int
+  properties: [PropertyFilter]
+  fixedProperties: [PropertyFilter]
+  limit: Int
+  orderBy: [String]
+}
+
+type BreakdownFilter {
+  breakdown: String
+  breakdown_type: BreakdownType
+  breakdown_normalize_url: Boolean
+  breakdowns: [Breakdown]
+  breakdown_group_type_index: Int
+  breakdown_limit: Int
+  breakdown_hide_other_aggregation: Boolean
+  breakdown_histogram_bin_count: Int
+}
+
+type Breakdown {
+  property: String!
+  type: BreakdownType!
+  normalize_url: Boolean
+  group_type_index: Int
+  histogram_bin_count: Int
+}
+
+type TrendsFilter {
+  smoothingIntervals: Int
+  showLegend: Boolean
+  display: ChartDisplayType
+  compare: Boolean
+  aggregationAxisFormat: String
+  aggregationAxisPrefix: String
+  aggregationAxisPostfix: String
+  formula: String
+  showValuesOnSeries: Boolean
+  showLabelsOnSeries: Boolean
+  showPercentStackView: Boolean
+}
+
+"""
+A funnels insight query (conversion funnel).
+"""
+type FunnelsQuery {
+  kind: NodeKind!
+  dateRange: DateRange
+  interval: IntervalType
+  series: [EventsNode]
+  funnelsFilter: FunnelsFilter
+  breakdownFilter: BreakdownFilter
+  filterTestAccounts: Boolean
+  properties: PropertyGroup
+  samplingFactor: Float
+}
+
+type FunnelsFilter {
+  funnelVizType: FunnelVizType
+  funnelOrderType: FunnelOrderType
+  funnelAggregateByHogQL: String
+  breakdownAttributionType: String
+  breakdownAttributionValue: Int
+  funnelWindowInterval: Int
+  funnelWindowIntervalUnit: String
+  funnelStepReference: String
+  exclusions: [FunnelExclusion]
+  layout: String
+  hiddenLegendBreakdowns: [String]
+  funnelFromStep: Int
+  funnelToStep: Int
+  useUdf: Boolean
+  goalLines: [JSON]
+  funnelPersonsStepBreakdown: JSON
+}
+
+type FunnelExclusion {
+  event: String
+  id: Int
+  type: String
+  funnel_from_step: Int!
+  funnel_to_step: Int!
+  properties: [PropertyFilter]
+}
+
+"""
+A retention insight query (cohort retention over time).
+"""
+type RetentionQuery {
+  kind: NodeKind!
+  dateRange: DateRange
+  interval: IntervalType
+  retentionFilter: RetentionFilter
+  filterTestAccounts: Boolean
+  properties: PropertyGroup
+  samplingFactor: Float
+}
+
+type RetentionFilter {
+  targetEntity: JSON
+  returningEntity: JSON
+  retentionType: RetentionType
+  totalIntervals: Int
+  period: IntervalType
+  meanRetentionCalculation: String
+  retentionReference: String
+  cumulative: Boolean
+  showMean: Boolean
+}
+
+"""
+A stickiness insight query (how many days per interval users return).
+"""
+type StickinessQuery {
+  kind: NodeKind!
+  dateRange: DateRange
+  interval: IntervalType
+  series: [EventsNode]
+  stickinessFilter: StickinessFilter
+  filterTestAccounts: Boolean
+  properties: PropertyGroup
+  samplingFactor: Float
+}
+
+type StickinessFilter {
+  display: ChartDisplayType
+  showLegend: Boolean
+  showValuesOnSeries: Boolean
+  hiddenLegendIndexes: [Int]
+}
+
+"""
+A lifecycle insight query (new, returning, resurrecting, dormant users).
+"""
+type LifecycleQuery {
+  kind: NodeKind!
+  dateRange: DateRange
+  interval: IntervalType
+  series: [EventsNode]
+  lifecycleFilter: LifecycleFilter
+  filterTestAccounts: Boolean
+  properties: PropertyGroup
+  samplingFactor: Float
+}
+
+type LifecycleFilter {
+  toggledLifecycles: [LifecycleToggle]
+  showValuesOnSeries: Boolean
+}
+
+"""
+A PostHog project (team).
+"""
+type Team {
+  id: Int!
+  uuid: UUID!
+  name: String!
+  api_token: String!
+  created_at: DateTime!
+  updated_at: DateTime!
+  anonymize_ips: Boolean!
+  app_urls: [String]
+  session_recording_opt_in: Boolean!
+  capture_console_log_opt_in: Boolean!
+  capture_performance_opt_in: Boolean!
+  autocapture_opt_out: Boolean!
+  timezone: String!
+  slack_incoming_webhook: String
+  organization: Organization
+  primary_dashboard: Int
+  live_events_columns: [String]
+  person_display_name_properties: [String]
+  has_group_types: Boolean!
+}
+
+"""
+An organization that contains multiple PostHog projects.
+"""
+type Organization {
+  id: UUID!
+  name: String!
+  slug: String!
+  created_at: DateTime!
+  updated_at: DateTime!
+  plugins_access_level: Int!
+  teams: [Team]
+  available_product_features: JSON
+  is_member_join_email_enabled: Boolean!
+  customer_id: String
+}
+
+"""
+A PostHog platform user.
+"""
+type User {
+  id: Int!
+  uuid: UUID!
+  distinct_id: String!
+  email: String!
+  first_name: String
+  last_name: String
+  is_staff: Boolean!
+  is_email_verified: Boolean
+  date_joined: DateTime!
+  organization: Organization
+  team: Team
+  current_organization: Organization
+  current_team: Team
+  hedgehog_config: JSON
+}
+
+"""
+An error tracking issue aggregating multiple occurrences of the same error.
+"""
+type ErrorTrackingIssue {
+  id: UUID!
+  fingerprint: [String]!
+  name: String
+  description: String
+  first_seen: DateTime!
+  last_seen: DateTime!
+  occurrences: Int!
+  sessions: Int!
+  users: Int!
+  status: ErrorTrackingIssueStatus!
+  assignee: User
+  team_id: Int!
+}
+
+"""
+A single error tracking event (occurrence) linked to an issue.
+"""
+type ErrorTrackingEvent {
+  id: UUID!
+  uuid: UUID!
+  issue: ErrorTrackingIssue
+  timestamp: DateTime!
+  exception_type: String
+  exception_value: String
+  exception_mechanism: JSON
+  exception_stack_trace: JSON
+  distinct_id: String
+  person: Person
+  properties: JSON
+}
+
+"""
+A data warehouse table linked to an external source.
+"""
+type DataWarehouseTable {
+  id: UUID!
+  name: String!
+  format: String
+  url_pattern: String
+  credential: DataWarehouseCredential
+  columns: JSON
+  source: ExternalDataSource
+  team_id: Int!
+  created_at: DateTime!
+  updated_at: DateTime!
+}
+
+type DataWarehouseCredential {
+  id: UUID!
+  access_key: String
+  access_secret: String
+}
+
+"""
+An external data source synced into the PostHog data warehouse.
+"""
+type ExternalDataSource {
+  id: UUID!
+  source_type: ExternalDataSourceType!
+  status: String!
+  last_run_at: DateTime
+  schemas: [ExternalDataSchema]
+  team_id: Int!
+  created_at: DateTime!
+  updated_at: DateTime!
+}
+
+type ExternalDataSchema {
+  id: UUID!
+  name: String!
+  should_sync: Boolean!
+  status: String
+  last_synced_at: DateTime
+  sync_type: String
+  table: DataWarehouseTable
+}
+
+# ---------------------------------------------------------------------------
+# Root types (conceptual — PostHog uses REST, not live GraphQL)
+# ---------------------------------------------------------------------------
+
+"""
+Read operations modelled after PostHog's REST API endpoints.
+"""
+type Query {
+  """Retrieve a single event by UUID."""
+  event(projectId: Int!, id: UUID!): Event
+
+  """List events for a project with optional filters."""
+  events(
+    projectId: Int!
+    after: DateTime
+    before: DateTime
+    event: String
+    distinctId: String
+    limit: Int
+    offset: Int
+  ): EventConnection
+
+  """Retrieve a person by UUID."""
+  person(projectId: Int!, id: UUID!): Person
+
+  """List persons for a project."""
+  persons(
+    projectId: Int!
+    search: String
+    properties: [PropertyFilter]
+    limit: Int
+    offset: Int
+  ): PersonConnection
+
+  """Retrieve a cohort by ID."""
+  cohort(projectId: Int!, id: Int!): Cohort
+
+  """List cohorts for a project."""
+  cohorts(projectId: Int!): [Cohort]
+
+  """Retrieve a feature flag by ID."""
+  featureFlag(projectId: Int!, id: Int!): FeatureFlag
+
+  """List feature flags for a project."""
+  featureFlags(projectId: Int!, active: Boolean): [FeatureFlag]
+
+  """Retrieve an insight by short ID."""
+  insight(projectId: Int!, shortId: String!): Insight
+
+  """List insights for a project."""
+  insights(
+    projectId: Int!
+    saved: Boolean
+    favorited: Boolean
+    search: String
+    limit: Int
+    offset: Int
+  ): InsightConnection
+
+  """Retrieve a dashboard by ID."""
+  dashboard(projectId: Int!, id: Int!): Dashboard
+
+  """List dashboards for a project."""
+  dashboards(projectId: Int!): [Dashboard]
+
+  """Retrieve an experiment by ID."""
+  experiment(projectId: Int!, id: Int!): Experiment
+
+  """List experiments for a project."""
+  experiments(projectId: Int!, archived: Boolean): [Experiment]
+
+  """Retrieve a survey by ID."""
+  survey(projectId: Int!, id: UUID!): Survey
+
+  """List surveys for a project."""
+  surveys(projectId: Int!): [Survey]
+
+  """Retrieve a recording session by session ID."""
+  sessionRecording(projectId: Int!, sessionId: String!): Session
+
+  """List session recordings for a project."""
+  sessionRecordings(
+    projectId: Int!
+    dateFrom: String
+    dateTo: String
+    personUuid: UUID
+    limit: Int
+    offset: Int
+  ): SessionConnection
+
+  """Retrieve an action by ID."""
+  action(projectId: Int!, id: Int!): Action
+
+  """List actions for a project."""
+  actions(projectId: Int!): [Action]
+
+  """List annotations for a project."""
+  annotations(projectId: Int!): [Annotation]
+
+  """Retrieve a plugin by ID."""
+  plugin(id: Int!): Plugin
+
+  """List plugins available to an organisation."""
+  plugins(organizationId: UUID!): [Plugin]
+
+  """List plugin configs for a project."""
+  pluginConfigs(projectId: Int!): [PluginConfig]
+
+  """Retrieve an alert by ID."""
+  alertThreshold(projectId: Int!, id: UUID!): AlertThreshold
+
+  """List alerts for a project."""
+  alertThresholds(projectId: Int!): [AlertThreshold]
+
+  """Retrieve an early access feature by ID."""
+  earlyAccessFeature(projectId: Int!, id: UUID!): EarlyAccessFeature
+
+  """List early access features for a project."""
+  earlyAccessFeatures(projectId: Int!): [EarlyAccessFeature]
+
+  """Retrieve a notebook by short ID."""
+  notebook(projectId: Int!, shortId: String!): Notebook
+
+  """List notebooks for a project."""
+  notebooks(projectId: Int!, search: String, limit: Int, offset: Int): NotebookConnection
+
+  """Retrieve an error tracking issue by ID."""
+  errorTrackingIssue(projectId: Int!, id: UUID!): ErrorTrackingIssue
+
+  """List error tracking issues for a project."""
+  errorTrackingIssues(
+    projectId: Int!
+    status: ErrorTrackingIssueStatus
+    limit: Int
+    offset: Int
+  ): ErrorTrackingIssueConnection
+
+  """Retrieve a data warehouse table by ID."""
+  dataWarehouseTable(projectId: Int!, id: UUID!): DataWarehouseTable
+
+  """List data warehouse tables for a project."""
+  dataWarehouseTables(projectId: Int!): [DataWarehouseTable]
+
+  """Retrieve the current authenticated user."""
+  me: User
+
+  """Retrieve a team (project) by ID."""
+  team(id: Int!): Team
+
+  """Retrieve an organization by ID."""
+  organization(id: UUID!): Organization
+}
+
+"""
+Write operations modelled after PostHog's REST API endpoints.
+"""
+type Mutation {
+  """Capture a single event."""
+  captureEvent(projectApiKey: String!, input: CaptureEventInput!): CaptureEventResult
+
+  """Create a feature flag."""
+  createFeatureFlag(projectId: Int!, input: FeatureFlagInput!): FeatureFlag
+
+  """Update a feature flag."""
+  updateFeatureFlag(projectId: Int!, id: Int!, input: FeatureFlagInput!): FeatureFlag
+
+  """Delete a feature flag."""
+  deleteFeatureFlag(projectId: Int!, id: Int!): Boolean
+
+  """Create a cohort."""
+  createCohort(projectId: Int!, input: CohortInput!): Cohort
+
+  """Update a cohort."""
+  updateCohort(projectId: Int!, id: Int!, input: CohortInput!): Cohort
+
+  """Create an annotation."""
+  createAnnotation(projectId: Int!, input: AnnotationInput!): Annotation
+
+  """Create or update an insight."""
+  createInsight(projectId: Int!, input: InsightInput!): Insight
+
+  """Create a dashboard."""
+  createDashboard(projectId: Int!, input: DashboardInput!): Dashboard
+
+  """Create an experiment."""
+  createExperiment(projectId: Int!, input: ExperimentInput!): Experiment
+
+  """Launch an experiment."""
+  launchExperiment(projectId: Int!, id: Int!): Experiment
+
+  """End an experiment."""
+  endExperiment(projectId: Int!, id: Int!): Experiment
+
+  """Create a survey."""
+  createSurvey(projectId: Int!, input: SurveyInput!): Survey
+
+  """Launch a survey."""
+  launchSurvey(projectId: Int!, id: UUID!): Survey
+
+  """Stop a survey."""
+  stopSurvey(projectId: Int!, id: UUID!): Survey
+
+  """Create a subscription."""
+  createSubscription(projectId: Int!, input: SubscriptionInput!): Subscription
+
+  """Delete a person."""
+  deletePerson(projectId: Int!, id: UUID!): Boolean
+}
+
+# ---------------------------------------------------------------------------
+# Input types
+# ---------------------------------------------------------------------------
+
+input CaptureEventInput {
+  event: String!
+  distinctId: String!
+  timestamp: DateTime
+  properties: JSON
+  groups: JSON
+}
+
+type CaptureEventResult {
+  status: Int!
+}
+
+input FeatureFlagInput {
+  key: String!
+  name: String
+  filters: JSON
+  active: Boolean
+  deleted: Boolean
+  rollout_percentage: Float
+}
+
+input CohortInput {
+  name: String!
+  description: String
+  filters: JSON
+  is_static: Boolean
+}
+
+input AnnotationInput {
+  content: String!
+  date_marker: DateTime!
+  scope: String
+  dashboard_item: Int
+}
+
+input InsightInput {
+  name: String
+  description: String
+  filters: JSON
+  query: JSON
+  saved: Boolean
+  dashboards: [Int]
+  tags: [String]
+}
+
+input DashboardInput {
+  name: String!
+  description: String
+  pinned: Boolean
+  tags: [String]
+}
+
+input ExperimentInput {
+  name: String!
+  description: String
+  feature_flag_key: String!
+  parameters: JSON
+  metrics: [JSON]
+  secondary_metrics: [JSON]
+}
+
+input SurveyInput {
+  name: String!
+  description: String
+  type: String!
+  questions: [JSON]
+  conditions: JSON
+  appearance: JSON
+  linked_flag_id: Int
+  targeting_flag_filters: JSON
+  start_date: DateTime
+  end_date: DateTime
+}
+
+input SubscriptionInput {
+  insight: Int
+  dashboard: Int
+  title: String
+  target_type: String!
+  target_value: String!
+  frequency: String!
+  interval: Int
+  start_date: DateTime
+  until_date: DateTime
+  enabled: Boolean
+}
+
+# ---------------------------------------------------------------------------
+# Pagination connection types
+# ---------------------------------------------------------------------------
+
+type EventConnection {
+  results: [Event]!
+  next: String
+}
+
+type PersonConnection {
+  results: [Person]!
+  next: String
+  count: Int
+}
+
+type InsightConnection {
+  results: [Insight]!
+  count: Int
+  next: String
+}
+
+type SessionConnection {
+  results: [Session]!
+  has_next: Boolean
+  next_cursor: String
+}
+
+type NotebookConnection {
+  results: [Notebook]!
+  count: Int
+  next: String
+}
+
+type ErrorTrackingIssueConnection {
+  results: [ErrorTrackingIssue]!
+  count: Int
+  next: String
+}
