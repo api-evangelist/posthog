@@ -1,0 +1,2210 @@
+openapi: 3.0.3
+info:
+  title: PostHog actions hog_functions API
+  version: 1.0.0
+  description: ''
+tags:
+- name: hog_functions
+paths:
+  /api/environments/{environment_id}/hog_functions/:
+    get:
+      operationId: environments_hog_functions_list
+      parameters:
+      - in: query
+        name: created_at
+        schema:
+          type: string
+          format: date-time
+      - in: query
+        name: created_by
+        schema:
+          type: integer
+      - in: query
+        name: enabled
+        schema:
+          type: boolean
+      - $ref: '#/components/parameters/EnvironmentIdPath'
+      - in: query
+        name: id
+        schema:
+          type: string
+          format: uuid
+      - name: limit
+        required: false
+        in: query
+        description: Number of results to return per page.
+        schema:
+          type: integer
+      - name: offset
+        required: false
+        in: query
+        description: The initial index from which to return the results.
+        schema:
+          type: integer
+      - name: search
+        required: false
+        in: query
+        description: A search term.
+        schema:
+          type: string
+      - in: query
+        name: type
+        schema:
+          type: array
+          items:
+            type: string
+        description: Multiple values may be separated by commas.
+        explode: false
+        style: form
+      - in: query
+        name: updated_at
+        schema:
+          type: string
+          format: date-time
+      tags:
+      - hog_functions
+      security:
+      - PersonalAPIKeyAuth:
+        - hog_function:read
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedHogFunctionMinimalList'
+          description: ''
+      deprecated: true
+      x-explicit-tags:
+      - hog_functions
+      - cdp
+    post:
+      operationId: environments_hog_functions_create
+      parameters:
+      - $ref: '#/components/parameters/EnvironmentIdPath'
+      tags:
+      - hog_functions
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/HogFunction'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/HogFunction'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/HogFunction'
+      security:
+      - PersonalAPIKeyAuth:
+        - hog_function:write
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HogFunction'
+          description: ''
+      deprecated: true
+      x-explicit-tags:
+      - hog_functions
+      - cdp
+  /api/environments/{environment_id}/hog_functions/{id}/:
+    get:
+      operationId: environments_hog_functions_retrieve
+      parameters:
+      - $ref: '#/components/parameters/EnvironmentIdPath'
+      - in: path
+        name: id
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this hog function.
+        required: true
+      tags:
+      - hog_functions
+      security:
+      - PersonalAPIKeyAuth:
+        - hog_function:read
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HogFunction'
+          description: ''
+      deprecated: true
+      x-explicit-tags:
+      - hog_functions
+      - cdp
+    put:
+      operationId: environments_hog_functions_update
+      parameters:
+      - $ref: '#/components/parameters/EnvironmentIdPath'
+      - in: path
+        name: id
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this hog function.
+        required: true
+      tags:
+      - hog_functions
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/HogFunction'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/HogFunction'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/HogFunction'
+      security:
+      - PersonalAPIKeyAuth:
+        - hog_function:write
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HogFunction'
+          description: ''
+      deprecated: true
+      x-explicit-tags:
+      - hog_functions
+      - cdp
+    patch:
+      operationId: environments_hog_functions_partial_update
+      parameters:
+      - $ref: '#/components/parameters/EnvironmentIdPath'
+      - in: path
+        name: id
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this hog function.
+        required: true
+      tags:
+      - hog_functions
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchedHogFunction'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/PatchedHogFunction'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/PatchedHogFunction'
+      security:
+      - PersonalAPIKeyAuth:
+        - hog_function:write
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HogFunction'
+          description: ''
+      deprecated: true
+      x-explicit-tags:
+      - hog_functions
+      - cdp
+    delete:
+      operationId: environments_hog_functions_destroy
+      description: Hard delete of this model is not allowed. Use a patch API call to set "deleted" to true
+      parameters:
+      - $ref: '#/components/parameters/EnvironmentIdPath'
+      - in: path
+        name: id
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this hog function.
+        required: true
+      tags:
+      - hog_functions
+      responses:
+        '405':
+          description: No response body
+      deprecated: true
+      x-explicit-tags:
+      - hog_functions
+      - cdp
+  /api/environments/{environment_id}/hog_functions/{id}/enable_backfills/:
+    post:
+      operationId: environments_hog_functions_enable_backfills_create
+      parameters:
+      - $ref: '#/components/parameters/EnvironmentIdPath'
+      - in: path
+        name: id
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this hog function.
+        required: true
+      tags:
+      - hog_functions
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/HogFunction'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/HogFunction'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/HogFunction'
+      responses:
+        '200':
+          description: No response body
+      deprecated: true
+      x-explicit-tags:
+      - hog_functions
+      - cdp
+  /api/environments/{environment_id}/hog_functions/{id}/invocations/:
+    post:
+      operationId: environments_hog_functions_invocations_create
+      parameters:
+      - $ref: '#/components/parameters/EnvironmentIdPath'
+      - in: path
+        name: id
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this hog function.
+        required: true
+      tags:
+      - hog_functions
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/HogFunctionInvocation'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/HogFunctionInvocation'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/HogFunctionInvocation'
+        required: true
+      security:
+      - PersonalAPIKeyAuth:
+        - hog_function:write
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HogFunctionInvocation'
+          description: ''
+      deprecated: true
+      x-explicit-tags:
+      - hog_functions
+      - cdp
+  /api/environments/{environment_id}/hog_functions/{id}/logs/:
+    get:
+      operationId: environments_hog_functions_logs_retrieve
+      parameters:
+      - in: query
+        name: after
+        schema:
+          type: string
+          format: date-time
+        description: Only return entries after this ISO 8601 timestamp.
+      - in: query
+        name: before
+        schema:
+          type: string
+          format: date-time
+        description: Only return entries before this ISO 8601 timestamp.
+      - $ref: '#/components/parameters/EnvironmentIdPath'
+      - in: path
+        name: id
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this hog function.
+        required: true
+      - in: query
+        name: instance_id
+        schema:
+          type: string
+          minLength: 1
+        description: Filter logs to a specific execution instance.
+      - in: query
+        name: level
+        schema:
+          type: string
+          minLength: 1
+        description: 'Comma-separated log levels to include, e.g. ''WARN,ERROR''. Valid levels: DEBUG, LOG, INFO, WARN, ERROR.'
+      - in: query
+        name: limit
+        schema:
+          type: integer
+          maximum: 500
+          minimum: 1
+          default: 50
+        description: Maximum number of log entries to return (1-500, default 50).
+      - in: query
+        name: search
+        schema:
+          type: string
+          minLength: 1
+        description: Case-insensitive substring search across log messages.
+      tags:
+      - hog_functions
+      security:
+      - PersonalAPIKeyAuth:
+        - hog_function:read
+      responses:
+        '200':
+          description: No response body
+      deprecated: true
+      x-explicit-tags:
+      - hog_functions
+      - cdp
+  /api/environments/{environment_id}/hog_functions/{id}/metrics/:
+    get:
+      operationId: environments_hog_functions_metrics_retrieve
+      parameters:
+      - in: query
+        name: after
+        schema:
+          type: string
+          default: -7d
+          minLength: 1
+        description: Start of the time range. Accepts relative formats like '-7d', '-24h' or ISO 8601 timestamps. Defaults to '-7d'.
+      - in: query
+        name: before
+        schema:
+          type: string
+          minLength: 1
+        description: End of the time range. Same format as 'after'. Defaults to now.
+      - in: query
+        name: breakdown_by
+        schema:
+          enum:
+          - name
+          - kind
+          type: string
+          default: kind
+          minLength: 1
+        description: 'Group the series by metric ''name'' or ''kind''. Defaults to ''kind''.
+
+
+          * `name` - name
+
+          * `kind` - kind'
+      - $ref: '#/components/parameters/EnvironmentIdPath'
+      - in: path
+        name: id
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this hog function.
+        required: true
+      - in: query
+        name: instance_id
+        schema:
+          type: string
+          minLength: 1
+        description: Filter metrics to a specific execution instance.
+      - in: query
+        name: interval
+        schema:
+          enum:
+          - hour
+          - day
+          - week
+          type: string
+          default: day
+          minLength: 1
+        description: 'Time bucket size for the series. One of: hour, day, week. Defaults to ''day''.
+
+
+          * `hour` - hour
+
+          * `day` - day
+
+          * `week` - week'
+      - in: query
+        name: kind
+        schema:
+          type: string
+          minLength: 1
+        description: Comma-separated metric kinds to filter by, e.g. 'success,failure'.
+      - in: query
+        name: name
+        schema:
+          type: string
+          minLength: 1
+        description: Comma-separated metric names to filter by.
+      tags:
+      - hog_functions
+      security:
+      - PersonalAPIKeyAuth:
+        - hog_function:read
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AppMetricsResponse'
+          description: ''
+      deprecated: true
+      x-explicit-tags:
+      - hog_functions
+      - cdp
+  /api/environments/{environment_id}/hog_functions/{id}/metrics/totals/:
+    get:
+      operationId: environments_hog_functions_metrics_totals_retrieve
+      parameters:
+      - in: query
+        name: after
+        schema:
+          type: string
+          default: -7d
+          minLength: 1
+        description: Start of the time range. Accepts relative formats like '-7d', '-24h' or ISO 8601 timestamps. Defaults to '-7d'.
+      - in: query
+        name: before
+        schema:
+          type: string
+          minLength: 1
+        description: End of the time range. Same format as 'after'. Defaults to now.
+      - in: query
+        name: breakdown_by
+        schema:
+          enum:
+          - name
+          - kind
+          type: string
+          default: kind
+          minLength: 1
+        description: 'Group the series by metric ''name'' or ''kind''. Defaults to ''kind''.
+
+
+          * `name` - name
+
+          * `kind` - kind'
+      - $ref: '#/components/parameters/EnvironmentIdPath'
+      - in: path
+        name: id
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this hog function.
+        required: true
+      - in: query
+        name: instance_id
+        schema:
+          type: string
+          minLength: 1
+        description: Filter metrics to a specific execution instance.
+      - in: query
+        name: interval
+        schema:
+          enum:
+          - hour
+          - day
+          - week
+          type: string
+          default: day
+          minLength: 1
+        description: 'Time bucket size for the series. One of: hour, day, week. Defaults to ''day''.
+
+
+          * `hour` - hour
+
+          * `day` - day
+
+          * `week` - week'
+      - in: query
+        name: kind
+        schema:
+          type: string
+          minLength: 1
+        description: Comma-separated metric kinds to filter by, e.g. 'success,failure'.
+      - in: query
+        name: name
+        schema:
+          type: string
+          minLength: 1
+        description: Comma-separated metric names to filter by.
+      tags:
+      - hog_functions
+      security:
+      - PersonalAPIKeyAuth:
+        - hog_function:read
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AppMetricsTotalsResponse'
+          description: ''
+      deprecated: true
+      x-explicit-tags:
+      - hog_functions
+      - cdp
+  /api/environments/{environment_id}/hog_functions/icon/:
+    get:
+      operationId: environments_hog_functions_icon_retrieve
+      parameters:
+      - $ref: '#/components/parameters/EnvironmentIdPath'
+      tags:
+      - hog_functions
+      responses:
+        '200':
+          description: No response body
+      deprecated: true
+      x-explicit-tags:
+      - hog_functions
+      - cdp
+  /api/environments/{environment_id}/hog_functions/icons/:
+    get:
+      operationId: environments_hog_functions_icons_retrieve
+      parameters:
+      - $ref: '#/components/parameters/EnvironmentIdPath'
+      tags:
+      - hog_functions
+      responses:
+        '200':
+          description: No response body
+      deprecated: true
+      x-explicit-tags:
+      - hog_functions
+      - cdp
+  /api/environments/{environment_id}/hog_functions/rearrange/:
+    patch:
+      operationId: environments_hog_functions_rearrange_partial_update
+      description: Update the execution order of multiple HogFunctions.
+      parameters:
+      - $ref: '#/components/parameters/EnvironmentIdPath'
+      tags:
+      - hog_functions
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchedHogFunctionRearrange'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/PatchedHogFunctionRearrange'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/PatchedHogFunctionRearrange'
+      security:
+      - PersonalAPIKeyAuth:
+        - hog_function:write
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/HogFunction'
+          description: ''
+      deprecated: true
+      x-explicit-tags:
+      - hog_functions
+      - cdp
+  /api/projects/{project_id}/hog_functions/:
+    get:
+      operationId: hog_functions_list
+      parameters:
+      - in: query
+        name: created_at
+        schema:
+          type: string
+          format: date-time
+      - in: query
+        name: created_by
+        schema:
+          type: integer
+      - in: query
+        name: enabled
+        schema:
+          type: boolean
+      - in: query
+        name: id
+        schema:
+          type: string
+          format: uuid
+      - name: limit
+        required: false
+        in: query
+        description: Number of results to return per page.
+        schema:
+          type: integer
+      - name: offset
+        required: false
+        in: query
+        description: The initial index from which to return the results.
+        schema:
+          type: integer
+      - $ref: '#/components/parameters/ProjectIdPath'
+      - name: search
+        required: false
+        in: query
+        description: A search term.
+        schema:
+          type: string
+      - in: query
+        name: type
+        schema:
+          type: array
+          items:
+            type: string
+        description: Multiple values may be separated by commas.
+        explode: false
+        style: form
+      - in: query
+        name: updated_at
+        schema:
+          type: string
+          format: date-time
+      tags:
+      - hog_functions
+      security:
+      - PersonalAPIKeyAuth:
+        - hog_function:read
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedHogFunctionMinimalList'
+          description: ''
+      x-explicit-tags:
+      - hog_functions
+      - cdp
+    post:
+      operationId: hog_functions_create
+      parameters:
+      - $ref: '#/components/parameters/ProjectIdPath'
+      tags:
+      - hog_functions
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/HogFunction'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/HogFunction'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/HogFunction'
+      security:
+      - PersonalAPIKeyAuth:
+        - hog_function:write
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HogFunction'
+          description: ''
+      x-explicit-tags:
+      - hog_functions
+      - cdp
+  /api/projects/{project_id}/hog_functions/{id}/:
+    get:
+      operationId: hog_functions_retrieve
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this hog function.
+        required: true
+      - $ref: '#/components/parameters/ProjectIdPath'
+      tags:
+      - hog_functions
+      security:
+      - PersonalAPIKeyAuth:
+        - hog_function:read
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HogFunction'
+          description: ''
+      x-explicit-tags:
+      - hog_functions
+      - cdp
+    put:
+      operationId: hog_functions_update
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this hog function.
+        required: true
+      - $ref: '#/components/parameters/ProjectIdPath'
+      tags:
+      - hog_functions
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/HogFunction'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/HogFunction'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/HogFunction'
+      security:
+      - PersonalAPIKeyAuth:
+        - hog_function:write
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HogFunction'
+          description: ''
+      x-explicit-tags:
+      - hog_functions
+      - cdp
+    patch:
+      operationId: hog_functions_partial_update
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this hog function.
+        required: true
+      - $ref: '#/components/parameters/ProjectIdPath'
+      tags:
+      - hog_functions
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchedHogFunction'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/PatchedHogFunction'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/PatchedHogFunction'
+      security:
+      - PersonalAPIKeyAuth:
+        - hog_function:write
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HogFunction'
+          description: ''
+      x-explicit-tags:
+      - hog_functions
+      - cdp
+    delete:
+      operationId: hog_functions_destroy
+      description: Hard delete of this model is not allowed. Use a patch API call to set "deleted" to true
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this hog function.
+        required: true
+      - $ref: '#/components/parameters/ProjectIdPath'
+      tags:
+      - hog_functions
+      responses:
+        '405':
+          description: No response body
+      x-explicit-tags:
+      - hog_functions
+      - cdp
+  /api/projects/{project_id}/hog_functions/{id}/enable_backfills/:
+    post:
+      operationId: hog_functions_enable_backfills_create
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this hog function.
+        required: true
+      - $ref: '#/components/parameters/ProjectIdPath'
+      tags:
+      - hog_functions
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/HogFunction'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/HogFunction'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/HogFunction'
+      responses:
+        '200':
+          description: No response body
+      x-explicit-tags:
+      - hog_functions
+      - cdp
+  /api/projects/{project_id}/hog_functions/{id}/invocations/:
+    post:
+      operationId: hog_functions_invocations_create
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this hog function.
+        required: true
+      - $ref: '#/components/parameters/ProjectIdPath'
+      tags:
+      - hog_functions
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/HogFunctionInvocation'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/HogFunctionInvocation'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/HogFunctionInvocation'
+        required: true
+      security:
+      - PersonalAPIKeyAuth:
+        - hog_function:write
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HogFunctionInvocation'
+          description: ''
+      x-explicit-tags:
+      - hog_functions
+      - cdp
+  /api/projects/{project_id}/hog_functions/{id}/logs/:
+    get:
+      operationId: hog_functions_logs_retrieve
+      parameters:
+      - in: query
+        name: after
+        schema:
+          type: string
+          format: date-time
+        description: Only return entries after this ISO 8601 timestamp.
+      - in: query
+        name: before
+        schema:
+          type: string
+          format: date-time
+        description: Only return entries before this ISO 8601 timestamp.
+      - in: path
+        name: id
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this hog function.
+        required: true
+      - in: query
+        name: instance_id
+        schema:
+          type: string
+          minLength: 1
+        description: Filter logs to a specific execution instance.
+      - in: query
+        name: level
+        schema:
+          type: string
+          minLength: 1
+        description: 'Comma-separated log levels to include, e.g. ''WARN,ERROR''. Valid levels: DEBUG, LOG, INFO, WARN, ERROR.'
+      - in: query
+        name: limit
+        schema:
+          type: integer
+          maximum: 500
+          minimum: 1
+          default: 50
+        description: Maximum number of log entries to return (1-500, default 50).
+      - $ref: '#/components/parameters/ProjectIdPath'
+      - in: query
+        name: search
+        schema:
+          type: string
+          minLength: 1
+        description: Case-insensitive substring search across log messages.
+      tags:
+      - hog_functions
+      security:
+      - PersonalAPIKeyAuth:
+        - hog_function:read
+      responses:
+        '200':
+          description: No response body
+      x-explicit-tags:
+      - hog_functions
+      - cdp
+  /api/projects/{project_id}/hog_functions/{id}/metrics/:
+    get:
+      operationId: hog_functions_metrics_retrieve
+      parameters:
+      - in: query
+        name: after
+        schema:
+          type: string
+          default: -7d
+          minLength: 1
+        description: Start of the time range. Accepts relative formats like '-7d', '-24h' or ISO 8601 timestamps. Defaults to '-7d'.
+      - in: query
+        name: before
+        schema:
+          type: string
+          minLength: 1
+        description: End of the time range. Same format as 'after'. Defaults to now.
+      - in: query
+        name: breakdown_by
+        schema:
+          enum:
+          - name
+          - kind
+          type: string
+          default: kind
+          minLength: 1
+        description: 'Group the series by metric ''name'' or ''kind''. Defaults to ''kind''.
+
+
+          * `name` - name
+
+          * `kind` - kind'
+      - in: path
+        name: id
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this hog function.
+        required: true
+      - in: query
+        name: instance_id
+        schema:
+          type: string
+          minLength: 1
+        description: Filter metrics to a specific execution instance.
+      - in: query
+        name: interval
+        schema:
+          enum:
+          - hour
+          - day
+          - week
+          type: string
+          default: day
+          minLength: 1
+        description: 'Time bucket size for the series. One of: hour, day, week. Defaults to ''day''.
+
+
+          * `hour` - hour
+
+          * `day` - day
+
+          * `week` - week'
+      - in: query
+        name: kind
+        schema:
+          type: string
+          minLength: 1
+        description: Comma-separated metric kinds to filter by, e.g. 'success,failure'.
+      - in: query
+        name: name
+        schema:
+          type: string
+          minLength: 1
+        description: Comma-separated metric names to filter by.
+      - $ref: '#/components/parameters/ProjectIdPath'
+      tags:
+      - hog_functions
+      security:
+      - PersonalAPIKeyAuth:
+        - hog_function:read
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AppMetricsResponse'
+          description: ''
+      x-explicit-tags:
+      - hog_functions
+      - cdp
+  /api/projects/{project_id}/hog_functions/{id}/metrics/totals/:
+    get:
+      operationId: hog_functions_metrics_totals_retrieve
+      parameters:
+      - in: query
+        name: after
+        schema:
+          type: string
+          default: -7d
+          minLength: 1
+        description: Start of the time range. Accepts relative formats like '-7d', '-24h' or ISO 8601 timestamps. Defaults to '-7d'.
+      - in: query
+        name: before
+        schema:
+          type: string
+          minLength: 1
+        description: End of the time range. Same format as 'after'. Defaults to now.
+      - in: query
+        name: breakdown_by
+        schema:
+          enum:
+          - name
+          - kind
+          type: string
+          default: kind
+          minLength: 1
+        description: 'Group the series by metric ''name'' or ''kind''. Defaults to ''kind''.
+
+
+          * `name` - name
+
+          * `kind` - kind'
+      - in: path
+        name: id
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this hog function.
+        required: true
+      - in: query
+        name: instance_id
+        schema:
+          type: string
+          minLength: 1
+        description: Filter metrics to a specific execution instance.
+      - in: query
+        name: interval
+        schema:
+          enum:
+          - hour
+          - day
+          - week
+          type: string
+          default: day
+          minLength: 1
+        description: 'Time bucket size for the series. One of: hour, day, week. Defaults to ''day''.
+
+
+          * `hour` - hour
+
+          * `day` - day
+
+          * `week` - week'
+      - in: query
+        name: kind
+        schema:
+          type: string
+          minLength: 1
+        description: Comma-separated metric kinds to filter by, e.g. 'success,failure'.
+      - in: query
+        name: name
+        schema:
+          type: string
+          minLength: 1
+        description: Comma-separated metric names to filter by.
+      - $ref: '#/components/parameters/ProjectIdPath'
+      tags:
+      - hog_functions
+      security:
+      - PersonalAPIKeyAuth:
+        - hog_function:read
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AppMetricsTotalsResponse'
+          description: ''
+      x-explicit-tags:
+      - hog_functions
+      - cdp
+  /api/projects/{project_id}/hog_functions/icon/:
+    get:
+      operationId: hog_functions_icon_retrieve
+      parameters:
+      - $ref: '#/components/parameters/ProjectIdPath'
+      tags:
+      - hog_functions
+      responses:
+        '200':
+          description: No response body
+      x-explicit-tags:
+      - hog_functions
+      - cdp
+  /api/projects/{project_id}/hog_functions/icons/:
+    get:
+      operationId: hog_functions_icons_retrieve
+      parameters:
+      - $ref: '#/components/parameters/ProjectIdPath'
+      tags:
+      - hog_functions
+      responses:
+        '200':
+          description: No response body
+      x-explicit-tags:
+      - hog_functions
+      - cdp
+  /api/projects/{project_id}/hog_functions/rearrange/:
+    patch:
+      operationId: hog_functions_rearrange_partial_update
+      description: Update the execution order of multiple HogFunctions.
+      parameters:
+      - $ref: '#/components/parameters/ProjectIdPath'
+      tags:
+      - hog_functions
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchedHogFunctionRearrange'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/PatchedHogFunctionRearrange'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/PatchedHogFunctionRearrange'
+      security:
+      - PersonalAPIKeyAuth:
+        - hog_function:write
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/HogFunction'
+          description: ''
+      x-explicit-tags:
+      - hog_functions
+      - cdp
+components:
+  schemas:
+    PaginatedHogFunctionMinimalList:
+      type: object
+      required:
+      - count
+      - results
+      properties:
+        count:
+          type: integer
+          example: 123
+        next:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?offset=400&limit=100
+        previous:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?offset=200&limit=100
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/HogFunctionMinimal'
+    HogFunctionMinimal:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+          readOnly: true
+        type:
+          type: string
+          readOnly: true
+          nullable: true
+        name:
+          type: string
+          readOnly: true
+          nullable: true
+        description:
+          type: string
+          readOnly: true
+        created_at:
+          type: string
+          format: date-time
+          readOnly: true
+        created_by:
+          allOf:
+          - $ref: '#/components/schemas/UserBasic'
+          readOnly: true
+        updated_at:
+          type: string
+          format: date-time
+          readOnly: true
+        enabled:
+          type: boolean
+          readOnly: true
+        hog:
+          type: string
+          readOnly: true
+        filters:
+          readOnly: true
+          nullable: true
+        icon_url:
+          type: string
+          readOnly: true
+          nullable: true
+        template:
+          allOf:
+          - $ref: '#/components/schemas/HogFunctionTemplate'
+          readOnly: true
+        status:
+          allOf:
+          - $ref: '#/components/schemas/HogFunctionStatus'
+          readOnly: true
+          nullable: true
+        execution_order:
+          type: integer
+          readOnly: true
+          nullable: true
+      required:
+      - created_at
+      - created_by
+      - description
+      - enabled
+      - execution_order
+      - filters
+      - hog
+      - icon_url
+      - id
+      - name
+      - status
+      - template
+      - type
+      - updated_at
+    PatchedHogFunctionRearrange:
+      type: object
+      properties:
+        orders:
+          type: object
+          additionalProperties:
+            type: integer
+          description: Map of hog function UUIDs to their new execution_order values.
+    HogFunctionFilters:
+      type: object
+      properties:
+        source:
+          allOf:
+          - $ref: '#/components/schemas/HogFunctionFiltersSourceEnum'
+          default: events
+        actions:
+          type: array
+          items:
+            type: object
+            additionalProperties: true
+        events:
+          type: array
+          items:
+            type: object
+            additionalProperties: true
+        data_warehouse:
+          type: array
+          items:
+            type: object
+            additionalProperties: true
+        properties:
+          type: array
+          items:
+            type: object
+            additionalProperties: true
+        bytecode:
+          nullable: true
+        transpiled: {}
+        filter_test_accounts:
+          type: boolean
+        bytecode_error:
+          type: string
+    HogFunctionMasking:
+      type: object
+      properties:
+        ttl:
+          type: integer
+          maximum: 86400
+          minimum: 60
+          description: Time-to-live in seconds for the masking cache (60–86400).
+        threshold:
+          type: integer
+          nullable: true
+          description: Optional threshold count before masking applies.
+        hash:
+          type: string
+          description: Hog expression used to compute the masking hash.
+        bytecode:
+          nullable: true
+          description: Compiled bytecode for the hash expression. Auto-generated.
+      required:
+      - hash
+      - ttl
+    InputsItem:
+      type: object
+      properties:
+        value: {}
+        templating:
+          $ref: '#/components/schemas/HogFunctionTemplatingEnum'
+        bytecode:
+          type: array
+          items: {}
+          readOnly: true
+        order:
+          type: integer
+          readOnly: true
+        transpiled:
+          readOnly: true
+      required:
+      - bytecode
+      - order
+      - transpiled
+    RoleAtOrganizationEnum:
+      enum:
+      - engineering
+      - data
+      - product
+      - founder
+      - leadership
+      - marketing
+      - sales
+      - other
+      type: string
+      description: '* `engineering` - Engineering
+
+        * `data` - Data
+
+        * `product` - Product Management
+
+        * `founder` - Founder
+
+        * `leadership` - Leadership
+
+        * `marketing` - Marketing
+
+        * `sales` - Sales / Success
+
+        * `other` - Other'
+    AppMetricSeries:
+      type: object
+      properties:
+        name:
+          type: string
+        values:
+          type: array
+          items:
+            type: integer
+      required:
+      - name
+      - values
+    Mappings:
+      type: object
+      properties:
+        name:
+          type: string
+        inputs_schema:
+          type: array
+          items:
+            $ref: '#/components/schemas/InputsSchemaItem'
+        inputs:
+          type: object
+          additionalProperties:
+            $ref: '#/components/schemas/InputsItem'
+        filters:
+          $ref: '#/components/schemas/HogFunctionFilters'
+    HogFunctionTemplatingEnum:
+      enum:
+      - hog
+      - liquid
+      type: string
+      description: '* `hog` - hog
+
+        * `liquid` - liquid'
+    HogFunctionInvocation:
+      type: object
+      properties:
+        configuration:
+          allOf:
+          - $ref: '#/components/schemas/HogFunction'
+          writeOnly: true
+          description: Full function configuration to test.
+        globals:
+          type: object
+          additionalProperties: true
+          writeOnly: true
+          description: Mock global variables available during test invocation.
+        clickhouse_event:
+          type: object
+          additionalProperties: true
+          writeOnly: true
+          description: Mock ClickHouse event data to test the function with.
+        mock_async_functions:
+          type: boolean
+          writeOnly: true
+          default: true
+          description: When true (default), async functions like fetch() are simulated.
+        status:
+          type: string
+          readOnly: true
+          description: Invocation result status.
+        logs:
+          type: array
+          items: {}
+          readOnly: true
+          description: Execution logs from the test invocation.
+        invocation_id:
+          type: string
+          nullable: true
+          description: Optional invocation ID for correlation.
+      required:
+      - configuration
+      - logs
+      - status
+    NullEnum:
+      enum:
+      - null
+    HogFunctionStatusStateEnum:
+      enum:
+      - 0
+      - 1
+      - 2
+      - 3
+      - 11
+      - 12
+      type: integer
+      description: '* `0` - 0
+
+        * `1` - 1
+
+        * `2` - 2
+
+        * `3` - 3
+
+        * `11` - 11
+
+        * `12` - 12'
+    UserBasic:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        uuid:
+          type: string
+          format: uuid
+          readOnly: true
+        distinct_id:
+          type: string
+          nullable: true
+          maxLength: 200
+        first_name:
+          type: string
+          maxLength: 150
+        last_name:
+          type: string
+          maxLength: 150
+        email:
+          type: string
+          format: email
+          title: Email address
+          maxLength: 254
+        is_email_verified:
+          type: boolean
+          nullable: true
+        hedgehog_config:
+          type: object
+          additionalProperties: true
+          nullable: true
+          readOnly: true
+        role_at_organization:
+          nullable: true
+          oneOf:
+          - $ref: '#/components/schemas/RoleAtOrganizationEnum'
+          - $ref: '#/components/schemas/BlankEnum'
+          - $ref: '#/components/schemas/NullEnum'
+      required:
+      - email
+      - hedgehog_config
+      - id
+      - uuid
+    AppMetricsTotalsResponse:
+      type: object
+      properties:
+        totals:
+          type: object
+          additionalProperties:
+            type: integer
+      required:
+      - totals
+    HogFunction:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+          readOnly: true
+        type:
+          nullable: true
+          description: 'Function type: destination, site_destination, internal_destination, source_webhook, warehouse_source_webhook, site_app, or transformation.
+
+
+            * `destination` - Destination
+
+            * `site_destination` - Site Destination
+
+            * `internal_destination` - Internal Destination
+
+            * `source_webhook` - Source Webhook
+
+            * `warehouse_source_webhook` - Warehouse Source Webhook
+
+            * `site_app` - Site App
+
+            * `transformation` - Transformation'
+          oneOf:
+          - $ref: '#/components/schemas/HogFunctionTypeEnum'
+          - $ref: '#/components/schemas/NullEnum'
+        name:
+          type: string
+          nullable: true
+          description: Display name for the function.
+          maxLength: 400
+        description:
+          type: string
+          description: Human-readable description of what this function does.
+        created_at:
+          type: string
+          format: date-time
+          readOnly: true
+        created_by:
+          allOf:
+          - $ref: '#/components/schemas/UserBasic'
+          readOnly: true
+        updated_at:
+          type: string
+          format: date-time
+          readOnly: true
+        enabled:
+          type: boolean
+          description: Whether the function is active and processing events.
+        deleted:
+          type: boolean
+          writeOnly: true
+          description: Soft-delete flag. Set to true to archive the function.
+        hog:
+          type: string
+          description: Source code. Hog language for most types; TypeScript for site_destination and site_app.
+        bytecode:
+          readOnly: true
+          nullable: true
+        transpiled:
+          type: string
+          readOnly: true
+          nullable: true
+        inputs_schema:
+          type: array
+          items:
+            $ref: '#/components/schemas/InputsSchemaItem'
+          description: Schema defining the configurable input parameters for this function.
+        inputs:
+          type: object
+          additionalProperties:
+            $ref: '#/components/schemas/InputsItem'
+          description: Values for each input defined in inputs_schema.
+        filters:
+          allOf:
+          - $ref: '#/components/schemas/HogFunctionFilters'
+          description: Event filters that control which events trigger this function.
+        masking:
+          allOf:
+          - $ref: '#/components/schemas/HogFunctionMasking'
+          nullable: true
+          description: PII masking configuration with TTL, threshold, and hash expression.
+        mappings:
+          type: array
+          items:
+            $ref: '#/components/schemas/Mappings'
+          nullable: true
+          description: Event-to-destination field mappings. Only for destination and site_destination types.
+        icon_url:
+          type: string
+          nullable: true
+          description: URL for the function's icon displayed in the UI.
+        template:
+          allOf:
+          - $ref: '#/components/schemas/HogFunctionTemplate'
+          readOnly: true
+        template_id:
+          type: string
+          writeOnly: true
+          nullable: true
+          description: ID of the template to create this function from.
+          maxLength: 400
+        status:
+          allOf:
+          - $ref: '#/components/schemas/HogFunctionStatus'
+          readOnly: true
+          nullable: true
+        execution_order:
+          type: integer
+          maximum: 32767
+          minimum: 0
+          nullable: true
+          description: Execution priority for transformations. Lower values run first.
+        _create_in_folder:
+          type: string
+          writeOnly: true
+          title: ' create in folder'
+        batch_export_id:
+          type: string
+          format: uuid
+          nullable: true
+          readOnly: true
+      required:
+      - batch_export_id
+      - bytecode
+      - created_at
+      - created_by
+      - id
+      - status
+      - template
+      - transpiled
+      - updated_at
+    InputsSchemaItemTypeEnum:
+      enum:
+      - string
+      - number
+      - boolean
+      - dictionary
+      - choice
+      - json
+      - integration
+      - integration_field
+      - email
+      - native_email
+      - posthog_assignee
+      - posthog_ticket_tags
+      - posthog_business_hours
+      type: string
+      description: '* `string` - string
+
+        * `number` - number
+
+        * `boolean` - boolean
+
+        * `dictionary` - dictionary
+
+        * `choice` - choice
+
+        * `json` - json
+
+        * `integration` - integration
+
+        * `integration_field` - integration_field
+
+        * `email` - email
+
+        * `native_email` - native_email
+
+        * `posthog_assignee` - posthog_assignee
+
+        * `posthog_ticket_tags` - posthog_ticket_tags
+
+        * `posthog_business_hours` - posthog_business_hours'
+    HogFunctionMappingTemplate:
+      type: object
+      properties:
+        name:
+          type: string
+          description: Name of this mapping template.
+        include_by_default:
+          type: boolean
+          nullable: true
+          description: Whether this mapping is enabled by default.
+        use_all_events_by_default:
+          type: boolean
+          nullable: true
+          description: Whether this mapping should match all events by default, hiding the event filter UI.
+        filters:
+          nullable: true
+          description: Event filters specific to this mapping.
+        inputs:
+          nullable: true
+          description: Input values specific to this mapping.
+        inputs_schema:
+          nullable: true
+          description: Additional input schema fields specific to this mapping.
+      required:
+      - name
+    HogFunctionStatus:
+      type: object
+      properties:
+        state:
+          $ref: '#/components/schemas/HogFunctionStatusStateEnum'
+        tokens:
+          type: integer
+      required:
+      - state
+      - tokens
+    InputsSchemaItem:
+      type: object
+      properties:
+        type:
+          $ref: '#/components/schemas/InputsSchemaItemTypeEnum'
+        key:
+          type: string
+        label:
+          type: string
+        choices:
+          type: array
+          items:
+            type: object
+            additionalProperties: true
+        required:
+          type: boolean
+          default: false
+        default: {}
+        secret:
+          type: boolean
+          default: false
+        hidden:
+          type: boolean
+          default: false
+        description:
+          type: string
+        integration:
+          type: string
+        integration_key:
+          type: string
+        requires_field:
+          type: string
+        integration_field:
+          type: string
+        requiredScopes:
+          type: string
+        templating:
+          oneOf:
+          - type: boolean
+          - type: string
+            enum:
+            - hog
+            - liquid
+      required:
+      - key
+      - type
+    PatchedHogFunction:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+          readOnly: true
+        type:
+          nullable: true
+          description: 'Function type: destination, site_destination, internal_destination, source_webhook, warehouse_source_webhook, site_app, or transformation.
+
+
+            * `destination` - Destination
+
+            * `site_destination` - Site Destination
+
+            * `internal_destination` - Internal Destination
+
+            * `source_webhook` - Source Webhook
+
+            * `warehouse_source_webhook` - Warehouse Source Webhook
+
+            * `site_app` - Site App
+
+            * `transformation` - Transformation'
+          oneOf:
+          - $ref: '#/components/schemas/HogFunctionTypeEnum'
+          - $ref: '#/components/schemas/NullEnum'
+        name:
+          type: string
+          nullable: true
+          description: Display name for the function.
+          maxLength: 400
+        description:
+          type: string
+          description: Human-readable description of what this function does.
+        created_at:
+          type: string
+          format: date-time
+          readOnly: true
+        created_by:
+          allOf:
+          - $ref: '#/components/schemas/UserBasic'
+          readOnly: true
+        updated_at:
+          type: string
+          format: date-time
+          readOnly: true
+        enabled:
+          type: boolean
+          description: Whether the function is active and processing events.
+        deleted:
+          type: boolean
+          writeOnly: true
+          description: Soft-delete flag. Set to true to archive the function.
+        hog:
+          type: string
+          description: Source code. Hog language for most types; TypeScript for site_destination and site_app.
+        bytecode:
+          readOnly: true
+          nullable: true
+        transpiled:
+          type: string
+          readOnly: true
+          nullable: true
+        inputs_schema:
+          type: array
+          items:
+            $ref: '#/components/schemas/InputsSchemaItem'
+          description: Schema defining the configurable input parameters for this function.
+        inputs:
+          type: object
+          additionalProperties:
+            $ref: '#/components/schemas/InputsItem'
+          description: Values for each input defined in inputs_schema.
+        filters:
+          allOf:
+          - $ref: '#/components/schemas/HogFunctionFilters'
+          description: Event filters that control which events trigger this function.
+        masking:
+          allOf:
+          - $ref: '#/components/schemas/HogFunctionMasking'
+          nullable: true
+          description: PII masking configuration with TTL, threshold, and hash expression.
+        mappings:
+          type: array
+          items:
+            $ref: '#/components/schemas/Mappings'
+          nullable: true
+          description: Event-to-destination field mappings. Only for destination and site_destination types.
+        icon_url:
+          type: string
+          nullable: true
+          description: URL for the function's icon displayed in the UI.
+        template:
+          allOf:
+          - $ref: '#/components/schemas/HogFunctionTemplate'
+          readOnly: true
+        template_id:
+          type: string
+          writeOnly: true
+          nullable: true
+          description: ID of the template to create this function from.
+          maxLength: 400
+        status:
+          allOf:
+          - $ref: '#/components/schemas/HogFunctionStatus'
+          readOnly: true
+          nullable: true
+        execution_order:
+          type: integer
+          maximum: 32767
+          minimum: 0
+          nullable: true
+          description: Execution priority for transformations. Lower values run first.
+        _create_in_folder:
+          type: string
+          writeOnly: true
+          title: ' create in folder'
+        batch_export_id:
+          type: string
+          format: uuid
+          nullable: true
+          readOnly: true
+    BlankEnum:
+      enum:
+      - ''
+    HogFunctionFiltersSourceEnum:
+      enum:
+      - events
+      - person-updates
+      - data-warehouse-table
+      type: string
+      description: '* `events` - events
+
+        * `person-updates` - person-updates
+
+        * `data-warehouse-table` - data-warehouse-table'
+    HogFunctionTypeEnum:
+      enum:
+      - destination
+      - site_destination
+      - internal_destination
+      - source_webhook
+      - warehouse_source_webhook
+      - site_app
+      - transformation
+      type: string
+      description: '* `destination` - Destination
+
+        * `site_destination` - Site Destination
+
+        * `internal_destination` - Internal Destination
+
+        * `source_webhook` - Source Webhook
+
+        * `warehouse_source_webhook` - Warehouse Source Webhook
+
+        * `site_app` - Site App
+
+        * `transformation` - Transformation'
+    AppMetricsResponse:
+      type: object
+      properties:
+        labels:
+          type: array
+          items:
+            type: string
+        series:
+          type: array
+          items:
+            $ref: '#/components/schemas/AppMetricSeries'
+      required:
+      - labels
+      - series
+    HogFunctionTemplate:
+      type: object
+      properties:
+        id:
+          type: string
+          description: Unique template identifier (e.g. 'template-slack').
+        name:
+          type: string
+          description: Display name of the template.
+          maxLength: 400
+        description:
+          type: string
+          nullable: true
+          description: What this template does.
+        code:
+          type: string
+          description: Source code of the template.
+        code_language:
+          type: string
+          description: 'Programming language: ''hog'' or ''javascript''.'
+          maxLength: 20
+        inputs_schema:
+          description: Schema defining configurable inputs for functions created from this template.
+        type:
+          type: string
+          description: Function type this template creates.
+          maxLength: 50
+        status:
+          type: string
+          description: 'Lifecycle status: alpha, beta, stable, deprecated, or hidden.'
+          maxLength: 20
+        category:
+          description: Category tags for organizing templates.
+        free:
+          type: boolean
+          description: Whether available on free plans.
+        icon_url:
+          type: string
+          nullable: true
+          description: URL for the template's icon.
+        filters:
+          nullable: true
+          description: Default event filters.
+        masking:
+          nullable: true
+          description: Default PII masking configuration.
+        mapping_templates:
+          type: array
+          items:
+            $ref: '#/components/schemas/HogFunctionMappingTemplate'
+          nullable: true
+          description: Pre-defined mapping configurations for destination templates.
+      required:
+      - code
+      - id
+      - inputs_schema
+      - name
+      - type
+  parameters:
+    EnvironmentIdPath:
+      in: path
+      name: environment_id
+      required: true
+      schema:
+        type: string
+      description: Deprecated. Use /api/projects/{project_id}/ instead.
+    ProjectIdPath:
+      in: path
+      name: project_id
+      required: true
+      schema:
+        type: string
+      description: Project ID of the project you're trying to access. To find the ID of the project, make a call to /api/projects/.
+  securitySchemes:
+    PersonalAPIKeyAuth:
+      type: http
+      scheme: bearer
+x-tagGroups:
+- name: All endpoints
+  tags:
+  - LLM Analytics
+  - actions
+  - activity_log
+  - activity_logs
+  - advanced_activity_logs
+  - alerts
+  - annotations
+  - approval_policies
+  - batch_exports
+  - cdp
+  - change_requests
+  - code
+  - code-invites
+  - cohorts
+  - comments
+  - conversations
+  - core
+  - customer_analytics
+  - customer_journeys
+  - customer_profile_configs
+  - dashboard_templates
+  - dashboards
+  - data_color_themes
+  - data_modeling_jobs
+  - data_warehouse
+  - dataset_items
+  - datasets
+  - desktop_recordings
+  - domains
+  - early_access_feature
+  - early_access_features
+  - elements
+  - endpoints
+  - environments
+  - error_tracking
+  - evaluation_runs
+  - evaluations
+  - event_definitions
+  - event_filter
+  - event_schemas
+  - events
+  - experiment_holdouts
+  - experiment_saved_metrics
+  - experiments
+  - exports
+  - external_data_schemas
+  - external_data_sources
+  - feature_flags
+  - file_system
+  - file_system_shortcut
+  - flag_value
+  - groups
+  - groups_types
+  - health_issues
+  - heatmap_screenshots
+  - heatmaps
+  - hog_flows
+  - hog_function_templates
+  - hog_functions
+  - insight_variables
+  - insights
+  - integrations
+  - invites
+  - js-snippet
+  - legal_documents
+  - lineage
+  - live_debugger_breakpoints
+  - llm_analytics
+  - llm_prompts
+  - llm_skills
+  - logs
+  - managed_viewsets
+  - max
+  - max_tools
+  - mcp_server_installations
+  - mcp_servers
+  - mcp_store
+  - mcp_tools
+  - members
+  - notebooks
+  - oauth_applications
+  - object_media_previews
+  - organizations
+  - persisted_folder
+  - persons
+  - platform_features
+  - plugin_configs
+  - product_analytics
+  - product_tours
+  - project_secret_api_keys
+  - projects
+  - property_definitions
+  - proxy_records
+  - public_hog_function_templates
+  - query
+  - replay
+  - reverse_proxy
+  - role_external_references
+  - roles
+  - sandbox-environments
+  - sandbox_environments
+  - saved
+  - schema_property_groups
+  - sdk_doctor
+  - session_group_summaries
+  - session_recording_playlists
+  - session_recordings
+  - session_summaries
+  - sessions
+  - signals
+  - subscriptions
+  - surveys
+  - taggers
+  - task-automations
+  - task-runs
+  - task_automations
+  - tasks
+  - uploaded_media
+  - user_home_settings
+  - user_interviews
+  - users
+  - visual_review
+  - warehouse_dag
+  - warehouse_model_paths
+  - warehouse_saved_queries
+  - warehouse_saved_query_folders
+  - warehouse_tables
+  - warehouse_view_link
+  - warehouse_view_links
+  - web_analytics
+  - web_experiments
+  - web_vitals
+  - welcome
+  - workflows

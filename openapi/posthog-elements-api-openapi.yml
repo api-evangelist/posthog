@@ -1,0 +1,703 @@
+openapi: 3.0.3
+info:
+  title: PostHog actions elements API
+  version: 1.0.0
+  description: ''
+tags:
+- name: elements
+paths:
+  /api/environments/{environment_id}/elements/:
+    get:
+      operationId: environments_elements_list
+      parameters:
+      - $ref: '#/components/parameters/EnvironmentIdPath'
+      - name: limit
+        required: false
+        in: query
+        description: Number of results to return per page.
+        schema:
+          type: integer
+      - name: offset
+        required: false
+        in: query
+        description: The initial index from which to return the results.
+        schema:
+          type: integer
+      tags:
+      - elements
+      security:
+      - PersonalAPIKeyAuth:
+        - element:read
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedElementList'
+          description: ''
+      deprecated: true
+      x-explicit-tags:
+      - product_analytics
+    post:
+      operationId: environments_elements_create
+      parameters:
+      - $ref: '#/components/parameters/EnvironmentIdPath'
+      tags:
+      - elements
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Element'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/Element'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/Element'
+      security:
+      - PersonalAPIKeyAuth:
+        - element:write
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Element'
+          description: ''
+      deprecated: true
+      x-explicit-tags:
+      - product_analytics
+  /api/environments/{environment_id}/elements/{id}/:
+    get:
+      operationId: environments_elements_retrieve
+      parameters:
+      - $ref: '#/components/parameters/EnvironmentIdPath'
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this element.
+        required: true
+      tags:
+      - elements
+      security:
+      - PersonalAPIKeyAuth:
+        - element:read
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Element'
+          description: ''
+      deprecated: true
+      x-explicit-tags:
+      - product_analytics
+    put:
+      operationId: environments_elements_update
+      parameters:
+      - $ref: '#/components/parameters/EnvironmentIdPath'
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this element.
+        required: true
+      tags:
+      - elements
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Element'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/Element'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/Element'
+      security:
+      - PersonalAPIKeyAuth:
+        - element:write
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Element'
+          description: ''
+      deprecated: true
+      x-explicit-tags:
+      - product_analytics
+    patch:
+      operationId: environments_elements_partial_update
+      parameters:
+      - $ref: '#/components/parameters/EnvironmentIdPath'
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this element.
+        required: true
+      tags:
+      - elements
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchedElement'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/PatchedElement'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/PatchedElement'
+      security:
+      - PersonalAPIKeyAuth:
+        - element:write
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Element'
+          description: ''
+      deprecated: true
+      x-explicit-tags:
+      - product_analytics
+    delete:
+      operationId: environments_elements_destroy
+      parameters:
+      - $ref: '#/components/parameters/EnvironmentIdPath'
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this element.
+        required: true
+      tags:
+      - elements
+      security:
+      - PersonalAPIKeyAuth:
+        - element:write
+      responses:
+        '204':
+          description: No response body
+      deprecated: true
+      x-explicit-tags:
+      - product_analytics
+  /api/environments/{environment_id}/elements/stats/:
+    get:
+      operationId: environments_elements_stats_retrieve
+      description: 'The original version of this API always and only returned $autocapture elements
+
+        If no include query parameter is sent this remains true.
+
+        Now, you can pass a combination of include query parameters to get different types of elements
+
+        Currently only $autocapture and $rageclick and $dead_click are supported'
+      parameters:
+      - $ref: '#/components/parameters/EnvironmentIdPath'
+      tags:
+      - elements
+      security:
+      - PersonalAPIKeyAuth:
+        - element:read
+      responses:
+        '200':
+          description: No response body
+      deprecated: true
+      x-explicit-tags:
+      - product_analytics
+  /api/environments/{environment_id}/elements/values/:
+    get:
+      operationId: environments_elements_values_retrieve
+      parameters:
+      - $ref: '#/components/parameters/EnvironmentIdPath'
+      tags:
+      - elements
+      security:
+      - PersonalAPIKeyAuth:
+        - element:read
+      responses:
+        '200':
+          description: No response body
+      deprecated: true
+      x-explicit-tags:
+      - product_analytics
+  /api/projects/{project_id}/elements/:
+    get:
+      operationId: elements_list
+      parameters:
+      - name: limit
+        required: false
+        in: query
+        description: Number of results to return per page.
+        schema:
+          type: integer
+      - name: offset
+        required: false
+        in: query
+        description: The initial index from which to return the results.
+        schema:
+          type: integer
+      - $ref: '#/components/parameters/ProjectIdPath'
+      tags:
+      - elements
+      security:
+      - PersonalAPIKeyAuth:
+        - element:read
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedElementList'
+          description: ''
+      x-explicit-tags:
+      - product_analytics
+    post:
+      operationId: elements_create
+      parameters:
+      - $ref: '#/components/parameters/ProjectIdPath'
+      tags:
+      - elements
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Element'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/Element'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/Element'
+      security:
+      - PersonalAPIKeyAuth:
+        - element:write
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Element'
+          description: ''
+      x-explicit-tags:
+      - product_analytics
+  /api/projects/{project_id}/elements/{id}/:
+    get:
+      operationId: elements_retrieve
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this element.
+        required: true
+      - $ref: '#/components/parameters/ProjectIdPath'
+      tags:
+      - elements
+      security:
+      - PersonalAPIKeyAuth:
+        - element:read
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Element'
+          description: ''
+      x-explicit-tags:
+      - product_analytics
+    put:
+      operationId: elements_update
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this element.
+        required: true
+      - $ref: '#/components/parameters/ProjectIdPath'
+      tags:
+      - elements
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Element'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/Element'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/Element'
+      security:
+      - PersonalAPIKeyAuth:
+        - element:write
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Element'
+          description: ''
+      x-explicit-tags:
+      - product_analytics
+    patch:
+      operationId: elements_partial_update
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this element.
+        required: true
+      - $ref: '#/components/parameters/ProjectIdPath'
+      tags:
+      - elements
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchedElement'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/PatchedElement'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/PatchedElement'
+      security:
+      - PersonalAPIKeyAuth:
+        - element:write
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Element'
+          description: ''
+      x-explicit-tags:
+      - product_analytics
+    delete:
+      operationId: elements_destroy
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this element.
+        required: true
+      - $ref: '#/components/parameters/ProjectIdPath'
+      tags:
+      - elements
+      security:
+      - PersonalAPIKeyAuth:
+        - element:write
+      responses:
+        '204':
+          description: No response body
+      x-explicit-tags:
+      - product_analytics
+  /api/projects/{project_id}/elements/stats/:
+    get:
+      operationId: elements_stats_retrieve
+      description: 'The original version of this API always and only returned $autocapture elements
+
+        If no include query parameter is sent this remains true.
+
+        Now, you can pass a combination of include query parameters to get different types of elements
+
+        Currently only $autocapture and $rageclick and $dead_click are supported'
+      parameters:
+      - $ref: '#/components/parameters/ProjectIdPath'
+      tags:
+      - elements
+      security:
+      - PersonalAPIKeyAuth:
+        - element:read
+      responses:
+        '200':
+          description: No response body
+      x-explicit-tags:
+      - product_analytics
+  /api/projects/{project_id}/elements/values/:
+    get:
+      operationId: elements_values_retrieve
+      parameters:
+      - $ref: '#/components/parameters/ProjectIdPath'
+      tags:
+      - elements
+      security:
+      - PersonalAPIKeyAuth:
+        - element:read
+      responses:
+        '200':
+          description: No response body
+      x-explicit-tags:
+      - product_analytics
+components:
+  schemas:
+    PatchedElement:
+      type: object
+      properties:
+        text:
+          type: string
+          nullable: true
+          maxLength: 10000
+        tag_name:
+          type: string
+          nullable: true
+          maxLength: 1000
+        attr_class:
+          type: array
+          items:
+            type: string
+            maxLength: 200
+          nullable: true
+        href:
+          type: string
+          nullable: true
+          maxLength: 10000
+        attr_id:
+          type: string
+          nullable: true
+          maxLength: 10000
+        nth_child:
+          type: integer
+          maximum: 2147483647
+          minimum: -2147483648
+          nullable: true
+        nth_of_type:
+          type: integer
+          maximum: 2147483647
+          minimum: -2147483648
+          nullable: true
+        attributes: {}
+        order:
+          type: integer
+          maximum: 2147483647
+          minimum: -2147483648
+          nullable: true
+    Element:
+      type: object
+      properties:
+        text:
+          type: string
+          nullable: true
+          maxLength: 10000
+        tag_name:
+          type: string
+          nullable: true
+          maxLength: 1000
+        attr_class:
+          type: array
+          items:
+            type: string
+            maxLength: 200
+          nullable: true
+        href:
+          type: string
+          nullable: true
+          maxLength: 10000
+        attr_id:
+          type: string
+          nullable: true
+          maxLength: 10000
+        nth_child:
+          type: integer
+          maximum: 2147483647
+          minimum: -2147483648
+          nullable: true
+        nth_of_type:
+          type: integer
+          maximum: 2147483647
+          minimum: -2147483648
+          nullable: true
+        attributes: {}
+        order:
+          type: integer
+          maximum: 2147483647
+          minimum: -2147483648
+          nullable: true
+    PaginatedElementList:
+      type: object
+      required:
+      - count
+      - results
+      properties:
+        count:
+          type: integer
+          example: 123
+        next:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?offset=400&limit=100
+        previous:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?offset=200&limit=100
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/Element'
+  parameters:
+    ProjectIdPath:
+      in: path
+      name: project_id
+      required: true
+      schema:
+        type: string
+      description: Project ID of the project you're trying to access. To find the ID of the project, make a call to /api/projects/.
+    EnvironmentIdPath:
+      in: path
+      name: environment_id
+      required: true
+      schema:
+        type: string
+      description: Deprecated. Use /api/projects/{project_id}/ instead.
+  securitySchemes:
+    PersonalAPIKeyAuth:
+      type: http
+      scheme: bearer
+x-tagGroups:
+- name: All endpoints
+  tags:
+  - LLM Analytics
+  - actions
+  - activity_log
+  - activity_logs
+  - advanced_activity_logs
+  - alerts
+  - annotations
+  - approval_policies
+  - batch_exports
+  - cdp
+  - change_requests
+  - code
+  - code-invites
+  - cohorts
+  - comments
+  - conversations
+  - core
+  - customer_analytics
+  - customer_journeys
+  - customer_profile_configs
+  - dashboard_templates
+  - dashboards
+  - data_color_themes
+  - data_modeling_jobs
+  - data_warehouse
+  - dataset_items
+  - datasets
+  - desktop_recordings
+  - domains
+  - early_access_feature
+  - early_access_features
+  - elements
+  - endpoints
+  - environments
+  - error_tracking
+  - evaluation_runs
+  - evaluations
+  - event_definitions
+  - event_filter
+  - event_schemas
+  - events
+  - experiment_holdouts
+  - experiment_saved_metrics
+  - experiments
+  - exports
+  - external_data_schemas
+  - external_data_sources
+  - feature_flags
+  - file_system
+  - file_system_shortcut
+  - flag_value
+  - groups
+  - groups_types
+  - health_issues
+  - heatmap_screenshots
+  - heatmaps
+  - hog_flows
+  - hog_function_templates
+  - hog_functions
+  - insight_variables
+  - insights
+  - integrations
+  - invites
+  - js-snippet
+  - legal_documents
+  - lineage
+  - live_debugger_breakpoints
+  - llm_analytics
+  - llm_prompts
+  - llm_skills
+  - logs
+  - managed_viewsets
+  - max
+  - max_tools
+  - mcp_server_installations
+  - mcp_servers
+  - mcp_store
+  - mcp_tools
+  - members
+  - notebooks
+  - oauth_applications
+  - object_media_previews
+  - organizations
+  - persisted_folder
+  - persons
+  - platform_features
+  - plugin_configs
+  - product_analytics
+  - product_tours
+  - project_secret_api_keys
+  - projects
+  - property_definitions
+  - proxy_records
+  - public_hog_function_templates
+  - query
+  - replay
+  - reverse_proxy
+  - role_external_references
+  - roles
+  - sandbox-environments
+  - sandbox_environments
+  - saved
+  - schema_property_groups
+  - sdk_doctor
+  - session_group_summaries
+  - session_recording_playlists
+  - session_recordings
+  - session_summaries
+  - sessions
+  - signals
+  - subscriptions
+  - surveys
+  - taggers
+  - task-automations
+  - task-runs
+  - task_automations
+  - tasks
+  - uploaded_media
+  - user_home_settings
+  - user_interviews
+  - users
+  - visual_review
+  - warehouse_dag
+  - warehouse_model_paths
+  - warehouse_saved_queries
+  - warehouse_saved_query_folders
+  - warehouse_tables
+  - warehouse_view_link
+  - warehouse_view_links
+  - web_analytics
+  - web_experiments
+  - web_vitals
+  - welcome
+  - workflows

@@ -1,0 +1,799 @@
+openapi: 3.0.3
+info:
+  title: PostHog actions warehouse_view_link API
+  version: 1.0.0
+  description: ''
+tags:
+- name: warehouse_view_link
+paths:
+  /api/environments/{environment_id}/warehouse_view_link/:
+    get:
+      operationId: environments_warehouse_view_link_list
+      description: Create, Read, Update and Delete View Columns.
+      parameters:
+      - $ref: '#/components/parameters/EnvironmentIdPath'
+      - name: limit
+        required: false
+        in: query
+        description: Number of results to return per page.
+        schema:
+          type: integer
+      - name: offset
+        required: false
+        in: query
+        description: The initial index from which to return the results.
+        schema:
+          type: integer
+      - name: search
+        required: false
+        in: query
+        description: A search term.
+        schema:
+          type: string
+      tags:
+      - warehouse_view_link
+      security:
+      - PersonalAPIKeyAuth:
+        - warehouse_view:read
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedViewLinkList'
+          description: ''
+      deprecated: true
+      x-explicit-tags:
+      - data_warehouse
+    post:
+      operationId: environments_warehouse_view_link_create
+      description: Create, Read, Update and Delete View Columns.
+      parameters:
+      - $ref: '#/components/parameters/EnvironmentIdPath'
+      tags:
+      - warehouse_view_link
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ViewLink'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/ViewLink'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/ViewLink'
+        required: true
+      security:
+      - PersonalAPIKeyAuth:
+        - warehouse_view:write
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ViewLink'
+          description: ''
+      deprecated: true
+      x-explicit-tags:
+      - data_warehouse
+  /api/environments/{environment_id}/warehouse_view_link/{id}/:
+    get:
+      operationId: environments_warehouse_view_link_retrieve
+      description: Create, Read, Update and Delete View Columns.
+      parameters:
+      - $ref: '#/components/parameters/EnvironmentIdPath'
+      - in: path
+        name: id
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this data warehouse join.
+        required: true
+      tags:
+      - warehouse_view_link
+      security:
+      - PersonalAPIKeyAuth:
+        - warehouse_view:read
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ViewLink'
+          description: ''
+      deprecated: true
+      x-explicit-tags: []
+    put:
+      operationId: environments_warehouse_view_link_update
+      description: Create, Read, Update and Delete View Columns.
+      parameters:
+      - $ref: '#/components/parameters/EnvironmentIdPath'
+      - in: path
+        name: id
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this data warehouse join.
+        required: true
+      tags:
+      - warehouse_view_link
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ViewLink'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/ViewLink'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/ViewLink'
+        required: true
+      security:
+      - PersonalAPIKeyAuth:
+        - warehouse_view:write
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ViewLink'
+          description: ''
+      deprecated: true
+      x-explicit-tags: []
+    patch:
+      operationId: environments_warehouse_view_link_partial_update
+      description: Create, Read, Update and Delete View Columns.
+      parameters:
+      - $ref: '#/components/parameters/EnvironmentIdPath'
+      - in: path
+        name: id
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this data warehouse join.
+        required: true
+      tags:
+      - warehouse_view_link
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchedViewLink'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/PatchedViewLink'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/PatchedViewLink'
+      security:
+      - PersonalAPIKeyAuth:
+        - warehouse_view:write
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ViewLink'
+          description: ''
+      deprecated: true
+      x-explicit-tags: []
+    delete:
+      operationId: environments_warehouse_view_link_destroy
+      description: Create, Read, Update and Delete View Columns.
+      parameters:
+      - $ref: '#/components/parameters/EnvironmentIdPath'
+      - in: path
+        name: id
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this data warehouse join.
+        required: true
+      tags:
+      - warehouse_view_link
+      security:
+      - PersonalAPIKeyAuth:
+        - warehouse_view:write
+      responses:
+        '204':
+          description: No response body
+      deprecated: true
+      x-explicit-tags: []
+  /api/environments/{environment_id}/warehouse_view_link/validate/:
+    post:
+      operationId: environments_warehouse_view_link_validate_create
+      description: Create, Read, Update and Delete View Columns.
+      parameters:
+      - $ref: '#/components/parameters/EnvironmentIdPath'
+      tags:
+      - warehouse_view_link
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ViewLinkValidation'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/ViewLinkValidation'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/ViewLinkValidation'
+        required: true
+      responses:
+        '200':
+          description: No response body
+      deprecated: true
+      x-explicit-tags:
+      - data_warehouse
+  /api/projects/{project_id}/warehouse_view_link/:
+    get:
+      operationId: warehouse_view_link_list
+      description: Create, Read, Update and Delete View Columns.
+      parameters:
+      - name: limit
+        required: false
+        in: query
+        description: Number of results to return per page.
+        schema:
+          type: integer
+      - name: offset
+        required: false
+        in: query
+        description: The initial index from which to return the results.
+        schema:
+          type: integer
+      - $ref: '#/components/parameters/ProjectIdPath'
+      - name: search
+        required: false
+        in: query
+        description: A search term.
+        schema:
+          type: string
+      tags:
+      - warehouse_view_link
+      security:
+      - PersonalAPIKeyAuth:
+        - warehouse_view:read
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedViewLinkList'
+          description: ''
+      x-explicit-tags:
+      - data_warehouse
+    post:
+      operationId: warehouse_view_link_create
+      description: Create, Read, Update and Delete View Columns.
+      parameters:
+      - $ref: '#/components/parameters/ProjectIdPath'
+      tags:
+      - warehouse_view_link
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ViewLink'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/ViewLink'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/ViewLink'
+        required: true
+      security:
+      - PersonalAPIKeyAuth:
+        - warehouse_view:write
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ViewLink'
+          description: ''
+      x-explicit-tags:
+      - data_warehouse
+  /api/projects/{project_id}/warehouse_view_link/{id}/:
+    get:
+      operationId: warehouse_view_link_retrieve
+      description: Create, Read, Update and Delete View Columns.
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this data warehouse join.
+        required: true
+      - $ref: '#/components/parameters/ProjectIdPath'
+      tags:
+      - warehouse_view_link
+      security:
+      - PersonalAPIKeyAuth:
+        - warehouse_view:read
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ViewLink'
+          description: ''
+      x-explicit-tags: []
+    put:
+      operationId: warehouse_view_link_update
+      description: Create, Read, Update and Delete View Columns.
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this data warehouse join.
+        required: true
+      - $ref: '#/components/parameters/ProjectIdPath'
+      tags:
+      - warehouse_view_link
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ViewLink'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/ViewLink'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/ViewLink'
+        required: true
+      security:
+      - PersonalAPIKeyAuth:
+        - warehouse_view:write
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ViewLink'
+          description: ''
+      x-explicit-tags: []
+    patch:
+      operationId: warehouse_view_link_partial_update
+      description: Create, Read, Update and Delete View Columns.
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this data warehouse join.
+        required: true
+      - $ref: '#/components/parameters/ProjectIdPath'
+      tags:
+      - warehouse_view_link
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchedViewLink'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/PatchedViewLink'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/PatchedViewLink'
+      security:
+      - PersonalAPIKeyAuth:
+        - warehouse_view:write
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ViewLink'
+          description: ''
+      x-explicit-tags: []
+    delete:
+      operationId: warehouse_view_link_destroy
+      description: Create, Read, Update and Delete View Columns.
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this data warehouse join.
+        required: true
+      - $ref: '#/components/parameters/ProjectIdPath'
+      tags:
+      - warehouse_view_link
+      security:
+      - PersonalAPIKeyAuth:
+        - warehouse_view:write
+      responses:
+        '204':
+          description: No response body
+      x-explicit-tags: []
+  /api/projects/{project_id}/warehouse_view_link/validate/:
+    post:
+      operationId: warehouse_view_link_validate_create
+      description: Create, Read, Update and Delete View Columns.
+      parameters:
+      - $ref: '#/components/parameters/ProjectIdPath'
+      tags:
+      - warehouse_view_link
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ViewLinkValidation'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/ViewLinkValidation'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/ViewLinkValidation'
+        required: true
+      responses:
+        '200':
+          description: No response body
+      x-explicit-tags:
+      - data_warehouse
+components:
+  schemas:
+    ViewLink:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+          readOnly: true
+        deleted:
+          type: boolean
+          nullable: true
+        created_by:
+          allOf:
+          - $ref: '#/components/schemas/UserBasic'
+          readOnly: true
+        created_at:
+          type: string
+          format: date-time
+          readOnly: true
+        source_table_name:
+          type: string
+          maxLength: 400
+        source_table_key:
+          type: string
+          maxLength: 400
+        joining_table_name:
+          type: string
+          maxLength: 400
+        joining_table_key:
+          type: string
+          maxLength: 400
+        field_name:
+          type: string
+          maxLength: 400
+        configuration:
+          nullable: true
+      required:
+      - created_at
+      - created_by
+      - field_name
+      - id
+      - joining_table_key
+      - joining_table_name
+      - source_table_key
+      - source_table_name
+    BlankEnum:
+      enum:
+      - ''
+    UserBasic:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        uuid:
+          type: string
+          format: uuid
+          readOnly: true
+        distinct_id:
+          type: string
+          nullable: true
+          maxLength: 200
+        first_name:
+          type: string
+          maxLength: 150
+        last_name:
+          type: string
+          maxLength: 150
+        email:
+          type: string
+          format: email
+          title: Email address
+          maxLength: 254
+        is_email_verified:
+          type: boolean
+          nullable: true
+        hedgehog_config:
+          type: object
+          additionalProperties: true
+          nullable: true
+          readOnly: true
+        role_at_organization:
+          nullable: true
+          oneOf:
+          - $ref: '#/components/schemas/RoleAtOrganizationEnum'
+          - $ref: '#/components/schemas/BlankEnum'
+          - $ref: '#/components/schemas/NullEnum'
+      required:
+      - email
+      - hedgehog_config
+      - id
+      - uuid
+    ViewLinkValidation:
+      type: object
+      properties:
+        joining_table_name:
+          type: string
+          maxLength: 255
+        joining_table_key:
+          type: string
+          maxLength: 255
+        source_table_name:
+          type: string
+          maxLength: 255
+        source_table_key:
+          type: string
+          maxLength: 255
+      required:
+      - joining_table_key
+      - joining_table_name
+      - source_table_key
+      - source_table_name
+    RoleAtOrganizationEnum:
+      enum:
+      - engineering
+      - data
+      - product
+      - founder
+      - leadership
+      - marketing
+      - sales
+      - other
+      type: string
+      description: '* `engineering` - Engineering
+
+        * `data` - Data
+
+        * `product` - Product Management
+
+        * `founder` - Founder
+
+        * `leadership` - Leadership
+
+        * `marketing` - Marketing
+
+        * `sales` - Sales / Success
+
+        * `other` - Other'
+    PaginatedViewLinkList:
+      type: object
+      required:
+      - count
+      - results
+      properties:
+        count:
+          type: integer
+          example: 123
+        next:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?offset=400&limit=100
+        previous:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?offset=200&limit=100
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/ViewLink'
+    PatchedViewLink:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+          readOnly: true
+        deleted:
+          type: boolean
+          nullable: true
+        created_by:
+          allOf:
+          - $ref: '#/components/schemas/UserBasic'
+          readOnly: true
+        created_at:
+          type: string
+          format: date-time
+          readOnly: true
+        source_table_name:
+          type: string
+          maxLength: 400
+        source_table_key:
+          type: string
+          maxLength: 400
+        joining_table_name:
+          type: string
+          maxLength: 400
+        joining_table_key:
+          type: string
+          maxLength: 400
+        field_name:
+          type: string
+          maxLength: 400
+        configuration:
+          nullable: true
+    NullEnum:
+      enum:
+      - null
+  parameters:
+    ProjectIdPath:
+      in: path
+      name: project_id
+      required: true
+      schema:
+        type: string
+      description: Project ID of the project you're trying to access. To find the ID of the project, make a call to /api/projects/.
+    EnvironmentIdPath:
+      in: path
+      name: environment_id
+      required: true
+      schema:
+        type: string
+      description: Deprecated. Use /api/projects/{project_id}/ instead.
+  securitySchemes:
+    PersonalAPIKeyAuth:
+      type: http
+      scheme: bearer
+x-tagGroups:
+- name: All endpoints
+  tags:
+  - LLM Analytics
+  - actions
+  - activity_log
+  - activity_logs
+  - advanced_activity_logs
+  - alerts
+  - annotations
+  - approval_policies
+  - batch_exports
+  - cdp
+  - change_requests
+  - code
+  - code-invites
+  - cohorts
+  - comments
+  - conversations
+  - core
+  - customer_analytics
+  - customer_journeys
+  - customer_profile_configs
+  - dashboard_templates
+  - dashboards
+  - data_color_themes
+  - data_modeling_jobs
+  - data_warehouse
+  - dataset_items
+  - datasets
+  - desktop_recordings
+  - domains
+  - early_access_feature
+  - early_access_features
+  - elements
+  - endpoints
+  - environments
+  - error_tracking
+  - evaluation_runs
+  - evaluations
+  - event_definitions
+  - event_filter
+  - event_schemas
+  - events
+  - experiment_holdouts
+  - experiment_saved_metrics
+  - experiments
+  - exports
+  - external_data_schemas
+  - external_data_sources
+  - feature_flags
+  - file_system
+  - file_system_shortcut
+  - flag_value
+  - groups
+  - groups_types
+  - health_issues
+  - heatmap_screenshots
+  - heatmaps
+  - hog_flows
+  - hog_function_templates
+  - hog_functions
+  - insight_variables
+  - insights
+  - integrations
+  - invites
+  - js-snippet
+  - legal_documents
+  - lineage
+  - live_debugger_breakpoints
+  - llm_analytics
+  - llm_prompts
+  - llm_skills
+  - logs
+  - managed_viewsets
+  - max
+  - max_tools
+  - mcp_server_installations
+  - mcp_servers
+  - mcp_store
+  - mcp_tools
+  - members
+  - notebooks
+  - oauth_applications
+  - object_media_previews
+  - organizations
+  - persisted_folder
+  - persons
+  - platform_features
+  - plugin_configs
+  - product_analytics
+  - product_tours
+  - project_secret_api_keys
+  - projects
+  - property_definitions
+  - proxy_records
+  - public_hog_function_templates
+  - query
+  - replay
+  - reverse_proxy
+  - role_external_references
+  - roles
+  - sandbox-environments
+  - sandbox_environments
+  - saved
+  - schema_property_groups
+  - sdk_doctor
+  - session_group_summaries
+  - session_recording_playlists
+  - session_recordings
+  - session_summaries
+  - sessions
+  - signals
+  - subscriptions
+  - surveys
+  - taggers
+  - task-automations
+  - task-runs
+  - task_automations
+  - tasks
+  - uploaded_media
+  - user_home_settings
+  - user_interviews
+  - users
+  - visual_review
+  - warehouse_dag
+  - warehouse_model_paths
+  - warehouse_saved_queries
+  - warehouse_saved_query_folders
+  - warehouse_tables
+  - warehouse_view_link
+  - warehouse_view_links
+  - web_analytics
+  - web_experiments
+  - web_vitals
+  - welcome
+  - workflows

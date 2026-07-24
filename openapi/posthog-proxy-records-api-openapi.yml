@@ -1,0 +1,384 @@
+openapi: 3.0.3
+info:
+  title: PostHog actions proxy_records API
+  version: 1.0.0
+  description: ''
+tags:
+- name: proxy_records
+paths:
+  /api/organizations/{organization_id}/proxy_records/:
+    get:
+      operationId: proxy_records_list
+      description: List all reverse proxies configured for the organization. Returns proxy records along with the maximum number allowed by the current plan.
+      parameters:
+      - $ref: '#/components/parameters/OrganizationIdPath'
+      tags:
+      - proxy_records
+      security:
+      - PersonalAPIKeyAuth:
+        - organization:read
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/ProxyRecordListResponse'
+          description: ''
+      x-explicit-tags:
+      - reverse_proxy
+    post:
+      operationId: proxy_records_create
+      description: Create a new managed reverse proxy. Provide the domain you want to proxy through. The response includes the CNAME target you need to add as a DNS record. Once the CNAME is configured, the proxy will be automatically verified and provisioned.
+      parameters:
+      - $ref: '#/components/parameters/OrganizationIdPath'
+      tags:
+      - proxy_records
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ProxyRecord'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/ProxyRecord'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/ProxyRecord'
+        required: true
+      security:
+      - PersonalAPIKeyAuth:
+        - organization:write
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProxyRecord'
+          description: ''
+      x-explicit-tags:
+      - reverse_proxy
+  /api/organizations/{organization_id}/proxy_records/{id}/:
+    get:
+      operationId: proxy_records_retrieve
+      description: Get details of a specific reverse proxy by ID. Returns the full configuration including domain, CNAME target, and current provisioning status.
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this proxy record.
+        required: true
+      - $ref: '#/components/parameters/OrganizationIdPath'
+      tags:
+      - proxy_records
+      security:
+      - PersonalAPIKeyAuth:
+        - organization:read
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProxyRecord'
+          description: ''
+      x-explicit-tags:
+      - reverse_proxy
+    delete:
+      operationId: proxy_records_destroy
+      description: Delete a reverse proxy. For proxies in 'waiting', 'erroring', or 'timed_out' status, the record is deleted immediately. For active proxies, a deletion workflow is started to clean up the provisioned infrastructure.
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this proxy record.
+        required: true
+      - $ref: '#/components/parameters/OrganizationIdPath'
+      tags:
+      - proxy_records
+      security:
+      - PersonalAPIKeyAuth:
+        - organization:write
+      responses:
+        '204':
+          description: No response body
+      x-explicit-tags:
+      - reverse_proxy
+  /api/organizations/{organization_id}/proxy_records/{id}/retry/:
+    post:
+      operationId: proxy_records_retry_create
+      description: Retry provisioning a failed reverse proxy. Only available for proxies in 'erroring' or 'timed_out' status. Resets the proxy to 'waiting' status and restarts the provisioning workflow.
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this proxy record.
+        required: true
+      - $ref: '#/components/parameters/OrganizationIdPath'
+      tags:
+      - proxy_records
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProxyRecord'
+          description: ''
+      x-explicit-tags:
+      - reverse_proxy
+components:
+  schemas:
+    ProxyRecord:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+          readOnly: true
+          description: Unique identifier for the proxy record.
+        domain:
+          type: string
+          description: The custom domain to proxy through, e.g. 'e.example.com'. Must be a valid subdomain you control.
+        target_cname:
+          type: string
+          readOnly: true
+          description: The CNAME target to add as a DNS record for your domain. Point your domain's CNAME to this value.
+        status:
+          allOf:
+          - $ref: '#/components/schemas/ProxyRecordStatusEnum'
+          readOnly: true
+          description: 'Current provisioning status. Values: waiting (DNS verification pending), issuing (SSL certificate being issued), valid (proxy is live and working), warning (proxy has issues but is operational), erroring (proxy setup failed), deleting (removal in progress), timed_out (DNS verification timed out).
+
+
+            * `waiting` - Waiting
+
+            * `issuing` - Issuing
+
+            * `valid` - Valid
+
+            * `warning` - Warning
+
+            * `erroring` - Erroring
+
+            * `deleting` - Deleting
+
+            * `timed_out` - Timed Out'
+        message:
+          type: string
+          readOnly: true
+          nullable: true
+          description: Human-readable status message with details about errors or warnings, if any.
+        created_at:
+          type: string
+          format: date-time
+          readOnly: true
+          description: When this proxy record was created.
+        updated_at:
+          type: string
+          format: date-time
+          readOnly: true
+          description: When this proxy record was last updated.
+        created_by:
+          type: integer
+          readOnly: true
+          description: ID of the user who created this proxy record.
+      required:
+      - created_at
+      - created_by
+      - domain
+      - id
+      - message
+      - status
+      - target_cname
+      - updated_at
+    ProxyRecordStatusEnum:
+      enum:
+      - waiting
+      - issuing
+      - valid
+      - warning
+      - erroring
+      - deleting
+      - timed_out
+      type: string
+      description: '* `waiting` - Waiting
+
+        * `issuing` - Issuing
+
+        * `valid` - Valid
+
+        * `warning` - Warning
+
+        * `erroring` - Erroring
+
+        * `deleting` - Deleting
+
+        * `timed_out` - Timed Out'
+    ProxyRecordListResponse:
+      type: object
+      properties:
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/ProxyRecord'
+        max_proxy_records:
+          type: integer
+          description: Maximum number of proxy records allowed for this organization's current plan.
+      required:
+      - max_proxy_records
+      - results
+  parameters:
+    OrganizationIdPath:
+      in: path
+      name: organization_id
+      required: true
+      schema:
+        type: string
+      description: ID of the organization you're trying to access. To find the ID of the organization, make a call to /api/organizations/.
+  securitySchemes:
+    PersonalAPIKeyAuth:
+      type: http
+      scheme: bearer
+x-tagGroups:
+- name: All endpoints
+  tags:
+  - LLM Analytics
+  - actions
+  - activity_log
+  - activity_logs
+  - advanced_activity_logs
+  - alerts
+  - annotations
+  - approval_policies
+  - batch_exports
+  - cdp
+  - change_requests
+  - code
+  - code-invites
+  - cohorts
+  - comments
+  - conversations
+  - core
+  - customer_analytics
+  - customer_journeys
+  - customer_profile_configs
+  - dashboard_templates
+  - dashboards
+  - data_color_themes
+  - data_modeling_jobs
+  - data_warehouse
+  - dataset_items
+  - datasets
+  - desktop_recordings
+  - domains
+  - early_access_feature
+  - early_access_features
+  - elements
+  - endpoints
+  - environments
+  - error_tracking
+  - evaluation_runs
+  - evaluations
+  - event_definitions
+  - event_filter
+  - event_schemas
+  - events
+  - experiment_holdouts
+  - experiment_saved_metrics
+  - experiments
+  - exports
+  - external_data_schemas
+  - external_data_sources
+  - feature_flags
+  - file_system
+  - file_system_shortcut
+  - flag_value
+  - groups
+  - groups_types
+  - health_issues
+  - heatmap_screenshots
+  - heatmaps
+  - hog_flows
+  - hog_function_templates
+  - hog_functions
+  - insight_variables
+  - insights
+  - integrations
+  - invites
+  - js-snippet
+  - legal_documents
+  - lineage
+  - live_debugger_breakpoints
+  - llm_analytics
+  - llm_prompts
+  - llm_skills
+  - logs
+  - managed_viewsets
+  - max
+  - max_tools
+  - mcp_server_installations
+  - mcp_servers
+  - mcp_store
+  - mcp_tools
+  - members
+  - notebooks
+  - oauth_applications
+  - object_media_previews
+  - organizations
+  - persisted_folder
+  - persons
+  - platform_features
+  - plugin_configs
+  - product_analytics
+  - product_tours
+  - project_secret_api_keys
+  - projects
+  - property_definitions
+  - proxy_records
+  - public_hog_function_templates
+  - query
+  - replay
+  - reverse_proxy
+  - role_external_references
+  - roles
+  - sandbox-environments
+  - sandbox_environments
+  - saved
+  - schema_property_groups
+  - sdk_doctor
+  - session_group_summaries
+  - session_recording_playlists
+  - session_recordings
+  - session_summaries
+  - sessions
+  - signals
+  - subscriptions
+  - surveys
+  - taggers
+  - task-automations
+  - task-runs
+  - task_automations
+  - tasks
+  - uploaded_media
+  - user_home_settings
+  - user_interviews
+  - users
+  - visual_review
+  - warehouse_dag
+  - warehouse_model_paths
+  - warehouse_saved_queries
+  - warehouse_saved_query_folders
+  - warehouse_tables
+  - warehouse_view_link
+  - warehouse_view_links
+  - web_analytics
+  - web_experiments
+  - web_vitals
+  - welcome
+  - workflows

@@ -1,0 +1,275 @@
+openapi: 3.0.3
+info:
+  title: PostHog actions user_home_settings API
+  version: 1.0.0
+  description: ''
+tags:
+- name: user_home_settings
+paths:
+  /api/user_home_settings/{uuid}/:
+    get:
+      operationId: user_home_settings_retrieve
+      description: Get the authenticated user's pinned sidebar tabs and configured homepage for the current team. Pass `@me` as the UUID.
+      parameters:
+      - in: path
+        name: uuid
+        schema:
+          type: string
+          format: uuid
+        required: true
+      tags:
+      - user_home_settings
+      security:
+      - PersonalAPIKeyAuth:
+        - user:read
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PinnedSceneTabs'
+          description: ''
+      x-explicit-tags:
+      - platform_features
+    patch:
+      operationId: user_home_settings_partial_update
+      description: 'Update the authenticated user''s pinned sidebar tabs and/or homepage for the current team. Pass `@me` as the UUID. Send `tabs` to replace the pinned tab list, `homepage` to set the home destination (any PostHog URL — dashboard, insight, search results, scene). Either field may be omitted to leave it unchanged; sending `homepage: null` or `{}` clears the homepage.'
+      parameters:
+      - in: path
+        name: uuid
+        schema:
+          type: string
+          format: uuid
+        required: true
+      tags:
+      - user_home_settings
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchedPinnedSceneTabs'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/PatchedPinnedSceneTabs'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/PatchedPinnedSceneTabs'
+      security:
+      - PersonalAPIKeyAuth:
+        - user:write
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PinnedSceneTabs'
+          description: ''
+      x-explicit-tags:
+      - platform_features
+components:
+  schemas:
+    PinnedSceneTabs:
+      type: object
+      properties:
+        tabs:
+          type: array
+          items:
+            $ref: '#/components/schemas/PinnedSceneTab'
+          description: Ordered list of pinned navigation tabs shown in the sidebar for the authenticated user within the current team. Send the full list to replace the existing pins; omit to leave them unchanged.
+        homepage:
+          allOf:
+          - $ref: '#/components/schemas/PinnedSceneTab'
+          nullable: true
+          description: Tab descriptor for the user's chosen home page — the destination opened when they click the PostHog logo or hit `/`. Set to a tab descriptor to pick a homepage, send `null` or `{}` to clear it and fall back to the project default.
+    PatchedPinnedSceneTabs:
+      type: object
+      properties:
+        tabs:
+          type: array
+          items:
+            $ref: '#/components/schemas/PinnedSceneTab'
+          description: Ordered list of pinned navigation tabs shown in the sidebar for the authenticated user within the current team. Send the full list to replace the existing pins; omit to leave them unchanged.
+        homepage:
+          allOf:
+          - $ref: '#/components/schemas/PinnedSceneTab'
+          nullable: true
+          description: Tab descriptor for the user's chosen home page — the destination opened when they click the PostHog logo or hit `/`. Set to a tab descriptor to pick a homepage, send `null` or `{}` to clear it and fall back to the project default.
+    PinnedSceneTab:
+      type: object
+      properties:
+        id:
+          type: string
+          description: Stable identifier for the tab. Generated client-side; safe to omit on create.
+        pathname:
+          type: string
+          description: URL pathname the tab points at — for example `/project/123/dashboard/45` or `/project/123/insights`. Combined with `search` and `hash` to reconstruct the destination.
+        search:
+          type: string
+          description: Query string portion of the URL, including the leading `?`. Empty string when there is no query.
+        hash:
+          type: string
+          description: Fragment portion of the URL, including the leading `#`. Empty string when there is no fragment.
+        title:
+          type: string
+          description: Default tab title derived from the destination scene. Used when `customTitle` is not set.
+        customTitle:
+          type: string
+          nullable: true
+          description: Optional user-provided title that overrides `title` in the navigation UI.
+        iconType:
+          type: string
+          description: Icon key shown next to the tab in the sidebar — for example `dashboard`, `insight`, `blank`.
+        sceneId:
+          type: string
+          nullable: true
+          description: Scene identifier resolved from the pathname when known — used by the frontend for icon/title hints.
+        sceneKey:
+          type: string
+          nullable: true
+          description: Scene key (logic key) for the destination, paired with `sceneParams` for deeper routing context.
+        sceneParams:
+          description: Free-form scene parameters captured at pin time, used by the frontend to rehydrate the destination.
+        pinned:
+          type: boolean
+          description: Whether this entry is pinned. Always coerced to true on save — pass true or omit.
+  securitySchemes:
+    PersonalAPIKeyAuth:
+      type: http
+      scheme: bearer
+x-tagGroups:
+- name: All endpoints
+  tags:
+  - LLM Analytics
+  - actions
+  - activity_log
+  - activity_logs
+  - advanced_activity_logs
+  - alerts
+  - annotations
+  - approval_policies
+  - batch_exports
+  - cdp
+  - change_requests
+  - code
+  - code-invites
+  - cohorts
+  - comments
+  - conversations
+  - core
+  - customer_analytics
+  - customer_journeys
+  - customer_profile_configs
+  - dashboard_templates
+  - dashboards
+  - data_color_themes
+  - data_modeling_jobs
+  - data_warehouse
+  - dataset_items
+  - datasets
+  - desktop_recordings
+  - domains
+  - early_access_feature
+  - early_access_features
+  - elements
+  - endpoints
+  - environments
+  - error_tracking
+  - evaluation_runs
+  - evaluations
+  - event_definitions
+  - event_filter
+  - event_schemas
+  - events
+  - experiment_holdouts
+  - experiment_saved_metrics
+  - experiments
+  - exports
+  - external_data_schemas
+  - external_data_sources
+  - feature_flags
+  - file_system
+  - file_system_shortcut
+  - flag_value
+  - groups
+  - groups_types
+  - health_issues
+  - heatmap_screenshots
+  - heatmaps
+  - hog_flows
+  - hog_function_templates
+  - hog_functions
+  - insight_variables
+  - insights
+  - integrations
+  - invites
+  - js-snippet
+  - legal_documents
+  - lineage
+  - live_debugger_breakpoints
+  - llm_analytics
+  - llm_prompts
+  - llm_skills
+  - logs
+  - managed_viewsets
+  - max
+  - max_tools
+  - mcp_server_installations
+  - mcp_servers
+  - mcp_store
+  - mcp_tools
+  - members
+  - notebooks
+  - oauth_applications
+  - object_media_previews
+  - organizations
+  - persisted_folder
+  - persons
+  - platform_features
+  - plugin_configs
+  - product_analytics
+  - product_tours
+  - project_secret_api_keys
+  - projects
+  - property_definitions
+  - proxy_records
+  - public_hog_function_templates
+  - query
+  - replay
+  - reverse_proxy
+  - role_external_references
+  - roles
+  - sandbox-environments
+  - sandbox_environments
+  - saved
+  - schema_property_groups
+  - sdk_doctor
+  - session_group_summaries
+  - session_recording_playlists
+  - session_recordings
+  - session_summaries
+  - sessions
+  - signals
+  - subscriptions
+  - surveys
+  - taggers
+  - task-automations
+  - task-runs
+  - task_automations
+  - tasks
+  - uploaded_media
+  - user_home_settings
+  - user_interviews
+  - users
+  - visual_review
+  - warehouse_dag
+  - warehouse_model_paths
+  - warehouse_saved_queries
+  - warehouse_saved_query_folders
+  - warehouse_tables
+  - warehouse_view_link
+  - warehouse_view_links
+  - web_analytics
+  - web_experiments
+  - web_vitals
+  - welcome
+  - workflows

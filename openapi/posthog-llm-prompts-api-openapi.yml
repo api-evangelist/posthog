@@ -1,0 +1,835 @@
+openapi: 3.0.3
+info:
+  title: PostHog actions llm_prompts API
+  version: 1.0.0
+  description: ''
+tags:
+- name: llm_prompts
+paths:
+  /api/environments/{project_id}/llm_prompts/:
+    get:
+      operationId: llm_prompts_list
+      parameters:
+      - in: query
+        name: content
+        schema:
+          enum:
+          - full
+          - preview
+          - none
+          type: string
+          default: full
+          minLength: 1
+        description: 'Controls how much prompt content is included in the response. ''full'' includes the full prompt, ''preview'' includes a short prompt_preview, and ''none'' omits prompt content entirely. The outline field is always included.
+
+
+          * `full` - full
+
+          * `preview` - preview
+
+          * `none` - none'
+      - in: query
+        name: created_by_id
+        schema:
+          type: integer
+        description: Filter prompts by the ID of the user who created them.
+      - name: limit
+        required: false
+        in: query
+        description: Number of results to return per page.
+        schema:
+          type: integer
+      - name: offset
+        required: false
+        in: query
+        description: The initial index from which to return the results.
+        schema:
+          type: integer
+      - $ref: '#/components/parameters/ProjectIdPath'
+      - in: query
+        name: search
+        schema:
+          type: string
+        description: Optional substring filter applied to prompt names and prompt content.
+      tags:
+      - llm_prompts
+      security:
+      - PersonalAPIKeyAuth:
+        - llm_prompt:read
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedLLMPromptListList'
+          description: ''
+      x-explicit-tags:
+      - llm_analytics
+    post:
+      operationId: llm_prompts_create
+      parameters:
+      - $ref: '#/components/parameters/ProjectIdPath'
+      tags:
+      - llm_prompts
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/LLMPrompt'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/LLMPrompt'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/LLMPrompt'
+        required: true
+      security:
+      - PersonalAPIKeyAuth:
+        - llm_prompt:write
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/LLMPrompt'
+          description: ''
+      x-explicit-tags:
+      - llm_analytics
+  /api/environments/{project_id}/llm_prompts/name/{prompt_name}/:
+    get:
+      operationId: llm_prompts_name_retrieve
+      parameters:
+      - in: query
+        name: content
+        schema:
+          enum:
+          - full
+          - preview
+          - none
+          type: string
+          default: full
+          minLength: 1
+        description: 'Controls how much prompt content is included in the response. ''full'' includes the full prompt, ''preview'' includes a short prompt_preview, and ''none'' omits prompt content entirely. The outline field is always included.
+
+
+          * `full` - full
+
+          * `preview` - preview
+
+          * `none` - none'
+      - $ref: '#/components/parameters/ProjectIdPath'
+      - in: path
+        name: prompt_name
+        schema:
+          type: string
+          pattern: ^[^/]+$
+        required: true
+      - in: query
+        name: version
+        schema:
+          type: integer
+          minimum: 1
+        description: Specific prompt version to fetch. If omitted, the latest version is returned.
+      tags:
+      - llm_prompts
+      security:
+      - PersonalAPIKeyAuth:
+        - llm_prompt:read
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/LLMPromptPublic'
+          description: ''
+      x-explicit-tags:
+      - llm_analytics
+    patch:
+      operationId: llm_prompts_name_partial_update
+      parameters:
+      - $ref: '#/components/parameters/ProjectIdPath'
+      - in: path
+        name: prompt_name
+        schema:
+          type: string
+          pattern: ^[^/]+$
+        required: true
+      tags:
+      - llm_prompts
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchedLLMPromptPublish'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/PatchedLLMPromptPublish'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/PatchedLLMPromptPublish'
+      security:
+      - PersonalAPIKeyAuth:
+        - llm_prompt:write
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/LLMPrompt'
+          description: ''
+      x-explicit-tags:
+      - llm_analytics
+  /api/environments/{project_id}/llm_prompts/name/{prompt_name}/archive/:
+    post:
+      operationId: llm_prompts_name_archive_create
+      parameters:
+      - $ref: '#/components/parameters/ProjectIdPath'
+      - in: path
+        name: prompt_name
+        schema:
+          type: string
+          pattern: ^[^/]+$
+        required: true
+      tags:
+      - llm_prompts
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/LLMPrompt'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/LLMPrompt'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/LLMPrompt'
+        required: true
+      security:
+      - PersonalAPIKeyAuth:
+        - llm_prompt:write
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/LLMPrompt'
+          description: ''
+      x-explicit-tags:
+      - llm_analytics
+  /api/environments/{project_id}/llm_prompts/name/{prompt_name}/duplicate/:
+    post:
+      operationId: llm_prompts_name_duplicate_create
+      parameters:
+      - $ref: '#/components/parameters/ProjectIdPath'
+      - in: path
+        name: prompt_name
+        schema:
+          type: string
+          pattern: ^[^/]+$
+        required: true
+      tags:
+      - llm_prompts
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/LLMPromptDuplicate'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/LLMPromptDuplicate'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/LLMPromptDuplicate'
+        required: true
+      security:
+      - PersonalAPIKeyAuth:
+        - llm_prompt:write
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/LLMPrompt'
+          description: ''
+      x-explicit-tags:
+      - llm_analytics
+  /api/environments/{project_id}/llm_prompts/resolve/name/{prompt_name}/:
+    get:
+      operationId: llm_prompts_resolve_name_retrieve
+      parameters:
+      - in: query
+        name: before_version
+        schema:
+          type: integer
+          minimum: 1
+        description: Return versions older than this version number. Mutually exclusive with offset.
+      - in: query
+        name: limit
+        schema:
+          type: integer
+          maximum: 100
+          minimum: 1
+          default: 50
+        description: Maximum number of versions to return per page (1-100).
+      - in: query
+        name: offset
+        schema:
+          type: integer
+          minimum: 0
+        description: Zero-based offset into version history for pagination. Mutually exclusive with before_version.
+      - $ref: '#/components/parameters/ProjectIdPath'
+      - in: path
+        name: prompt_name
+        schema:
+          type: string
+          pattern: ^[^/]+$
+        required: true
+      - in: query
+        name: version
+        schema:
+          type: integer
+          minimum: 1
+        description: Specific prompt version to fetch. If omitted, the latest version is returned.
+      - in: query
+        name: version_id
+        schema:
+          type: string
+          format: uuid
+        description: Exact prompt version UUID to resolve. Can be used together with version for extra safety.
+      tags:
+      - llm_prompts
+      security:
+      - PersonalAPIKeyAuth:
+        - llm_prompt:read
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/LLMPromptResolveResponse'
+          description: ''
+      x-explicit-tags:
+      - llm_analytics
+components:
+  schemas:
+    LLMPrompt:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+          readOnly: true
+        name:
+          type: string
+          description: Unique prompt name using letters, numbers, hyphens, and underscores only.
+          maxLength: 255
+        prompt:
+          description: Prompt payload as JSON or string data.
+        version:
+          type: integer
+          readOnly: true
+        created_by:
+          allOf:
+          - $ref: '#/components/schemas/UserBasic'
+          readOnly: true
+        created_at:
+          type: string
+          format: date-time
+          readOnly: true
+        updated_at:
+          type: string
+          format: date-time
+          readOnly: true
+        deleted:
+          type: boolean
+          readOnly: true
+        is_latest:
+          type: boolean
+          readOnly: true
+        latest_version:
+          type: integer
+          readOnly: true
+        version_count:
+          type: integer
+          readOnly: true
+        first_version_created_at:
+          type: string
+          readOnly: true
+        outline:
+          type: array
+          items:
+            $ref: '#/components/schemas/LLMPromptOutlineEntry'
+          readOnly: true
+      required:
+      - created_at
+      - created_by
+      - deleted
+      - first_version_created_at
+      - id
+      - is_latest
+      - latest_version
+      - name
+      - outline
+      - prompt
+      - updated_at
+      - version
+      - version_count
+    PaginatedLLMPromptListList:
+      type: object
+      required:
+      - count
+      - results
+      properties:
+        count:
+          type: integer
+          example: 123
+        next:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?offset=400&limit=100
+        previous:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?offset=200&limit=100
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/LLMPromptList'
+    LLMPromptResolveResponse:
+      type: object
+      properties:
+        prompt:
+          $ref: '#/components/schemas/LLMPrompt'
+        versions:
+          type: array
+          items:
+            $ref: '#/components/schemas/LLMPromptVersionSummary'
+        has_more:
+          type: boolean
+      required:
+      - has_more
+      - prompt
+      - versions
+    LLMPromptOutlineEntry:
+      type: object
+      properties:
+        level:
+          type: integer
+          maximum: 6
+          minimum: 1
+          description: Markdown heading level (1-6).
+        text:
+          type: string
+          description: Heading text with markdown link syntax preserved.
+      required:
+      - level
+      - text
+    BlankEnum:
+      enum:
+      - ''
+    LLMPromptList:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+          readOnly: true
+        name:
+          type: string
+          readOnly: true
+          description: Unique prompt name using letters, numbers, hyphens, and underscores only.
+        prompt:
+          readOnly: true
+          description: Prompt payload as JSON or string data.
+        version:
+          type: integer
+          readOnly: true
+        created_by:
+          allOf:
+          - $ref: '#/components/schemas/UserBasic'
+          readOnly: true
+        created_at:
+          type: string
+          format: date-time
+          readOnly: true
+        updated_at:
+          type: string
+          format: date-time
+          readOnly: true
+        deleted:
+          type: boolean
+          readOnly: true
+        is_latest:
+          type: boolean
+          readOnly: true
+        latest_version:
+          type: integer
+          readOnly: true
+        version_count:
+          type: integer
+          readOnly: true
+        first_version_created_at:
+          type: string
+          readOnly: true
+        outline:
+          type: array
+          items:
+            $ref: '#/components/schemas/LLMPromptOutlineEntry'
+          readOnly: true
+        prompt_preview:
+          type: string
+          readOnly: true
+        prompt_size_bytes:
+          type: integer
+          readOnly: true
+      required:
+      - created_at
+      - created_by
+      - deleted
+      - first_version_created_at
+      - id
+      - is_latest
+      - latest_version
+      - name
+      - outline
+      - prompt
+      - prompt_preview
+      - prompt_size_bytes
+      - updated_at
+      - version
+      - version_count
+    UserBasic:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        uuid:
+          type: string
+          format: uuid
+          readOnly: true
+        distinct_id:
+          type: string
+          nullable: true
+          maxLength: 200
+        first_name:
+          type: string
+          maxLength: 150
+        last_name:
+          type: string
+          maxLength: 150
+        email:
+          type: string
+          format: email
+          title: Email address
+          maxLength: 254
+        is_email_verified:
+          type: boolean
+          nullable: true
+        hedgehog_config:
+          type: object
+          additionalProperties: true
+          nullable: true
+          readOnly: true
+        role_at_organization:
+          nullable: true
+          oneOf:
+          - $ref: '#/components/schemas/RoleAtOrganizationEnum'
+          - $ref: '#/components/schemas/BlankEnum'
+          - $ref: '#/components/schemas/NullEnum'
+      required:
+      - email
+      - hedgehog_config
+      - id
+      - uuid
+    LLMPromptDuplicate:
+      type: object
+      properties:
+        new_name:
+          type: string
+          description: Name for the duplicated prompt. Must be unique and use only letters, numbers, hyphens, and underscores.
+          maxLength: 255
+      required:
+      - new_name
+    LLMPromptVersionSummary:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+          readOnly: true
+        version:
+          type: integer
+          readOnly: true
+        created_by:
+          allOf:
+          - $ref: '#/components/schemas/UserBasic'
+          readOnly: true
+        created_at:
+          type: string
+          format: date-time
+          readOnly: true
+        is_latest:
+          type: boolean
+          readOnly: true
+      required:
+      - created_at
+      - created_by
+      - id
+      - is_latest
+      - version
+    PatchedLLMPromptPublish:
+      type: object
+      properties:
+        prompt:
+          description: Full prompt payload to publish as a new version. Mutually exclusive with edits.
+        edits:
+          type: array
+          items:
+            $ref: '#/components/schemas/LLMPromptEditOperation'
+          description: List of find/replace operations to apply to the current prompt version. Each edit's 'old' text must match exactly once. Edits are applied sequentially. Mutually exclusive with prompt.
+        base_version:
+          type: integer
+          minimum: 1
+          description: Latest version you are editing from. Used for optimistic concurrency checks.
+    RoleAtOrganizationEnum:
+      enum:
+      - engineering
+      - data
+      - product
+      - founder
+      - leadership
+      - marketing
+      - sales
+      - other
+      type: string
+      description: '* `engineering` - Engineering
+
+        * `data` - Data
+
+        * `product` - Product Management
+
+        * `founder` - Founder
+
+        * `leadership` - Leadership
+
+        * `marketing` - Marketing
+
+        * `sales` - Sales / Success
+
+        * `other` - Other'
+    LLMPromptPublic:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        name:
+          type: string
+        prompt:
+          description: Full prompt content. Omitted when 'content=preview' or 'content=none'.
+        prompt_preview:
+          type: string
+          description: First 160 characters of the prompt. Only present when 'content=preview'.
+        outline:
+          type: array
+          items:
+            $ref: '#/components/schemas/LLMPromptOutlineEntry'
+          description: Flat list of markdown headings parsed from the prompt. Useful as a lightweight table of contents.
+        version:
+          type: integer
+        created_at:
+          type: string
+          format: date-time
+        updated_at:
+          type: string
+          format: date-time
+        deleted:
+          type: boolean
+        is_latest:
+          type: boolean
+        latest_version:
+          type: integer
+        version_count:
+          type: integer
+        first_version_created_at:
+          type: string
+          format: date-time
+      required:
+      - created_at
+      - deleted
+      - first_version_created_at
+      - id
+      - is_latest
+      - latest_version
+      - name
+      - outline
+      - updated_at
+      - version
+      - version_count
+    LLMPromptEditOperation:
+      type: object
+      properties:
+        old:
+          type: string
+          description: Text to find in the current prompt. Must match exactly once.
+        new:
+          type: string
+          description: Replacement text.
+      required:
+      - new
+      - old
+    NullEnum:
+      enum:
+      - null
+  parameters:
+    ProjectIdPath:
+      in: path
+      name: project_id
+      required: true
+      schema:
+        type: string
+      description: Project ID of the project you're trying to access. To find the ID of the project, make a call to /api/projects/.
+  securitySchemes:
+    PersonalAPIKeyAuth:
+      type: http
+      scheme: bearer
+x-tagGroups:
+- name: All endpoints
+  tags:
+  - LLM Analytics
+  - actions
+  - activity_log
+  - activity_logs
+  - advanced_activity_logs
+  - alerts
+  - annotations
+  - approval_policies
+  - batch_exports
+  - cdp
+  - change_requests
+  - code
+  - code-invites
+  - cohorts
+  - comments
+  - conversations
+  - core
+  - customer_analytics
+  - customer_journeys
+  - customer_profile_configs
+  - dashboard_templates
+  - dashboards
+  - data_color_themes
+  - data_modeling_jobs
+  - data_warehouse
+  - dataset_items
+  - datasets
+  - desktop_recordings
+  - domains
+  - early_access_feature
+  - early_access_features
+  - elements
+  - endpoints
+  - environments
+  - error_tracking
+  - evaluation_runs
+  - evaluations
+  - event_definitions
+  - event_filter
+  - event_schemas
+  - events
+  - experiment_holdouts
+  - experiment_saved_metrics
+  - experiments
+  - exports
+  - external_data_schemas
+  - external_data_sources
+  - feature_flags
+  - file_system
+  - file_system_shortcut
+  - flag_value
+  - groups
+  - groups_types
+  - health_issues
+  - heatmap_screenshots
+  - heatmaps
+  - hog_flows
+  - hog_function_templates
+  - hog_functions
+  - insight_variables
+  - insights
+  - integrations
+  - invites
+  - js-snippet
+  - legal_documents
+  - lineage
+  - live_debugger_breakpoints
+  - llm_analytics
+  - llm_prompts
+  - llm_skills
+  - logs
+  - managed_viewsets
+  - max
+  - max_tools
+  - mcp_server_installations
+  - mcp_servers
+  - mcp_store
+  - mcp_tools
+  - members
+  - notebooks
+  - oauth_applications
+  - object_media_previews
+  - organizations
+  - persisted_folder
+  - persons
+  - platform_features
+  - plugin_configs
+  - product_analytics
+  - product_tours
+  - project_secret_api_keys
+  - projects
+  - property_definitions
+  - proxy_records
+  - public_hog_function_templates
+  - query
+  - replay
+  - reverse_proxy
+  - role_external_references
+  - roles
+  - sandbox-environments
+  - sandbox_environments
+  - saved
+  - schema_property_groups
+  - sdk_doctor
+  - session_group_summaries
+  - session_recording_playlists
+  - session_recordings
+  - session_summaries
+  - sessions
+  - signals
+  - subscriptions
+  - surveys
+  - taggers
+  - task-automations
+  - task-runs
+  - task_automations
+  - tasks
+  - uploaded_media
+  - user_home_settings
+  - user_interviews
+  - users
+  - visual_review
+  - warehouse_dag
+  - warehouse_model_paths
+  - warehouse_saved_queries
+  - warehouse_saved_query_folders
+  - warehouse_tables
+  - warehouse_view_link
+  - warehouse_view_links
+  - web_analytics
+  - web_experiments
+  - web_vitals
+  - welcome
+  - workflows

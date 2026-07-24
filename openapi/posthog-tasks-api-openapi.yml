@@ -1,0 +1,3399 @@
+openapi: 3.0.3
+info:
+  title: PostHog actions tasks API
+  version: 1.0.0
+  description: ''
+tags:
+- name: tasks
+paths:
+  /api/projects/{project_id}/tasks/:
+    get:
+      operationId: tasks_list
+      description: Get a list of tasks for the current project, with optional filtering by origin product, stage, organization, repository, and created_by.
+      summary: List tasks
+      parameters:
+      - in: query
+        name: created_by
+        schema:
+          type: integer
+        description: Filter by creator user ID
+      - in: query
+        name: internal
+        schema:
+          type: boolean
+        description: When true, list internal tasks instead of user-facing ones. Honored only in debug environments; ignored in production. Defaults to excluding internal tasks.
+      - name: limit
+        required: false
+        in: query
+        description: Number of results to return per page.
+        schema:
+          type: integer
+      - name: offset
+        required: false
+        in: query
+        description: The initial index from which to return the results.
+        schema:
+          type: integer
+      - in: query
+        name: organization
+        schema:
+          type: string
+          minLength: 1
+        description: Filter by repository organization
+      - in: query
+        name: origin_product
+        schema:
+          type: string
+          minLength: 1
+        description: Filter by origin product
+      - $ref: '#/components/parameters/ProjectIdPath'
+      - in: query
+        name: repository
+        schema:
+          type: string
+          minLength: 1
+        description: Filter by repository name (can include org/repo format)
+      - in: query
+        name: search
+        schema:
+          type: string
+        description: Case-insensitive substring search over task title and description. A numeric value also matches the task number. An empty value disables the filter.
+      - in: query
+        name: stage
+        schema:
+          type: string
+          minLength: 1
+        description: Filter by task run stage
+      - in: query
+        name: status
+        schema:
+          enum:
+          - not_started
+          - queued
+          - in_progress
+          - completed
+          - failed
+          - cancelled
+          type: string
+          minLength: 1
+        description: 'Filter tasks by the status of their most recent run.
+
+
+          * `not_started` - not_started
+
+          * `queued` - queued
+
+          * `in_progress` - in_progress
+
+          * `completed` - completed
+
+          * `failed` - failed
+
+          * `cancelled` - cancelled'
+      tags:
+      - tasks
+      security:
+      - PersonalAPIKeyAuth:
+        - task:read
+      - PersonalAPIKeyAuth:
+        - task:read
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedTaskList'
+          description: List of tasks
+      x-explicit-tags:
+      - tasks
+    post:
+      operationId: tasks_create
+      description: API for managing tasks within a project. Tasks represent units of work to be performed by an agent.
+      parameters:
+      - $ref: '#/components/parameters/ProjectIdPath'
+      tags:
+      - tasks
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Task'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/Task'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/Task'
+      security:
+      - PersonalAPIKeyAuth:
+        - task:write
+      - PersonalAPIKeyAuth:
+        - task:write
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Task'
+          description: ''
+      x-explicit-tags:
+      - tasks
+  /api/projects/{project_id}/tasks/{id}/:
+    get:
+      operationId: tasks_retrieve
+      description: API for managing tasks within a project. Tasks represent units of work to be performed by an agent.
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this task.
+        required: true
+      - $ref: '#/components/parameters/ProjectIdPath'
+      tags:
+      - tasks
+      security:
+      - PersonalAPIKeyAuth:
+        - task:read
+      - PersonalAPIKeyAuth:
+        - task:read
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Task'
+          description: ''
+      x-explicit-tags:
+      - tasks
+    put:
+      operationId: tasks_update
+      description: API for managing tasks within a project. Tasks represent units of work to be performed by an agent.
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this task.
+        required: true
+      - $ref: '#/components/parameters/ProjectIdPath'
+      tags:
+      - tasks
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Task'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/Task'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/Task'
+      security:
+      - PersonalAPIKeyAuth:
+        - task:write
+      - PersonalAPIKeyAuth:
+        - task:write
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Task'
+          description: ''
+      x-explicit-tags:
+      - tasks
+    patch:
+      operationId: tasks_partial_update
+      description: API for managing tasks within a project. Tasks represent units of work to be performed by an agent.
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this task.
+        required: true
+      - $ref: '#/components/parameters/ProjectIdPath'
+      tags:
+      - tasks
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchedTask'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/PatchedTask'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/PatchedTask'
+      security:
+      - PersonalAPIKeyAuth:
+        - task:write
+      - PersonalAPIKeyAuth:
+        - task:write
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Task'
+          description: ''
+      x-explicit-tags:
+      - tasks
+    delete:
+      operationId: tasks_destroy
+      description: API for managing tasks within a project. Tasks represent units of work to be performed by an agent.
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this task.
+        required: true
+      - $ref: '#/components/parameters/ProjectIdPath'
+      tags:
+      - tasks
+      security:
+      - PersonalAPIKeyAuth:
+        - task:write
+      - PersonalAPIKeyAuth:
+        - task:write
+      responses:
+        '204':
+          description: No response body
+      x-explicit-tags:
+      - tasks
+  /api/projects/{project_id}/tasks/{id}/run/:
+    post:
+      operationId: tasks_run_create
+      description: Create a new task run and kick off the workflow.
+      summary: Run task
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this task.
+        required: true
+      - $ref: '#/components/parameters/ProjectIdPath'
+      tags:
+      - tasks
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/TaskRunCreateRequestSchema'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/TaskRunCreateRequestSchema'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/TaskRunCreateRequestSchema'
+      security:
+      - PersonalAPIKeyAuth:
+        - task:write
+      - PersonalAPIKeyAuth:
+        - task:write
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Task'
+          description: Task with updated latest run
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TaskRunErrorResponse'
+          description: Invalid task run payload
+        '404':
+          description: Task not found
+      x-explicit-tags:
+      - tasks
+  /api/projects/{project_id}/tasks/{id}/staged_artifacts/finalize_upload/:
+    post:
+      operationId: tasks_staged_artifacts_finalize_upload_create
+      description: Verify staged S3 uploads and cache their metadata so they can be attached to the next run created for this task.
+      summary: Finalize staged direct uploads for task attachments
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this task.
+        required: true
+      - $ref: '#/components/parameters/ProjectIdPath'
+      tags:
+      - tasks
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/TaskStagedArtifactsFinalizeUploadRequest'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/TaskStagedArtifactsFinalizeUploadRequest'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/TaskStagedArtifactsFinalizeUploadRequest'
+        required: true
+      security:
+      - PersonalAPIKeyAuth:
+        - task:write
+      - PersonalAPIKeyAuth:
+        - task:write
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TaskStagedArtifactsFinalizeUploadResponse'
+          description: Finalized staged artifacts available for the next task run
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+          description: Invalid artifact payload
+        '404':
+          description: Task not found
+      x-explicit-tags:
+      - tasks
+  /api/projects/{project_id}/tasks/{id}/staged_artifacts/prepare_upload/:
+    post:
+      operationId: tasks_staged_artifacts_prepare_upload_create
+      description: Reserve S3 object keys for task attachments before creating a new run and return presigned POST forms for direct uploads.
+      summary: Prepare staged direct uploads for task attachments
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this task.
+        required: true
+      - $ref: '#/components/parameters/ProjectIdPath'
+      tags:
+      - tasks
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/TaskStagedArtifactsPrepareUploadRequest'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/TaskStagedArtifactsPrepareUploadRequest'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/TaskStagedArtifactsPrepareUploadRequest'
+        required: true
+      security:
+      - PersonalAPIKeyAuth:
+        - task:write
+      - PersonalAPIKeyAuth:
+        - task:write
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TaskStagedArtifactsPrepareUploadResponse'
+          description: Prepared staged uploads for the requested artifacts
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+          description: Invalid artifact payload
+        '404':
+          description: Task not found
+      x-explicit-tags:
+      - tasks
+  /api/projects/{project_id}/tasks/{task_id}/runs/:
+    get:
+      operationId: tasks_runs_list
+      description: Get a list of runs for a specific task.
+      summary: List task runs
+      parameters:
+      - name: limit
+        required: false
+        in: query
+        description: Number of results to return per page.
+        schema:
+          type: integer
+      - name: offset
+        required: false
+        in: query
+        description: The initial index from which to return the results.
+        schema:
+          type: integer
+      - $ref: '#/components/parameters/ProjectIdPath'
+      - in: path
+        name: task_id
+        schema:
+          type: string
+          format: uuid
+        required: true
+      tags:
+      - tasks
+      security:
+      - PersonalAPIKeyAuth:
+        - task:read
+      - PersonalAPIKeyAuth:
+        - task:read
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedTaskRunDetailList'
+          description: List of task runs
+      x-explicit-tags:
+      - task-runs
+      - tasks
+    post:
+      operationId: tasks_runs_create
+      description: Create a new run for a specific task without starting execution.
+      summary: Create task run
+      parameters:
+      - $ref: '#/components/parameters/ProjectIdPath'
+      - in: path
+        name: task_id
+        schema:
+          type: string
+          format: uuid
+        required: true
+      tags:
+      - tasks
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/TaskRunBootstrapCreateRequest'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/TaskRunBootstrapCreateRequest'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/TaskRunBootstrapCreateRequest'
+      security:
+      - PersonalAPIKeyAuth:
+        - task:write
+      - PersonalAPIKeyAuth:
+        - task:write
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TaskRunDetail'
+          description: Created task run
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TaskRunErrorResponse'
+          description: Invalid task run payload
+      x-explicit-tags:
+      - task-runs
+      - tasks
+  /api/projects/{project_id}/tasks/{task_id}/runs/{id}/:
+    get:
+      operationId: tasks_runs_retrieve
+      description: API for managing task runs. Each run represents an execution of a task.
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this task run.
+        required: true
+      - $ref: '#/components/parameters/ProjectIdPath'
+      - in: path
+        name: task_id
+        schema:
+          type: string
+          format: uuid
+        required: true
+      tags:
+      - tasks
+      security:
+      - PersonalAPIKeyAuth:
+        - task:read
+      - PersonalAPIKeyAuth:
+        - task:read
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TaskRunDetail'
+          description: ''
+      x-explicit-tags:
+      - task-runs
+    patch:
+      operationId: tasks_runs_partial_update
+      description: API for managing task runs. Each run represents an execution of a task.
+      summary: Update task run
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this task run.
+        required: true
+      - $ref: '#/components/parameters/ProjectIdPath'
+      - in: path
+        name: task_id
+        schema:
+          type: string
+          format: uuid
+        required: true
+      tags:
+      - tasks
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchedTaskRunUpdate'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/PatchedTaskRunUpdate'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/PatchedTaskRunUpdate'
+      security:
+      - PersonalAPIKeyAuth:
+        - task:write
+      - PersonalAPIKeyAuth:
+        - task:write
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TaskRunDetail'
+          description: Updated task run
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+          description: Invalid update data
+        '404':
+          description: Task run not found
+      x-explicit-tags:
+      - task-runs
+  /api/projects/{project_id}/tasks/{task_id}/runs/{id}/append_log/:
+    post:
+      operationId: tasks_runs_append_log_create
+      description: Append one or more log entries to the task run log array
+      summary: Append log entries
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this task run.
+        required: true
+      - $ref: '#/components/parameters/ProjectIdPath'
+      - in: path
+        name: task_id
+        schema:
+          type: string
+          format: uuid
+        required: true
+      tags:
+      - tasks
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/TaskRunAppendLogRequest'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/TaskRunAppendLogRequest'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/TaskRunAppendLogRequest'
+        required: true
+      security:
+      - PersonalAPIKeyAuth:
+        - task:write
+      - PersonalAPIKeyAuth:
+        - task:write
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TaskRunDetail'
+          description: Run with updated log
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+          description: Invalid log entries
+        '404':
+          description: Run not found
+      x-explicit-tags:
+      - task-runs
+  /api/projects/{project_id}/tasks/{task_id}/runs/{id}/artifacts/:
+    post:
+      operationId: tasks_runs_artifacts_create
+      description: Persist task artifacts to S3 and attach them to the run manifest.
+      summary: Upload artifacts for a task run
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this task run.
+        required: true
+      - $ref: '#/components/parameters/ProjectIdPath'
+      - in: path
+        name: task_id
+        schema:
+          type: string
+          format: uuid
+        required: true
+      tags:
+      - tasks
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/TaskRunArtifactsUploadRequest'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/TaskRunArtifactsUploadRequest'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/TaskRunArtifactsUploadRequest'
+        required: true
+      security:
+      - PersonalAPIKeyAuth:
+        - task:write
+      - PersonalAPIKeyAuth:
+        - task:write
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TaskRunArtifactsUploadResponse'
+          description: Run with updated artifact manifest
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+          description: Invalid artifact payload
+        '404':
+          description: Run not found
+      x-explicit-tags:
+      - task-runs
+  /api/projects/{project_id}/tasks/{task_id}/runs/{id}/artifacts/download/:
+    post:
+      operationId: tasks_runs_artifacts_download_create
+      description: Streams artifact content for a task run artifact after validating that it belongs to the run.
+      summary: Download an artifact through the backend
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this task run.
+        required: true
+      - $ref: '#/components/parameters/ProjectIdPath'
+      - in: path
+        name: task_id
+        schema:
+          type: string
+          format: uuid
+        required: true
+      tags:
+      - tasks
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/TaskRunArtifactPresignRequest'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/TaskRunArtifactPresignRequest'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/TaskRunArtifactPresignRequest'
+        required: true
+      security:
+      - PersonalAPIKeyAuth:
+        - task:read
+      - PersonalAPIKeyAuth:
+        - task:read
+      responses:
+        '200':
+          description: Artifact content
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+          description: Invalid request
+        '404':
+          description: Artifact not found
+      x-explicit-tags:
+      - task-runs
+  /api/projects/{project_id}/tasks/{task_id}/runs/{id}/artifacts/finalize_upload/:
+    post:
+      operationId: tasks_runs_artifacts_finalize_upload_create
+      description: Verify directly uploaded S3 objects and attach them to the run artifact manifest.
+      summary: Finalize direct uploads for task run artifacts
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this task run.
+        required: true
+      - $ref: '#/components/parameters/ProjectIdPath'
+      - in: path
+        name: task_id
+        schema:
+          type: string
+          format: uuid
+        required: true
+      tags:
+      - tasks
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/TaskRunArtifactsFinalizeUploadRequest'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/TaskRunArtifactsFinalizeUploadRequest'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/TaskRunArtifactsFinalizeUploadRequest'
+        required: true
+      security:
+      - PersonalAPIKeyAuth:
+        - task:write
+      - PersonalAPIKeyAuth:
+        - task:write
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TaskRunArtifactsFinalizeUploadResponse'
+          description: Run with updated artifact manifest
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+          description: Invalid artifact payload
+        '404':
+          description: Run not found
+      x-explicit-tags:
+      - task-runs
+  /api/projects/{project_id}/tasks/{task_id}/runs/{id}/artifacts/prepare_upload/:
+    post:
+      operationId: tasks_runs_artifacts_prepare_upload_create
+      description: Reserve S3 object keys for task artifacts and return presigned POST forms for direct uploads.
+      summary: Prepare direct uploads for task run artifacts
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this task run.
+        required: true
+      - $ref: '#/components/parameters/ProjectIdPath'
+      - in: path
+        name: task_id
+        schema:
+          type: string
+          format: uuid
+        required: true
+      tags:
+      - tasks
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/TaskRunArtifactsPrepareUploadRequest'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/TaskRunArtifactsPrepareUploadRequest'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/TaskRunArtifactsPrepareUploadRequest'
+        required: true
+      security:
+      - PersonalAPIKeyAuth:
+        - task:write
+      - PersonalAPIKeyAuth:
+        - task:write
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TaskRunArtifactsPrepareUploadResponse'
+          description: Prepared uploads for the requested artifacts
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+          description: Invalid artifact payload
+        '404':
+          description: Run not found
+      x-explicit-tags:
+      - task-runs
+  /api/projects/{project_id}/tasks/{task_id}/runs/{id}/artifacts/presign/:
+    post:
+      operationId: tasks_runs_artifacts_presign_create
+      description: Returns a temporary, signed URL that can be used to download a specific artifact.
+      summary: Generate presigned URL for an artifact
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this task run.
+        required: true
+      - $ref: '#/components/parameters/ProjectIdPath'
+      - in: path
+        name: task_id
+        schema:
+          type: string
+          format: uuid
+        required: true
+      tags:
+      - tasks
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/TaskRunArtifactPresignRequest'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/TaskRunArtifactPresignRequest'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/TaskRunArtifactPresignRequest'
+        required: true
+      security:
+      - PersonalAPIKeyAuth:
+        - task:read
+      - PersonalAPIKeyAuth:
+        - task:read
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TaskRunArtifactPresignResponse'
+          description: Presigned URL for the requested artifact
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+          description: Invalid request
+        '404':
+          description: Artifact not found
+      x-explicit-tags:
+      - task-runs
+  /api/projects/{project_id}/tasks/{task_id}/runs/{id}/command/:
+    post:
+      operationId: tasks_runs_command_create
+      description: Forward a JSON-RPC command to the agent server running in the sandbox. Supports user_message, cancel, close, permission_response, and set_config_option commands.
+      summary: Send command to agent server
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this task run.
+        required: true
+      - $ref: '#/components/parameters/ProjectIdPath'
+      - in: path
+        name: task_id
+        schema:
+          type: string
+          format: uuid
+        required: true
+      tags:
+      - tasks
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/TaskRunCommandRequest'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/TaskRunCommandRequest'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/TaskRunCommandRequest'
+        required: true
+      security:
+      - PersonalAPIKeyAuth:
+        - task:write
+      - PersonalAPIKeyAuth:
+        - task:write
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TaskRunCommandResponse'
+          description: Agent server response
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+          description: Invalid command or no active sandbox
+        '404':
+          description: Task run not found
+        '502':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+          description: Agent server unreachable
+      x-explicit-tags:
+      - task-runs
+  /api/projects/{project_id}/tasks/{task_id}/runs/{id}/connection_token/:
+    get:
+      operationId: tasks_runs_connection_token_retrieve
+      description: Generate a JWT token for direct connection to the sandbox. Valid for 24 hours.
+      summary: Get sandbox connection token
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this task run.
+        required: true
+      - $ref: '#/components/parameters/ProjectIdPath'
+      - in: path
+        name: task_id
+        schema:
+          type: string
+          format: uuid
+        required: true
+      tags:
+      - tasks
+      security:
+      - PersonalAPIKeyAuth:
+        - task:read
+      - PersonalAPIKeyAuth:
+        - task:read
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ConnectionTokenResponse'
+          description: Connection token for direct sandbox connection
+        '404':
+          description: Task run not found
+      x-explicit-tags:
+      - task-runs
+  /api/projects/{project_id}/tasks/{task_id}/runs/{id}/logs/:
+    get:
+      operationId: tasks_runs_logs_retrieve
+      description: Fetch the logs for a task run as JSONL. If the run resumes from another (state.resume_from_run_id), each ancestor's log is concatenated first (oldest ancestor → ... → this run) so resume consumers see a single continuous history and can find the most recent git_checkpoint event regardless of which run emitted it.
+      summary: Get task run logs
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this task run.
+        required: true
+      - $ref: '#/components/parameters/ProjectIdPath'
+      - in: path
+        name: task_id
+        schema:
+          type: string
+          format: uuid
+        required: true
+      tags:
+      - tasks
+      security:
+      - PersonalAPIKeyAuth:
+        - task:read
+      - PersonalAPIKeyAuth:
+        - task:read
+      responses:
+        '200':
+          description: Log content in JSONL format
+        '404':
+          description: Task run not found
+      x-explicit-tags:
+      - task-runs
+  /api/projects/{project_id}/tasks/{task_id}/runs/{id}/relay_message/:
+    post:
+      operationId: tasks_runs_relay_message_create
+      description: Queue a Slack relay workflow to post a run message into the mapped Slack thread.
+      summary: Relay run message to Slack
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this task run.
+        required: true
+      - $ref: '#/components/parameters/ProjectIdPath'
+      - in: path
+        name: task_id
+        schema:
+          type: string
+          format: uuid
+        required: true
+      tags:
+      - tasks
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/TaskRunRelayMessageRequest'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/TaskRunRelayMessageRequest'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/TaskRunRelayMessageRequest'
+        required: true
+      security:
+      - PersonalAPIKeyAuth:
+        - task:write
+      - PersonalAPIKeyAuth:
+        - task:write
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TaskRunRelayMessageResponse'
+          description: Relay accepted
+        '404':
+          description: Run not found
+      x-explicit-tags:
+      - task-runs
+  /api/projects/{project_id}/tasks/{task_id}/runs/{id}/resume_in_cloud/:
+    post:
+      operationId: tasks_runs_resume_in_cloud_create
+      description: Resume an existing task run in a cloud sandbox. Terminates any existing workflow and starts a new one.
+      summary: Resume task run in cloud
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this task run.
+        required: true
+      - $ref: '#/components/parameters/ProjectIdPath'
+      - in: path
+        name: task_id
+        schema:
+          type: string
+          format: uuid
+        required: true
+      tags:
+      - tasks
+      security:
+      - PersonalAPIKeyAuth:
+        - task:write
+      - PersonalAPIKeyAuth:
+        - task:write
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TaskRunDetail'
+          description: Run resumed in cloud
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+          description: Run already active or workflow failed
+      x-explicit-tags:
+      - task-runs
+  /api/projects/{project_id}/tasks/{task_id}/runs/{id}/session_logs/:
+    get:
+      operationId: tasks_runs_session_logs_retrieve
+      description: Fetch session log entries for a task run with optional filtering by timestamp, event type, and limit.
+      summary: Get filtered task run session logs
+      parameters:
+      - in: query
+        name: after
+        schema:
+          type: string
+          format: date-time
+        description: Only return events after this ISO8601 timestamp
+      - in: query
+        name: event_types
+        schema:
+          type: string
+          minLength: 1
+        description: Comma-separated list of event types to include
+      - in: query
+        name: exclude_types
+        schema:
+          type: string
+          minLength: 1
+        description: Comma-separated list of event types to exclude
+      - in: path
+        name: id
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this task run.
+        required: true
+      - in: query
+        name: limit
+        schema:
+          type: integer
+          maximum: 5000
+          minimum: 1
+          default: 1000
+        description: Maximum number of entries to return (default 1000, max 5000)
+      - in: query
+        name: offset
+        schema:
+          type: integer
+          minimum: 0
+          default: 0
+        description: Zero-based offset into the filtered log entries
+      - $ref: '#/components/parameters/ProjectIdPath'
+      - in: path
+        name: task_id
+        schema:
+          type: string
+          format: uuid
+        required: true
+      tags:
+      - tasks
+      security:
+      - PersonalAPIKeyAuth:
+        - task:read
+      - PersonalAPIKeyAuth:
+        - task:read
+      responses:
+        '200':
+          description: Filtered log events as JSON array
+        '404':
+          description: Task run not found
+      x-explicit-tags:
+      - task-runs
+  /api/projects/{project_id}/tasks/{task_id}/runs/{id}/set_output/:
+    patch:
+      operationId: tasks_runs_set_output_partial_update
+      description: Update the output field for a task run (e.g., PR URL, commit SHA, etc.)
+      summary: Set run output
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this task run.
+        required: true
+      - $ref: '#/components/parameters/ProjectIdPath'
+      - in: path
+        name: task_id
+        schema:
+          type: string
+          format: uuid
+        required: true
+      tags:
+      - tasks
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchedTaskRunSetOutputRequest'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/PatchedTaskRunSetOutputRequest'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/PatchedTaskRunSetOutputRequest'
+      security:
+      - PersonalAPIKeyAuth:
+        - task:write
+      - PersonalAPIKeyAuth:
+        - task:write
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TaskRunDetail'
+          description: Run with updated output
+        '404':
+          description: Run not found
+      x-explicit-tags:
+      - task-runs
+  /api/projects/{project_id}/tasks/{task_id}/runs/{id}/start/:
+    post:
+      operationId: tasks_runs_start_create
+      description: Start an existing cloud run after any initial run-scoped attachments have been uploaded.
+      summary: Start task run
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this task run.
+        required: true
+      - $ref: '#/components/parameters/ProjectIdPath'
+      - in: path
+        name: task_id
+        schema:
+          type: string
+          format: uuid
+        required: true
+      tags:
+      - tasks
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/TaskRunStartRequest'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/TaskRunStartRequest'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/TaskRunStartRequest'
+      security:
+      - PersonalAPIKeyAuth:
+        - task:write
+      - PersonalAPIKeyAuth:
+        - task:write
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Task'
+          description: Task with updated latest run
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+          description: Invalid start payload
+        '404':
+          description: Task run not found
+      x-explicit-tags:
+      - task-runs
+  /api/projects/{project_id}/tasks/{task_id}/runs/{id}/stream/:
+    get:
+      operationId: tasks_runs_stream_retrieve
+      description: API for managing task runs. Each run represents an execution of a task.
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this task run.
+        required: true
+      - $ref: '#/components/parameters/ProjectIdPath'
+      - in: path
+        name: task_id
+        schema:
+          type: string
+          format: uuid
+        required: true
+      tags:
+      - tasks
+      security:
+      - PersonalAPIKeyAuth:
+        - task:read
+      - PersonalAPIKeyAuth:
+        - task:read
+      responses:
+        '200':
+          content:
+            text/event-stream:
+              schema:
+                $ref: '#/components/schemas/TaskRunDetail'
+          description: ''
+      x-explicit-tags:
+      - task-runs
+  /api/projects/{project_id}/tasks/repositories/:
+    get:
+      operationId: tasks_repositories_retrieve
+      description: Return the set of repositories referenced by non-deleted, non-internal tasks in the current project. Used to populate repository filter pickers without being constrained by task list pagination.
+      summary: List distinct task repositories
+      parameters:
+      - $ref: '#/components/parameters/ProjectIdPath'
+      tags:
+      - tasks
+      security:
+      - PersonalAPIKeyAuth:
+        - task:read
+      - PersonalAPIKeyAuth:
+        - task:read
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TaskRepositoriesResponse'
+          description: Distinct repositories used by tasks in the current project.
+      x-explicit-tags:
+      - tasks
+  /api/projects/{project_id}/tasks/repository_readiness/:
+    get:
+      operationId: tasks_repository_readiness_retrieve
+      description: Get autonomy readiness details for a specific repository in the current project.
+      summary: Get repository readiness
+      parameters:
+      - $ref: '#/components/parameters/ProjectIdPath'
+      - in: query
+        name: refresh
+        schema:
+          type: boolean
+          default: false
+      - in: query
+        name: repository
+        schema:
+          type: string
+          minLength: 1
+        description: Repository in org/repo format
+        required: true
+      - in: query
+        name: window_days
+        schema:
+          type: integer
+          maximum: 30
+          minimum: 1
+          default: 7
+      tags:
+      - tasks
+      security:
+      - PersonalAPIKeyAuth:
+        - task:read
+      - PersonalAPIKeyAuth:
+        - task:read
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RepositoryReadinessResponse'
+          description: Repository readiness status
+      x-explicit-tags:
+      - tasks
+components:
+  schemas:
+    TaskRunArtifactsUploadRequest:
+      type: object
+      properties:
+        artifacts:
+          type: array
+          items:
+            $ref: '#/components/schemas/TaskRunArtifactUpload'
+          description: Array of artifacts to upload
+      required:
+      - artifacts
+    CodexRuntimeAdapterEnum:
+      enum:
+      - codex
+      type: string
+      description: '* `codex` - codex'
+    TaskRunResumeRequestSchema:
+      type: object
+      properties:
+        mode:
+          allOf:
+          - $ref: '#/components/schemas/TaskExecutionModeEnum'
+          default: background
+          description: 'Execution mode: ''interactive'' for user-connected runs, ''background'' for autonomous runs
+
+
+            * `interactive` - interactive
+
+            * `background` - background'
+        branch:
+          type: string
+          nullable: true
+          description: Git branch to checkout in the sandbox
+          maxLength: 255
+        resume_from_run_id:
+          type: string
+          format: uuid
+          description: ID of a previous run to resume from. Must belong to the same task.
+        pending_user_message:
+          type: string
+          description: Initial or follow-up user message to include in the run prompt.
+        sandbox_environment_id:
+          type: string
+          format: uuid
+          description: Optional sandbox environment to apply for this cloud run.
+        pr_authorship_mode:
+          allOf:
+          - $ref: '#/components/schemas/PrAuthorshipModeEnum'
+          description: 'Whether pull requests for this run should be authored by the user or the bot.
+
+
+            * `user` - user
+
+            * `bot` - bot'
+        run_source:
+          allOf:
+          - $ref: '#/components/schemas/RunSourceEnum'
+          description: 'High-level source that triggered this run, used to distinguish manual and signal-based cloud runs.
+
+
+            * `manual` - manual
+
+            * `signal_report` - signal_report'
+        signal_report_id:
+          type: string
+          description: Optional signal report identifier when this run was started from Inbox.
+        github_user_token:
+          type: string
+          writeOnly: true
+          description: Optional GitHub user token from PostHog Code for user-authored cloud pull requests. Prefer linking GitHub from Settings → Linked accounts so the server can manage tokens; this field remains supported for callers that still manage their own tokens.
+    TaskRunArtifactsFinalizeUploadRequest:
+      type: object
+      properties:
+        artifacts:
+          type: array
+          items:
+            $ref: '#/components/schemas/TaskRunArtifactFinalizeUpload'
+          description: Array of uploaded artifacts to finalize
+      required:
+      - artifacts
+    JsonrpcEnum:
+      enum:
+      - '2.0'
+      type: string
+      description: '* `2.0` - 2.0'
+    Task:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+          readOnly: true
+        task_number:
+          type: integer
+          readOnly: true
+          nullable: true
+        slug:
+          type: string
+          readOnly: true
+        title:
+          type: string
+          maxLength: 255
+        title_manually_set:
+          type: boolean
+        description:
+          type: string
+        origin_product:
+          $ref: '#/components/schemas/OriginProductEnum'
+        repository:
+          type: string
+          nullable: true
+          maxLength: 255
+        github_integration:
+          type: integer
+          nullable: true
+          description: GitHub integration for this task
+        github_user_integration:
+          type: string
+          format: uuid
+          nullable: true
+          description: User-scoped GitHub integration to use for user-authored cloud runs.
+        signal_report:
+          type: string
+          format: uuid
+          nullable: true
+        signal_report_task_relationship:
+          allOf:
+          - $ref: '#/components/schemas/SignalReportTaskRelationshipEnum'
+          writeOnly: true
+        json_schema:
+          nullable: true
+          description: JSON schema for the task. This is used to validate the output of the task.
+        internal:
+          type: boolean
+          description: If true, this task is for internal use and should not be exposed to end users.
+        latest_run:
+          type: object
+          additionalProperties: true
+          nullable: true
+          description: Latest run details for this task
+          readOnly: true
+        created_at:
+          type: string
+          format: date-time
+          readOnly: true
+        updated_at:
+          type: string
+          format: date-time
+          readOnly: true
+        created_by:
+          allOf:
+          - $ref: '#/components/schemas/UserBasic'
+          readOnly: true
+        ci_prompt:
+          type: string
+          nullable: true
+          description: Custom prompt for CI fixes. If blank, a default prompt will be used.
+      required:
+      - created_at
+      - created_by
+      - id
+      - latest_run
+      - slug
+      - task_number
+      - updated_at
+    PaginatedTaskList:
+      type: object
+      required:
+      - count
+      - results
+      properties:
+        count:
+          type: integer
+          example: 123
+        next:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?offset=400&limit=100
+        previous:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?offset=200&limit=100
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/Task'
+    CapabilityStateStateEnum:
+      enum:
+      - needs_setup
+      - detected
+      - waiting_for_data
+      - ready
+      - not_applicable
+      - unknown
+      type: string
+      description: '* `needs_setup` - needs_setup
+
+        * `detected` - detected
+
+        * `waiting_for_data` - waiting_for_data
+
+        * `ready` - ready
+
+        * `not_applicable` - not_applicable
+
+        * `unknown` - unknown'
+    TaskRunArtifactsPrepareUploadResponse:
+      type: object
+      properties:
+        artifacts:
+          type: array
+          items:
+            $ref: '#/components/schemas/TaskRunArtifactPrepareUploadResponse'
+          description: Prepared uploads for the requested artifacts
+      required:
+      - artifacts
+    TaskRunBootstrapCreateRequest:
+      type: object
+      description: Request body for creating a task run without starting execution yet.
+      properties:
+        environment:
+          allOf:
+          - $ref: '#/components/schemas/TaskRunBootstrapCreateRequestEnvironmentEnum'
+          default: local
+          description: 'Execution environment for the new run. Use ''cloud'' for remote sandbox runs and ''local'' for desktop sessions.
+
+
+            * `local` - local
+
+            * `cloud` - cloud'
+        mode:
+          allOf:
+          - $ref: '#/components/schemas/TaskExecutionModeEnum'
+          default: background
+          description: 'Execution mode: ''interactive'' for user-connected runs, ''background'' for autonomous runs
+
+
+            * `interactive` - interactive
+
+            * `background` - background'
+        branch:
+          type: string
+          nullable: true
+          description: Git branch to checkout in the sandbox
+          maxLength: 255
+        sandbox_environment_id:
+          type: string
+          format: uuid
+          description: Optional sandbox environment to apply for this cloud run.
+        pr_authorship_mode:
+          allOf:
+          - $ref: '#/components/schemas/PrAuthorshipModeEnum'
+          description: 'Whether pull requests for this run should be authored by the user or the bot.
+
+
+            * `user` - user
+
+            * `bot` - bot'
+        run_source:
+          allOf:
+          - $ref: '#/components/schemas/RunSourceEnum'
+          description: 'High-level source that triggered this run, used to distinguish manual and signal-based cloud runs.
+
+
+            * `manual` - manual
+
+            * `signal_report` - signal_report'
+        signal_report_id:
+          type: string
+          description: Optional signal report identifier when this run was started from Inbox.
+        runtime_adapter:
+          allOf:
+          - $ref: '#/components/schemas/RuntimeAdapterEnum'
+          description: 'Agent runtime adapter to launch for this run. Use ''claude'' for the Claude runtime or ''codex'' for the Codex runtime.
+
+
+            * `claude` - claude
+
+            * `codex` - codex'
+        model:
+          type: string
+          description: LLM model identifier to run in the selected runtime.
+        reasoning_effort:
+          allOf:
+          - $ref: '#/components/schemas/ReasoningEffortEnum'
+          description: 'Reasoning effort to request for models that expose an effort control.
+
+
+            * `low` - low
+
+            * `medium` - medium
+
+            * `high` - high
+
+            * `xhigh` - xhigh
+
+            * `max` - max'
+        github_user_token:
+          type: string
+          writeOnly: true
+          description: Ephemeral GitHub user token from PostHog Code for user-authored cloud pull requests.
+        initial_permission_mode:
+          allOf:
+          - $ref: '#/components/schemas/TaskRunBootstrapCreateRequestInitialPermissionModeEnum'
+          description: 'Initial permission mode for the agent session. Claude runtimes accept PostHog permission presets like ''plan''. Codex runtimes accept native Codex modes like ''auto'' and ''read-only''.
+
+
+            * `default` - default
+
+            * `acceptEdits` - acceptEdits
+
+            * `plan` - plan
+
+            * `bypassPermissions` - bypassPermissions
+
+            * `auto` - auto
+
+            * `read-only` - read-only
+
+            * `full-access` - full-access'
+    RoleAtOrganizationEnum:
+      enum:
+      - engineering
+      - data
+      - product
+      - founder
+      - leadership
+      - marketing
+      - sales
+      - other
+      type: string
+      description: '* `engineering` - Engineering
+
+        * `data` - Data
+
+        * `product` - Product Management
+
+        * `founder` - Founder
+
+        * `leadership` - Leadership
+
+        * `marketing` - Marketing
+
+        * `sales` - Sales / Success
+
+        * `other` - Other'
+    PaginatedTaskRunDetailList:
+      type: object
+      required:
+      - count
+      - results
+      properties:
+        count:
+          type: integer
+          example: 123
+        next:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?offset=400&limit=100
+        previous:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?offset=200&limit=100
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/TaskRunDetail'
+    TaskStagedArtifactPrepareUploadResponse:
+      type: object
+      properties:
+        id:
+          type: string
+          description: Stable identifier for the prepared staged artifact within this task
+        name:
+          type: string
+          description: Artifact file name
+        type:
+          type: string
+          description: Artifact classification (plan, context, etc.)
+        source:
+          type: string
+          description: Source of the artifact, such as agent_output or user_attachment
+        size:
+          type: integer
+          description: Expected upload size in bytes
+        content_type:
+          type: string
+          description: Optional MIME type
+        storage_path:
+          type: string
+          description: S3 object key reserved for the staged artifact
+        expires_in:
+          type: integer
+          description: Presigned POST expiry in seconds
+        presigned_post:
+          allOf:
+          - $ref: '#/components/schemas/S3PresignedPost'
+          description: Presigned S3 POST configuration for uploading the file
+      required:
+      - expires_in
+      - id
+      - name
+      - presigned_post
+      - size
+      - storage_path
+      - type
+    TaskStagedArtifactsFinalizeUploadRequest:
+      type: object
+      properties:
+        artifacts:
+          type: array
+          items:
+            $ref: '#/components/schemas/TaskStagedArtifactFinalizeUpload'
+          description: Array of staged artifacts to finalize after upload
+      required:
+      - artifacts
+    TaskStagedArtifactFinalizeUpload:
+      type: object
+      properties:
+        id:
+          type: string
+          description: Stable identifier returned by the staged prepare upload endpoint
+        name:
+          type: string
+          description: File name associated with the staged artifact
+          maxLength: 255
+        type:
+          allOf:
+          - $ref: '#/components/schemas/TaskRunArtifactTypeEnum'
+          description: 'Classification for the artifact
+
+
+            * `plan` - plan
+
+            * `context` - context
+
+            * `reference` - reference
+
+            * `output` - output
+
+            * `artifact` - artifact
+
+            * `tree_snapshot` - tree_snapshot
+
+            * `user_attachment` - user_attachment'
+        source:
+          type: string
+          default: ''
+          description: Optional source label for the artifact, such as agent_output or user_attachment
+          maxLength: 64
+        storage_path:
+          type: string
+          description: S3 object key returned by the prepare step
+          maxLength: 500
+        content_type:
+          type: string
+          description: Optional MIME type recorded for the artifact
+          maxLength: 255
+      required:
+      - id
+      - name
+      - storage_path
+      - type
+    TaskStagedArtifactsFinalizeUploadResponse:
+      type: object
+      properties:
+        artifacts:
+          type: array
+          items:
+            $ref: '#/components/schemas/TaskRunArtifactResponse'
+          description: Finalized staged artifacts available for attachment to a new run
+      required:
+      - artifacts
+    OriginProductEnum:
+      enum:
+      - error_tracking
+      - eval_clusters
+      - user_created
+      - automation
+      - slack
+      - support_queue
+      - session_summaries
+      - signal_report
+      type: string
+      description: '* `error_tracking` - Error Tracking
+
+        * `eval_clusters` - Eval Clusters
+
+        * `user_created` - User Created
+
+        * `automation` - Automation
+
+        * `slack` - Slack
+
+        * `support_queue` - Support Queue
+
+        * `session_summaries` - Session Summaries
+
+        * `signal_report` - Signal Report'
+    TaskRunStartRequest:
+      type: object
+      properties:
+        pending_user_message:
+          type: string
+          description: Initial or follow-up user message to include in the run prompt.
+        pending_user_artifact_ids:
+          type: array
+          items:
+            type: string
+            maxLength: 128
+          description: Identifiers for run artifacts that should be attached to the next user message delivered to the sandbox.
+    TaskRunArtifactResponse:
+      type: object
+      properties:
+        id:
+          type: string
+          description: Stable identifier for the artifact within this run
+        name:
+          type: string
+          description: Artifact file name
+        type:
+          type: string
+          description: Artifact classification (plan, context, etc.)
+        source:
+          type: string
+          description: Source of the artifact, such as agent_output or user_attachment
+        size:
+          type: integer
+          description: Artifact size in bytes
+        content_type:
+          type: string
+          description: Optional MIME type
+        storage_path:
+          type: string
+          description: S3 object key for the artifact
+        uploaded_at:
+          type: string
+          description: Timestamp when the artifact was uploaded
+      required:
+      - name
+      - storage_path
+      - type
+      - uploaded_at
+    NullEnum:
+      enum:
+      - null
+    CodexTaskRunCreateSchemaInitialPermissionModeEnum:
+      enum:
+      - auto
+      - read-only
+      - full-access
+      type: string
+      description: '* `auto` - auto
+
+        * `read-only` - read-only
+
+        * `full-access` - full-access'
+    CapabilityState:
+      type: object
+      properties:
+        state:
+          allOf:
+          - $ref: '#/components/schemas/CapabilityStateStateEnum'
+          description: 'Current state of the capability
+
+
+            * `needs_setup` - needs_setup
+
+            * `detected` - detected
+
+            * `waiting_for_data` - waiting_for_data
+
+            * `ready` - ready
+
+            * `not_applicable` - not_applicable
+
+            * `unknown` - unknown'
+        estimated:
+          type: boolean
+          description: Whether the state is estimated from static analysis
+        reason:
+          type: string
+          description: Human-readable explanation
+        evidence:
+          type: object
+          additionalProperties: true
+          description: Supporting evidence
+      required:
+      - estimated
+      - reason
+      - state
+    TaskRunArtifactPresignResponse:
+      type: object
+      properties:
+        url:
+          type: string
+          format: uri
+          description: Presigned URL for downloading the artifact
+        expires_in:
+          type: integer
+          description: URL expiry in seconds
+      required:
+      - expires_in
+      - url
+    TaskRunDetail:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+          readOnly: true
+        task:
+          type: string
+          format: uuid
+          readOnly: true
+        stage:
+          type: string
+          nullable: true
+          description: Current stage for this run (e.g., 'research', 'plan', 'build')
+          maxLength: 100
+        branch:
+          type: string
+          nullable: true
+          description: Branch name for the run
+          maxLength: 255
+        status:
+          $ref: '#/components/schemas/TaskRunDetailStatusEnum'
+        environment:
+          allOf:
+          - $ref: '#/components/schemas/TaskRunDetailEnvironmentEnum'
+          description: 'Execution environment
+
+
+            * `local` - Local
+
+            * `cloud` - Cloud'
+        runtime_adapter:
+          nullable: true
+          description: Configured runtime adapter for this run, such as 'claude' or 'codex'.
+          readOnly: true
+          oneOf:
+          - $ref: '#/components/schemas/RuntimeAdapterEnum'
+          - $ref: '#/components/schemas/NullEnum'
+        provider:
+          nullable: true
+          description: Configured LLM provider for this run, such as 'anthropic' or 'openai'.
+          readOnly: true
+          oneOf:
+          - $ref: '#/components/schemas/TaskRunDetailProviderEnum'
+          - $ref: '#/components/schemas/NullEnum'
+        model:
+          type: string
+          nullable: true
+          description: Configured LLM model identifier for this run.
+          readOnly: true
+        reasoning_effort:
+          nullable: true
+          description: Configured reasoning effort for this run when the selected model supports it.
+          readOnly: true
+          oneOf:
+          - $ref: '#/components/schemas/ReasoningEffortEnum'
+          - $ref: '#/components/schemas/NullEnum'
+        log_url:
+          type: string
+          format: uri
+          nullable: true
+          description: Presigned S3 URL for log access (valid for 1 hour).
+          readOnly: true
+        error_message:
+          type: string
+          nullable: true
+          description: Error message if execution failed
+        output:
+          nullable: true
+          description: Run output data (e.g., PR URL, commit SHA, etc.)
+        state:
+          description: Run state data for resuming or tracking execution state
+        artifacts:
+          type: array
+          items:
+            $ref: '#/components/schemas/TaskRunArtifactResponse'
+          readOnly: true
+        created_at:
+          type: string
+          format: date-time
+          readOnly: true
+        updated_at:
+          type: string
+          format: date-time
+          readOnly: true
+        completed_at:
+          type: string
+          format: date-time
+          readOnly: true
+          nullable: true
+      required:
+      - artifacts
+      - completed_at
+      - created_at
+      - id
+      - log_url
+      - model
+      - provider
+      - reasoning_effort
+      - runtime_adapter
+      - task
+      - updated_at
+    TaskRunUpdateStatusEnum:
+      enum:
+      - not_started
+      - queued
+      - in_progress
+      - completed
+      - failed
+      - cancelled
+      type: string
+      description: '* `not_started` - not_started
+
+        * `queued` - queued
+
+        * `in_progress` - in_progress
+
+        * `completed` - completed
+
+        * `failed` - failed
+
+        * `cancelled` - cancelled'
+    TaskRunBootstrapCreateRequestInitialPermissionModeEnum:
+      enum:
+      - default
+      - acceptEdits
+      - plan
+      - bypassPermissions
+      - auto
+      - read-only
+      - full-access
+      type: string
+      description: '* `default` - default
+
+        * `acceptEdits` - acceptEdits
+
+        * `plan` - plan
+
+        * `bypassPermissions` - bypassPermissions
+
+        * `auto` - auto
+
+        * `read-only` - read-only
+
+        * `full-access` - full-access'
+    PatchedTaskRunSetOutputRequest:
+      type: object
+      properties:
+        output:
+          description: Output data from the run. Validated against the task's json_schema if one is set.
+    TaskRunArtifactPrepareUpload:
+      type: object
+      properties:
+        name:
+          type: string
+          description: File name to associate with the artifact
+          maxLength: 255
+        type:
+          allOf:
+          - $ref: '#/components/schemas/TaskRunArtifactTypeEnum'
+          description: 'Classification for the artifact
+
+
+            * `plan` - plan
+
+            * `context` - context
+
+            * `reference` - reference
+
+            * `output` - output
+
+            * `artifact` - artifact
+
+            * `tree_snapshot` - tree_snapshot
+
+            * `user_attachment` - user_attachment'
+        source:
+          type: string
+          default: ''
+          description: Optional source label for the artifact, such as agent_output or user_attachment
+          maxLength: 64
+        size:
+          type: integer
+          maximum: 31457280
+          minimum: 1
+          description: Expected upload size in bytes (max 31457280 bytes)
+        content_type:
+          type: string
+          description: Optional MIME type for the artifact upload
+          maxLength: 255
+      required:
+      - name
+      - size
+      - type
+    UserBasic:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        uuid:
+          type: string
+          format: uuid
+          readOnly: true
+        distinct_id:
+          type: string
+          nullable: true
+          maxLength: 200
+        first_name:
+          type: string
+          maxLength: 150
+        last_name:
+          type: string
+          maxLength: 150
+        email:
+          type: string
+          format: email
+          title: Email address
+          maxLength: 254
+        is_email_verified:
+          type: boolean
+          nullable: true
+        hedgehog_config:
+          type: object
+          additionalProperties: true
+          nullable: true
+          readOnly: true
+        role_at_organization:
+          nullable: true
+          oneOf:
+          - $ref: '#/components/schemas/RoleAtOrganizationEnum'
+          - $ref: '#/components/schemas/BlankEnum'
+          - $ref: '#/components/schemas/NullEnum'
+      required:
+      - email
+      - hedgehog_config
+      - id
+      - uuid
+    S3PresignedPost:
+      type: object
+      properties:
+        url:
+          type: string
+          format: uri
+          description: Presigned S3 POST URL
+        fields:
+          type: object
+          additionalProperties:
+            type: string
+          description: Form fields that must be submitted verbatim with the file upload
+      required:
+      - fields
+      - url
+    TaskRunArtifactsFinalizeUploadResponse:
+      type: object
+      properties:
+        artifacts:
+          type: array
+          items:
+            $ref: '#/components/schemas/TaskRunArtifactResponse'
+          description: Updated list of artifacts on the run
+      required:
+      - artifacts
+    TaskRunCreateRequestSchema:
+      oneOf:
+      - $ref: '#/components/schemas/ClaudeTaskRunCreateSchema'
+      - $ref: '#/components/schemas/CodexTaskRunCreateSchema'
+      - $ref: '#/components/schemas/TaskRunResumeRequestSchema'
+    TaskRunDetailStatusEnum:
+      enum:
+      - not_started
+      - queued
+      - in_progress
+      - completed
+      - failed
+      - cancelled
+      type: string
+      description: '* `not_started` - Not Started
+
+        * `queued` - Queued
+
+        * `in_progress` - In Progress
+
+        * `completed` - Completed
+
+        * `failed` - Failed
+
+        * `cancelled` - Cancelled'
+    TaskStagedArtifactPrepareUpload:
+      type: object
+      properties:
+        name:
+          type: string
+          description: File name to associate with the staged artifact
+          maxLength: 255
+        type:
+          allOf:
+          - $ref: '#/components/schemas/TaskRunArtifactTypeEnum'
+          description: 'Classification for the artifact
+
+
+            * `plan` - plan
+
+            * `context` - context
+
+            * `reference` - reference
+
+            * `output` - output
+
+            * `artifact` - artifact
+
+            * `tree_snapshot` - tree_snapshot
+
+            * `user_attachment` - user_attachment'
+        source:
+          type: string
+          default: ''
+          description: Optional source label for the artifact, such as agent_output or user_attachment
+          maxLength: 64
+        size:
+          type: integer
+          maximum: 31457280
+          minimum: 1
+          description: Expected upload size in bytes (max 31457280 bytes)
+        content_type:
+          type: string
+          description: Optional MIME type for the artifact upload
+          maxLength: 255
+      required:
+      - name
+      - size
+      - type
+    TaskRunDetailProviderEnum:
+      enum:
+      - anthropic
+      - openai
+      type: string
+    RuntimeAdapterEnum:
+      enum:
+      - claude
+      - codex
+      type: string
+      description: '* `claude` - claude
+
+        * `codex` - codex'
+    TaskRunRelayMessageRequest:
+      type: object
+      properties:
+        text:
+          type: string
+          maxLength: 10000
+      required:
+      - text
+    ScanEvidence:
+      type: object
+      properties:
+        filesScanned:
+          type: integer
+          description: Number of files scanned
+        detectedFilesCount:
+          type: integer
+          description: Total candidate files detected
+        eventNameCount:
+          type: integer
+          description: Number of distinct event names found
+        foundPosthogInit:
+          type: boolean
+          description: Whether posthog.init() was found in scanned files
+        foundPosthogCapture:
+          type: boolean
+          description: Whether posthog.capture() was found in scanned files
+        foundErrorSignal:
+          type: boolean
+          description: Whether error tracking signals were found in scanned files
+      required:
+      - detectedFilesCount
+      - eventNameCount
+      - filesScanned
+      - foundErrorSignal
+      - foundPosthogCapture
+      - foundPosthogInit
+    TaskRunErrorResponse:
+      type: object
+      properties:
+        detail:
+          type: string
+          description: Human-readable validation error
+        error:
+          type: string
+          description: Human-readable error message
+        type:
+          type: string
+          description: Machine-readable error type
+        code:
+          type: string
+          description: Machine-readable error code
+        attr:
+          type: string
+          description: Request field associated with the error
+        missing_artifact_ids:
+          type: array
+          items:
+            type: string
+          description: Artifact ids that could not be resolved for the run
+    CodexTaskRunCreateSchema:
+      type: object
+      description: Request body for creating a new task run
+      properties:
+        mode:
+          allOf:
+          - $ref: '#/components/schemas/TaskExecutionModeEnum'
+          default: background
+          description: 'Execution mode: ''interactive'' for user-connected runs, ''background'' for autonomous runs
+
+
+            * `interactive` - interactive
+
+            * `background` - background'
+        branch:
+          type: string
+          nullable: true
+          description: Git branch to checkout in the sandbox
+          maxLength: 255
+        resume_from_run_id:
+          type: string
+          format: uuid
+          description: ID of a previous run to resume from. Must belong to the same task.
+        pending_user_message:
+          type: string
+          description: Initial or follow-up user message to include in the run prompt.
+        pending_user_artifact_ids:
+          type: array
+          items:
+            type: string
+            maxLength: 128
+          description: Identifiers for staged task artifacts that should be attached to the initial run prompt.
+        sandbox_environment_id:
+          type: string
+          format: uuid
+          description: Optional sandbox environment to apply for this cloud run.
+        pr_authorship_mode:
+          allOf:
+          - $ref: '#/components/schemas/PrAuthorshipModeEnum'
+          description: 'Whether pull requests for this run should be authored by the user or the bot.
+
+
+            * `user` - user
+
+            * `bot` - bot'
+        run_source:
+          allOf:
+          - $ref: '#/components/schemas/RunSourceEnum'
+          description: 'High-level source that triggered this run, used to distinguish manual and signal-based cloud runs.
+
+
+            * `manual` - manual
+
+            * `signal_report` - signal_report'
+        signal_report_id:
+          type: string
+          description: Optional signal report identifier when this run was started from Inbox.
+        runtime_adapter:
+          allOf:
+          - $ref: '#/components/schemas/CodexRuntimeAdapterEnum'
+          description: 'Agent runtime adapter to launch for this run. Must be ''codex'' for Codex runtimes.
+
+
+            * `codex` - codex'
+        model:
+          type: string
+          description: LLM model identifier to run in the Codex runtime.
+        reasoning_effort:
+          allOf:
+          - $ref: '#/components/schemas/ReasoningEffortEnum'
+          description: 'Reasoning effort to request for models that expose an effort control.
+
+
+            * `low` - low
+
+            * `medium` - medium
+
+            * `high` - high
+
+            * `xhigh` - xhigh
+
+            * `max` - max'
+        github_user_token:
+          type: string
+          writeOnly: true
+          description: Optional GitHub user token from PostHog Code for user-authored cloud pull requests. Prefer linking GitHub from Settings → Linked accounts so the server can manage tokens; this field remains supported for callers that still manage their own tokens.
+        initial_permission_mode:
+          allOf:
+          - $ref: '#/components/schemas/CodexTaskRunCreateSchemaInitialPermissionModeEnum'
+          description: 'Initial permission mode for Codex runtimes.
+
+
+            * `auto` - auto
+
+            * `read-only` - read-only
+
+            * `full-access` - full-access'
+      required:
+      - model
+      - runtime_adapter
+    TaskRunBootstrapCreateRequestEnvironmentEnum:
+      enum:
+      - local
+      - cloud
+      type: string
+      description: '* `local` - local
+
+        * `cloud` - cloud'
+    ContentEncodingEnum:
+      enum:
+      - utf-8
+      - base64
+      type: string
+      description: '* `utf-8` - utf-8
+
+        * `base64` - base64'
+    TaskRunRelayMessageResponse:
+      type: object
+      properties:
+        status:
+          type: string
+          description: 'Relay status: ''accepted'' or ''skipped'''
+        relay_id:
+          type: string
+          description: Relay workflow ID when accepted
+      required:
+      - status
+    TaskStagedArtifactsPrepareUploadResponse:
+      type: object
+      properties:
+        artifacts:
+          type: array
+          items:
+            $ref: '#/components/schemas/TaskStagedArtifactPrepareUploadResponse'
+          description: Prepared staged uploads for the requested artifacts
+      required:
+      - artifacts
+    TaskRunDetailEnvironmentEnum:
+      enum:
+      - local
+      - cloud
+      type: string
+      description: '* `local` - Local
+
+        * `cloud` - Cloud'
+    TaskExecutionModeEnum:
+      enum:
+      - interactive
+      - background
+      type: string
+      description: '* `interactive` - interactive
+
+        * `background` - background'
+    TaskRepositoriesResponse:
+      type: object
+      properties:
+        repositories:
+          type: array
+          items:
+            type: string
+          description: Distinct repositories in use by non-deleted, non-internal tasks for the current team.
+      required:
+      - repositories
+    ClaudeTaskRunCreateSchemaInitialPermissionModeEnum:
+      enum:
+      - default
+      - acceptEdits
+      - plan
+      - bypassPermissions
+      - auto
+      type: string
+      description: '* `default` - default
+
+        * `acceptEdits` - acceptEdits
+
+        * `plan` - plan
+
+        * `bypassPermissions` - bypassPermissions
+
+        * `auto` - auto'
+    TaskRunAppendLogRequest:
+      type: object
+      properties:
+        entries:
+          type: array
+          items:
+            type: object
+            additionalProperties: true
+          description: Array of log entry dictionaries to append
+      required:
+      - entries
+    SignalReportTaskRelationshipEnum:
+      enum:
+      - implementation
+      type: string
+      description: '* `implementation` - Implementation'
+    TaskRunArtifactsUploadResponse:
+      type: object
+      properties:
+        artifacts:
+          type: array
+          items:
+            $ref: '#/components/schemas/TaskRunArtifactResponse'
+          description: Updated list of artifacts on the run
+      required:
+      - artifacts
+    ReasoningEffortEnum:
+      enum:
+      - low
+      - medium
+      - high
+      - xhigh
+      - max
+      type: string
+      description: '* `low` - low
+
+        * `medium` - medium
+
+        * `high` - high
+
+        * `xhigh` - xhigh
+
+        * `max` - max'
+    TaskRunArtifactsPrepareUploadRequest:
+      type: object
+      properties:
+        artifacts:
+          type: array
+          items:
+            $ref: '#/components/schemas/TaskRunArtifactPrepareUpload'
+          description: Array of artifacts to prepare
+      required:
+      - artifacts
+    TaskRunArtifactFinalizeUpload:
+      type: object
+      properties:
+        id:
+          type: string
+          description: Stable identifier returned by the prepare upload endpoint
+        name:
+          type: string
+          description: File name associated with the artifact
+          maxLength: 255
+        type:
+          allOf:
+          - $ref: '#/components/schemas/TaskRunArtifactTypeEnum'
+          description: 'Classification for the artifact
+
+
+            * `plan` - plan
+
+            * `context` - context
+
+            * `reference` - reference
+
+            * `output` - output
+
+            * `artifact` - artifact
+
+            * `tree_snapshot` - tree_snapshot
+
+            * `user_attachment` - user_attachment'
+        source:
+          type: string
+          default: ''
+          description: Optional source label for the artifact, such as agent_output or user_attachment
+          maxLength: 64
+        storage_path:
+          type: string
+          description: S3 object key returned by the prepare step
+          maxLength: 500
+        content_type:
+          type: string
+          description: Optional MIME type recorded for the artifact
+          maxLength: 255
+      required:
+      - id
+      - name
+      - storage_path
+      - type
+    TaskRunArtifactTypeEnum:
+      enum:
+      - plan
+      - context
+      - reference
+      - output
+      - artifact
+      - tree_snapshot
+      - user_attachment
+      type: string
+      description: '* `plan` - plan
+
+        * `context` - context
+
+        * `reference` - reference
+
+        * `output` - output
+
+        * `artifact` - artifact
+
+        * `tree_snapshot` - tree_snapshot
+
+        * `user_attachment` - user_attachment'
+    ClaudeTaskRunCreateSchema:
+      type: object
+      description: Request body for creating a new task run
+      properties:
+        mode:
+          allOf:
+          - $ref: '#/components/schemas/TaskExecutionModeEnum'
+          default: background
+          description: 'Execution mode: ''interactive'' for user-connected runs, ''background'' for autonomous runs
+
+
+            * `interactive` - interactive
+
+            * `background` - background'
+        branch:
+          type: string
+          nullable: true
+          description: Git branch to checkout in the sandbox
+          maxLength: 255
+        resume_from_run_id:
+          type: string
+          format: uuid
+          description: ID of a previous run to resume from. Must belong to the same task.
+        pending_user_message:
+          type: string
+          description: Initial or follow-up user message to include in the run prompt.
+        pending_user_artifact_ids:
+          type: array
+          items:
+            type: string
+            maxLength: 128
+          description: Identifiers for staged task artifacts that should be attached to the initial run prompt.
+        sandbox_environment_id:
+          type: string
+          format: uuid
+          description: Optional sandbox environment to apply for this cloud run.
+        pr_authorship_mode:
+          allOf:
+          - $ref: '#/components/schemas/PrAuthorshipModeEnum'
+          description: 'Whether pull requests for this run should be authored by the user or the bot.
+
+
+            * `user` - user
+
+            * `bot` - bot'
+        run_source:
+          allOf:
+          - $ref: '#/components/schemas/RunSourceEnum'
+          description: 'High-level source that triggered this run, used to distinguish manual and signal-based cloud runs.
+
+
+            * `manual` - manual
+
+            * `signal_report` - signal_report'
+        signal_report_id:
+          type: string
+          description: Optional signal report identifier when this run was started from Inbox.
+        runtime_adapter:
+          allOf:
+          - $ref: '#/components/schemas/ClaudeRuntimeAdapterEnum'
+          description: 'Agent runtime adapter to launch for this run. Must be ''claude'' for Claude runtimes.
+
+
+            * `claude` - claude'
+        model:
+          type: string
+          description: LLM model identifier to run in the Claude runtime.
+        reasoning_effort:
+          allOf:
+          - $ref: '#/components/schemas/ReasoningEffortEnum'
+          description: 'Reasoning effort to request for models that expose an effort control.
+
+
+            * `low` - low
+
+            * `medium` - medium
+
+            * `high` - high
+
+            * `xhigh` - xhigh
+
+            * `max` - max'
+        github_user_token:
+          type: string
+          writeOnly: true
+          description: Optional GitHub user token from PostHog Code for user-authored cloud pull requests. Prefer linking GitHub from Settings → Linked accounts so the server can manage tokens; this field remains supported for callers that still manage their own tokens.
+        initial_permission_mode:
+          allOf:
+          - $ref: '#/components/schemas/ClaudeTaskRunCreateSchemaInitialPermissionModeEnum'
+          description: 'Initial permission mode for Claude runtimes.
+
+
+            * `default` - default
+
+            * `acceptEdits` - acceptEdits
+
+            * `plan` - plan
+
+            * `bypassPermissions` - bypassPermissions
+
+            * `auto` - auto'
+      required:
+      - model
+      - runtime_adapter
+    TaskRunUpdateEnvironmentEnum:
+      enum:
+      - local
+      type: string
+      description: '* `local` - local'
+    ErrorResponse:
+      type: object
+      properties:
+        error:
+          type: string
+          description: Error message
+      required:
+      - error
+    PatchedTaskRunUpdate:
+      type: object
+      properties:
+        status:
+          allOf:
+          - $ref: '#/components/schemas/TaskRunUpdateStatusEnum'
+          description: 'Current execution status
+
+
+            * `not_started` - not_started
+
+            * `queued` - queued
+
+            * `in_progress` - in_progress
+
+            * `completed` - completed
+
+            * `failed` - failed
+
+            * `cancelled` - cancelled'
+        branch:
+          type: string
+          nullable: true
+          description: Git branch name to associate with the task
+        stage:
+          type: string
+          nullable: true
+          description: Current stage of the run (e.g. research, plan, build)
+        output:
+          nullable: true
+          description: Output from the run
+        state:
+          description: State of the run
+        state_remove_keys:
+          type: array
+          items:
+            type: string
+          description: State keys to remove atomically before applying any state updates.
+        error_message:
+          type: string
+          nullable: true
+          description: Error message if execution failed
+        environment:
+          allOf:
+          - $ref: '#/components/schemas/TaskRunUpdateEnvironmentEnum'
+          description: 'Transition a cloud run to local. Use the resume_in_cloud action to move a run into cloud.
+
+
+            * `local` - local'
+    ConnectionTokenResponse:
+      type: object
+      description: Response containing a JWT token for direct sandbox connection
+      properties:
+        token:
+          type: string
+          description: JWT token for authenticating with the sandbox
+      required:
+      - token
+    PatchedTask:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+          readOnly: true
+        task_number:
+          type: integer
+          readOnly: true
+          nullable: true
+        slug:
+          type: string
+          readOnly: true
+        title:
+          type: string
+          maxLength: 255
+        title_manually_set:
+          type: boolean
+        description:
+          type: string
+        origin_product:
+          $ref: '#/components/schemas/OriginProductEnum'
+        repository:
+          type: string
+          nullable: true
+          maxLength: 255
+        github_integration:
+          type: integer
+          nullable: true
+          description: GitHub integration for this task
+        github_user_integration:
+          type: string
+          format: uuid
+          nullable: true
+          description: User-scoped GitHub integration to use for user-authored cloud runs.
+        signal_report:
+          type: string
+          format: uuid
+          nullable: true
+        signal_report_task_relationship:
+          allOf:
+          - $ref: '#/components/schemas/SignalReportTaskRelationshipEnum'
+          writeOnly: true
+        json_schema:
+          nullable: true
+          description: JSON schema for the task. This is used to validate the output of the task.
+        internal:
+          type: boolean
+          description: If true, this task is for internal use and should not be exposed to end users.
+        latest_run:
+          type: object
+          additionalProperties: true
+          nullable: true
+          description: Latest run details for this task
+          readOnly: true
+        created_at:
+          type: string
+          format: date-time
+          readOnly: true
+        updated_at:
+          type: string
+          format: date-time
+          readOnly: true
+        created_by:
+          allOf:
+          - $ref: '#/components/schemas/UserBasic'
+          readOnly: true
+        ci_prompt:
+          type: string
+          nullable: true
+          description: Custom prompt for CI fixes. If blank, a default prompt will be used.
+    TaskRunCommandRequest:
+      type: object
+      description: JSON-RPC request to send a command to the agent server in the sandbox.
+      properties:
+        jsonrpc:
+          allOf:
+          - $ref: '#/components/schemas/JsonrpcEnum'
+          description: 'JSON-RPC version, must be ''2.0''
+
+
+            * `2.0` - 2.0'
+        method:
+          allOf:
+          - $ref: '#/components/schemas/MethodEnum'
+          description: 'Command method to execute on the agent server
+
+
+            * `user_message` - user_message
+
+            * `cancel` - cancel
+
+            * `close` - close
+
+            * `permission_response` - permission_response
+
+            * `set_config_option` - set_config_option'
+        params:
+          type: object
+          additionalProperties: true
+          description: Parameters for the command
+        id:
+          description: Optional JSON-RPC request ID (string or number)
+      required:
+      - jsonrpc
+      - method
+    RepositoryReadinessResponse:
+      type: object
+      properties:
+        repository:
+          type: string
+          description: Normalized repository identifier
+        classification:
+          type: string
+          description: Repository classification
+        excluded:
+          type: boolean
+          description: Whether the repository is excluded from readiness checks
+        coreSuggestions:
+          allOf:
+          - $ref: '#/components/schemas/CapabilityState'
+          description: Tracking capability state
+        replayInsights:
+          allOf:
+          - $ref: '#/components/schemas/CapabilityState'
+          description: Computer vision capability state
+        errorInsights:
+          allOf:
+          - $ref: '#/components/schemas/CapabilityState'
+          description: Error tracking capability state
+        overall:
+          type: string
+          description: Overall readiness state
+        evidenceTaskCount:
+          type: integer
+          description: Count of replay-derived evidence tasks
+        windowDays:
+          type: integer
+          description: Lookback window in days
+        generatedAt:
+          type: string
+          description: ISO timestamp when the response was generated
+        cacheAgeSeconds:
+          type: integer
+          description: Age of cached response in seconds
+        scan:
+          allOf:
+          - $ref: '#/components/schemas/ScanEvidence'
+          description: Scan evidence details
+      required:
+      - cacheAgeSeconds
+      - classification
+      - coreSuggestions
+      - errorInsights
+      - evidenceTaskCount
+      - excluded
+      - generatedAt
+      - overall
+      - replayInsights
+      - repository
+      - windowDays
+    TaskStagedArtifactsPrepareUploadRequest:
+      type: object
+      properties:
+        artifacts:
+          type: array
+          items:
+            $ref: '#/components/schemas/TaskStagedArtifactPrepareUpload'
+          description: Array of staged artifacts to prepare before creating a run
+      required:
+      - artifacts
+    BlankEnum:
+      enum:
+      - ''
+    TaskRunArtifactPresignRequest:
+      type: object
+      properties:
+        storage_path:
+          type: string
+          description: S3 storage path returned in the artifact manifest
+          maxLength: 500
+      required:
+      - storage_path
+    TaskRunArtifactUpload:
+      type: object
+      properties:
+        name:
+          type: string
+          description: File name to associate with the artifact
+          maxLength: 255
+        type:
+          allOf:
+          - $ref: '#/components/schemas/TaskRunArtifactTypeEnum'
+          description: 'Classification for the artifact
+
+
+            * `plan` - plan
+
+            * `context` - context
+
+            * `reference` - reference
+
+            * `output` - output
+
+            * `artifact` - artifact
+
+            * `tree_snapshot` - tree_snapshot
+
+            * `user_attachment` - user_attachment'
+        source:
+          type: string
+          default: ''
+          description: Optional source label for the artifact, such as agent_output or user_attachment
+          maxLength: 64
+        content:
+          type: string
+          description: Artifact contents encoded according to content_encoding
+        content_encoding:
+          allOf:
+          - $ref: '#/components/schemas/ContentEncodingEnum'
+          default: utf-8
+          description: 'Encoding used for content. Use base64 for binary files and utf-8 for text payloads.
+
+
+            * `utf-8` - utf-8
+
+            * `base64` - base64'
+        content_type:
+          type: string
+          description: Optional MIME type for the artifact
+          maxLength: 255
+      required:
+      - content
+      - name
+      - type
+    TaskRunCommandResponse:
+      type: object
+      description: Response from the agent server command endpoint.
+      properties:
+        jsonrpc:
+          type: string
+          description: JSON-RPC version
+        id:
+          description: Request ID echoed back (string or number)
+        result:
+          type: object
+          additionalProperties: true
+          description: Command result on success
+        error:
+          type: object
+          additionalProperties: true
+          description: Error details on failure
+      required:
+      - jsonrpc
+    PrAuthorshipModeEnum:
+      enum:
+      - user
+      - bot
+      type: string
+      description: '* `user` - user
+
+        * `bot` - bot'
+    TaskRunArtifactPrepareUploadResponse:
+      type: object
+      properties:
+        id:
+          type: string
+          description: Stable identifier for the prepared artifact within this run
+        name:
+          type: string
+          description: Artifact file name
+        type:
+          type: string
+          description: Artifact classification (plan, context, etc.)
+        source:
+          type: string
+          description: Source of the artifact, such as agent_output or user_attachment
+        size:
+          type: integer
+          description: Expected upload size in bytes
+        content_type:
+          type: string
+          description: Optional MIME type
+        storage_path:
+          type: string
+          description: S3 object key reserved for the artifact
+        expires_in:
+          type: integer
+          description: Presigned POST expiry in seconds
+        presigned_post:
+          allOf:
+          - $ref: '#/components/schemas/S3PresignedPost'
+          description: Presigned S3 POST configuration for uploading the file
+      required:
+      - expires_in
+      - id
+      - name
+      - presigned_post
+      - size
+      - storage_path
+      - type
+    MethodEnum:
+      enum:
+      - user_message
+      - cancel
+      - close
+      - permission_response
+      - set_config_option
+      type: string
+      description: '* `user_message` - user_message
+
+        * `cancel` - cancel
+
+        * `close` - close
+
+        * `permission_response` - permission_response
+
+        * `set_config_option` - set_config_option'
+    RunSourceEnum:
+      enum:
+      - manual
+      - signal_report
+      type: string
+      description: '* `manual` - manual
+
+        * `signal_report` - signal_report'
+    ClaudeRuntimeAdapterEnum:
+      enum:
+      - claude
+      type: string
+      description: '* `claude` - claude'
+  parameters:
+    ProjectIdPath:
+      in: path
+      name: project_id
+      required: true
+      schema:
+        type: string
+      description: Project ID of the project you're trying to access. To find the ID of the project, make a call to /api/projects/.
+  securitySchemes:
+    PersonalAPIKeyAuth:
+      type: http
+      scheme: bearer
+x-tagGroups:
+- name: All endpoints
+  tags:
+  - LLM Analytics
+  - actions
+  - activity_log
+  - activity_logs
+  - advanced_activity_logs
+  - alerts
+  - annotations
+  - approval_policies
+  - batch_exports
+  - cdp
+  - change_requests
+  - code
+  - code-invites
+  - cohorts
+  - comments
+  - conversations
+  - core
+  - customer_analytics
+  - customer_journeys
+  - customer_profile_configs
+  - dashboard_templates
+  - dashboards
+  - data_color_themes
+  - data_modeling_jobs
+  - data_warehouse
+  - dataset_items
+  - datasets
+  - desktop_recordings
+  - domains
+  - early_access_feature
+  - early_access_features
+  - elements
+  - endpoints
+  - environments
+  - error_tracking
+  - evaluation_runs
+  - evaluations
+  - event_definitions
+  - event_filter
+  - event_schemas
+  - events
+  - experiment_holdouts
+  - experiment_saved_metrics
+  - experiments
+  - exports
+  - external_data_schemas
+  - external_data_sources
+  - feature_flags
+  - file_system
+  - file_system_shortcut
+  - flag_value
+  - groups
+  - groups_types
+  - health_issues
+  - heatmap_screenshots
+  - heatmaps
+  - hog_flows
+  - hog_function_templates
+  - hog_functions
+  - insight_variables
+  - insights
+  - integrations
+  - invites
+  - js-snippet
+  - legal_documents
+  - lineage
+  - live_debugger_breakpoints
+  - llm_analytics
+  - llm_prompts
+  - llm_skills
+  - logs
+  - managed_viewsets
+  - max
+  - max_tools
+  - mcp_server_installations
+  - mcp_servers
+  - mcp_store
+  - mcp_tools
+  - members
+  - notebooks
+  - oauth_applications
+  - object_media_previews
+  - organizations
+  - persisted_folder
+  - persons
+  - platform_features
+  - plugin_configs
+  - product_analytics
+  - product_tours
+  - project_secret_api_keys
+  - projects
+  - property_definitions
+  - proxy_records
+  - public_hog_function_templates
+  - query
+  - replay
+  - reverse_proxy
+  - role_external_references
+  - roles
+  - sandbox-environments
+  - sandbox_environments
+  - saved
+  - schema_property_groups
+  - sdk_doctor
+  - session_group_summaries
+  - session_recording_playlists
+  - session_recordings
+  - session_summaries
+  - sessions
+  - signals
+  - subscriptions
+  - surveys
+  - taggers
+  - task-automations
+  - task-runs
+  - task_automations
+  - tasks
+  - uploaded_media
+  - user_home_settings
+  - user_interviews
+  - users
+  - visual_review
+  - warehouse_dag
+  - warehouse_model_paths
+  - warehouse_saved_queries
+  - warehouse_saved_query_folders
+  - warehouse_tables
+  - warehouse_view_link
+  - warehouse_view_links
+  - web_analytics
+  - web_experiments
+  - web_vitals
+  - welcome
+  - workflows

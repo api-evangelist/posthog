@@ -1,0 +1,614 @@
+openapi: 3.0.3
+info:
+  title: PostHog actions change_requests API
+  version: 1.0.0
+  description: ''
+tags:
+- name: change_requests
+paths:
+  /api/environments/{project_id}/change_requests/:
+    get:
+      operationId: change_requests_list
+      parameters:
+      - in: query
+        name: action_key
+        schema:
+          type: string
+      - name: limit
+        required: false
+        in: query
+        description: Number of results to return per page.
+        schema:
+          type: integer
+      - name: offset
+        required: false
+        in: query
+        description: The initial index from which to return the results.
+        schema:
+          type: integer
+      - $ref: '#/components/parameters/ProjectIdPath'
+      - in: query
+        name: requester
+        schema:
+          type: number
+      - in: query
+        name: resource_id
+        schema:
+          type: string
+      - in: query
+        name: resource_type
+        schema:
+          type: string
+      - in: query
+        name: state
+        schema:
+          type: array
+          items:
+            type: string
+        description: Multiple values may be separated by commas.
+        explode: false
+        style: form
+      tags:
+      - change_requests
+      security:
+      - PersonalAPIKeyAuth:
+        - approvals:read
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedChangeRequestList'
+          description: ''
+      x-explicit-tags:
+      - platform_features
+  /api/environments/{project_id}/change_requests/{id}/:
+    get:
+      operationId: change_requests_retrieve
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this change request.
+        required: true
+      - $ref: '#/components/parameters/ProjectIdPath'
+      tags:
+      - change_requests
+      security:
+      - PersonalAPIKeyAuth:
+        - approvals:read
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ChangeRequest'
+          description: ''
+      x-explicit-tags:
+      - platform_features
+  /api/environments/{project_id}/change_requests/{id}/approve/:
+    post:
+      operationId: change_requests_approve_create
+      description: 'Approve a change request.
+
+        If quorum is reached, automatically applies the change immediately.'
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this change request.
+        required: true
+      - $ref: '#/components/parameters/ProjectIdPath'
+      tags:
+      - change_requests
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ChangeRequest'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/ChangeRequest'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/ChangeRequest'
+      security:
+      - PersonalAPIKeyAuth:
+        - approvals:write
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ChangeRequest'
+          description: ''
+      x-explicit-tags:
+      - platform_features
+  /api/environments/{project_id}/change_requests/{id}/cancel/:
+    post:
+      operationId: change_requests_cancel_create
+      description: 'Cancel a change request.
+
+        Only the requester can cancel their own pending change request.'
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this change request.
+        required: true
+      - $ref: '#/components/parameters/ProjectIdPath'
+      tags:
+      - change_requests
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ChangeRequest'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/ChangeRequest'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/ChangeRequest'
+      security:
+      - PersonalAPIKeyAuth:
+        - approvals:write
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ChangeRequest'
+          description: ''
+      x-explicit-tags:
+      - platform_features
+  /api/environments/{project_id}/change_requests/{id}/reject/:
+    post:
+      operationId: change_requests_reject_create
+      description: Reject a change request.
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this change request.
+        required: true
+      - $ref: '#/components/parameters/ProjectIdPath'
+      tags:
+      - change_requests
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ChangeRequest'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/ChangeRequest'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/ChangeRequest'
+      security:
+      - PersonalAPIKeyAuth:
+        - approvals:write
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ChangeRequest'
+          description: ''
+      x-explicit-tags:
+      - platform_features
+components:
+  schemas:
+    BlankEnum:
+      enum:
+      - ''
+    ChangeRequestStateEnum:
+      enum:
+      - pending
+      - approved
+      - applied
+      - rejected
+      - expired
+      - failed
+      type: string
+      description: '* `pending` - Pending
+
+        * `approved` - Approved (awaiting application)
+
+        * `applied` - Applied
+
+        * `rejected` - Rejected
+
+        * `expired` - Expired
+
+        * `failed` - Failed to apply'
+    ChangeRequest:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+          readOnly: true
+        action_key:
+          type: string
+          readOnly: true
+        action_version:
+          type: integer
+          readOnly: true
+        resource_type:
+          type: string
+          readOnly: true
+        resource_id:
+          type: string
+          readOnly: true
+          nullable: true
+        intent:
+          readOnly: true
+        intent_display:
+          readOnly: true
+        policy_snapshot:
+          readOnly: true
+        validation_status:
+          allOf:
+          - $ref: '#/components/schemas/ValidationStatusEnum'
+          readOnly: true
+        validation_errors:
+          readOnly: true
+          nullable: true
+        validated_at:
+          type: string
+          format: date-time
+          readOnly: true
+          nullable: true
+        state:
+          allOf:
+          - $ref: '#/components/schemas/ChangeRequestStateEnum'
+          readOnly: true
+        created_by:
+          allOf:
+          - $ref: '#/components/schemas/UserBasic'
+          readOnly: true
+        applied_by:
+          allOf:
+          - $ref: '#/components/schemas/UserBasic'
+          readOnly: true
+        created_at:
+          type: string
+          format: date-time
+          readOnly: true
+        updated_at:
+          type: string
+          format: date-time
+          readOnly: true
+          nullable: true
+        expires_at:
+          type: string
+          format: date-time
+          readOnly: true
+        applied_at:
+          type: string
+          format: date-time
+          readOnly: true
+          nullable: true
+        apply_error:
+          type: string
+          readOnly: true
+        result_data:
+          readOnly: true
+          nullable: true
+        approvals:
+          type: array
+          items:
+            type: object
+            additionalProperties: true
+          readOnly: true
+        can_approve:
+          type: boolean
+          description: Check if current user can approve this change request.
+          readOnly: true
+        can_cancel:
+          type: boolean
+          readOnly: true
+        is_requester:
+          type: boolean
+          description: Check if current user is the requester.
+          readOnly: true
+        user_decision:
+          type: string
+          nullable: true
+          description: Get the current user's approval decision if they have voted.
+          readOnly: true
+      required:
+      - action_key
+      - action_version
+      - applied_at
+      - applied_by
+      - apply_error
+      - approvals
+      - can_approve
+      - can_cancel
+      - created_at
+      - created_by
+      - expires_at
+      - id
+      - intent
+      - intent_display
+      - is_requester
+      - policy_snapshot
+      - resource_id
+      - resource_type
+      - result_data
+      - state
+      - updated_at
+      - user_decision
+      - validated_at
+      - validation_errors
+      - validation_status
+    UserBasic:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        uuid:
+          type: string
+          format: uuid
+          readOnly: true
+        distinct_id:
+          type: string
+          nullable: true
+          maxLength: 200
+        first_name:
+          type: string
+          maxLength: 150
+        last_name:
+          type: string
+          maxLength: 150
+        email:
+          type: string
+          format: email
+          title: Email address
+          maxLength: 254
+        is_email_verified:
+          type: boolean
+          nullable: true
+        hedgehog_config:
+          type: object
+          additionalProperties: true
+          nullable: true
+          readOnly: true
+        role_at_organization:
+          nullable: true
+          oneOf:
+          - $ref: '#/components/schemas/RoleAtOrganizationEnum'
+          - $ref: '#/components/schemas/BlankEnum'
+          - $ref: '#/components/schemas/NullEnum'
+      required:
+      - email
+      - hedgehog_config
+      - id
+      - uuid
+    RoleAtOrganizationEnum:
+      enum:
+      - engineering
+      - data
+      - product
+      - founder
+      - leadership
+      - marketing
+      - sales
+      - other
+      type: string
+      description: '* `engineering` - Engineering
+
+        * `data` - Data
+
+        * `product` - Product Management
+
+        * `founder` - Founder
+
+        * `leadership` - Leadership
+
+        * `marketing` - Marketing
+
+        * `sales` - Sales / Success
+
+        * `other` - Other'
+    ValidationStatusEnum:
+      enum:
+      - valid
+      - invalid
+      - expired
+      - stale
+      type: string
+      description: '* `valid` - Valid
+
+        * `invalid` - Invalid
+
+        * `expired` - Expired
+
+        * `stale` - Stale (resource changed)'
+    PaginatedChangeRequestList:
+      type: object
+      required:
+      - count
+      - results
+      properties:
+        count:
+          type: integer
+          example: 123
+        next:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?offset=400&limit=100
+        previous:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?offset=200&limit=100
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/ChangeRequest'
+    NullEnum:
+      enum:
+      - null
+  parameters:
+    ProjectIdPath:
+      in: path
+      name: project_id
+      required: true
+      schema:
+        type: string
+      description: Project ID of the project you're trying to access. To find the ID of the project, make a call to /api/projects/.
+  securitySchemes:
+    PersonalAPIKeyAuth:
+      type: http
+      scheme: bearer
+x-tagGroups:
+- name: All endpoints
+  tags:
+  - LLM Analytics
+  - actions
+  - activity_log
+  - activity_logs
+  - advanced_activity_logs
+  - alerts
+  - annotations
+  - approval_policies
+  - batch_exports
+  - cdp
+  - change_requests
+  - code
+  - code-invites
+  - cohorts
+  - comments
+  - conversations
+  - core
+  - customer_analytics
+  - customer_journeys
+  - customer_profile_configs
+  - dashboard_templates
+  - dashboards
+  - data_color_themes
+  - data_modeling_jobs
+  - data_warehouse
+  - dataset_items
+  - datasets
+  - desktop_recordings
+  - domains
+  - early_access_feature
+  - early_access_features
+  - elements
+  - endpoints
+  - environments
+  - error_tracking
+  - evaluation_runs
+  - evaluations
+  - event_definitions
+  - event_filter
+  - event_schemas
+  - events
+  - experiment_holdouts
+  - experiment_saved_metrics
+  - experiments
+  - exports
+  - external_data_schemas
+  - external_data_sources
+  - feature_flags
+  - file_system
+  - file_system_shortcut
+  - flag_value
+  - groups
+  - groups_types
+  - health_issues
+  - heatmap_screenshots
+  - heatmaps
+  - hog_flows
+  - hog_function_templates
+  - hog_functions
+  - insight_variables
+  - insights
+  - integrations
+  - invites
+  - js-snippet
+  - legal_documents
+  - lineage
+  - live_debugger_breakpoints
+  - llm_analytics
+  - llm_prompts
+  - llm_skills
+  - logs
+  - managed_viewsets
+  - max
+  - max_tools
+  - mcp_server_installations
+  - mcp_servers
+  - mcp_store
+  - mcp_tools
+  - members
+  - notebooks
+  - oauth_applications
+  - object_media_previews
+  - organizations
+  - persisted_folder
+  - persons
+  - platform_features
+  - plugin_configs
+  - product_analytics
+  - product_tours
+  - project_secret_api_keys
+  - projects
+  - property_definitions
+  - proxy_records
+  - public_hog_function_templates
+  - query
+  - replay
+  - reverse_proxy
+  - role_external_references
+  - roles
+  - sandbox-environments
+  - sandbox_environments
+  - saved
+  - schema_property_groups
+  - sdk_doctor
+  - session_group_summaries
+  - session_recording_playlists
+  - session_recordings
+  - session_summaries
+  - sessions
+  - signals
+  - subscriptions
+  - surveys
+  - taggers
+  - task-automations
+  - task-runs
+  - task_automations
+  - tasks
+  - uploaded_media
+  - user_home_settings
+  - user_interviews
+  - users
+  - visual_review
+  - warehouse_dag
+  - warehouse_model_paths
+  - warehouse_saved_queries
+  - warehouse_saved_query_folders
+  - warehouse_tables
+  - warehouse_view_link
+  - warehouse_view_links
+  - web_analytics
+  - web_experiments
+  - web_vitals
+  - welcome
+  - workflows

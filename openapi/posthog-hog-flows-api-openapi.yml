@@ -1,0 +1,2487 @@
+openapi: 3.0.3
+info:
+  title: PostHog actions hog_flows API
+  version: 1.0.0
+  description: ''
+tags:
+- name: hog_flows
+paths:
+  /api/environments/{environment_id}/hog_flows/:
+    get:
+      operationId: environments_hog_flows_list
+      parameters:
+      - in: query
+        name: created_at
+        schema:
+          type: string
+          format: date-time
+      - in: query
+        name: created_by
+        schema:
+          type: integer
+      - $ref: '#/components/parameters/EnvironmentIdPath'
+      - in: query
+        name: id
+        schema:
+          type: string
+          format: uuid
+      - name: limit
+        required: false
+        in: query
+        description: Number of results to return per page.
+        schema:
+          type: integer
+      - name: offset
+        required: false
+        in: query
+        description: The initial index from which to return the results.
+        schema:
+          type: integer
+      - in: query
+        name: updated_at
+        schema:
+          type: string
+          format: date-time
+      tags:
+      - hog_flows
+      security:
+      - PersonalAPIKeyAuth:
+        - hog_flow:read
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedHogFlowMinimalList'
+          description: ''
+      deprecated: true
+      x-explicit-tags:
+      - workflows
+    post:
+      operationId: environments_hog_flows_create
+      parameters:
+      - $ref: '#/components/parameters/EnvironmentIdPath'
+      tags:
+      - hog_flows
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/HogFlow'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/HogFlow'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/HogFlow'
+        required: true
+      security:
+      - PersonalAPIKeyAuth:
+        - hog_flow:write
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HogFlow'
+          description: ''
+      deprecated: true
+      x-explicit-tags:
+      - workflows
+  /api/environments/{environment_id}/hog_flows/{id}/:
+    get:
+      operationId: environments_hog_flows_retrieve
+      parameters:
+      - $ref: '#/components/parameters/EnvironmentIdPath'
+      - in: path
+        name: id
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this hog flow.
+        required: true
+      tags:
+      - hog_flows
+      security:
+      - PersonalAPIKeyAuth:
+        - hog_flow:read
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HogFlow'
+          description: ''
+      deprecated: true
+      x-explicit-tags:
+      - workflows
+    put:
+      operationId: environments_hog_flows_update
+      parameters:
+      - $ref: '#/components/parameters/EnvironmentIdPath'
+      - in: path
+        name: id
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this hog flow.
+        required: true
+      tags:
+      - hog_flows
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/HogFlow'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/HogFlow'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/HogFlow'
+        required: true
+      security:
+      - PersonalAPIKeyAuth:
+        - hog_flow:write
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HogFlow'
+          description: ''
+      deprecated: true
+      x-explicit-tags:
+      - workflows
+    patch:
+      operationId: environments_hog_flows_partial_update
+      parameters:
+      - $ref: '#/components/parameters/EnvironmentIdPath'
+      - in: path
+        name: id
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this hog flow.
+        required: true
+      tags:
+      - hog_flows
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchedHogFlow'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/PatchedHogFlow'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/PatchedHogFlow'
+      security:
+      - PersonalAPIKeyAuth:
+        - hog_flow:write
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HogFlow'
+          description: ''
+      deprecated: true
+      x-explicit-tags:
+      - workflows
+    delete:
+      operationId: environments_hog_flows_destroy
+      parameters:
+      - $ref: '#/components/parameters/EnvironmentIdPath'
+      - in: path
+        name: id
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this hog flow.
+        required: true
+      tags:
+      - hog_flows
+      security:
+      - PersonalAPIKeyAuth:
+        - hog_flow:write
+      responses:
+        '204':
+          description: No response body
+      deprecated: true
+      x-explicit-tags:
+      - workflows
+  /api/environments/{environment_id}/hog_flows/{id}/batch_jobs/:
+    get:
+      operationId: environments_hog_flows_batch_jobs_retrieve
+      parameters:
+      - $ref: '#/components/parameters/EnvironmentIdPath'
+      - in: path
+        name: id
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this hog flow.
+        required: true
+      tags:
+      - hog_flows
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HogFlow'
+          description: ''
+      deprecated: true
+      x-explicit-tags:
+      - workflows
+    post:
+      operationId: environments_hog_flows_batch_jobs_create
+      parameters:
+      - $ref: '#/components/parameters/EnvironmentIdPath'
+      - in: path
+        name: id
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this hog flow.
+        required: true
+      tags:
+      - hog_flows
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/HogFlow'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/HogFlow'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/HogFlow'
+        required: true
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HogFlow'
+          description: ''
+      deprecated: true
+      x-explicit-tags:
+      - workflows
+  /api/environments/{environment_id}/hog_flows/{id}/blocked_runs/:
+    get:
+      operationId: environments_hog_flows_blocked_runs_retrieve
+      description: List workflow runs that were blocked by the dedup bug.
+      parameters:
+      - $ref: '#/components/parameters/EnvironmentIdPath'
+      - in: path
+        name: id
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this hog flow.
+        required: true
+      tags:
+      - hog_flows
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HogFlow'
+          description: ''
+      deprecated: true
+      x-explicit-tags:
+      - workflows
+  /api/environments/{environment_id}/hog_flows/{id}/invocations/:
+    post:
+      operationId: environments_hog_flows_invocations_create
+      parameters:
+      - $ref: '#/components/parameters/EnvironmentIdPath'
+      - in: path
+        name: id
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this hog flow.
+        required: true
+      tags:
+      - hog_flows
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/HogFlow'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/HogFlow'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/HogFlow'
+        required: true
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HogFlow'
+          description: ''
+      deprecated: true
+      x-explicit-tags:
+      - workflows
+  /api/environments/{environment_id}/hog_flows/{id}/logs/:
+    get:
+      operationId: environments_hog_flows_logs_retrieve
+      parameters:
+      - in: query
+        name: after
+        schema:
+          type: string
+          format: date-time
+        description: Only return entries after this ISO 8601 timestamp.
+      - in: query
+        name: before
+        schema:
+          type: string
+          format: date-time
+        description: Only return entries before this ISO 8601 timestamp.
+      - $ref: '#/components/parameters/EnvironmentIdPath'
+      - in: path
+        name: id
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this hog flow.
+        required: true
+      - in: query
+        name: instance_id
+        schema:
+          type: string
+          minLength: 1
+        description: Filter logs to a specific execution instance.
+      - in: query
+        name: level
+        schema:
+          type: string
+          minLength: 1
+        description: 'Comma-separated log levels to include, e.g. ''WARN,ERROR''. Valid levels: DEBUG, LOG, INFO, WARN, ERROR.'
+      - in: query
+        name: limit
+        schema:
+          type: integer
+          maximum: 500
+          minimum: 1
+          default: 50
+        description: Maximum number of log entries to return (1-500, default 50).
+      - in: query
+        name: search
+        schema:
+          type: string
+          minLength: 1
+        description: Case-insensitive substring search across log messages.
+      tags:
+      - hog_flows
+      security:
+      - PersonalAPIKeyAuth:
+        - hog_flow:read
+      responses:
+        '200':
+          description: No response body
+      deprecated: true
+      x-explicit-tags:
+      - workflows
+  /api/environments/{environment_id}/hog_flows/{id}/metrics/:
+    get:
+      operationId: environments_hog_flows_metrics_retrieve
+      parameters:
+      - in: query
+        name: after
+        schema:
+          type: string
+          default: -7d
+          minLength: 1
+        description: Start of the time range. Accepts relative formats like '-7d', '-24h' or ISO 8601 timestamps. Defaults to '-7d'.
+      - in: query
+        name: before
+        schema:
+          type: string
+          minLength: 1
+        description: End of the time range. Same format as 'after'. Defaults to now.
+      - in: query
+        name: breakdown_by
+        schema:
+          enum:
+          - name
+          - kind
+          type: string
+          default: kind
+          minLength: 1
+        description: 'Group the series by metric ''name'' or ''kind''. Defaults to ''kind''.
+
+
+          * `name` - name
+
+          * `kind` - kind'
+      - $ref: '#/components/parameters/EnvironmentIdPath'
+      - in: path
+        name: id
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this hog flow.
+        required: true
+      - in: query
+        name: instance_id
+        schema:
+          type: string
+          minLength: 1
+        description: Filter metrics to a specific execution instance.
+      - in: query
+        name: interval
+        schema:
+          enum:
+          - hour
+          - day
+          - week
+          type: string
+          default: day
+          minLength: 1
+        description: 'Time bucket size for the series. One of: hour, day, week. Defaults to ''day''.
+
+
+          * `hour` - hour
+
+          * `day` - day
+
+          * `week` - week'
+      - in: query
+        name: kind
+        schema:
+          type: string
+          minLength: 1
+        description: Comma-separated metric kinds to filter by, e.g. 'success,failure'.
+      - in: query
+        name: name
+        schema:
+          type: string
+          minLength: 1
+        description: Comma-separated metric names to filter by.
+      tags:
+      - hog_flows
+      security:
+      - PersonalAPIKeyAuth:
+        - hog_flow:read
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AppMetricsResponse'
+          description: ''
+      deprecated: true
+      x-explicit-tags:
+      - workflows
+  /api/environments/{environment_id}/hog_flows/{id}/metrics/totals/:
+    get:
+      operationId: environments_hog_flows_metrics_totals_retrieve
+      parameters:
+      - in: query
+        name: after
+        schema:
+          type: string
+          default: -7d
+          minLength: 1
+        description: Start of the time range. Accepts relative formats like '-7d', '-24h' or ISO 8601 timestamps. Defaults to '-7d'.
+      - in: query
+        name: before
+        schema:
+          type: string
+          minLength: 1
+        description: End of the time range. Same format as 'after'. Defaults to now.
+      - in: query
+        name: breakdown_by
+        schema:
+          enum:
+          - name
+          - kind
+          type: string
+          default: kind
+          minLength: 1
+        description: 'Group the series by metric ''name'' or ''kind''. Defaults to ''kind''.
+
+
+          * `name` - name
+
+          * `kind` - kind'
+      - $ref: '#/components/parameters/EnvironmentIdPath'
+      - in: path
+        name: id
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this hog flow.
+        required: true
+      - in: query
+        name: instance_id
+        schema:
+          type: string
+          minLength: 1
+        description: Filter metrics to a specific execution instance.
+      - in: query
+        name: interval
+        schema:
+          enum:
+          - hour
+          - day
+          - week
+          type: string
+          default: day
+          minLength: 1
+        description: 'Time bucket size for the series. One of: hour, day, week. Defaults to ''day''.
+
+
+          * `hour` - hour
+
+          * `day` - day
+
+          * `week` - week'
+      - in: query
+        name: kind
+        schema:
+          type: string
+          minLength: 1
+        description: Comma-separated metric kinds to filter by, e.g. 'success,failure'.
+      - in: query
+        name: name
+        schema:
+          type: string
+          minLength: 1
+        description: Comma-separated metric names to filter by.
+      tags:
+      - hog_flows
+      security:
+      - PersonalAPIKeyAuth:
+        - hog_flow:read
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AppMetricsTotalsResponse'
+          description: ''
+      deprecated: true
+      x-explicit-tags:
+      - workflows
+  /api/environments/{environment_id}/hog_flows/{id}/replay_all_blocked_runs/:
+    post:
+      operationId: environments_hog_flows_replay_all_blocked_runs_create
+      description: Replay all blocked runs in a single bulk call to Node.
+      parameters:
+      - $ref: '#/components/parameters/EnvironmentIdPath'
+      - in: path
+        name: id
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this hog flow.
+        required: true
+      tags:
+      - hog_flows
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/HogFlow'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/HogFlow'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/HogFlow'
+        required: true
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HogFlow'
+          description: ''
+      deprecated: true
+      x-explicit-tags:
+      - workflows
+  /api/environments/{environment_id}/hog_flows/{id}/replay_blocked_run/:
+    post:
+      operationId: environments_hog_flows_replay_blocked_run_create
+      description: Replay a single blocked run. Django fetches the event, Node creates the invocation and writes the log.
+      parameters:
+      - $ref: '#/components/parameters/EnvironmentIdPath'
+      - in: path
+        name: id
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this hog flow.
+        required: true
+      tags:
+      - hog_flows
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/HogFlow'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/HogFlow'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/HogFlow'
+        required: true
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HogFlow'
+          description: ''
+      deprecated: true
+      x-explicit-tags:
+      - workflows
+  /api/environments/{environment_id}/hog_flows/{id}/schedules/:
+    get:
+      operationId: environments_hog_flows_schedules_list
+      parameters:
+      - in: query
+        name: created_at
+        schema:
+          type: string
+          format: date-time
+      - in: query
+        name: created_by
+        schema:
+          type: integer
+      - $ref: '#/components/parameters/EnvironmentIdPath'
+      - in: path
+        name: id
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this hog flow.
+        required: true
+      - in: query
+        name: id
+        schema:
+          type: string
+          format: uuid
+      - name: limit
+        required: false
+        in: query
+        description: Number of results to return per page.
+        schema:
+          type: integer
+      - name: offset
+        required: false
+        in: query
+        description: The initial index from which to return the results.
+        schema:
+          type: integer
+      - in: query
+        name: updated_at
+        schema:
+          type: string
+          format: date-time
+      tags:
+      - hog_flows
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedHogFlowScheduleList'
+          description: ''
+      deprecated: true
+      x-explicit-tags:
+      - workflows
+    post:
+      operationId: environments_hog_flows_schedules_create
+      parameters:
+      - in: query
+        name: created_at
+        schema:
+          type: string
+          format: date-time
+      - in: query
+        name: created_by
+        schema:
+          type: integer
+      - $ref: '#/components/parameters/EnvironmentIdPath'
+      - in: path
+        name: id
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this hog flow.
+        required: true
+      - in: query
+        name: id
+        schema:
+          type: string
+          format: uuid
+      - name: limit
+        required: false
+        in: query
+        description: Number of results to return per page.
+        schema:
+          type: integer
+      - name: offset
+        required: false
+        in: query
+        description: The initial index from which to return the results.
+        schema:
+          type: integer
+      - in: query
+        name: updated_at
+        schema:
+          type: string
+          format: date-time
+      tags:
+      - hog_flows
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/HogFlow'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/HogFlow'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/HogFlow'
+        required: true
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedHogFlowScheduleList'
+          description: ''
+      deprecated: true
+      x-explicit-tags:
+      - workflows
+  /api/environments/{environment_id}/hog_flows/{id}/schedules/{schedule_id}/:
+    patch:
+      operationId: environments_hog_flows_schedules_partial_update
+      parameters:
+      - $ref: '#/components/parameters/EnvironmentIdPath'
+      - in: path
+        name: id
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this hog flow.
+        required: true
+      - in: path
+        name: schedule_id
+        schema:
+          type: string
+        required: true
+      tags:
+      - hog_flows
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchedHogFlow'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/PatchedHogFlow'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/PatchedHogFlow'
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HogFlow'
+          description: ''
+      deprecated: true
+      x-explicit-tags:
+      - workflows
+    delete:
+      operationId: environments_hog_flows_schedules_destroy
+      parameters:
+      - $ref: '#/components/parameters/EnvironmentIdPath'
+      - in: path
+        name: id
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this hog flow.
+        required: true
+      - in: path
+        name: schedule_id
+        schema:
+          type: string
+        required: true
+      tags:
+      - hog_flows
+      responses:
+        '204':
+          description: No response body
+      deprecated: true
+      x-explicit-tags:
+      - workflows
+  /api/environments/{environment_id}/hog_flows/bulk_delete/:
+    post:
+      operationId: environments_hog_flows_bulk_delete_create
+      parameters:
+      - $ref: '#/components/parameters/EnvironmentIdPath'
+      tags:
+      - hog_flows
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/HogFlow'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/HogFlow'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/HogFlow'
+        required: true
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HogFlow'
+          description: ''
+      deprecated: true
+      x-explicit-tags:
+      - workflows
+  /api/environments/{environment_id}/hog_flows/user_blast_radius/:
+    post:
+      operationId: environments_hog_flows_user_blast_radius_create
+      parameters:
+      - $ref: '#/components/parameters/EnvironmentIdPath'
+      tags:
+      - hog_flows
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/BlastRadiusRequest'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/BlastRadiusRequest'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/BlastRadiusRequest'
+        required: true
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BlastRadius'
+          description: ''
+      deprecated: true
+      x-explicit-tags:
+      - workflows
+  /api/projects/{project_id}/hog_flows/:
+    get:
+      operationId: hog_flows_list
+      parameters:
+      - in: query
+        name: created_at
+        schema:
+          type: string
+          format: date-time
+      - in: query
+        name: created_by
+        schema:
+          type: integer
+      - in: query
+        name: id
+        schema:
+          type: string
+          format: uuid
+      - name: limit
+        required: false
+        in: query
+        description: Number of results to return per page.
+        schema:
+          type: integer
+      - name: offset
+        required: false
+        in: query
+        description: The initial index from which to return the results.
+        schema:
+          type: integer
+      - $ref: '#/components/parameters/ProjectIdPath'
+      - in: query
+        name: updated_at
+        schema:
+          type: string
+          format: date-time
+      tags:
+      - hog_flows
+      security:
+      - PersonalAPIKeyAuth:
+        - hog_flow:read
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedHogFlowMinimalList'
+          description: ''
+      x-explicit-tags:
+      - workflows
+    post:
+      operationId: hog_flows_create
+      parameters:
+      - $ref: '#/components/parameters/ProjectIdPath'
+      tags:
+      - hog_flows
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/HogFlow'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/HogFlow'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/HogFlow'
+        required: true
+      security:
+      - PersonalAPIKeyAuth:
+        - hog_flow:write
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HogFlow'
+          description: ''
+      x-explicit-tags:
+      - workflows
+  /api/projects/{project_id}/hog_flows/{id}/:
+    get:
+      operationId: hog_flows_retrieve
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this hog flow.
+        required: true
+      - $ref: '#/components/parameters/ProjectIdPath'
+      tags:
+      - hog_flows
+      security:
+      - PersonalAPIKeyAuth:
+        - hog_flow:read
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HogFlow'
+          description: ''
+      x-explicit-tags:
+      - workflows
+    put:
+      operationId: hog_flows_update
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this hog flow.
+        required: true
+      - $ref: '#/components/parameters/ProjectIdPath'
+      tags:
+      - hog_flows
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/HogFlow'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/HogFlow'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/HogFlow'
+        required: true
+      security:
+      - PersonalAPIKeyAuth:
+        - hog_flow:write
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HogFlow'
+          description: ''
+      x-explicit-tags:
+      - workflows
+    patch:
+      operationId: hog_flows_partial_update
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this hog flow.
+        required: true
+      - $ref: '#/components/parameters/ProjectIdPath'
+      tags:
+      - hog_flows
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchedHogFlow'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/PatchedHogFlow'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/PatchedHogFlow'
+      security:
+      - PersonalAPIKeyAuth:
+        - hog_flow:write
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HogFlow'
+          description: ''
+      x-explicit-tags:
+      - workflows
+    delete:
+      operationId: hog_flows_destroy
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this hog flow.
+        required: true
+      - $ref: '#/components/parameters/ProjectIdPath'
+      tags:
+      - hog_flows
+      security:
+      - PersonalAPIKeyAuth:
+        - hog_flow:write
+      responses:
+        '204':
+          description: No response body
+      x-explicit-tags:
+      - workflows
+  /api/projects/{project_id}/hog_flows/{id}/batch_jobs/:
+    get:
+      operationId: hog_flows_batch_jobs_retrieve
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this hog flow.
+        required: true
+      - $ref: '#/components/parameters/ProjectIdPath'
+      tags:
+      - hog_flows
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HogFlow'
+          description: ''
+      x-explicit-tags:
+      - workflows
+    post:
+      operationId: hog_flows_batch_jobs_create
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this hog flow.
+        required: true
+      - $ref: '#/components/parameters/ProjectIdPath'
+      tags:
+      - hog_flows
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/HogFlow'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/HogFlow'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/HogFlow'
+        required: true
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HogFlow'
+          description: ''
+      x-explicit-tags:
+      - workflows
+  /api/projects/{project_id}/hog_flows/{id}/blocked_runs/:
+    get:
+      operationId: hog_flows_blocked_runs_retrieve
+      description: List workflow runs that were blocked by the dedup bug.
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this hog flow.
+        required: true
+      - $ref: '#/components/parameters/ProjectIdPath'
+      tags:
+      - hog_flows
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HogFlow'
+          description: ''
+      x-explicit-tags:
+      - workflows
+  /api/projects/{project_id}/hog_flows/{id}/invocations/:
+    post:
+      operationId: hog_flows_invocations_create
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this hog flow.
+        required: true
+      - $ref: '#/components/parameters/ProjectIdPath'
+      tags:
+      - hog_flows
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/HogFlow'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/HogFlow'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/HogFlow'
+        required: true
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HogFlow'
+          description: ''
+      x-explicit-tags:
+      - workflows
+  /api/projects/{project_id}/hog_flows/{id}/logs/:
+    get:
+      operationId: hog_flows_logs_retrieve
+      parameters:
+      - in: query
+        name: after
+        schema:
+          type: string
+          format: date-time
+        description: Only return entries after this ISO 8601 timestamp.
+      - in: query
+        name: before
+        schema:
+          type: string
+          format: date-time
+        description: Only return entries before this ISO 8601 timestamp.
+      - in: path
+        name: id
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this hog flow.
+        required: true
+      - in: query
+        name: instance_id
+        schema:
+          type: string
+          minLength: 1
+        description: Filter logs to a specific execution instance.
+      - in: query
+        name: level
+        schema:
+          type: string
+          minLength: 1
+        description: 'Comma-separated log levels to include, e.g. ''WARN,ERROR''. Valid levels: DEBUG, LOG, INFO, WARN, ERROR.'
+      - in: query
+        name: limit
+        schema:
+          type: integer
+          maximum: 500
+          minimum: 1
+          default: 50
+        description: Maximum number of log entries to return (1-500, default 50).
+      - $ref: '#/components/parameters/ProjectIdPath'
+      - in: query
+        name: search
+        schema:
+          type: string
+          minLength: 1
+        description: Case-insensitive substring search across log messages.
+      tags:
+      - hog_flows
+      security:
+      - PersonalAPIKeyAuth:
+        - hog_flow:read
+      responses:
+        '200':
+          description: No response body
+      x-explicit-tags:
+      - workflows
+  /api/projects/{project_id}/hog_flows/{id}/metrics/:
+    get:
+      operationId: hog_flows_metrics_retrieve
+      parameters:
+      - in: query
+        name: after
+        schema:
+          type: string
+          default: -7d
+          minLength: 1
+        description: Start of the time range. Accepts relative formats like '-7d', '-24h' or ISO 8601 timestamps. Defaults to '-7d'.
+      - in: query
+        name: before
+        schema:
+          type: string
+          minLength: 1
+        description: End of the time range. Same format as 'after'. Defaults to now.
+      - in: query
+        name: breakdown_by
+        schema:
+          enum:
+          - name
+          - kind
+          type: string
+          default: kind
+          minLength: 1
+        description: 'Group the series by metric ''name'' or ''kind''. Defaults to ''kind''.
+
+
+          * `name` - name
+
+          * `kind` - kind'
+      - in: path
+        name: id
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this hog flow.
+        required: true
+      - in: query
+        name: instance_id
+        schema:
+          type: string
+          minLength: 1
+        description: Filter metrics to a specific execution instance.
+      - in: query
+        name: interval
+        schema:
+          enum:
+          - hour
+          - day
+          - week
+          type: string
+          default: day
+          minLength: 1
+        description: 'Time bucket size for the series. One of: hour, day, week. Defaults to ''day''.
+
+
+          * `hour` - hour
+
+          * `day` - day
+
+          * `week` - week'
+      - in: query
+        name: kind
+        schema:
+          type: string
+          minLength: 1
+        description: Comma-separated metric kinds to filter by, e.g. 'success,failure'.
+      - in: query
+        name: name
+        schema:
+          type: string
+          minLength: 1
+        description: Comma-separated metric names to filter by.
+      - $ref: '#/components/parameters/ProjectIdPath'
+      tags:
+      - hog_flows
+      security:
+      - PersonalAPIKeyAuth:
+        - hog_flow:read
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AppMetricsResponse'
+          description: ''
+      x-explicit-tags:
+      - workflows
+  /api/projects/{project_id}/hog_flows/{id}/metrics/totals/:
+    get:
+      operationId: hog_flows_metrics_totals_retrieve
+      parameters:
+      - in: query
+        name: after
+        schema:
+          type: string
+          default: -7d
+          minLength: 1
+        description: Start of the time range. Accepts relative formats like '-7d', '-24h' or ISO 8601 timestamps. Defaults to '-7d'.
+      - in: query
+        name: before
+        schema:
+          type: string
+          minLength: 1
+        description: End of the time range. Same format as 'after'. Defaults to now.
+      - in: query
+        name: breakdown_by
+        schema:
+          enum:
+          - name
+          - kind
+          type: string
+          default: kind
+          minLength: 1
+        description: 'Group the series by metric ''name'' or ''kind''. Defaults to ''kind''.
+
+
+          * `name` - name
+
+          * `kind` - kind'
+      - in: path
+        name: id
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this hog flow.
+        required: true
+      - in: query
+        name: instance_id
+        schema:
+          type: string
+          minLength: 1
+        description: Filter metrics to a specific execution instance.
+      - in: query
+        name: interval
+        schema:
+          enum:
+          - hour
+          - day
+          - week
+          type: string
+          default: day
+          minLength: 1
+        description: 'Time bucket size for the series. One of: hour, day, week. Defaults to ''day''.
+
+
+          * `hour` - hour
+
+          * `day` - day
+
+          * `week` - week'
+      - in: query
+        name: kind
+        schema:
+          type: string
+          minLength: 1
+        description: Comma-separated metric kinds to filter by, e.g. 'success,failure'.
+      - in: query
+        name: name
+        schema:
+          type: string
+          minLength: 1
+        description: Comma-separated metric names to filter by.
+      - $ref: '#/components/parameters/ProjectIdPath'
+      tags:
+      - hog_flows
+      security:
+      - PersonalAPIKeyAuth:
+        - hog_flow:read
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AppMetricsTotalsResponse'
+          description: ''
+      x-explicit-tags:
+      - workflows
+  /api/projects/{project_id}/hog_flows/{id}/replay_all_blocked_runs/:
+    post:
+      operationId: hog_flows_replay_all_blocked_runs_create
+      description: Replay all blocked runs in a single bulk call to Node.
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this hog flow.
+        required: true
+      - $ref: '#/components/parameters/ProjectIdPath'
+      tags:
+      - hog_flows
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/HogFlow'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/HogFlow'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/HogFlow'
+        required: true
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HogFlow'
+          description: ''
+      x-explicit-tags:
+      - workflows
+  /api/projects/{project_id}/hog_flows/{id}/replay_blocked_run/:
+    post:
+      operationId: hog_flows_replay_blocked_run_create
+      description: Replay a single blocked run. Django fetches the event, Node creates the invocation and writes the log.
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this hog flow.
+        required: true
+      - $ref: '#/components/parameters/ProjectIdPath'
+      tags:
+      - hog_flows
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/HogFlow'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/HogFlow'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/HogFlow'
+        required: true
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HogFlow'
+          description: ''
+      x-explicit-tags:
+      - workflows
+  /api/projects/{project_id}/hog_flows/{id}/schedules/:
+    get:
+      operationId: hog_flows_schedules_list
+      parameters:
+      - in: query
+        name: created_at
+        schema:
+          type: string
+          format: date-time
+      - in: query
+        name: created_by
+        schema:
+          type: integer
+      - in: path
+        name: id
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this hog flow.
+        required: true
+      - in: query
+        name: id
+        schema:
+          type: string
+          format: uuid
+      - name: limit
+        required: false
+        in: query
+        description: Number of results to return per page.
+        schema:
+          type: integer
+      - name: offset
+        required: false
+        in: query
+        description: The initial index from which to return the results.
+        schema:
+          type: integer
+      - $ref: '#/components/parameters/ProjectIdPath'
+      - in: query
+        name: updated_at
+        schema:
+          type: string
+          format: date-time
+      tags:
+      - hog_flows
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedHogFlowScheduleList'
+          description: ''
+      x-explicit-tags:
+      - workflows
+    post:
+      operationId: hog_flows_schedules_create
+      parameters:
+      - in: query
+        name: created_at
+        schema:
+          type: string
+          format: date-time
+      - in: query
+        name: created_by
+        schema:
+          type: integer
+      - in: path
+        name: id
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this hog flow.
+        required: true
+      - in: query
+        name: id
+        schema:
+          type: string
+          format: uuid
+      - name: limit
+        required: false
+        in: query
+        description: Number of results to return per page.
+        schema:
+          type: integer
+      - name: offset
+        required: false
+        in: query
+        description: The initial index from which to return the results.
+        schema:
+          type: integer
+      - $ref: '#/components/parameters/ProjectIdPath'
+      - in: query
+        name: updated_at
+        schema:
+          type: string
+          format: date-time
+      tags:
+      - hog_flows
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/HogFlow'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/HogFlow'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/HogFlow'
+        required: true
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedHogFlowScheduleList'
+          description: ''
+      x-explicit-tags:
+      - workflows
+  /api/projects/{project_id}/hog_flows/{id}/schedules/{schedule_id}/:
+    patch:
+      operationId: hog_flows_schedules_partial_update
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this hog flow.
+        required: true
+      - $ref: '#/components/parameters/ProjectIdPath'
+      - in: path
+        name: schedule_id
+        schema:
+          type: string
+        required: true
+      tags:
+      - hog_flows
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchedHogFlow'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/PatchedHogFlow'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/PatchedHogFlow'
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HogFlow'
+          description: ''
+      x-explicit-tags:
+      - workflows
+    delete:
+      operationId: hog_flows_schedules_destroy
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this hog flow.
+        required: true
+      - $ref: '#/components/parameters/ProjectIdPath'
+      - in: path
+        name: schedule_id
+        schema:
+          type: string
+        required: true
+      tags:
+      - hog_flows
+      responses:
+        '204':
+          description: No response body
+      x-explicit-tags:
+      - workflows
+  /api/projects/{project_id}/hog_flows/bulk_delete/:
+    post:
+      operationId: hog_flows_bulk_delete_create
+      parameters:
+      - $ref: '#/components/parameters/ProjectIdPath'
+      tags:
+      - hog_flows
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/HogFlow'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/HogFlow'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/HogFlow'
+        required: true
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HogFlow'
+          description: ''
+      x-explicit-tags:
+      - workflows
+  /api/projects/{project_id}/hog_flows/user_blast_radius/:
+    post:
+      operationId: hog_flows_user_blast_radius_create
+      parameters:
+      - $ref: '#/components/parameters/ProjectIdPath'
+      tags:
+      - hog_flows
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/BlastRadiusRequest'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/BlastRadiusRequest'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/BlastRadiusRequest'
+        required: true
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BlastRadius'
+          description: ''
+      x-explicit-tags:
+      - workflows
+components:
+  schemas:
+    ExitConditionEnum:
+      enum:
+      - exit_on_conversion
+      - exit_on_trigger_not_matched
+      - exit_on_trigger_not_matched_or_conversion
+      - exit_only_at_end
+      type: string
+      description: '* `exit_on_conversion` - Conversion
+
+        * `exit_on_trigger_not_matched` - Trigger Not Matched
+
+        * `exit_on_trigger_not_matched_or_conversion` - Trigger Not Matched Or Conversion
+
+        * `exit_only_at_end` - Only At End'
+    OnErrorEnum:
+      enum:
+      - continue
+      - abort
+      - complete
+      - branch
+      type: string
+      description: '* `continue` - continue
+
+        * `abort` - abort
+
+        * `complete` - complete
+
+        * `branch` - branch'
+    HogFlowMinimal:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+          readOnly: true
+        name:
+          type: string
+          readOnly: true
+          nullable: true
+        description:
+          type: string
+          readOnly: true
+        version:
+          type: integer
+          readOnly: true
+        status:
+          allOf:
+          - $ref: '#/components/schemas/HogFlowStatusEnum'
+          readOnly: true
+        created_at:
+          type: string
+          format: date-time
+          readOnly: true
+        created_by:
+          allOf:
+          - $ref: '#/components/schemas/UserBasic'
+          readOnly: true
+        updated_at:
+          type: string
+          format: date-time
+          readOnly: true
+        trigger:
+          readOnly: true
+        trigger_masking:
+          readOnly: true
+          nullable: true
+        conversion:
+          readOnly: true
+          nullable: true
+        exit_condition:
+          allOf:
+          - $ref: '#/components/schemas/ExitConditionEnum'
+          readOnly: true
+        edges:
+          readOnly: true
+        actions:
+          readOnly: true
+        abort_action:
+          type: string
+          readOnly: true
+          nullable: true
+        variables:
+          readOnly: true
+          nullable: true
+        billable_action_types:
+          readOnly: true
+          nullable: true
+      required:
+      - abort_action
+      - actions
+      - billable_action_types
+      - conversion
+      - created_at
+      - created_by
+      - description
+      - edges
+      - exit_condition
+      - id
+      - name
+      - status
+      - trigger
+      - trigger_masking
+      - updated_at
+      - variables
+      - version
+    HogFunctionFilters:
+      type: object
+      properties:
+        source:
+          allOf:
+          - $ref: '#/components/schemas/HogFunctionFiltersSourceEnum'
+          default: events
+        actions:
+          type: array
+          items:
+            type: object
+            additionalProperties: true
+        events:
+          type: array
+          items:
+            type: object
+            additionalProperties: true
+        data_warehouse:
+          type: array
+          items:
+            type: object
+            additionalProperties: true
+        properties:
+          type: array
+          items:
+            type: object
+            additionalProperties: true
+        bytecode:
+          nullable: true
+        transpiled: {}
+        filter_test_accounts:
+          type: boolean
+        bytecode_error:
+          type: string
+    RoleAtOrganizationEnum:
+      enum:
+      - engineering
+      - data
+      - product
+      - founder
+      - leadership
+      - marketing
+      - sales
+      - other
+      type: string
+      description: '* `engineering` - Engineering
+
+        * `data` - Data
+
+        * `product` - Product Management
+
+        * `founder` - Founder
+
+        * `leadership` - Leadership
+
+        * `marketing` - Marketing
+
+        * `sales` - Sales / Success
+
+        * `other` - Other'
+    AppMetricSeries:
+      type: object
+      properties:
+        name:
+          type: string
+        values:
+          type: array
+          items:
+            type: integer
+      required:
+      - name
+      - values
+    PatchedHogFlow:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+          readOnly: true
+        name:
+          type: string
+          nullable: true
+          maxLength: 400
+        description:
+          type: string
+        version:
+          type: integer
+          readOnly: true
+        status:
+          $ref: '#/components/schemas/HogFlowStatusEnum'
+        created_at:
+          type: string
+          format: date-time
+          readOnly: true
+        created_by:
+          allOf:
+          - $ref: '#/components/schemas/UserBasic'
+          readOnly: true
+        updated_at:
+          type: string
+          format: date-time
+          readOnly: true
+        trigger: {}
+        trigger_masking:
+          allOf:
+          - $ref: '#/components/schemas/HogFlowMasking'
+          nullable: true
+        conversion:
+          nullable: true
+        exit_condition:
+          $ref: '#/components/schemas/ExitConditionEnum'
+        edges: {}
+        actions:
+          type: array
+          items:
+            $ref: '#/components/schemas/HogFlowAction'
+        abort_action:
+          type: string
+          readOnly: true
+          nullable: true
+        variables:
+          type: array
+          items:
+            type: object
+            additionalProperties:
+              type: string
+        billable_action_types:
+          readOnly: true
+          nullable: true
+    NullEnum:
+      enum:
+      - null
+    PaginatedHogFlowScheduleList:
+      type: object
+      required:
+      - count
+      - results
+      properties:
+        count:
+          type: integer
+          example: 123
+        next:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?offset=400&limit=100
+        previous:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?offset=200&limit=100
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/HogFlowSchedule'
+    UserBasic:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        uuid:
+          type: string
+          format: uuid
+          readOnly: true
+        distinct_id:
+          type: string
+          nullable: true
+          maxLength: 200
+        first_name:
+          type: string
+          maxLength: 150
+        last_name:
+          type: string
+          maxLength: 150
+        email:
+          type: string
+          format: email
+          title: Email address
+          maxLength: 254
+        is_email_verified:
+          type: boolean
+          nullable: true
+        hedgehog_config:
+          type: object
+          additionalProperties: true
+          nullable: true
+          readOnly: true
+        role_at_organization:
+          nullable: true
+          oneOf:
+          - $ref: '#/components/schemas/RoleAtOrganizationEnum'
+          - $ref: '#/components/schemas/BlankEnum'
+          - $ref: '#/components/schemas/NullEnum'
+      required:
+      - email
+      - hedgehog_config
+      - id
+      - uuid
+    AppMetricsTotalsResponse:
+      type: object
+      properties:
+        totals:
+          type: object
+          additionalProperties:
+            type: integer
+      required:
+      - totals
+    HogFlow:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+          readOnly: true
+        name:
+          type: string
+          nullable: true
+          maxLength: 400
+        description:
+          type: string
+        version:
+          type: integer
+          readOnly: true
+        status:
+          $ref: '#/components/schemas/HogFlowStatusEnum'
+        created_at:
+          type: string
+          format: date-time
+          readOnly: true
+        created_by:
+          allOf:
+          - $ref: '#/components/schemas/UserBasic'
+          readOnly: true
+        updated_at:
+          type: string
+          format: date-time
+          readOnly: true
+        trigger: {}
+        trigger_masking:
+          allOf:
+          - $ref: '#/components/schemas/HogFlowMasking'
+          nullable: true
+        conversion:
+          nullable: true
+        exit_condition:
+          $ref: '#/components/schemas/ExitConditionEnum'
+        edges: {}
+        actions:
+          type: array
+          items:
+            $ref: '#/components/schemas/HogFlowAction'
+        abort_action:
+          type: string
+          readOnly: true
+          nullable: true
+        variables:
+          type: array
+          items:
+            type: object
+            additionalProperties:
+              type: string
+        billable_action_types:
+          readOnly: true
+          nullable: true
+      required:
+      - abort_action
+      - actions
+      - billable_action_types
+      - created_at
+      - created_by
+      - id
+      - updated_at
+      - version
+    BlastRadius:
+      type: object
+      properties:
+        affected:
+          type: integer
+          description: Number of users matching the filters
+        total:
+          type: integer
+          description: Total number of users
+      required:
+      - affected
+      - total
+    HogFlowSchedule:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+          readOnly: true
+        rrule:
+          type: string
+        starts_at:
+          type: string
+          format: date-time
+        timezone:
+          type: string
+          maxLength: 64
+        variables: {}
+        status:
+          allOf:
+          - $ref: '#/components/schemas/HogFlowScheduleStatusEnum'
+          readOnly: true
+        next_run_at:
+          type: string
+          format: date-time
+          readOnly: true
+          nullable: true
+        created_at:
+          type: string
+          format: date-time
+          readOnly: true
+        updated_at:
+          type: string
+          format: date-time
+          readOnly: true
+      required:
+      - created_at
+      - id
+      - next_run_at
+      - rrule
+      - starts_at
+      - status
+      - updated_at
+    PaginatedHogFlowMinimalList:
+      type: object
+      required:
+      - count
+      - results
+      properties:
+        count:
+          type: integer
+          example: 123
+        next:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?offset=400&limit=100
+        previous:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?offset=200&limit=100
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/HogFlowMinimal'
+    HogFlowMasking:
+      type: object
+      properties:
+        ttl:
+          type: integer
+          maximum: 94608000
+          minimum: 60
+          nullable: true
+        threshold:
+          type: integer
+          nullable: true
+        hash:
+          type: string
+        bytecode:
+          nullable: true
+      required:
+      - hash
+    HogFlowStatusEnum:
+      enum:
+      - draft
+      - active
+      - archived
+      type: string
+      description: '* `draft` - Draft
+
+        * `active` - Active
+
+        * `archived` - Archived'
+    BlankEnum:
+      enum:
+      - ''
+    HogFunctionFiltersSourceEnum:
+      enum:
+      - events
+      - person-updates
+      - data-warehouse-table
+      type: string
+      description: '* `events` - events
+
+        * `person-updates` - person-updates
+
+        * `data-warehouse-table` - data-warehouse-table'
+    HogFlowScheduleStatusEnum:
+      enum:
+      - active
+      - paused
+      - completed
+      type: string
+      description: '* `active` - Active
+
+        * `paused` - Paused
+
+        * `completed` - Completed'
+    AppMetricsResponse:
+      type: object
+      properties:
+        labels:
+          type: array
+          items:
+            type: string
+        series:
+          type: array
+          items:
+            $ref: '#/components/schemas/AppMetricSeries'
+      required:
+      - labels
+      - series
+    HogFlowAction:
+      type: object
+      properties:
+        id:
+          type: string
+        name:
+          type: string
+          maxLength: 400
+        description:
+          type: string
+          default: ''
+        on_error:
+          nullable: true
+          oneOf:
+          - $ref: '#/components/schemas/OnErrorEnum'
+          - $ref: '#/components/schemas/NullEnum'
+        created_at:
+          type: integer
+        updated_at:
+          type: integer
+        filters:
+          allOf:
+          - $ref: '#/components/schemas/HogFunctionFilters'
+          nullable: true
+        type:
+          type: string
+          maxLength: 100
+        config: {}
+        output_variable:
+          nullable: true
+      required:
+      - config
+      - id
+      - name
+      - type
+    BlastRadiusRequest:
+      type: object
+      properties:
+        filters:
+          type: object
+          additionalProperties: true
+          description: Property filters to apply
+        group_type_index:
+          type: integer
+          nullable: true
+          description: Group type index for group-based targeting
+      required:
+      - filters
+  parameters:
+    EnvironmentIdPath:
+      in: path
+      name: environment_id
+      required: true
+      schema:
+        type: string
+      description: Deprecated. Use /api/projects/{project_id}/ instead.
+    ProjectIdPath:
+      in: path
+      name: project_id
+      required: true
+      schema:
+        type: string
+      description: Project ID of the project you're trying to access. To find the ID of the project, make a call to /api/projects/.
+  securitySchemes:
+    PersonalAPIKeyAuth:
+      type: http
+      scheme: bearer
+x-tagGroups:
+- name: All endpoints
+  tags:
+  - LLM Analytics
+  - actions
+  - activity_log
+  - activity_logs
+  - advanced_activity_logs
+  - alerts
+  - annotations
+  - approval_policies
+  - batch_exports
+  - cdp
+  - change_requests
+  - code
+  - code-invites
+  - cohorts
+  - comments
+  - conversations
+  - core
+  - customer_analytics
+  - customer_journeys
+  - customer_profile_configs
+  - dashboard_templates
+  - dashboards
+  - data_color_themes
+  - data_modeling_jobs
+  - data_warehouse
+  - dataset_items
+  - datasets
+  - desktop_recordings
+  - domains
+  - early_access_feature
+  - early_access_features
+  - elements
+  - endpoints
+  - environments
+  - error_tracking
+  - evaluation_runs
+  - evaluations
+  - event_definitions
+  - event_filter
+  - event_schemas
+  - events
+  - experiment_holdouts
+  - experiment_saved_metrics
+  - experiments
+  - exports
+  - external_data_schemas
+  - external_data_sources
+  - feature_flags
+  - file_system
+  - file_system_shortcut
+  - flag_value
+  - groups
+  - groups_types
+  - health_issues
+  - heatmap_screenshots
+  - heatmaps
+  - hog_flows
+  - hog_function_templates
+  - hog_functions
+  - insight_variables
+  - insights
+  - integrations
+  - invites
+  - js-snippet
+  - legal_documents
+  - lineage
+  - live_debugger_breakpoints
+  - llm_analytics
+  - llm_prompts
+  - llm_skills
+  - logs
+  - managed_viewsets
+  - max
+  - max_tools
+  - mcp_server_installations
+  - mcp_servers
+  - mcp_store
+  - mcp_tools
+  - members
+  - notebooks
+  - oauth_applications
+  - object_media_previews
+  - organizations
+  - persisted_folder
+  - persons
+  - platform_features
+  - plugin_configs
+  - product_analytics
+  - product_tours
+  - project_secret_api_keys
+  - projects
+  - property_definitions
+  - proxy_records
+  - public_hog_function_templates
+  - query
+  - replay
+  - reverse_proxy
+  - role_external_references
+  - roles
+  - sandbox-environments
+  - sandbox_environments
+  - saved
+  - schema_property_groups
+  - sdk_doctor
+  - session_group_summaries
+  - session_recording_playlists
+  - session_recordings
+  - session_summaries
+  - sessions
+  - signals
+  - subscriptions
+  - surveys
+  - taggers
+  - task-automations
+  - task-runs
+  - task_automations
+  - tasks
+  - uploaded_media
+  - user_home_settings
+  - user_interviews
+  - users
+  - visual_review
+  - warehouse_dag
+  - warehouse_model_paths
+  - warehouse_saved_queries
+  - warehouse_saved_query_folders
+  - warehouse_tables
+  - warehouse_view_link
+  - warehouse_view_links
+  - web_analytics
+  - web_experiments
+  - web_vitals
+  - welcome
+  - workflows

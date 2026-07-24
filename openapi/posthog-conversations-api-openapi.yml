@@ -1,0 +1,1981 @@
+openapi: 3.0.3
+info:
+  title: PostHog actions conversations API
+  version: 1.0.0
+  description: ''
+tags:
+- name: conversations
+paths:
+  /api/environments/{project_id}/conversations/:
+    get:
+      operationId: conversations_list
+      parameters:
+      - name: limit
+        required: false
+        in: query
+        description: Number of results to return per page.
+        schema:
+          type: integer
+      - name: offset
+        required: false
+        in: query
+        description: The initial index from which to return the results.
+        schema:
+          type: integer
+      - $ref: '#/components/parameters/ProjectIdPath'
+      tags:
+      - conversations
+      security:
+      - PersonalAPIKeyAuth:
+        - conversation:read
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedConversationMinimalList'
+          description: ''
+      x-explicit-tags:
+      - max
+    post:
+      operationId: conversations_create
+      description: 'Unified endpoint that handles both conversation creation and streaming.
+
+
+        - If message is provided: Start new conversation processing
+
+        - If no message: Stream from existing conversation'
+      parameters:
+      - $ref: '#/components/parameters/ProjectIdPath'
+      tags:
+      - conversations
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Message'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/Message'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/Message'
+        required: true
+      security:
+      - PersonalAPIKeyAuth:
+        - conversation:write
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Message'
+          description: ''
+      x-explicit-tags:
+      - max
+  /api/environments/{project_id}/conversations/{conversation}/:
+    get:
+      operationId: conversations_retrieve
+      parameters:
+      - in: path
+        name: conversation
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this conversation.
+        required: true
+      - $ref: '#/components/parameters/ProjectIdPath'
+      tags:
+      - conversations
+      security:
+      - PersonalAPIKeyAuth:
+        - conversation:read
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Conversation'
+          description: ''
+      x-explicit-tags:
+      - max
+  /api/environments/{project_id}/conversations/{conversation}/append_message/:
+    post:
+      operationId: conversations_append_message_create
+      description: 'Appends a message to an existing conversation without triggering AI processing.
+
+        This is used for client-side generated messages that need to be persisted
+
+        (e.g., support ticket confirmation messages).'
+      parameters:
+      - in: path
+        name: conversation
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this conversation.
+        required: true
+      - $ref: '#/components/parameters/ProjectIdPath'
+      tags:
+      - conversations
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/MessageMinimal'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/MessageMinimal'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/MessageMinimal'
+        required: true
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MessageMinimal'
+          description: ''
+      x-explicit-tags:
+      - max
+  /api/environments/{project_id}/conversations/{conversation}/cancel/:
+    patch:
+      operationId: conversations_cancel_partial_update
+      parameters:
+      - in: path
+        name: conversation
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this conversation.
+        required: true
+      - $ref: '#/components/parameters/ProjectIdPath'
+      tags:
+      - conversations
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchedConversation'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/PatchedConversation'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/PatchedConversation'
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Conversation'
+          description: ''
+      x-explicit-tags:
+      - max
+  /api/environments/{project_id}/conversations/{conversation}/queue/:
+    get:
+      operationId: conversations_queue_retrieve
+      parameters:
+      - in: path
+        name: conversation
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this conversation.
+        required: true
+      - $ref: '#/components/parameters/ProjectIdPath'
+      tags:
+      - conversations
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Conversation'
+          description: ''
+      x-explicit-tags:
+      - max
+    post:
+      operationId: conversations_queue_create
+      parameters:
+      - in: path
+        name: conversation
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this conversation.
+        required: true
+      - $ref: '#/components/parameters/ProjectIdPath'
+      tags:
+      - conversations
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Conversation'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/Conversation'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/Conversation'
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Conversation'
+          description: ''
+      x-explicit-tags:
+      - max
+  /api/environments/{project_id}/conversations/{conversation}/queue/{queue_id}/:
+    patch:
+      operationId: conversations_queue_partial_update
+      parameters:
+      - in: path
+        name: conversation
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this conversation.
+        required: true
+      - $ref: '#/components/parameters/ProjectIdPath'
+      - in: path
+        name: queue_id
+        schema:
+          type: string
+        required: true
+      tags:
+      - conversations
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchedConversation'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/PatchedConversation'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/PatchedConversation'
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Conversation'
+          description: ''
+      x-explicit-tags:
+      - max
+    delete:
+      operationId: conversations_queue_destroy
+      parameters:
+      - in: path
+        name: conversation
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this conversation.
+        required: true
+      - $ref: '#/components/parameters/ProjectIdPath'
+      - in: path
+        name: queue_id
+        schema:
+          type: string
+        required: true
+      tags:
+      - conversations
+      responses:
+        '204':
+          description: No response body
+      x-explicit-tags:
+      - max
+  /api/environments/{project_id}/conversations/{conversation}/queue/clear/:
+    post:
+      operationId: conversations_queue_clear_create
+      parameters:
+      - in: path
+        name: conversation
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this conversation.
+        required: true
+      - $ref: '#/components/parameters/ProjectIdPath'
+      tags:
+      - conversations
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Conversation'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/Conversation'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/Conversation'
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Conversation'
+          description: ''
+      x-explicit-tags:
+      - max
+  /api/environments/{project_id}/conversations/views/:
+    get:
+      operationId: conversations_views_list
+      parameters:
+      - name: limit
+        required: false
+        in: query
+        description: Number of results to return per page.
+        schema:
+          type: integer
+      - name: offset
+        required: false
+        in: query
+        description: The initial index from which to return the results.
+        schema:
+          type: integer
+      - $ref: '#/components/parameters/ProjectIdPath'
+      tags:
+      - conversations
+      security:
+      - PersonalAPIKeyAuth:
+        - conversation:read
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedTicketViewList'
+          description: ''
+      x-explicit-tags:
+      - conversations
+    post:
+      operationId: conversations_views_create
+      parameters:
+      - $ref: '#/components/parameters/ProjectIdPath'
+      tags:
+      - conversations
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/TicketView'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/TicketView'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/TicketView'
+        required: true
+      security:
+      - PersonalAPIKeyAuth:
+        - conversation:write
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TicketView'
+          description: ''
+      x-explicit-tags:
+      - conversations
+  /api/environments/{project_id}/conversations/views/{short_id}/:
+    get:
+      operationId: conversations_views_retrieve
+      parameters:
+      - $ref: '#/components/parameters/ProjectIdPath'
+      - in: path
+        name: short_id
+        schema:
+          type: string
+        required: true
+      tags:
+      - conversations
+      security:
+      - PersonalAPIKeyAuth:
+        - conversation:read
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TicketView'
+          description: ''
+      x-explicit-tags:
+      - conversations
+    delete:
+      operationId: conversations_views_destroy
+      parameters:
+      - $ref: '#/components/parameters/ProjectIdPath'
+      - in: path
+        name: short_id
+        schema:
+          type: string
+        required: true
+      tags:
+      - conversations
+      security:
+      - PersonalAPIKeyAuth:
+        - conversation:write
+      responses:
+        '204':
+          description: No response body
+      x-explicit-tags:
+      - conversations
+  /api/projects/{project_id}/conversations/tickets/:
+    get:
+      operationId: conversations_tickets_list
+      description: List tickets with person data attached.
+      parameters:
+      - in: query
+        name: assignee
+        schema:
+          type: string
+        description: Filter by assignee. Use `unassigned` for tickets with no assignee, `user:<user_id>` for a specific user, or `role:<role_uuid>` for a role.
+      - in: query
+        name: channel_detail
+        schema:
+          type: string
+          enum:
+          - slack_bot_mention
+          - slack_channel_message
+          - slack_emoji_reaction
+          - teams_bot_mention
+          - teams_channel_message
+          - widget_api
+          - widget_embedded
+        description: Filter by the channel sub-type (e.g. `widget_embedded`, `slack_bot_mention`).
+      - in: query
+        name: channel_source
+        schema:
+          type: string
+          enum:
+          - email
+          - slack
+          - teams
+          - widget
+        description: Filter by the channel the ticket originated from.
+      - in: query
+        name: date_from
+        schema:
+          type: string
+        description: Only include tickets updated on or after this date. Accepts absolute dates (`2026-01-01`) or relative ones (`-7d`, `-1mStart`). Pass `all` to disable the filter.
+      - in: query
+        name: date_to
+        schema:
+          type: string
+        description: Only include tickets updated on or before this date. Same format as `date_from`.
+      - in: query
+        name: distinct_ids
+        schema:
+          type: string
+        description: Comma-separated list of person `distinct_id`s to filter by (max 100).
+      - name: limit
+        required: false
+        in: query
+        description: Number of results to return per page.
+        schema:
+          type: integer
+      - name: offset
+        required: false
+        in: query
+        description: The initial index from which to return the results.
+        schema:
+          type: integer
+      - in: query
+        name: order_by
+        schema:
+          type: string
+          enum:
+          - -created_at
+          - -sla_due_at
+          - -ticket_number
+          - -updated_at
+          - created_at
+          - sla_due_at
+          - ticket_number
+          - updated_at
+        description: Sort order. Prefix with `-` for descending. Defaults to `-updated_at`.
+      - in: query
+        name: priority
+        schema:
+          type: string
+        description: 'Filter by priority. Accepts a single value or a comma-separated list (e.g. `medium,high`). Valid values: `low`, `medium`, `high`.'
+      - $ref: '#/components/parameters/ProjectIdPath'
+      - in: query
+        name: search
+        schema:
+          type: string
+        description: Free-text search. A numeric value matches a ticket number exactly; otherwise matches against the customer's name or email (case-insensitive, partial match).
+      - in: query
+        name: sla
+        schema:
+          type: string
+          enum:
+          - at-risk
+          - breached
+          - on-track
+        description: Filter by SLA state. `breached` = past `sla_due_at`, `at-risk` = due within the next hour, `on-track` = more than an hour remaining.
+      - in: query
+        name: status
+        schema:
+          type: string
+        description: 'Filter by status. Accepts a single value or a comma-separated list (e.g. `new,open,pending`). Valid values: `new`, `open`, `pending`, `on_hold`, `resolved`.'
+      - in: query
+        name: tags
+        schema:
+          type: string
+        description: JSON-encoded array of tag names to filter by, e.g. `["billing","urgent"]`.
+      tags:
+      - conversations
+      security:
+      - PersonalAPIKeyAuth:
+        - ticket:read
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedTicketList'
+          description: ''
+      x-explicit-tags:
+      - conversations
+    post:
+      operationId: conversations_tickets_create
+      parameters:
+      - $ref: '#/components/parameters/ProjectIdPath'
+      tags:
+      - conversations
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Ticket'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/Ticket'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/Ticket'
+      security:
+      - PersonalAPIKeyAuth:
+        - ticket:write
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Ticket'
+          description: ''
+      x-explicit-tags:
+      - conversations
+  /api/projects/{project_id}/conversations/tickets/{id}/:
+    get:
+      operationId: conversations_tickets_retrieve
+      description: Get single ticket and mark as read by team.
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this ticket.
+        required: true
+      - $ref: '#/components/parameters/ProjectIdPath'
+      tags:
+      - conversations
+      security:
+      - PersonalAPIKeyAuth:
+        - ticket:read
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Ticket'
+          description: ''
+      x-explicit-tags: []
+    put:
+      operationId: conversations_tickets_update
+      description: Handle ticket updates including assignee changes.
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this ticket.
+        required: true
+      - $ref: '#/components/parameters/ProjectIdPath'
+      tags:
+      - conversations
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Ticket'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/Ticket'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/Ticket'
+      security:
+      - PersonalAPIKeyAuth:
+        - ticket:write
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Ticket'
+          description: ''
+      x-explicit-tags: []
+    patch:
+      operationId: conversations_tickets_partial_update
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this ticket.
+        required: true
+      - $ref: '#/components/parameters/ProjectIdPath'
+      tags:
+      - conversations
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchedTicket'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/PatchedTicket'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/PatchedTicket'
+      security:
+      - PersonalAPIKeyAuth:
+        - ticket:write
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Ticket'
+          description: ''
+      x-explicit-tags: []
+    delete:
+      operationId: conversations_tickets_destroy
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this ticket.
+        required: true
+      - $ref: '#/components/parameters/ProjectIdPath'
+      tags:
+      - conversations
+      security:
+      - PersonalAPIKeyAuth:
+        - ticket:write
+      responses:
+        '204':
+          description: No response body
+      x-explicit-tags: []
+  /api/projects/{project_id}/conversations/tickets/{id}/suggest_reply/:
+    post:
+      operationId: conversations_tickets_suggest_reply_create
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this ticket.
+        required: true
+      - $ref: '#/components/parameters/ProjectIdPath'
+      tags:
+      - conversations
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SuggestReplyResponse'
+          description: ''
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SuggestReplyError'
+          description: ''
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SuggestReplyError'
+          description: ''
+        '500':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SuggestReplyError'
+          description: ''
+      x-explicit-tags: []
+  /api/projects/{project_id}/conversations/tickets/bulk_update_tags/:
+    post:
+      operationId: conversations_tickets_bulk_update_tags_create
+      description: 'Bulk update tags on multiple objects.
+
+
+        Accepts:
+
+        - {"ids": [...], "action": "add"|"remove"|"set", "tags": ["tag1", "tag2"]}
+
+
+        Actions:
+
+        - "add": Add tags to existing tags on each object
+
+        - "remove": Remove specific tags from each object
+
+        - "set": Replace all tags on each object with the provided list'
+      parameters:
+      - $ref: '#/components/parameters/ProjectIdPath'
+      tags:
+      - conversations
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/BulkUpdateTagsRequest'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/BulkUpdateTagsRequest'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/BulkUpdateTagsRequest'
+        required: true
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BulkUpdateTagsResponse'
+          description: ''
+      x-explicit-tags:
+      - conversations
+  /api/projects/{project_id}/conversations/tickets/unread_count/:
+    get:
+      operationId: conversations_tickets_unread_count_retrieve
+      description: 'Get total unread ticket count for the team.
+
+
+        Returns the sum of unread_team_count for all non-resolved tickets.
+
+        Cached in Redis for 30 seconds, invalidated on changes.'
+      parameters:
+      - $ref: '#/components/parameters/ProjectIdPath'
+      tags:
+      - conversations
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Ticket'
+          description: ''
+      x-explicit-tags:
+      - conversations
+components:
+  schemas:
+    ChannelSourceEnum:
+      enum:
+      - widget
+      - email
+      - slack
+      - teams
+      type: string
+      description: '* `widget` - Widget
+
+        * `email` - Email
+
+        * `slack` - Slack
+
+        * `teams` - Microsoft Teams'
+    BulkUpdateTagsResponse:
+      type: object
+      properties:
+        updated:
+          type: array
+          items:
+            $ref: '#/components/schemas/BulkUpdateTagsItem'
+        skipped:
+          type: array
+          items:
+            $ref: '#/components/schemas/BulkUpdateTagsError'
+      required:
+      - skipped
+      - updated
+    PriorityEnum:
+      enum:
+      - low
+      - medium
+      - high
+      type: string
+      description: '* `low` - Low
+
+        * `medium` - Medium
+
+        * `high` - High'
+    Conversation:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+          readOnly: true
+        status:
+          allOf:
+          - $ref: '#/components/schemas/ConversationStatus'
+          readOnly: true
+        title:
+          type: string
+          readOnly: true
+          nullable: true
+          description: Title of the conversation.
+        user:
+          allOf:
+          - $ref: '#/components/schemas/UserBasic'
+          readOnly: true
+        created_at:
+          type: string
+          format: date-time
+          readOnly: true
+          nullable: true
+        updated_at:
+          type: string
+          format: date-time
+          readOnly: true
+          nullable: true
+        type:
+          allOf:
+          - $ref: '#/components/schemas/ConversationType'
+          readOnly: true
+        is_internal:
+          type: boolean
+          readOnly: true
+          nullable: true
+          description: Whether this conversation was created during an impersonated session (e.g., by support agents). Internal conversations are hidden from customers.
+        slack_thread_key:
+          type: string
+          readOnly: true
+          nullable: true
+          description: 'Unique key for Slack thread: ''{workspace_id}:{channel}:{thread_ts}'''
+        slack_workspace_domain:
+          type: string
+          readOnly: true
+          nullable: true
+          description: Slack workspace subdomain (e.g. 'posthog' for posthog.slack.com)
+        messages:
+          type: array
+          items:
+            type: object
+            additionalProperties: true
+          readOnly: true
+        has_unsupported_content:
+          type: boolean
+          readOnly: true
+        agent_mode:
+          type: string
+          nullable: true
+          readOnly: true
+        is_sandbox:
+          type: boolean
+          readOnly: true
+        pending_approvals:
+          type: array
+          items:
+            type: object
+            additionalProperties: true
+          description: 'Return pending approval cards as structured data.
+
+
+            Combines metadata from conversation.approval_decisions with payload from checkpoint
+
+            interrupts (single source of truth for payload data).'
+          readOnly: true
+      required:
+      - agent_mode
+      - created_at
+      - has_unsupported_content
+      - id
+      - is_internal
+      - is_sandbox
+      - messages
+      - pending_approvals
+      - slack_thread_key
+      - slack_workspace_domain
+      - status
+      - title
+      - type
+      - updated_at
+      - user
+    RoleAtOrganizationEnum:
+      enum:
+      - engineering
+      - data
+      - product
+      - founder
+      - leadership
+      - marketing
+      - sales
+      - other
+      type: string
+      description: '* `engineering` - Engineering
+
+        * `data` - Data
+
+        * `product` - Product Management
+
+        * `founder` - Founder
+
+        * `leadership` - Leadership
+
+        * `marketing` - Marketing
+
+        * `sales` - Sales / Success
+
+        * `other` - Other'
+    ConversationMinimal:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+          readOnly: true
+        status:
+          allOf:
+          - $ref: '#/components/schemas/ConversationStatus'
+          readOnly: true
+        title:
+          type: string
+          readOnly: true
+          nullable: true
+          description: Title of the conversation.
+        user:
+          allOf:
+          - $ref: '#/components/schemas/UserBasic'
+          readOnly: true
+        created_at:
+          type: string
+          format: date-time
+          readOnly: true
+          nullable: true
+        updated_at:
+          type: string
+          format: date-time
+          readOnly: true
+          nullable: true
+        type:
+          allOf:
+          - $ref: '#/components/schemas/ConversationType'
+          readOnly: true
+        is_internal:
+          type: boolean
+          readOnly: true
+          nullable: true
+          description: Whether this conversation was created during an impersonated session (e.g., by support agents). Internal conversations are hidden from customers.
+        slack_thread_key:
+          type: string
+          readOnly: true
+          nullable: true
+          description: 'Unique key for Slack thread: ''{workspace_id}:{channel}:{thread_ts}'''
+        slack_workspace_domain:
+          type: string
+          readOnly: true
+          nullable: true
+          description: Slack workspace subdomain (e.g. 'posthog' for posthog.slack.com)
+      required:
+      - created_at
+      - id
+      - is_internal
+      - slack_thread_key
+      - slack_workspace_domain
+      - status
+      - title
+      - type
+      - updated_at
+      - user
+    PaginatedConversationMinimalList:
+      type: object
+      required:
+      - count
+      - results
+      properties:
+        count:
+          type: integer
+          example: 123
+        next:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?offset=400&limit=100
+        previous:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?offset=200&limit=100
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/ConversationMinimal'
+    PaginatedTicketList:
+      type: object
+      required:
+      - count
+      - results
+      properties:
+        count:
+          type: integer
+          example: 123
+        next:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?offset=400&limit=100
+        previous:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?offset=200&limit=100
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/Ticket'
+    Message:
+      type: object
+      description: Serializer for appending a message to an existing conversation without triggering AI processing.
+      properties:
+        content:
+          type: string
+          nullable: true
+          maxLength: 40000
+        conversation:
+          type: string
+          format: uuid
+        contextual_tools:
+          type: object
+          additionalProperties: true
+        ui_context: {}
+        billing_context: {}
+        trace_id:
+          type: string
+          format: uuid
+        session_id:
+          type: string
+        agent_mode:
+          $ref: '#/components/schemas/AgentModeEnum'
+        is_sandbox:
+          type: boolean
+          default: false
+        resume_payload:
+          nullable: true
+      required:
+      - content
+      - conversation
+      - trace_id
+    NullEnum:
+      enum:
+      - null
+    SuggestReplyResponse:
+      type: object
+      properties:
+        suggestion:
+          type: string
+      required:
+      - suggestion
+    UserBasic:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        uuid:
+          type: string
+          format: uuid
+          readOnly: true
+        distinct_id:
+          type: string
+          nullable: true
+          maxLength: 200
+        first_name:
+          type: string
+          maxLength: 150
+        last_name:
+          type: string
+          maxLength: 150
+        email:
+          type: string
+          format: email
+          title: Email address
+          maxLength: 254
+        is_email_verified:
+          type: boolean
+          nullable: true
+        hedgehog_config:
+          type: object
+          additionalProperties: true
+          nullable: true
+          readOnly: true
+        role_at_organization:
+          nullable: true
+          oneOf:
+          - $ref: '#/components/schemas/RoleAtOrganizationEnum'
+          - $ref: '#/components/schemas/BlankEnum'
+          - $ref: '#/components/schemas/NullEnum'
+      required:
+      - email
+      - hedgehog_config
+      - id
+      - uuid
+    TicketPerson:
+      type: object
+      description: Minimal person serializer for embedding in ticket responses.
+      properties:
+        id:
+          type: string
+          format: uuid
+          readOnly: true
+        name:
+          type: string
+          readOnly: true
+        distinct_ids:
+          type: array
+          items:
+            type: string
+          readOnly: true
+        properties:
+          type: object
+          additionalProperties: true
+          readOnly: true
+        created_at:
+          type: string
+          format: date-time
+          readOnly: true
+        is_identified:
+          type: boolean
+          readOnly: true
+      required:
+      - created_at
+      - distinct_ids
+      - id
+      - is_identified
+      - name
+      - properties
+    ActionEnum:
+      enum:
+      - add
+      - remove
+      - set
+      type: string
+      description: '* `add` - add
+
+        * `remove` - remove
+
+        * `set` - set'
+    BulkUpdateTagsRequest:
+      type: object
+      properties:
+        ids:
+          type: array
+          items:
+            type: integer
+          description: List of object IDs to update tags on.
+          maxItems: 500
+        action:
+          allOf:
+          - $ref: '#/components/schemas/ActionEnum'
+          description: '''add'' merges with existing tags, ''remove'' deletes specific tags, ''set'' replaces all tags.
+
+
+            * `add` - add
+
+            * `remove` - remove
+
+            * `set` - set'
+        tags:
+          type: array
+          items:
+            type: string
+          description: Tag names to add, remove, or set.
+      required:
+      - action
+      - ids
+      - tags
+    TicketStatusEnum:
+      enum:
+      - new
+      - open
+      - pending
+      - on_hold
+      - resolved
+      type: string
+      description: '* `new` - New
+
+        * `open` - Open
+
+        * `pending` - Pending
+
+        * `on_hold` - On hold
+
+        * `resolved` - Resolved'
+    PaginatedTicketViewList:
+      type: object
+      required:
+      - count
+      - results
+      properties:
+        count:
+          type: integer
+          example: 123
+        next:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?offset=400&limit=100
+        previous:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?offset=200&limit=100
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/TicketView'
+    ChannelDetailEnum:
+      enum:
+      - slack_channel_message
+      - slack_bot_mention
+      - slack_emoji_reaction
+      - teams_channel_message
+      - teams_bot_mention
+      - widget_embedded
+      - widget_api
+      type: string
+      description: '* `slack_channel_message` - Channel message
+
+        * `slack_bot_mention` - Bot mention
+
+        * `slack_emoji_reaction` - Emoji reaction
+
+        * `teams_channel_message` - Teams channel message
+
+        * `teams_bot_mention` - Teams bot mention
+
+        * `widget_embedded` - Widget
+
+        * `widget_api` - API'
+    TicketAssignment:
+      type: object
+      description: Serializer for ticket assignment (user or role).
+      properties:
+        id:
+          type: string
+          nullable: true
+          readOnly: true
+        type:
+          type: string
+          readOnly: true
+        user:
+          type: object
+          additionalProperties:
+            type: string
+          nullable: true
+          readOnly: true
+        role:
+          type: object
+          additionalProperties:
+            type: string
+          nullable: true
+          readOnly: true
+      required:
+      - id
+      - role
+      - type
+      - user
+    ConversationStatus:
+      enum:
+      - idle
+      - in_progress
+      - canceling
+      type: string
+      description: '* `idle` - Idle
+
+        * `in_progress` - In progress
+
+        * `canceling` - Canceling'
+    BulkUpdateTagsItem:
+      type: object
+      properties:
+        id:
+          type: integer
+        tags:
+          type: array
+          items:
+            type: string
+      required:
+      - id
+      - tags
+    Ticket:
+      type: object
+      description: Serializer mixin that handles tags for objects.
+      properties:
+        id:
+          type: string
+          format: uuid
+          readOnly: true
+        ticket_number:
+          type: integer
+          readOnly: true
+        channel_source:
+          allOf:
+          - $ref: '#/components/schemas/ChannelSourceEnum'
+          readOnly: true
+        channel_detail:
+          readOnly: true
+          nullable: true
+          oneOf:
+          - $ref: '#/components/schemas/ChannelDetailEnum'
+          - $ref: '#/components/schemas/NullEnum'
+        distinct_id:
+          type: string
+          readOnly: true
+        status:
+          allOf:
+          - $ref: '#/components/schemas/TicketStatusEnum'
+          description: 'Ticket status: new, open, pending, on_hold, or resolved
+
+
+            * `new` - New
+
+            * `open` - Open
+
+            * `pending` - Pending
+
+            * `on_hold` - On hold
+
+            * `resolved` - Resolved'
+        priority:
+          nullable: true
+          description: 'Ticket priority: low, medium, or high. Null if unset.
+
+
+            * `low` - Low
+
+            * `medium` - Medium
+
+            * `high` - High'
+          oneOf:
+          - $ref: '#/components/schemas/PriorityEnum'
+          - $ref: '#/components/schemas/BlankEnum'
+          - $ref: '#/components/schemas/NullEnum'
+        assignee:
+          allOf:
+          - $ref: '#/components/schemas/TicketAssignment'
+          readOnly: true
+        anonymous_traits:
+          description: Customer-provided traits such as name and email
+        ai_resolved:
+          type: boolean
+        escalation_reason:
+          type: string
+          nullable: true
+        created_at:
+          type: string
+          format: date-time
+          readOnly: true
+        updated_at:
+          type: string
+          format: date-time
+          readOnly: true
+        message_count:
+          type: integer
+          readOnly: true
+        last_message_at:
+          type: string
+          format: date-time
+          readOnly: true
+          nullable: true
+        last_message_text:
+          type: string
+          readOnly: true
+          nullable: true
+        unread_team_count:
+          type: integer
+          readOnly: true
+        unread_customer_count:
+          type: integer
+          readOnly: true
+        session_id:
+          type: string
+          readOnly: true
+          nullable: true
+        session_context:
+          readOnly: true
+        sla_due_at:
+          type: string
+          format: date-time
+          nullable: true
+          description: SLA deadline set via workflows. Null means no SLA.
+        snoozed_until:
+          type: string
+          format: date-time
+          nullable: true
+        slack_channel_id:
+          type: string
+          readOnly: true
+          nullable: true
+        slack_thread_ts:
+          type: string
+          readOnly: true
+          nullable: true
+        slack_team_id:
+          type: string
+          readOnly: true
+          nullable: true
+        email_subject:
+          type: string
+          readOnly: true
+          nullable: true
+        email_from:
+          type: string
+          format: email
+          readOnly: true
+          nullable: true
+        email_to:
+          type: string
+          nullable: true
+          readOnly: true
+        cc_participants:
+          readOnly: true
+        person:
+          allOf:
+          - $ref: '#/components/schemas/TicketPerson'
+          readOnly: true
+          nullable: true
+        tags:
+          type: array
+          items: {}
+      required:
+      - assignee
+      - cc_participants
+      - channel_detail
+      - channel_source
+      - created_at
+      - distinct_id
+      - email_from
+      - email_subject
+      - email_to
+      - id
+      - last_message_at
+      - last_message_text
+      - message_count
+      - person
+      - session_context
+      - session_id
+      - slack_channel_id
+      - slack_team_id
+      - slack_thread_ts
+      - ticket_number
+      - unread_customer_count
+      - unread_team_count
+      - updated_at
+    ConversationType:
+      enum:
+      - assistant
+      - tool_call
+      - deep_research
+      - slack
+      type: string
+      description: '* `assistant` - Assistant
+
+        * `tool_call` - Tool call
+
+        * `deep_research` - Deep research
+
+        * `slack` - Slack'
+    BlankEnum:
+      enum:
+      - ''
+    SuggestReplyError:
+      type: object
+      properties:
+        detail:
+          type: string
+        error_type:
+          type: string
+      required:
+      - detail
+    TicketView:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+          readOnly: true
+        short_id:
+          type: string
+          readOnly: true
+        name:
+          type: string
+          maxLength: 400
+        filters:
+          type: object
+          additionalProperties: true
+          description: Saved ticket filter criteria. May contain status, priority, channel, sla, assignee, tags, dateFrom, dateTo, and sorting keys.
+        created_at:
+          type: string
+          format: date-time
+          readOnly: true
+        created_by:
+          allOf:
+          - $ref: '#/components/schemas/UserBasic'
+          readOnly: true
+      required:
+      - created_at
+      - created_by
+      - id
+      - name
+      - short_id
+    BulkUpdateTagsError:
+      type: object
+      properties:
+        id:
+          type: integer
+        reason:
+          type: string
+      required:
+      - id
+      - reason
+    PatchedTicket:
+      type: object
+      description: Serializer mixin that handles tags for objects.
+      properties:
+        id:
+          type: string
+          format: uuid
+          readOnly: true
+        ticket_number:
+          type: integer
+          readOnly: true
+        channel_source:
+          allOf:
+          - $ref: '#/components/schemas/ChannelSourceEnum'
+          readOnly: true
+        channel_detail:
+          readOnly: true
+          nullable: true
+          oneOf:
+          - $ref: '#/components/schemas/ChannelDetailEnum'
+          - $ref: '#/components/schemas/NullEnum'
+        distinct_id:
+          type: string
+          readOnly: true
+        status:
+          allOf:
+          - $ref: '#/components/schemas/TicketStatusEnum'
+          description: 'Ticket status: new, open, pending, on_hold, or resolved
+
+
+            * `new` - New
+
+            * `open` - Open
+
+            * `pending` - Pending
+
+            * `on_hold` - On hold
+
+            * `resolved` - Resolved'
+        priority:
+          nullable: true
+          description: 'Ticket priority: low, medium, or high. Null if unset.
+
+
+            * `low` - Low
+
+            * `medium` - Medium
+
+            * `high` - High'
+          oneOf:
+          - $ref: '#/components/schemas/PriorityEnum'
+          - $ref: '#/components/schemas/BlankEnum'
+          - $ref: '#/components/schemas/NullEnum'
+        assignee:
+          allOf:
+          - $ref: '#/components/schemas/TicketAssignment'
+          readOnly: true
+        anonymous_traits:
+          description: Customer-provided traits such as name and email
+        ai_resolved:
+          type: boolean
+        escalation_reason:
+          type: string
+          nullable: true
+        created_at:
+          type: string
+          format: date-time
+          readOnly: true
+        updated_at:
+          type: string
+          format: date-time
+          readOnly: true
+        message_count:
+          type: integer
+          readOnly: true
+        last_message_at:
+          type: string
+          format: date-time
+          readOnly: true
+          nullable: true
+        last_message_text:
+          type: string
+          readOnly: true
+          nullable: true
+        unread_team_count:
+          type: integer
+          readOnly: true
+        unread_customer_count:
+          type: integer
+          readOnly: true
+        session_id:
+          type: string
+          readOnly: true
+          nullable: true
+        session_context:
+          readOnly: true
+        sla_due_at:
+          type: string
+          format: date-time
+          nullable: true
+          description: SLA deadline set via workflows. Null means no SLA.
+        snoozed_until:
+          type: string
+          format: date-time
+          nullable: true
+        slack_channel_id:
+          type: string
+          readOnly: true
+          nullable: true
+        slack_thread_ts:
+          type: string
+          readOnly: true
+          nullable: true
+        slack_team_id:
+          type: string
+          readOnly: true
+          nullable: true
+        email_subject:
+          type: string
+          readOnly: true
+          nullable: true
+        email_from:
+          type: string
+          format: email
+          readOnly: true
+          nullable: true
+        email_to:
+          type: string
+          nullable: true
+          readOnly: true
+        cc_participants:
+          readOnly: true
+        person:
+          allOf:
+          - $ref: '#/components/schemas/TicketPerson'
+          readOnly: true
+          nullable: true
+        tags:
+          type: array
+          items: {}
+    MessageMinimal:
+      type: object
+      description: Serializer for appending a message to an existing conversation without triggering AI processing.
+      properties:
+        content:
+          type: string
+          maxLength: 10000
+      required:
+      - content
+    AgentModeEnum:
+      enum:
+      - product_analytics
+      - sql
+      - session_replay
+      - error_tracking
+      - plan
+      - execution
+      - survey
+      - research
+      - flags
+      - llm_analytics
+      - sandbox
+      type: string
+      description: '* `product_analytics` - product_analytics
+
+        * `sql` - sql
+
+        * `session_replay` - session_replay
+
+        * `error_tracking` - error_tracking
+
+        * `plan` - plan
+
+        * `execution` - execution
+
+        * `survey` - survey
+
+        * `research` - research
+
+        * `flags` - flags
+
+        * `llm_analytics` - llm_analytics
+
+        * `sandbox` - sandbox'
+    PatchedConversation:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+          readOnly: true
+        status:
+          allOf:
+          - $ref: '#/components/schemas/ConversationStatus'
+          readOnly: true
+        title:
+          type: string
+          readOnly: true
+          nullable: true
+          description: Title of the conversation.
+        user:
+          allOf:
+          - $ref: '#/components/schemas/UserBasic'
+          readOnly: true
+        created_at:
+          type: string
+          format: date-time
+          readOnly: true
+          nullable: true
+        updated_at:
+          type: string
+          format: date-time
+          readOnly: true
+          nullable: true
+        type:
+          allOf:
+          - $ref: '#/components/schemas/ConversationType'
+          readOnly: true
+        is_internal:
+          type: boolean
+          readOnly: true
+          nullable: true
+          description: Whether this conversation was created during an impersonated session (e.g., by support agents). Internal conversations are hidden from customers.
+        slack_thread_key:
+          type: string
+          readOnly: true
+          nullable: true
+          description: 'Unique key for Slack thread: ''{workspace_id}:{channel}:{thread_ts}'''
+        slack_workspace_domain:
+          type: string
+          readOnly: true
+          nullable: true
+          description: Slack workspace subdomain (e.g. 'posthog' for posthog.slack.com)
+        messages:
+          type: array
+          items:
+            type: object
+            additionalProperties: true
+          readOnly: true
+        has_unsupported_content:
+          type: boolean
+          readOnly: true
+        agent_mode:
+          type: string
+          nullable: true
+          readOnly: true
+        is_sandbox:
+          type: boolean
+          readOnly: true
+        pending_approvals:
+          type: array
+          items:
+            type: object
+            additionalProperties: true
+          description: 'Return pending approval cards as structured data.
+
+
+            Combines metadata from conversation.approval_decisions with payload from checkpoint
+
+            interrupts (single source of truth for payload data).'
+          readOnly: true
+  parameters:
+    ProjectIdPath:
+      in: path
+      name: project_id
+      required: true
+      schema:
+        type: string
+      description: Project ID of the project you're trying to access. To find the ID of the project, make a call to /api/projects/.
+  securitySchemes:
+    PersonalAPIKeyAuth:
+      type: http
+      scheme: bearer
+x-tagGroups:
+- name: All endpoints
+  tags:
+  - LLM Analytics
+  - actions
+  - activity_log
+  - activity_logs
+  - advanced_activity_logs
+  - alerts
+  - annotations
+  - approval_policies
+  - batch_exports
+  - cdp
+  - change_requests
+  - code
+  - code-invites
+  - cohorts
+  - comments
+  - conversations
+  - core
+  - customer_analytics
+  - customer_journeys
+  - customer_profile_configs
+  - dashboard_templates
+  - dashboards
+  - data_color_themes
+  - data_modeling_jobs
+  - data_warehouse
+  - dataset_items
+  - datasets
+  - desktop_recordings
+  - domains
+  - early_access_feature
+  - early_access_features
+  - elements
+  - endpoints
+  - environments
+  - error_tracking
+  - evaluation_runs
+  - evaluations
+  - event_definitions
+  - event_filter
+  - event_schemas
+  - events
+  - experiment_holdouts
+  - experiment_saved_metrics
+  - experiments
+  - exports
+  - external_data_schemas
+  - external_data_sources
+  - feature_flags
+  - file_system
+  - file_system_shortcut
+  - flag_value
+  - groups
+  - groups_types
+  - health_issues
+  - heatmap_screenshots
+  - heatmaps
+  - hog_flows
+  - hog_function_templates
+  - hog_functions
+  - insight_variables
+  - insights
+  - integrations
+  - invites
+  - js-snippet
+  - legal_documents
+  - lineage
+  - live_debugger_breakpoints
+  - llm_analytics
+  - llm_prompts
+  - llm_skills
+  - logs
+  - managed_viewsets
+  - max
+  - max_tools
+  - mcp_server_installations
+  - mcp_servers
+  - mcp_store
+  - mcp_tools
+  - members
+  - notebooks
+  - oauth_applications
+  - object_media_previews
+  - organizations
+  - persisted_folder
+  - persons
+  - platform_features
+  - plugin_configs
+  - product_analytics
+  - product_tours
+  - project_secret_api_keys
+  - projects
+  - property_definitions
+  - proxy_records
+  - public_hog_function_templates
+  - query
+  - replay
+  - reverse_proxy
+  - role_external_references
+  - roles
+  - sandbox-environments
+  - sandbox_environments
+  - saved
+  - schema_property_groups
+  - sdk_doctor
+  - session_group_summaries
+  - session_recording_playlists
+  - session_recordings
+  - session_summaries
+  - sessions
+  - signals
+  - subscriptions
+  - surveys
+  - taggers
+  - task-automations
+  - task-runs
+  - task_automations
+  - tasks
+  - uploaded_media
+  - user_home_settings
+  - user_interviews
+  - users
+  - visual_review
+  - warehouse_dag
+  - warehouse_model_paths
+  - warehouse_saved_queries
+  - warehouse_saved_query_folders
+  - warehouse_tables
+  - warehouse_view_link
+  - warehouse_view_links
+  - web_analytics
+  - web_experiments
+  - web_vitals
+  - welcome
+  - workflows

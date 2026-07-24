@@ -1,0 +1,617 @@
+openapi: 3.0.3
+info:
+  title: PostHog actions live_debugger_breakpoints API
+  version: 1.0.0
+  description: ''
+tags:
+- name: live_debugger_breakpoints
+paths:
+  /api/projects/{project_id}/live_debugger_breakpoints/:
+    get:
+      operationId: live_debugger_breakpoints_list
+      description: Create, Read, Update and Delete breakpoints for live debugging.
+      parameters:
+      - in: query
+        name: filename
+        schema:
+          type: string
+      - name: limit
+        required: false
+        in: query
+        description: Number of results to return per page.
+        schema:
+          type: integer
+      - name: offset
+        required: false
+        in: query
+        description: The initial index from which to return the results.
+        schema:
+          type: integer
+      - $ref: '#/components/parameters/ProjectIdPath'
+      - in: query
+        name: repository
+        schema:
+          type: string
+      tags:
+      - live_debugger_breakpoints
+      security:
+      - PersonalAPIKeyAuth:
+        - live_debugger:read
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedLiveDebuggerBreakpointList'
+          description: ''
+      x-explicit-tags:
+      - live_debugger
+    post:
+      operationId: live_debugger_breakpoints_create
+      description: Create, Read, Update and Delete breakpoints for live debugging.
+      parameters:
+      - $ref: '#/components/parameters/ProjectIdPath'
+      tags:
+      - live_debugger_breakpoints
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/LiveDebuggerBreakpoint'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/LiveDebuggerBreakpoint'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/LiveDebuggerBreakpoint'
+        required: true
+      security:
+      - PersonalAPIKeyAuth:
+        - live_debugger:write
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/LiveDebuggerBreakpoint'
+          description: ''
+      x-explicit-tags:
+      - live_debugger
+  /api/projects/{project_id}/live_debugger_breakpoints/{id}/:
+    get:
+      operationId: live_debugger_breakpoints_retrieve
+      description: Create, Read, Update and Delete breakpoints for live debugging.
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this live debugger breakpoint.
+        required: true
+      - $ref: '#/components/parameters/ProjectIdPath'
+      tags:
+      - live_debugger_breakpoints
+      security:
+      - PersonalAPIKeyAuth:
+        - live_debugger:read
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/LiveDebuggerBreakpoint'
+          description: ''
+      x-explicit-tags: []
+    put:
+      operationId: live_debugger_breakpoints_update
+      description: Create, Read, Update and Delete breakpoints for live debugging.
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this live debugger breakpoint.
+        required: true
+      - $ref: '#/components/parameters/ProjectIdPath'
+      tags:
+      - live_debugger_breakpoints
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/LiveDebuggerBreakpoint'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/LiveDebuggerBreakpoint'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/LiveDebuggerBreakpoint'
+        required: true
+      security:
+      - PersonalAPIKeyAuth:
+        - live_debugger:write
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/LiveDebuggerBreakpoint'
+          description: ''
+      x-explicit-tags: []
+    patch:
+      operationId: live_debugger_breakpoints_partial_update
+      description: Create, Read, Update and Delete breakpoints for live debugging.
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this live debugger breakpoint.
+        required: true
+      - $ref: '#/components/parameters/ProjectIdPath'
+      tags:
+      - live_debugger_breakpoints
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchedLiveDebuggerBreakpoint'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/PatchedLiveDebuggerBreakpoint'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/PatchedLiveDebuggerBreakpoint'
+      security:
+      - PersonalAPIKeyAuth:
+        - live_debugger:write
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/LiveDebuggerBreakpoint'
+          description: ''
+      x-explicit-tags: []
+    delete:
+      operationId: live_debugger_breakpoints_destroy
+      description: Create, Read, Update and Delete breakpoints for live debugging.
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this live debugger breakpoint.
+        required: true
+      - $ref: '#/components/parameters/ProjectIdPath'
+      tags:
+      - live_debugger_breakpoints
+      security:
+      - PersonalAPIKeyAuth:
+        - live_debugger:write
+      responses:
+        '204':
+          description: No response body
+      x-explicit-tags: []
+  /api/projects/{project_id}/live_debugger_breakpoints/active/:
+    get:
+      operationId: live_debugger_breakpoints_active_retrieve
+      description: "External API endpoint for client applications to fetch active breakpoints using Project API key. This endpoint allows external client applications (like Python scripts, Node.js apps, etc.) to fetch the list of active breakpoints so they can instrument their code accordingly. \n\nAuthentication: Requires a Project API Key in the Authorization header: `Authorization: Bearer phs_<your-project-api-key>`. You can find your Project API Key in PostHog at: Settings → Project → Project API Key"
+      summary: Get active breakpoints (External API)
+      parameters:
+      - in: query
+        name: enabled
+        schema:
+          type: boolean
+        description: Only return enabled breakpoints
+      - in: query
+        name: filename
+        schema:
+          type: string
+        description: Filter breakpoints for a specific file
+      - $ref: '#/components/parameters/ProjectIdPath'
+      - in: query
+        name: repository
+        schema:
+          type: string
+        description: Filter breakpoints for a specific repository (e.g., 'PostHog/posthog')
+      tags:
+      - live_debugger_breakpoints
+      security:
+      - PersonalAPIKeyAuth:
+        - live_debugger:read
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ActiveBreakpointsResponse'
+          description: List of breakpoints for client consumption
+        '400':
+          description: Invalid query parameters
+        '401':
+          description: Invalid or missing Project API key
+      x-explicit-tags:
+      - live_debugger
+  /api/projects/{project_id}/live_debugger_breakpoints/breakpoint_hits/:
+    get:
+      operationId: live_debugger_breakpoints_breakpoint_hits_retrieve
+      description: "Retrieve breakpoint hit events from ClickHouse with optional filtering and pagination. Returns hit events containing stack traces, local variables, and execution context from your application's runtime. \n\nSecurity: Breakpoint IDs are filtered to only include those belonging to the current team."
+      summary: Get breakpoint hits
+      parameters:
+      - in: query
+        name: breakpoint_ids
+        schema:
+          type: string
+        description: Filter hits for specific breakpoints (repeat parameter for multiple IDs, e.g., ?breakpoint_ids=uuid1&breakpoint_ids=uuid2)
+      - in: query
+        name: limit
+        schema:
+          type: integer
+        description: 'Number of hits to return (default: 100, max: 1000)'
+      - in: query
+        name: offset
+        schema:
+          type: integer
+        description: 'Pagination offset for retrieving additional results (default: 0)'
+      - $ref: '#/components/parameters/ProjectIdPath'
+      tags:
+      - live_debugger_breakpoints
+      security:
+      - PersonalAPIKeyAuth:
+        - live_debugger:read
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BreakpointHitsResponse'
+          description: List of breakpoint hits with pagination info
+        '400':
+          description: Invalid query parameters (invalid UUID, limit out of range, etc.)
+      x-explicit-tags:
+      - live_debugger
+components:
+  parameters:
+    ProjectIdPath:
+      in: path
+      name: project_id
+      required: true
+      schema:
+        type: string
+      description: Project ID of the project you're trying to access. To find the ID of the project, make a call to /api/projects/.
+  schemas:
+    BreakpointHitsResponse:
+      type: object
+      description: Response schema for breakpoint hits endpoint
+      properties:
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/BreakpointHit'
+          description: List of breakpoint hit events
+        count:
+          type: integer
+          description: Number of results returned
+        has_more:
+          type: boolean
+          description: Whether there are more results available
+      required:
+      - count
+      - has_more
+      - results
+    ActiveBreakpointsResponse:
+      type: object
+      description: Response schema for active breakpoints endpoint
+      properties:
+        breakpoints:
+          type: array
+          items:
+            $ref: '#/components/schemas/ActiveBreakpoint'
+          description: List of active breakpoints
+      required:
+      - breakpoints
+    PaginatedLiveDebuggerBreakpointList:
+      type: object
+      required:
+      - count
+      - results
+      properties:
+        count:
+          type: integer
+          example: 123
+        next:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?offset=400&limit=100
+        previous:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?offset=200&limit=100
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/LiveDebuggerBreakpoint'
+    PatchedLiveDebuggerBreakpoint:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+          readOnly: true
+        repository:
+          type: string
+          nullable: true
+        filename:
+          type: string
+        line_number:
+          type: integer
+          maximum: 2147483647
+          minimum: 0
+        enabled:
+          type: boolean
+        condition:
+          type: string
+          nullable: true
+        created_at:
+          type: string
+          format: date-time
+          readOnly: true
+        updated_at:
+          type: string
+          format: date-time
+          readOnly: true
+    LiveDebuggerBreakpoint:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+          readOnly: true
+        repository:
+          type: string
+          nullable: true
+        filename:
+          type: string
+        line_number:
+          type: integer
+          maximum: 2147483647
+          minimum: 0
+        enabled:
+          type: boolean
+        condition:
+          type: string
+          nullable: true
+        created_at:
+          type: string
+          format: date-time
+          readOnly: true
+        updated_at:
+          type: string
+          format: date-time
+          readOnly: true
+      required:
+      - created_at
+      - filename
+      - id
+      - line_number
+      - updated_at
+    ActiveBreakpoint:
+      type: object
+      description: Schema for a single active breakpoint
+      properties:
+        id:
+          type: string
+          format: uuid
+          description: Unique identifier for the breakpoint
+        repository:
+          type: string
+          nullable: true
+          description: Repository identifier (e.g., 'PostHog/posthog')
+        filename:
+          type: string
+          description: File path where the breakpoint is set
+        line_number:
+          type: integer
+          description: Line number of the breakpoint
+        enabled:
+          type: boolean
+          description: Whether the breakpoint is enabled
+        condition:
+          type: string
+          nullable: true
+          description: Optional condition for the breakpoint
+      required:
+      - enabled
+      - filename
+      - id
+      - line_number
+    BreakpointHit:
+      type: object
+      description: Schema for a single breakpoint hit event
+      properties:
+        id:
+          type: string
+          format: uuid
+          description: Unique identifier for the hit event
+        lineNumber:
+          type: integer
+          description: Line number where the breakpoint was hit
+        functionName:
+          type: string
+          description: Name of the function where breakpoint was hit
+        timestamp:
+          type: string
+          format: date-time
+          description: When the breakpoint was hit
+        variables:
+          type: object
+          additionalProperties: true
+          description: Local variables at the time of the hit
+        stackTrace:
+          type: array
+          items: {}
+          description: Stack trace at the time of the hit
+        breakpoint_id:
+          type: string
+          format: uuid
+          description: ID of the breakpoint that was hit
+        filename:
+          type: string
+          description: Filename where the breakpoint was hit
+      required:
+      - breakpoint_id
+      - filename
+      - functionName
+      - id
+      - lineNumber
+      - stackTrace
+      - timestamp
+      - variables
+  securitySchemes:
+    PersonalAPIKeyAuth:
+      type: http
+      scheme: bearer
+x-tagGroups:
+- name: All endpoints
+  tags:
+  - LLM Analytics
+  - actions
+  - activity_log
+  - activity_logs
+  - advanced_activity_logs
+  - alerts
+  - annotations
+  - approval_policies
+  - batch_exports
+  - cdp
+  - change_requests
+  - code
+  - code-invites
+  - cohorts
+  - comments
+  - conversations
+  - core
+  - customer_analytics
+  - customer_journeys
+  - customer_profile_configs
+  - dashboard_templates
+  - dashboards
+  - data_color_themes
+  - data_modeling_jobs
+  - data_warehouse
+  - dataset_items
+  - datasets
+  - desktop_recordings
+  - domains
+  - early_access_feature
+  - early_access_features
+  - elements
+  - endpoints
+  - environments
+  - error_tracking
+  - evaluation_runs
+  - evaluations
+  - event_definitions
+  - event_filter
+  - event_schemas
+  - events
+  - experiment_holdouts
+  - experiment_saved_metrics
+  - experiments
+  - exports
+  - external_data_schemas
+  - external_data_sources
+  - feature_flags
+  - file_system
+  - file_system_shortcut
+  - flag_value
+  - groups
+  - groups_types
+  - health_issues
+  - heatmap_screenshots
+  - heatmaps
+  - hog_flows
+  - hog_function_templates
+  - hog_functions
+  - insight_variables
+  - insights
+  - integrations
+  - invites
+  - js-snippet
+  - legal_documents
+  - lineage
+  - live_debugger_breakpoints
+  - llm_analytics
+  - llm_prompts
+  - llm_skills
+  - logs
+  - managed_viewsets
+  - max
+  - max_tools
+  - mcp_server_installations
+  - mcp_servers
+  - mcp_store
+  - mcp_tools
+  - members
+  - notebooks
+  - oauth_applications
+  - object_media_previews
+  - organizations
+  - persisted_folder
+  - persons
+  - platform_features
+  - plugin_configs
+  - product_analytics
+  - product_tours
+  - project_secret_api_keys
+  - projects
+  - property_definitions
+  - proxy_records
+  - public_hog_function_templates
+  - query
+  - replay
+  - reverse_proxy
+  - role_external_references
+  - roles
+  - sandbox-environments
+  - sandbox_environments
+  - saved
+  - schema_property_groups
+  - sdk_doctor
+  - session_group_summaries
+  - session_recording_playlists
+  - session_recordings
+  - session_summaries
+  - sessions
+  - signals
+  - subscriptions
+  - surveys
+  - taggers
+  - task-automations
+  - task-runs
+  - task_automations
+  - tasks
+  - uploaded_media
+  - user_home_settings
+  - user_interviews
+  - users
+  - visual_review
+  - warehouse_dag
+  - warehouse_model_paths
+  - warehouse_saved_queries
+  - warehouse_saved_query_folders
+  - warehouse_tables
+  - warehouse_view_link
+  - warehouse_view_links
+  - web_analytics
+  - web_experiments
+  - web_vitals
+  - welcome
+  - workflows

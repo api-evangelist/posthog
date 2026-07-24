@@ -1,0 +1,3966 @@
+openapi: 3.0.3
+info:
+  title: PostHog actions logs API
+  version: 1.0.0
+  description: ''
+tags:
+- name: logs
+paths:
+  /api/environments/{environment_id}/logs/alerts/:
+    get:
+      operationId: environments_logs_alerts_list
+      parameters:
+      - $ref: '#/components/parameters/EnvironmentIdPath'
+      - name: limit
+        required: false
+        in: query
+        description: Number of results to return per page.
+        schema:
+          type: integer
+      - name: offset
+        required: false
+        in: query
+        description: The initial index from which to return the results.
+        schema:
+          type: integer
+      tags:
+      - logs
+      security:
+      - PersonalAPIKeyAuth:
+        - logs:read
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedLogsAlertConfigurationList'
+          description: ''
+      deprecated: true
+      x-explicit-tags:
+      - logs
+    post:
+      operationId: environments_logs_alerts_create
+      parameters:
+      - $ref: '#/components/parameters/EnvironmentIdPath'
+      tags:
+      - logs
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/LogsAlertConfiguration'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/LogsAlertConfiguration'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/LogsAlertConfiguration'
+      security:
+      - PersonalAPIKeyAuth:
+        - logs:write
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/LogsAlertConfiguration'
+          description: ''
+      deprecated: true
+      x-explicit-tags:
+      - logs
+  /api/environments/{environment_id}/logs/alerts/{id}/:
+    get:
+      operationId: environments_logs_alerts_retrieve
+      parameters:
+      - $ref: '#/components/parameters/EnvironmentIdPath'
+      - in: path
+        name: id
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this logs alert configuration.
+        required: true
+      tags:
+      - logs
+      security:
+      - PersonalAPIKeyAuth:
+        - logs:read
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/LogsAlertConfiguration'
+          description: ''
+      deprecated: true
+      x-explicit-tags:
+      - logs
+    put:
+      operationId: environments_logs_alerts_update
+      parameters:
+      - $ref: '#/components/parameters/EnvironmentIdPath'
+      - in: path
+        name: id
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this logs alert configuration.
+        required: true
+      tags:
+      - logs
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/LogsAlertConfiguration'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/LogsAlertConfiguration'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/LogsAlertConfiguration'
+      security:
+      - PersonalAPIKeyAuth:
+        - logs:write
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/LogsAlertConfiguration'
+          description: ''
+      deprecated: true
+      x-explicit-tags:
+      - logs
+    patch:
+      operationId: environments_logs_alerts_partial_update
+      parameters:
+      - $ref: '#/components/parameters/EnvironmentIdPath'
+      - in: path
+        name: id
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this logs alert configuration.
+        required: true
+      tags:
+      - logs
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchedLogsAlertConfiguration'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/PatchedLogsAlertConfiguration'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/PatchedLogsAlertConfiguration'
+      security:
+      - PersonalAPIKeyAuth:
+        - logs:write
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/LogsAlertConfiguration'
+          description: ''
+      deprecated: true
+      x-explicit-tags:
+      - logs
+    delete:
+      operationId: environments_logs_alerts_destroy
+      parameters:
+      - $ref: '#/components/parameters/EnvironmentIdPath'
+      - in: path
+        name: id
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this logs alert configuration.
+        required: true
+      tags:
+      - logs
+      security:
+      - PersonalAPIKeyAuth:
+        - logs:write
+      responses:
+        '204':
+          description: No response body
+      deprecated: true
+      x-explicit-tags:
+      - logs
+  /api/environments/{environment_id}/logs/alerts/{id}/destinations/:
+    post:
+      operationId: environments_logs_alerts_destinations_create
+      description: Create a notification destination for this alert. One HogFunction is created per alert event kind (firing, resolved, ...) atomically.
+      parameters:
+      - $ref: '#/components/parameters/EnvironmentIdPath'
+      - in: path
+        name: id
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this logs alert configuration.
+        required: true
+      tags:
+      - logs
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/LogsAlertCreateDestination'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/LogsAlertCreateDestination'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/LogsAlertCreateDestination'
+        required: true
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/LogsAlertDestinationResponse'
+          description: ''
+      deprecated: true
+      x-explicit-tags:
+      - logs
+  /api/environments/{environment_id}/logs/alerts/{id}/destinations/delete/:
+    post:
+      operationId: environments_logs_alerts_destinations_delete_create
+      description: Delete a notification destination by deleting its HogFunction group atomically.
+      parameters:
+      - $ref: '#/components/parameters/EnvironmentIdPath'
+      - in: path
+        name: id
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this logs alert configuration.
+        required: true
+      tags:
+      - logs
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/LogsAlertDeleteDestination'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/LogsAlertDeleteDestination'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/LogsAlertDeleteDestination'
+        required: true
+      responses:
+        '204':
+          description: No response body
+      deprecated: true
+      x-explicit-tags:
+      - logs
+  /api/environments/{environment_id}/logs/alerts/{id}/events/:
+    get:
+      operationId: environments_logs_alerts_events_list
+      description: Paginated event history for this alert, newest first. Returns state transitions, errored checks, and user-initiated control-plane rows (reset, enable/disable, snooze/unsnooze, threshold change) — quiet no-op check rows (where state didn't change and there was no error) are filtered out since only the last 10 are kept and they carry no forensic value. Optional `?kind=...` narrows to a single kind.
+      parameters:
+      - $ref: '#/components/parameters/EnvironmentIdPath'
+      - in: path
+        name: id
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this logs alert configuration.
+        required: true
+      - name: limit
+        required: false
+        in: query
+        description: Number of results to return per page.
+        schema:
+          type: integer
+      - name: offset
+        required: false
+        in: query
+        description: The initial index from which to return the results.
+        schema:
+          type: integer
+      tags:
+      - logs
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedLogsAlertEventList'
+          description: ''
+      deprecated: true
+      x-explicit-tags:
+      - logs
+  /api/environments/{environment_id}/logs/alerts/{id}/reset/:
+    post:
+      operationId: environments_logs_alerts_reset_create
+      description: Reset a broken alert. Clears the consecutive-failure counter and schedules an immediate recheck.
+      parameters:
+      - $ref: '#/components/parameters/EnvironmentIdPath'
+      - in: path
+        name: id
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this logs alert configuration.
+        required: true
+      tags:
+      - logs
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/LogsAlertConfiguration'
+          description: ''
+      deprecated: true
+      x-explicit-tags:
+      - logs
+  /api/environments/{environment_id}/logs/alerts/simulate/:
+    post:
+      operationId: environments_logs_alerts_simulate_create
+      description: Simulate a logs alert on historical data using the full state machine. Read-only — no alert check records are created.
+      parameters:
+      - $ref: '#/components/parameters/EnvironmentIdPath'
+      tags:
+      - logs
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/LogsAlertSimulateRequest'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/LogsAlertSimulateRequest'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/LogsAlertSimulateRequest'
+        required: true
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/LogsAlertSimulateResponse'
+          description: ''
+      deprecated: true
+      x-explicit-tags:
+      - logs
+  /api/environments/{environment_id}/logs/attributes/:
+    get:
+      operationId: environments_logs_attributes_retrieve
+      parameters:
+      - in: query
+        name: attribute_type
+        schema:
+          enum:
+          - log
+          - resource
+          type: string
+          minLength: 1
+        description: 'Type of attributes: "log" for log attributes, "resource" for resource attributes. Defaults to "log".
+
+
+          * `log` - log
+
+          * `resource` - resource'
+      - in: query
+        name: dateRange
+        schema:
+          $ref: '#/components/schemas/_DateRange'
+        description: Date range to search within. Defaults to last hour.
+      - $ref: '#/components/parameters/EnvironmentIdPath'
+      - in: query
+        name: filterGroup
+        schema:
+          type: array
+          items:
+            $ref: '#/components/schemas/_LogPropertyFilter'
+          default: []
+        description: Property filters to narrow which logs are scanned for attributes.
+      - in: query
+        name: limit
+        schema:
+          type: integer
+          maximum: 100
+          minimum: 1
+        description: 'Max results (default: 100)'
+      - in: query
+        name: offset
+        schema:
+          type: integer
+          minimum: 0
+        description: 'Pagination offset (default: 0)'
+      - in: query
+        name: search
+        schema:
+          type: string
+          minLength: 1
+        description: Search filter for attribute names
+      - in: query
+        name: search_values
+        schema:
+          type: boolean
+          default: false
+        description: When true, the search query also matches attribute values (not just keys). Each result indicates whether it matched on key or value.
+      - in: query
+        name: serviceNames
+        schema:
+          type: array
+          items:
+            type: string
+          default: []
+        description: Filter attributes to those appearing in logs from these services.
+      tags:
+      - logs
+      security:
+      - PersonalAPIKeyAuth:
+        - logs:read
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/_LogsAttributesResponse'
+          description: ''
+      deprecated: true
+      x-explicit-tags:
+      - logs
+  /api/environments/{environment_id}/logs/count/:
+    post:
+      operationId: environments_logs_count_create
+      parameters:
+      - $ref: '#/components/parameters/EnvironmentIdPath'
+      tags:
+      - logs
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/_LogsCountRequest'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/_LogsCountRequest'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/_LogsCountRequest'
+        required: true
+      security:
+      - PersonalAPIKeyAuth:
+        - logs:read
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/_LogsCountResponse'
+          description: ''
+      deprecated: true
+      x-explicit-tags:
+      - logs
+  /api/environments/{environment_id}/logs/count-ranges/:
+    post:
+      operationId: environments_logs_count_ranges_create
+      parameters:
+      - $ref: '#/components/parameters/EnvironmentIdPath'
+      tags:
+      - logs
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/_LogsCountRangesRequest'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/_LogsCountRangesRequest'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/_LogsCountRangesRequest'
+        required: true
+      security:
+      - PersonalAPIKeyAuth:
+        - logs:read
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/_LogsCountRangesResponse'
+          description: ''
+      deprecated: true
+      x-explicit-tags:
+      - logs
+  /api/environments/{environment_id}/logs/export/:
+    post:
+      operationId: environments_logs_export_create
+      parameters:
+      - $ref: '#/components/parameters/EnvironmentIdPath'
+      tags:
+      - logs
+      security:
+      - PersonalAPIKeyAuth:
+        - logs:read
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties: true
+          description: ''
+      deprecated: true
+      x-explicit-tags:
+      - logs
+  /api/environments/{environment_id}/logs/has_logs/:
+    get:
+      operationId: environments_logs_has_logs_retrieve
+      parameters:
+      - $ref: '#/components/parameters/EnvironmentIdPath'
+      tags:
+      - logs
+      security:
+      - PersonalAPIKeyAuth:
+        - logs:read
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties: true
+          description: ''
+      deprecated: true
+      x-explicit-tags:
+      - logs
+  /api/environments/{environment_id}/logs/query/:
+    post:
+      operationId: environments_logs_query_create
+      parameters:
+      - $ref: '#/components/parameters/EnvironmentIdPath'
+      tags:
+      - logs
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/_LogsQueryRequest'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/_LogsQueryRequest'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/_LogsQueryRequest'
+        required: true
+      security:
+      - PersonalAPIKeyAuth:
+        - logs:read
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/_LogsQueryResponse'
+          description: ''
+      deprecated: true
+      x-explicit-tags:
+      - logs
+  /api/environments/{environment_id}/logs/sampling_rules/:
+    get:
+      operationId: environments_logs_sampling_rules_list
+      parameters:
+      - $ref: '#/components/parameters/EnvironmentIdPath'
+      - name: limit
+        required: false
+        in: query
+        description: Number of results to return per page.
+        schema:
+          type: integer
+      - name: offset
+        required: false
+        in: query
+        description: The initial index from which to return the results.
+        schema:
+          type: integer
+      tags:
+      - logs
+      security:
+      - PersonalAPIKeyAuth:
+        - logs:read
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedLogsSamplingRuleList'
+          description: ''
+      deprecated: true
+      x-explicit-tags:
+      - logs
+    post:
+      operationId: environments_logs_sampling_rules_create
+      parameters:
+      - $ref: '#/components/parameters/EnvironmentIdPath'
+      tags:
+      - logs
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/LogsSamplingRule'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/LogsSamplingRule'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/LogsSamplingRule'
+        required: true
+      security:
+      - PersonalAPIKeyAuth:
+        - logs:write
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/LogsSamplingRule'
+          description: ''
+      deprecated: true
+      x-explicit-tags:
+      - logs
+  /api/environments/{environment_id}/logs/sampling_rules/{id}/:
+    get:
+      operationId: environments_logs_sampling_rules_retrieve
+      parameters:
+      - $ref: '#/components/parameters/EnvironmentIdPath'
+      - in: path
+        name: id
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this logs exclusion rule.
+        required: true
+      tags:
+      - logs
+      security:
+      - PersonalAPIKeyAuth:
+        - logs:read
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/LogsSamplingRule'
+          description: ''
+      deprecated: true
+      x-explicit-tags:
+      - logs
+    put:
+      operationId: environments_logs_sampling_rules_update
+      parameters:
+      - $ref: '#/components/parameters/EnvironmentIdPath'
+      - in: path
+        name: id
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this logs exclusion rule.
+        required: true
+      tags:
+      - logs
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/LogsSamplingRule'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/LogsSamplingRule'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/LogsSamplingRule'
+        required: true
+      security:
+      - PersonalAPIKeyAuth:
+        - logs:write
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/LogsSamplingRule'
+          description: ''
+      deprecated: true
+      x-explicit-tags:
+      - logs
+    patch:
+      operationId: environments_logs_sampling_rules_partial_update
+      parameters:
+      - $ref: '#/components/parameters/EnvironmentIdPath'
+      - in: path
+        name: id
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this logs exclusion rule.
+        required: true
+      tags:
+      - logs
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchedLogsSamplingRule'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/PatchedLogsSamplingRule'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/PatchedLogsSamplingRule'
+      security:
+      - PersonalAPIKeyAuth:
+        - logs:write
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/LogsSamplingRule'
+          description: ''
+      deprecated: true
+      x-explicit-tags:
+      - logs
+    delete:
+      operationId: environments_logs_sampling_rules_destroy
+      parameters:
+      - $ref: '#/components/parameters/EnvironmentIdPath'
+      - in: path
+        name: id
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this logs exclusion rule.
+        required: true
+      tags:
+      - logs
+      security:
+      - PersonalAPIKeyAuth:
+        - logs:write
+      responses:
+        '204':
+          description: No response body
+      deprecated: true
+      x-explicit-tags:
+      - logs
+  /api/environments/{environment_id}/logs/sampling_rules/{id}/simulate/:
+    post:
+      operationId: environments_logs_sampling_rules_simulate_create
+      description: Dry-run estimate for how much volume this rule would remove (placeholder response until CH-backed simulation is wired).
+      parameters:
+      - $ref: '#/components/parameters/EnvironmentIdPath'
+      - in: path
+        name: id
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this logs exclusion rule.
+        required: true
+      tags:
+      - logs
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/LogsSamplingRuleSimulateResponse'
+          description: ''
+      deprecated: true
+      x-explicit-tags:
+      - logs
+  /api/environments/{environment_id}/logs/sampling_rules/reorder/:
+    post:
+      operationId: environments_logs_sampling_rules_reorder_create
+      description: Atomically reassign priorities so the given ID order maps to ascending priorities (0..n-1).
+      parameters:
+      - $ref: '#/components/parameters/EnvironmentIdPath'
+      - name: limit
+        required: false
+        in: query
+        description: Number of results to return per page.
+        schema:
+          type: integer
+      - name: offset
+        required: false
+        in: query
+        description: The initial index from which to return the results.
+        schema:
+          type: integer
+      tags:
+      - logs
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/LogsSamplingRuleReorder'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/LogsSamplingRuleReorder'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/LogsSamplingRuleReorder'
+        required: true
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedLogsSamplingRuleList'
+          description: ''
+      deprecated: true
+      x-explicit-tags:
+      - logs
+  /api/environments/{environment_id}/logs/services/:
+    post:
+      operationId: environments_logs_services_create
+      parameters:
+      - $ref: '#/components/parameters/EnvironmentIdPath'
+      tags:
+      - logs
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/_LogsServicesRequest'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/_LogsServicesRequest'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/_LogsServicesRequest'
+        required: true
+      security:
+      - PersonalAPIKeyAuth:
+        - logs:read
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/_LogsServicesResponse'
+          description: ''
+      deprecated: true
+      x-explicit-tags:
+      - logs
+  /api/environments/{environment_id}/logs/sparkline/:
+    post:
+      operationId: environments_logs_sparkline_create
+      parameters:
+      - $ref: '#/components/parameters/EnvironmentIdPath'
+      tags:
+      - logs
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/_LogsSparklineRequest'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/_LogsSparklineRequest'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/_LogsSparklineRequest'
+        required: true
+      security:
+      - PersonalAPIKeyAuth:
+        - logs:read
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/_LogsSparklineResponse'
+          description: ''
+      deprecated: true
+      x-explicit-tags:
+      - logs
+  /api/environments/{environment_id}/logs/values/:
+    get:
+      operationId: environments_logs_values_retrieve
+      parameters:
+      - in: query
+        name: attribute_type
+        schema:
+          enum:
+          - log
+          - resource
+          type: string
+          minLength: 1
+        description: 'Type of attribute: "log" or "resource". Defaults to "log".
+
+
+          * `log` - log
+
+          * `resource` - resource'
+      - in: query
+        name: dateRange
+        schema:
+          $ref: '#/components/schemas/_DateRange'
+        description: Date range to search within. Defaults to last hour.
+      - $ref: '#/components/parameters/EnvironmentIdPath'
+      - in: query
+        name: filterGroup
+        schema:
+          type: array
+          items:
+            $ref: '#/components/schemas/_LogPropertyFilter'
+          default: []
+        description: Property filters to narrow which logs are scanned for values.
+      - in: query
+        name: key
+        schema:
+          type: string
+          minLength: 1
+        description: The attribute key to get values for
+        required: true
+      - in: query
+        name: serviceNames
+        schema:
+          type: array
+          items:
+            type: string
+          default: []
+        description: Filter values to those appearing in logs from these services.
+      - in: query
+        name: value
+        schema:
+          type: string
+          minLength: 1
+        description: Search filter for attribute values
+      tags:
+      - logs
+      security:
+      - PersonalAPIKeyAuth:
+        - logs:read
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/_LogsValuesResponse'
+          description: ''
+      deprecated: true
+      x-explicit-tags:
+      - logs
+  /api/environments/{project_id}/logs/explainLogWithAI/:
+    post:
+      operationId: logs_explainLogWithAI_create
+      description: 'Explain a log entry using AI.
+
+
+        POST /api/environments/:id/logs/explainLogWithAI/'
+      parameters:
+      - $ref: '#/components/parameters/ProjectIdPath'
+      tags:
+      - logs
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ExplainRequest'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/ExplainRequest'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/ExplainRequest'
+        required: true
+      security:
+      - PersonalAPIKeyAuth:
+        - logs:write
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ExplainRequest'
+          description: ''
+      x-explicit-tags:
+      - logs
+  /api/environments/{project_id}/logs/views/:
+    get:
+      operationId: logs_views_list
+      parameters:
+      - name: limit
+        required: false
+        in: query
+        description: Number of results to return per page.
+        schema:
+          type: integer
+      - name: offset
+        required: false
+        in: query
+        description: The initial index from which to return the results.
+        schema:
+          type: integer
+      - $ref: '#/components/parameters/ProjectIdPath'
+      tags:
+      - logs
+      security:
+      - PersonalAPIKeyAuth:
+        - logs:read
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedLogsViewList'
+          description: ''
+      x-explicit-tags:
+      - logs
+    post:
+      operationId: logs_views_create
+      parameters:
+      - $ref: '#/components/parameters/ProjectIdPath'
+      tags:
+      - logs
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/LogsView'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/LogsView'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/LogsView'
+        required: true
+      security:
+      - PersonalAPIKeyAuth:
+        - logs:write
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/LogsView'
+          description: ''
+      x-explicit-tags:
+      - logs
+  /api/environments/{project_id}/logs/views/{short_id}/:
+    get:
+      operationId: logs_views_retrieve
+      parameters:
+      - $ref: '#/components/parameters/ProjectIdPath'
+      - in: path
+        name: short_id
+        schema:
+          type: string
+        required: true
+      tags:
+      - logs
+      security:
+      - PersonalAPIKeyAuth:
+        - logs:read
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/LogsView'
+          description: ''
+      x-explicit-tags:
+      - logs
+    put:
+      operationId: logs_views_update
+      parameters:
+      - $ref: '#/components/parameters/ProjectIdPath'
+      - in: path
+        name: short_id
+        schema:
+          type: string
+        required: true
+      tags:
+      - logs
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/LogsView'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/LogsView'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/LogsView'
+        required: true
+      security:
+      - PersonalAPIKeyAuth:
+        - logs:write
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/LogsView'
+          description: ''
+      x-explicit-tags:
+      - logs
+    patch:
+      operationId: logs_views_partial_update
+      parameters:
+      - $ref: '#/components/parameters/ProjectIdPath'
+      - in: path
+        name: short_id
+        schema:
+          type: string
+        required: true
+      tags:
+      - logs
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchedLogsView'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/PatchedLogsView'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/PatchedLogsView'
+      security:
+      - PersonalAPIKeyAuth:
+        - logs:write
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/LogsView'
+          description: ''
+      x-explicit-tags:
+      - logs
+    delete:
+      operationId: logs_views_destroy
+      parameters:
+      - $ref: '#/components/parameters/ProjectIdPath'
+      - in: path
+        name: short_id
+        schema:
+          type: string
+        required: true
+      tags:
+      - logs
+      security:
+      - PersonalAPIKeyAuth:
+        - logs:write
+      responses:
+        '204':
+          description: No response body
+      x-explicit-tags:
+      - logs
+  /api/projects/{project_id}/logs/alerts/:
+    get:
+      operationId: logs_alerts_list
+      parameters:
+      - name: limit
+        required: false
+        in: query
+        description: Number of results to return per page.
+        schema:
+          type: integer
+      - name: offset
+        required: false
+        in: query
+        description: The initial index from which to return the results.
+        schema:
+          type: integer
+      - $ref: '#/components/parameters/ProjectIdPath'
+      tags:
+      - logs
+      security:
+      - PersonalAPIKeyAuth:
+        - logs:read
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedLogsAlertConfigurationList'
+          description: ''
+      x-explicit-tags:
+      - logs
+    post:
+      operationId: logs_alerts_create
+      parameters:
+      - $ref: '#/components/parameters/ProjectIdPath'
+      tags:
+      - logs
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/LogsAlertConfiguration'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/LogsAlertConfiguration'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/LogsAlertConfiguration'
+      security:
+      - PersonalAPIKeyAuth:
+        - logs:write
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/LogsAlertConfiguration'
+          description: ''
+      x-explicit-tags:
+      - logs
+  /api/projects/{project_id}/logs/alerts/{id}/:
+    get:
+      operationId: logs_alerts_retrieve
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this logs alert configuration.
+        required: true
+      - $ref: '#/components/parameters/ProjectIdPath'
+      tags:
+      - logs
+      security:
+      - PersonalAPIKeyAuth:
+        - logs:read
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/LogsAlertConfiguration'
+          description: ''
+      x-explicit-tags:
+      - logs
+    put:
+      operationId: logs_alerts_update
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this logs alert configuration.
+        required: true
+      - $ref: '#/components/parameters/ProjectIdPath'
+      tags:
+      - logs
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/LogsAlertConfiguration'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/LogsAlertConfiguration'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/LogsAlertConfiguration'
+      security:
+      - PersonalAPIKeyAuth:
+        - logs:write
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/LogsAlertConfiguration'
+          description: ''
+      x-explicit-tags:
+      - logs
+    patch:
+      operationId: logs_alerts_partial_update
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this logs alert configuration.
+        required: true
+      - $ref: '#/components/parameters/ProjectIdPath'
+      tags:
+      - logs
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchedLogsAlertConfiguration'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/PatchedLogsAlertConfiguration'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/PatchedLogsAlertConfiguration'
+      security:
+      - PersonalAPIKeyAuth:
+        - logs:write
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/LogsAlertConfiguration'
+          description: ''
+      x-explicit-tags:
+      - logs
+    delete:
+      operationId: logs_alerts_destroy
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this logs alert configuration.
+        required: true
+      - $ref: '#/components/parameters/ProjectIdPath'
+      tags:
+      - logs
+      security:
+      - PersonalAPIKeyAuth:
+        - logs:write
+      responses:
+        '204':
+          description: No response body
+      x-explicit-tags:
+      - logs
+  /api/projects/{project_id}/logs/alerts/{id}/destinations/:
+    post:
+      operationId: logs_alerts_destinations_create
+      description: Create a notification destination for this alert. One HogFunction is created per alert event kind (firing, resolved, ...) atomically.
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this logs alert configuration.
+        required: true
+      - $ref: '#/components/parameters/ProjectIdPath'
+      tags:
+      - logs
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/LogsAlertCreateDestination'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/LogsAlertCreateDestination'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/LogsAlertCreateDestination'
+        required: true
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/LogsAlertDestinationResponse'
+          description: ''
+      x-explicit-tags:
+      - logs
+  /api/projects/{project_id}/logs/alerts/{id}/destinations/delete/:
+    post:
+      operationId: logs_alerts_destinations_delete_create
+      description: Delete a notification destination by deleting its HogFunction group atomically.
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this logs alert configuration.
+        required: true
+      - $ref: '#/components/parameters/ProjectIdPath'
+      tags:
+      - logs
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/LogsAlertDeleteDestination'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/LogsAlertDeleteDestination'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/LogsAlertDeleteDestination'
+        required: true
+      responses:
+        '204':
+          description: No response body
+      x-explicit-tags:
+      - logs
+  /api/projects/{project_id}/logs/alerts/{id}/events/:
+    get:
+      operationId: logs_alerts_events_list
+      description: Paginated event history for this alert, newest first. Returns state transitions, errored checks, and user-initiated control-plane rows (reset, enable/disable, snooze/unsnooze, threshold change) — quiet no-op check rows (where state didn't change and there was no error) are filtered out since only the last 10 are kept and they carry no forensic value. Optional `?kind=...` narrows to a single kind.
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this logs alert configuration.
+        required: true
+      - name: limit
+        required: false
+        in: query
+        description: Number of results to return per page.
+        schema:
+          type: integer
+      - name: offset
+        required: false
+        in: query
+        description: The initial index from which to return the results.
+        schema:
+          type: integer
+      - $ref: '#/components/parameters/ProjectIdPath'
+      tags:
+      - logs
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedLogsAlertEventList'
+          description: ''
+      x-explicit-tags:
+      - logs
+  /api/projects/{project_id}/logs/alerts/{id}/reset/:
+    post:
+      operationId: logs_alerts_reset_create
+      description: Reset a broken alert. Clears the consecutive-failure counter and schedules an immediate recheck.
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this logs alert configuration.
+        required: true
+      - $ref: '#/components/parameters/ProjectIdPath'
+      tags:
+      - logs
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/LogsAlertConfiguration'
+          description: ''
+      x-explicit-tags:
+      - logs
+  /api/projects/{project_id}/logs/alerts/simulate/:
+    post:
+      operationId: logs_alerts_simulate_create
+      description: Simulate a logs alert on historical data using the full state machine. Read-only — no alert check records are created.
+      parameters:
+      - $ref: '#/components/parameters/ProjectIdPath'
+      tags:
+      - logs
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/LogsAlertSimulateRequest'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/LogsAlertSimulateRequest'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/LogsAlertSimulateRequest'
+        required: true
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/LogsAlertSimulateResponse'
+          description: ''
+      x-explicit-tags:
+      - logs
+  /api/projects/{project_id}/logs/attributes/:
+    get:
+      operationId: logs_attributes_retrieve
+      parameters:
+      - in: query
+        name: attribute_type
+        schema:
+          enum:
+          - log
+          - resource
+          type: string
+          minLength: 1
+        description: 'Type of attributes: "log" for log attributes, "resource" for resource attributes. Defaults to "log".
+
+
+          * `log` - log
+
+          * `resource` - resource'
+      - in: query
+        name: dateRange
+        schema:
+          $ref: '#/components/schemas/_DateRange'
+        description: Date range to search within. Defaults to last hour.
+      - in: query
+        name: filterGroup
+        schema:
+          type: array
+          items:
+            $ref: '#/components/schemas/_LogPropertyFilter'
+          default: []
+        description: Property filters to narrow which logs are scanned for attributes.
+      - in: query
+        name: limit
+        schema:
+          type: integer
+          maximum: 100
+          minimum: 1
+        description: 'Max results (default: 100)'
+      - in: query
+        name: offset
+        schema:
+          type: integer
+          minimum: 0
+        description: 'Pagination offset (default: 0)'
+      - $ref: '#/components/parameters/ProjectIdPath'
+      - in: query
+        name: search
+        schema:
+          type: string
+          minLength: 1
+        description: Search filter for attribute names
+      - in: query
+        name: search_values
+        schema:
+          type: boolean
+          default: false
+        description: When true, the search query also matches attribute values (not just keys). Each result indicates whether it matched on key or value.
+      - in: query
+        name: serviceNames
+        schema:
+          type: array
+          items:
+            type: string
+          default: []
+        description: Filter attributes to those appearing in logs from these services.
+      tags:
+      - logs
+      security:
+      - PersonalAPIKeyAuth:
+        - logs:read
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/_LogsAttributesResponse'
+          description: ''
+      x-explicit-tags:
+      - logs
+  /api/projects/{project_id}/logs/count/:
+    post:
+      operationId: logs_count_create
+      parameters:
+      - $ref: '#/components/parameters/ProjectIdPath'
+      tags:
+      - logs
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/_LogsCountRequest'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/_LogsCountRequest'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/_LogsCountRequest'
+        required: true
+      security:
+      - PersonalAPIKeyAuth:
+        - logs:read
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/_LogsCountResponse'
+          description: ''
+      x-explicit-tags:
+      - logs
+  /api/projects/{project_id}/logs/count-ranges/:
+    post:
+      operationId: logs_count_ranges_create
+      parameters:
+      - $ref: '#/components/parameters/ProjectIdPath'
+      tags:
+      - logs
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/_LogsCountRangesRequest'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/_LogsCountRangesRequest'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/_LogsCountRangesRequest'
+        required: true
+      security:
+      - PersonalAPIKeyAuth:
+        - logs:read
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/_LogsCountRangesResponse'
+          description: ''
+      x-explicit-tags:
+      - logs
+  /api/projects/{project_id}/logs/export/:
+    post:
+      operationId: logs_export_create
+      parameters:
+      - $ref: '#/components/parameters/ProjectIdPath'
+      tags:
+      - logs
+      security:
+      - PersonalAPIKeyAuth:
+        - logs:read
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties: true
+          description: ''
+      x-explicit-tags:
+      - logs
+  /api/projects/{project_id}/logs/has_logs/:
+    get:
+      operationId: logs_has_logs_retrieve
+      parameters:
+      - $ref: '#/components/parameters/ProjectIdPath'
+      tags:
+      - logs
+      security:
+      - PersonalAPIKeyAuth:
+        - logs:read
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties: true
+          description: ''
+      x-explicit-tags:
+      - logs
+  /api/projects/{project_id}/logs/query/:
+    post:
+      operationId: logs_query_create
+      parameters:
+      - $ref: '#/components/parameters/ProjectIdPath'
+      tags:
+      - logs
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/_LogsQueryRequest'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/_LogsQueryRequest'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/_LogsQueryRequest'
+        required: true
+      security:
+      - PersonalAPIKeyAuth:
+        - logs:read
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/_LogsQueryResponse'
+          description: ''
+      x-explicit-tags:
+      - logs
+  /api/projects/{project_id}/logs/sampling_rules/:
+    get:
+      operationId: logs_sampling_rules_list
+      parameters:
+      - name: limit
+        required: false
+        in: query
+        description: Number of results to return per page.
+        schema:
+          type: integer
+      - name: offset
+        required: false
+        in: query
+        description: The initial index from which to return the results.
+        schema:
+          type: integer
+      - $ref: '#/components/parameters/ProjectIdPath'
+      tags:
+      - logs
+      security:
+      - PersonalAPIKeyAuth:
+        - logs:read
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedLogsSamplingRuleList'
+          description: ''
+      x-explicit-tags:
+      - logs
+    post:
+      operationId: logs_sampling_rules_create
+      parameters:
+      - $ref: '#/components/parameters/ProjectIdPath'
+      tags:
+      - logs
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/LogsSamplingRule'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/LogsSamplingRule'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/LogsSamplingRule'
+        required: true
+      security:
+      - PersonalAPIKeyAuth:
+        - logs:write
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/LogsSamplingRule'
+          description: ''
+      x-explicit-tags:
+      - logs
+  /api/projects/{project_id}/logs/sampling_rules/{id}/:
+    get:
+      operationId: logs_sampling_rules_retrieve
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this logs exclusion rule.
+        required: true
+      - $ref: '#/components/parameters/ProjectIdPath'
+      tags:
+      - logs
+      security:
+      - PersonalAPIKeyAuth:
+        - logs:read
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/LogsSamplingRule'
+          description: ''
+      x-explicit-tags:
+      - logs
+    put:
+      operationId: logs_sampling_rules_update
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this logs exclusion rule.
+        required: true
+      - $ref: '#/components/parameters/ProjectIdPath'
+      tags:
+      - logs
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/LogsSamplingRule'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/LogsSamplingRule'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/LogsSamplingRule'
+        required: true
+      security:
+      - PersonalAPIKeyAuth:
+        - logs:write
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/LogsSamplingRule'
+          description: ''
+      x-explicit-tags:
+      - logs
+    patch:
+      operationId: logs_sampling_rules_partial_update
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this logs exclusion rule.
+        required: true
+      - $ref: '#/components/parameters/ProjectIdPath'
+      tags:
+      - logs
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchedLogsSamplingRule'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/PatchedLogsSamplingRule'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/PatchedLogsSamplingRule'
+      security:
+      - PersonalAPIKeyAuth:
+        - logs:write
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/LogsSamplingRule'
+          description: ''
+      x-explicit-tags:
+      - logs
+    delete:
+      operationId: logs_sampling_rules_destroy
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this logs exclusion rule.
+        required: true
+      - $ref: '#/components/parameters/ProjectIdPath'
+      tags:
+      - logs
+      security:
+      - PersonalAPIKeyAuth:
+        - logs:write
+      responses:
+        '204':
+          description: No response body
+      x-explicit-tags:
+      - logs
+  /api/projects/{project_id}/logs/sampling_rules/{id}/simulate/:
+    post:
+      operationId: logs_sampling_rules_simulate_create
+      description: Dry-run estimate for how much volume this rule would remove (placeholder response until CH-backed simulation is wired).
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this logs exclusion rule.
+        required: true
+      - $ref: '#/components/parameters/ProjectIdPath'
+      tags:
+      - logs
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/LogsSamplingRuleSimulateResponse'
+          description: ''
+      x-explicit-tags:
+      - logs
+  /api/projects/{project_id}/logs/sampling_rules/reorder/:
+    post:
+      operationId: logs_sampling_rules_reorder_create
+      description: Atomically reassign priorities so the given ID order maps to ascending priorities (0..n-1).
+      parameters:
+      - name: limit
+        required: false
+        in: query
+        description: Number of results to return per page.
+        schema:
+          type: integer
+      - name: offset
+        required: false
+        in: query
+        description: The initial index from which to return the results.
+        schema:
+          type: integer
+      - $ref: '#/components/parameters/ProjectIdPath'
+      tags:
+      - logs
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/LogsSamplingRuleReorder'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/LogsSamplingRuleReorder'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/LogsSamplingRuleReorder'
+        required: true
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedLogsSamplingRuleList'
+          description: ''
+      x-explicit-tags:
+      - logs
+  /api/projects/{project_id}/logs/services/:
+    post:
+      operationId: logs_services_create
+      parameters:
+      - $ref: '#/components/parameters/ProjectIdPath'
+      tags:
+      - logs
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/_LogsServicesRequest'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/_LogsServicesRequest'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/_LogsServicesRequest'
+        required: true
+      security:
+      - PersonalAPIKeyAuth:
+        - logs:read
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/_LogsServicesResponse'
+          description: ''
+      x-explicit-tags:
+      - logs
+  /api/projects/{project_id}/logs/sparkline/:
+    post:
+      operationId: logs_sparkline_create
+      parameters:
+      - $ref: '#/components/parameters/ProjectIdPath'
+      tags:
+      - logs
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/_LogsSparklineRequest'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/_LogsSparklineRequest'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/_LogsSparklineRequest'
+        required: true
+      security:
+      - PersonalAPIKeyAuth:
+        - logs:read
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/_LogsSparklineResponse'
+          description: ''
+      x-explicit-tags:
+      - logs
+  /api/projects/{project_id}/logs/values/:
+    get:
+      operationId: logs_values_retrieve
+      parameters:
+      - in: query
+        name: attribute_type
+        schema:
+          enum:
+          - log
+          - resource
+          type: string
+          minLength: 1
+        description: 'Type of attribute: "log" or "resource". Defaults to "log".
+
+
+          * `log` - log
+
+          * `resource` - resource'
+      - in: query
+        name: dateRange
+        schema:
+          $ref: '#/components/schemas/_DateRange'
+        description: Date range to search within. Defaults to last hour.
+      - in: query
+        name: filterGroup
+        schema:
+          type: array
+          items:
+            $ref: '#/components/schemas/_LogPropertyFilter'
+          default: []
+        description: Property filters to narrow which logs are scanned for values.
+      - in: query
+        name: key
+        schema:
+          type: string
+          minLength: 1
+        description: The attribute key to get values for
+        required: true
+      - $ref: '#/components/parameters/ProjectIdPath'
+      - in: query
+        name: serviceNames
+        schema:
+          type: array
+          items:
+            type: string
+          default: []
+        description: Filter values to those appearing in logs from these services.
+      - in: query
+        name: value
+        schema:
+          type: string
+          minLength: 1
+        description: Search filter for attribute values
+      tags:
+      - logs
+      security:
+      - PersonalAPIKeyAuth:
+        - logs:read
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/_LogsValuesResponse'
+          description: ''
+      x-explicit-tags:
+      - logs
+components:
+  schemas:
+    LogsSamplingRuleReorder:
+      type: object
+      properties:
+        ordered_ids:
+          type: array
+          items:
+            type: string
+            format: uuid
+          description: Rule IDs in the desired evaluation order (first element is highest priority / lowest order index).
+      required:
+      - ordered_ids
+    _LogsSparklineResponse:
+      type: object
+      properties:
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/_LogsSparklineBucket'
+          description: Time-bucketed log counts. Each bucket carries either `severity` or `service` depending on breakdown.
+      required:
+      - results
+    _LogsSparklineBucket:
+      type: object
+      properties:
+        time:
+          type: string
+          description: Bucket start time (ISO 8601).
+        severity:
+          type: string
+          description: Severity label when sparklineBreakdownBy="severity". Present only for severity-broken-down sparklines.
+        service:
+          type: string
+          description: Service name when sparklineBreakdownBy="service". Present only for service-broken-down sparklines.
+        count:
+          type: integer
+      required:
+      - count
+      - time
+    PaginatedLogsSamplingRuleList:
+      type: object
+      required:
+      - count
+      - results
+      properties:
+        count:
+          type: integer
+          example: 123
+        next:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?offset=400&limit=100
+        previous:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?offset=200&limit=100
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/LogsSamplingRule'
+    NotificationDestinationTypeEnum:
+      enum:
+      - slack
+      - webhook
+      type: string
+      description: '* `slack` - slack
+
+        * `webhook` - webhook'
+    _LogsServiceAggregate:
+      type: object
+      properties:
+        service_name:
+          type: string
+          description: Service name, or "(no value)" / "(no service)" placeholder for unset entries.
+        log_count:
+          type: integer
+          description: Total log entries from this service in the window.
+        error_count:
+          type: integer
+          description: Count of logs at severity "error" or "fatal".
+        error_rate:
+          type: number
+          format: double
+          description: Pre-computed error_count / log_count, rounded to 4 decimals. Useful for ranking noisy services.
+        volume_share_pct:
+          type: number
+          format: double
+          description: Share of total log volume in the window for this service (0–100).
+        severity_breakdown:
+          allOf:
+          - $ref: '#/components/schemas/_LogsServiceSeverityBreakdown'
+          description: Counts by coarse severity bucket (debug, info, warn, error+fatal).
+        active_rules:
+          type: array
+          items:
+            $ref: '#/components/schemas/_LogsServiceActiveRule'
+          description: Enabled sampling rules whose scope includes this service.
+      required:
+      - error_count
+      - error_rate
+      - log_count
+      - service_name
+    _LogsCountRangesResponse:
+      type: object
+      properties:
+        ranges:
+          type: array
+          items:
+            $ref: '#/components/schemas/_LogsCountRangeBucket'
+          description: Buckets ordered by `date_from` ascending. Empty buckets are omitted — infer gaps by comparing each bucket's `date_to` to the next bucket's `date_from`.
+        interval:
+          type: string
+          description: Short-form duration of the chosen bucket width (e.g. "1h", "5m", "30s", "1d"). Informational only — use each bucket's `date_from`/`date_to` for follow-up queries.
+      required:
+      - interval
+      - ranges
+    _LogsCountResponse:
+      type: object
+      properties:
+        count:
+          type: integer
+          description: Number of log entries matching the filters.
+      required:
+      - count
+    LogsAlertSimulateResponse:
+      type: object
+      properties:
+        buckets:
+          type: array
+          items:
+            $ref: '#/components/schemas/LogsAlertSimulateBucket'
+          description: Time-bucketed counts with full state machine evaluation.
+        fire_count:
+          type: integer
+          description: Number of times the alert would have sent a fire notification.
+        resolve_count:
+          type: integer
+          description: Number of times the alert would have sent a resolve notification.
+        total_buckets:
+          type: integer
+          description: Total number of buckets in the simulation window.
+        threshold_count:
+          type: integer
+          description: Threshold count used for evaluation.
+        threshold_operator:
+          type: string
+          description: Threshold operator used for evaluation.
+      required:
+      - buckets
+      - fire_count
+      - resolve_count
+      - threshold_count
+      - threshold_operator
+      - total_buckets
+    MatchedOnEnum:
+      enum:
+      - key
+      - value
+      type: string
+      description: '* `key` - key
+
+        * `value` - value'
+    PatchedLogsSamplingRule:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+          readOnly: true
+          description: Unique identifier for this sampling rule.
+        name:
+          type: string
+          description: User-visible label for this rule.
+          maxLength: 255
+        enabled:
+          type: boolean
+          default: false
+          description: When false, the rule is ignored by ingestion and listing UIs that show active rules only.
+        priority:
+          type: integer
+          minimum: 0
+          nullable: true
+          description: Lower numbers are evaluated first; the first matching rule wins. Omit to append after existing rules.
+        rule_type:
+          allOf:
+          - $ref: '#/components/schemas/RuleTypeEnum'
+          description: 'Rule kind: severity_sampling, path_drop, or rate_limit (rate_limit reserved for a future release).
+
+
+            * `severity_sampling` - Severity-based reduction
+
+            * `path_drop` - Path exclusion
+
+            * `rate_limit` - Rate limit'
+        scope_service:
+          type: string
+          nullable: true
+          description: If set, the rule applies only to this service name; null means all services.
+          maxLength: 512
+        scope_path_pattern:
+          type: string
+          nullable: true
+          description: Optional regex matched against a path-like log attribute when present.
+          maxLength: 1024
+        scope_attribute_filters:
+          type: array
+          items:
+            type: object
+            additionalProperties: true
+          description: Optional list of predicates over string attributes, e.g. [{"key":"http.route","op":"eq","value":"/api"}].
+        config:
+          description: 'Type-specific JSON. For path_drop: object with required `patterns` (list of regex strings) and optional `match_attribute_key` (string). When `match_attribute_key` is omitted or empty, patterns match the same virtual path string as ingestion (url.path, http.path, http.route, path). When set, each pattern is tested only against that string attribute on the log record. For severity_sampling: object with `actions` per severity level and optional `always_keep`. rate_limit is reserved.'
+        version:
+          type: integer
+          readOnly: true
+          description: Incremented on each update for worker cache coherency.
+        created_by:
+          type: integer
+          readOnly: true
+        created_at:
+          type: string
+          format: date-time
+          readOnly: true
+        updated_at:
+          type: string
+          format: date-time
+          readOnly: true
+          nullable: true
+    _LogsServicesResponse:
+      type: object
+      properties:
+        services:
+          type: array
+          items:
+            $ref: '#/components/schemas/_LogsServiceAggregate'
+          description: Per-service aggregates, ordered by log_count descending. Capped at 25 services.
+        sparkline:
+          type: array
+          items:
+            $ref: '#/components/schemas/_LogsServicesSparklineBucket'
+          description: Time-bucketed counts broken down by service, for plotting volume over time.
+        summary:
+          allOf:
+          - $ref: '#/components/schemas/_LogsServicesSummary'
+          description: Roll-up stats for the Services tab header.
+      required:
+      - services
+      - sparkline
+    _LogsServicesRequest:
+      type: object
+      properties:
+        query:
+          allOf:
+          - $ref: '#/components/schemas/_LogsServicesBody'
+          description: The services aggregation query to execute.
+      required:
+      - query
+    _LogsValuesResponse:
+      type: object
+      properties:
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/_LogAttributeValue'
+          description: Distinct values observed for the requested attribute.
+        refreshing:
+          type: boolean
+          description: Always false — reserved for future cached-value refresh signalling.
+      required:
+      - refreshing
+      - results
+    LogsSamplingRule:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+          readOnly: true
+          description: Unique identifier for this sampling rule.
+        name:
+          type: string
+          description: User-visible label for this rule.
+          maxLength: 255
+        enabled:
+          type: boolean
+          default: false
+          description: When false, the rule is ignored by ingestion and listing UIs that show active rules only.
+        priority:
+          type: integer
+          minimum: 0
+          nullable: true
+          description: Lower numbers are evaluated first; the first matching rule wins. Omit to append after existing rules.
+        rule_type:
+          allOf:
+          - $ref: '#/components/schemas/RuleTypeEnum'
+          description: 'Rule kind: severity_sampling, path_drop, or rate_limit (rate_limit reserved for a future release).
+
+
+            * `severity_sampling` - Severity-based reduction
+
+            * `path_drop` - Path exclusion
+
+            * `rate_limit` - Rate limit'
+        scope_service:
+          type: string
+          nullable: true
+          description: If set, the rule applies only to this service name; null means all services.
+          maxLength: 512
+        scope_path_pattern:
+          type: string
+          nullable: true
+          description: Optional regex matched against a path-like log attribute when present.
+          maxLength: 1024
+        scope_attribute_filters:
+          type: array
+          items:
+            type: object
+            additionalProperties: true
+          description: Optional list of predicates over string attributes, e.g. [{"key":"http.route","op":"eq","value":"/api"}].
+        config:
+          description: 'Type-specific JSON. For path_drop: object with required `patterns` (list of regex strings) and optional `match_attribute_key` (string). When `match_attribute_key` is omitted or empty, patterns match the same virtual path string as ingestion (url.path, http.path, http.route, path). When set, each pattern is tested only against that string attribute on the log record. For severity_sampling: object with `actions` per severity level and optional `always_keep`. rate_limit is reserved.'
+        version:
+          type: integer
+          readOnly: true
+          description: Incremented on each update for worker cache coherency.
+        created_by:
+          type: integer
+          readOnly: true
+        created_at:
+          type: string
+          format: date-time
+          readOnly: true
+        updated_at:
+          type: string
+          format: date-time
+          readOnly: true
+          nullable: true
+      required:
+      - config
+      - created_at
+      - created_by
+      - id
+      - name
+      - rule_type
+      - updated_at
+      - version
+    RoleAtOrganizationEnum:
+      enum:
+      - engineering
+      - data
+      - product
+      - founder
+      - leadership
+      - marketing
+      - sales
+      - other
+      type: string
+      description: '* `engineering` - Engineering
+
+        * `data` - Data
+
+        * `product` - Product Management
+
+        * `founder` - Founder
+
+        * `leadership` - Leadership
+
+        * `marketing` - Marketing
+
+        * `sales` - Sales / Success
+
+        * `other` - Other'
+    ThresholdOperatorEnum:
+      enum:
+      - above
+      - below
+      type: string
+      description: '* `above` - Above
+
+        * `below` - Below'
+    LogsAlertStateInterval:
+      type: object
+      properties:
+        start:
+          type: string
+          format: date-time
+          description: Interval start (UTC, inclusive).
+        end:
+          type: string
+          format: date-time
+          description: Interval end (UTC, exclusive).
+        state:
+          allOf:
+          - $ref: '#/components/schemas/LogsAlertConfigurationStateEnum'
+          description: 'Alert state during this interval.
+
+
+            * `not_firing` - Not firing
+
+            * `firing` - Firing
+
+            * `pending_resolve` - Pending resolve
+
+            * `errored` - Errored
+
+            * `snoozed` - Snoozed
+
+            * `broken` - Broken'
+        enabled:
+          type: boolean
+          description: Whether the alert was enabled during this interval. Disabled alerts keep their state but are inactive.
+      required:
+      - enabled
+      - end
+      - start
+      - state
+    LogsAlertDeleteDestination:
+      type: object
+      properties:
+        hog_function_ids:
+          type: array
+          items:
+            type: string
+            format: uuid
+          description: HogFunction IDs to delete as one atomic destination group.
+          minItems: 1
+      required:
+      - hog_function_ids
+    LogsAlertSimulateRequest:
+      type: object
+      properties:
+        filters:
+          description: Filter criteria — same format as LogsAlertConfiguration.filters.
+        threshold_count:
+          type: integer
+          minimum: 1
+          description: Threshold count to evaluate against.
+        threshold_operator:
+          allOf:
+          - $ref: '#/components/schemas/ThresholdOperatorEnum'
+          description: 'Whether the alert fires when the count is above or below the threshold.
+
+
+            * `above` - Above
+
+            * `below` - Below'
+        window_minutes:
+          type: integer
+          description: Window size in minutes — determines bucket interval.
+        evaluation_periods:
+          type: integer
+          maximum: 10
+          minimum: 1
+          default: 1
+          description: Total check periods in the N-of-M evaluation window (M).
+        datapoints_to_alarm:
+          type: integer
+          maximum: 10
+          minimum: 1
+          default: 1
+          description: How many periods must breach to fire (N in N-of-M).
+        cooldown_minutes:
+          type: integer
+          minimum: 0
+          default: 0
+          description: Minutes to wait after firing before sending another notification.
+        date_from:
+          type: string
+          description: Relative date string for how far back to simulate (e.g. '-24h', '-7d', '-30d').
+      required:
+      - date_from
+      - filters
+      - threshold_count
+      - threshold_operator
+      - window_minutes
+    _LogsServicesSummary:
+      type: object
+      properties:
+        top_services_count:
+          type: integer
+          description: Number of top services included in the volume_share aggregate (up to 5).
+        top_services_volume_share_pct:
+          type: number
+          format: double
+          description: Combined volume share (percent) of the top services by log_count.
+      required:
+      - top_services_count
+      - top_services_volume_share_pct
+    NullEnum:
+      enum:
+      - null
+    RuleTypeEnum:
+      enum:
+      - severity_sampling
+      - path_drop
+      - rate_limit
+      type: string
+      description: '* `severity_sampling` - Severity-based reduction
+
+        * `path_drop` - Path exclusion
+
+        * `rate_limit` - Rate limit'
+    _LogsQueryRequest:
+      type: object
+      properties:
+        query:
+          allOf:
+          - $ref: '#/components/schemas/_LogsQueryBody'
+          description: The logs query to execute.
+      required:
+      - query
+    _LogPropertyFilterTypeEnum:
+      enum:
+      - log
+      - log_attribute
+      - log_resource_attribute
+      type: string
+      description: '* `log` - log
+
+        * `log_attribute` - log_attribute
+
+        * `log_resource_attribute` - log_resource_attribute'
+    LogsAlertConfigurationStateEnum:
+      enum:
+      - not_firing
+      - firing
+      - pending_resolve
+      - errored
+      - snoozed
+      - broken
+      type: string
+      description: '* `not_firing` - Not firing
+
+        * `firing` - Firing
+
+        * `pending_resolve` - Pending resolve
+
+        * `errored` - Errored
+
+        * `snoozed` - Snoozed
+
+        * `broken` - Broken'
+    ExplainRequest:
+      type: object
+      properties:
+        uuid:
+          type: string
+          description: UUID of the log entry to explain
+        timestamp:
+          type: string
+          format: date-time
+          description: Timestamp of the log entry (used for efficient lookup)
+        force_refresh:
+          type: boolean
+          default: false
+          description: Force regenerate explanation, bypassing cache
+      required:
+      - timestamp
+      - uuid
+    PatchedLogsAlertConfiguration:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+          readOnly: true
+          description: Unique identifier for this alert.
+        name:
+          type: string
+          description: Human-readable name for this alert. Defaults to 'Untitled alert' on create when omitted.
+          maxLength: 255
+        enabled:
+          type: boolean
+          default: true
+          description: Whether the alert is actively being evaluated. Disabling resets the state to not_firing.
+        filters:
+          description: 'Filter criteria — subset of LogsViewerFilters. Must contain at least one of: severityLevels (list of severity strings), serviceNames (list of service name strings), or filterGroup (property filter group object). May be empty on draft alerts (enabled=false).'
+        threshold_count:
+          type: integer
+          minimum: 1
+          default: 100
+          description: Number of matching log entries that constitutes a threshold breach within the evaluation window. Defaults to 100.
+        threshold_operator:
+          allOf:
+          - $ref: '#/components/schemas/ThresholdOperatorEnum'
+          default: above
+          description: 'Whether the alert fires when the count is above or below the threshold.
+
+
+            * `above` - Above
+
+            * `below` - Below'
+        window_minutes:
+          type: integer
+          default: 5
+          description: 'Time window in minutes over which log entries are counted. Allowed values: 5, 10, 15, 30, 60.'
+        check_interval_minutes:
+          type: integer
+          readOnly: true
+          description: How often the alert is evaluated, in minutes. Server-managed.
+        state:
+          allOf:
+          - $ref: '#/components/schemas/LogsAlertConfigurationStateEnum'
+          readOnly: true
+          description: 'Current alert state: not_firing, firing, pending_resolve, errored, or snoozed. Server-managed.
+
+
+            * `not_firing` - Not firing
+
+            * `firing` - Firing
+
+            * `pending_resolve` - Pending resolve
+
+            * `errored` - Errored
+
+            * `snoozed` - Snoozed
+
+            * `broken` - Broken'
+        evaluation_periods:
+          type: integer
+          maximum: 10
+          minimum: 1
+          default: 1
+          description: Total number of check periods in the sliding evaluation window for firing (M in N-of-M).
+        datapoints_to_alarm:
+          type: integer
+          maximum: 10
+          minimum: 1
+          default: 1
+          description: How many periods within the evaluation window must breach the threshold to fire (N in N-of-M).
+        cooldown_minutes:
+          type: integer
+          minimum: 0
+          default: 0
+          description: Minimum minutes between repeated notifications after the alert fires. 0 means no cooldown.
+        snooze_until:
+          type: string
+          format: date-time
+          nullable: true
+          description: ISO 8601 timestamp until which the alert is snoozed. Set to null to unsnooze.
+        next_check_at:
+          type: string
+          format: date-time
+          readOnly: true
+          nullable: true
+          description: When the next evaluation is scheduled. Server-managed.
+        last_notified_at:
+          type: string
+          format: date-time
+          readOnly: true
+          nullable: true
+          description: When the last notification was sent. Server-managed.
+        last_checked_at:
+          type: string
+          format: date-time
+          readOnly: true
+          nullable: true
+          description: When the alert was last evaluated. Server-managed.
+        consecutive_failures:
+          type: integer
+          readOnly: true
+          description: Number of consecutive evaluation failures. Resets on success. Server-managed.
+        last_error_message:
+          type: string
+          nullable: true
+          readOnly: true
+          description: Error message from the most recent errored check, or null if the alert's most recent check was successful. Sourced from LogsAlertEvent without denormalization so retention-aware cleanup rules stay the only source of truth.
+        state_timeline:
+          type: array
+          items:
+            $ref: '#/components/schemas/LogsAlertStateInterval'
+          readOnly: true
+          description: Continuous state intervals over the last 24h, ordered oldest-first. Each interval covers a span during which (state, enabled) was constant. Derived from LogsAlertEvent rows walked in chronological order; consecutive identical intervals are collapsed. Drives the 'Last 24h' status bar on the alert list.
+        destination_types:
+          type: array
+          items:
+            $ref: '#/components/schemas/NotificationDestinationTypeEnum'
+          readOnly: true
+          description: Notification destination types configured for this alert — e.g. 'slack', 'webhook'. Empty list means no notifications will fire. One or more destinations should be added after creating an alert.
+        first_enabled_at:
+          type: string
+          format: date-time
+          readOnly: true
+          nullable: true
+          description: When the alert was first enabled. Null means the alert is still in draft state.
+        created_at:
+          type: string
+          format: date-time
+          readOnly: true
+          description: When the alert was created.
+        created_by:
+          allOf:
+          - $ref: '#/components/schemas/UserBasic'
+          readOnly: true
+        updated_at:
+          type: string
+          format: date-time
+          readOnly: true
+          nullable: true
+          description: When the alert was last modified.
+    SparklineBreakdownByEnum:
+      enum:
+      - severity
+      - service
+      type: string
+      description: '* `severity` - severity
+
+        * `service` - service'
+    UserBasic:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        uuid:
+          type: string
+          format: uuid
+          readOnly: true
+        distinct_id:
+          type: string
+          nullable: true
+          maxLength: 200
+        first_name:
+          type: string
+          maxLength: 150
+        last_name:
+          type: string
+          maxLength: 150
+        email:
+          type: string
+          format: email
+          title: Email address
+          maxLength: 254
+        is_email_verified:
+          type: boolean
+          nullable: true
+        hedgehog_config:
+          type: object
+          additionalProperties: true
+          nullable: true
+          readOnly: true
+        role_at_organization:
+          nullable: true
+          oneOf:
+          - $ref: '#/components/schemas/RoleAtOrganizationEnum'
+          - $ref: '#/components/schemas/BlankEnum'
+          - $ref: '#/components/schemas/NullEnum'
+      required:
+      - email
+      - hedgehog_config
+      - id
+      - uuid
+    _LogsCountRangesBody:
+      type: object
+      properties:
+        dateRange:
+          allOf:
+          - $ref: '#/components/schemas/_DateRange'
+          description: Window to bucket. Defaults to last hour. Use a bucket's date_from/date_to from a prior response to recursively narrow into a sub-range.
+        targetBuckets:
+          type: integer
+          maximum: 100
+          minimum: 1
+          default: 10
+          description: Approximate number of buckets to return. The bucket interval is picked adaptively from a fixed list (1/5/10s, 1/2/5/10/15/30/60/120/240/360/720/1440m) to land near this target. Defaults to 10, capped at 100.
+        severityLevels:
+          type: array
+          items:
+            $ref: '#/components/schemas/SeverityLevelsEnum'
+          description: Filter by log severity levels. Applied before bucketing.
+        serviceNames:
+          type: array
+          items:
+            type: string
+          description: Filter by service names. Applied before bucketing.
+        searchTerm:
+          type: string
+          description: Full-text search across log bodies. Applied before bucketing.
+        filterGroup:
+          type: array
+          items:
+            $ref: '#/components/schemas/_LogPropertyFilter'
+          description: Property filters applied before bucketing. Same shape as `query-logs`.
+    _LogsAttributesResponse:
+      type: object
+      properties:
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/_LogAttributeEntry'
+          description: Available attribute keys matching the filters.
+        count:
+          type: integer
+          description: Total attribute keys matched (not paginated).
+      required:
+      - count
+      - results
+    _DateRange:
+      type: object
+      properties:
+        date_from:
+          type: string
+          nullable: true
+          description: 'Start of the date range. Accepts ISO 8601 timestamps or relative formats: -7d, -1h, -1mStart, etc.'
+        date_to:
+          type: string
+          nullable: true
+          description: End of the date range. Same format as date_from. Omit or null for "now".
+    _LogsServicesBody:
+      type: object
+      properties:
+        dateRange:
+          allOf:
+          - $ref: '#/components/schemas/_DateRange'
+          description: Date range for the services aggregation. Defaults to last hour.
+        severityLevels:
+          type: array
+          items:
+            $ref: '#/components/schemas/SeverityLevelsEnum'
+          description: Filter by log severity levels.
+        serviceNames:
+          type: array
+          items:
+            type: string
+          description: Restrict the aggregation to these service names.
+        searchTerm:
+          type: string
+          description: Full-text search term to filter log bodies.
+        filterGroup:
+          type: array
+          items:
+            $ref: '#/components/schemas/_LogPropertyFilter'
+          description: Property filters for the query.
+    _LogEntry:
+      type: object
+      properties:
+        uuid:
+          type: string
+        timestamp:
+          type: string
+          description: ISO 8601 timestamp of the original log event.
+        observed_timestamp:
+          type: string
+          description: ISO 8601 timestamp the log pipeline observed the event (may differ from `timestamp`).
+        body:
+          type: string
+        severity_text:
+          type: string
+          description: Log severity as a string (e.g. "info", "error"). Preferred over severity_number.
+        severity_number:
+          type: integer
+          description: Log severity as a numeric code. Redundant with severity_text; kept for OpenTelemetry compatibility.
+        level:
+          type: string
+          description: ClickHouse alias for severity_text. Redundant; prefer severity_text.
+        trace_id:
+          type: string
+          description: Trace ID. Returns "00000000000000000000000000000000" when not set (padding, not null).
+        span_id:
+          type: string
+          description: Span ID. Returns "0000000000000000" when not set (padding, not null).
+        trace_flags:
+          type: integer
+          description: OpenTelemetry trace flags.
+        attributes:
+          type: object
+          additionalProperties:
+            type: string
+          description: Log-level attributes as a string-keyed map. Values are strings (numeric/datetime attributes are also accessible via materialized columns).
+        resource_attributes:
+          type: object
+          additionalProperties:
+            type: string
+          description: Resource-level attributes (service.name, k8s.*, host.hostname, etc.) as a string-keyed map. Repeats across all logs from the same pod/host.
+        event_name:
+          type: string
+          description: OpenTelemetry event name, if set.
+      required:
+      - attributes
+      - body
+      - level
+      - observed_timestamp
+      - resource_attributes
+      - severity_number
+      - severity_text
+      - span_id
+      - timestamp
+      - trace_id
+      - uuid
+    _LogsSparklineRequest:
+      type: object
+      properties:
+        query:
+          allOf:
+          - $ref: '#/components/schemas/_LogsSparklineBody'
+          description: The sparkline query to execute.
+      required:
+      - query
+    PatchedLogsView:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+          readOnly: true
+        short_id:
+          type: string
+          readOnly: true
+        name:
+          type: string
+          maxLength: 400
+        filters:
+          type: object
+          additionalProperties: true
+          description: Filter criteria — subset of LogsViewerFilters. May contain severityLevels, serviceNames, searchTerm, filterGroup, dateRange, and other keys.
+        pinned:
+          type: boolean
+        created_at:
+          type: string
+          format: date-time
+          readOnly: true
+        created_by:
+          allOf:
+          - $ref: '#/components/schemas/UserBasic'
+          readOnly: true
+        updated_at:
+          type: string
+          format: date-time
+          readOnly: true
+          nullable: true
+    _LogsServiceSeverityBreakdown:
+      type: object
+      properties:
+        debug:
+          type: integer
+        info:
+          type: integer
+        warn:
+          type: integer
+        error:
+          type: integer
+      required:
+      - debug
+      - error
+      - info
+      - warn
+    _LogPropertyFilterOperatorEnum:
+      enum:
+      - exact
+      - is_not
+      - icontains
+      - not_icontains
+      - regex
+      - not_regex
+      - gt
+      - lt
+      - is_date_exact
+      - is_date_before
+      - is_date_after
+      - is_set
+      - is_not_set
+      type: string
+      description: '* `exact` - exact
+
+        * `is_not` - is_not
+
+        * `icontains` - icontains
+
+        * `not_icontains` - not_icontains
+
+        * `regex` - regex
+
+        * `not_regex` - not_regex
+
+        * `gt` - gt
+
+        * `lt` - lt
+
+        * `is_date_exact` - is_date_exact
+
+        * `is_date_before` - is_date_before
+
+        * `is_date_after` - is_date_after
+
+        * `is_set` - is_set
+
+        * `is_not_set` - is_not_set'
+    PaginatedLogsAlertConfigurationList:
+      type: object
+      required:
+      - count
+      - results
+      properties:
+        count:
+          type: integer
+          example: 123
+        next:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?offset=400&limit=100
+        previous:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?offset=200&limit=100
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/LogsAlertConfiguration'
+    PaginatedLogsAlertEventList:
+      type: object
+      required:
+      - count
+      - results
+      properties:
+        count:
+          type: integer
+          example: 123
+        next:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?offset=400&limit=100
+        previous:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?offset=200&limit=100
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/LogsAlertEvent'
+    _LogAttributeValue:
+      type: object
+      properties:
+        id:
+          type: string
+          description: Attribute value (used as the identifier).
+        name:
+          type: string
+          description: Display name — currently identical to `id`.
+      required:
+      - id
+      - name
+    _LogPropertyFilter:
+      type: object
+      properties:
+        key:
+          type: string
+          description: Attribute key. For type "log", use "message". For "log_attribute"/"log_resource_attribute", use the attribute key (e.g. "k8s.container.name").
+        type:
+          allOf:
+          - $ref: '#/components/schemas/_LogPropertyFilterTypeEnum'
+          description: '"log" filters the log body/message. "log_attribute" filters log-level attributes. "log_resource_attribute" filters resource-level attributes.
+
+
+            * `log` - log
+
+            * `log_attribute` - log_attribute
+
+            * `log_resource_attribute` - log_resource_attribute'
+        operator:
+          allOf:
+          - $ref: '#/components/schemas/_LogPropertyFilterOperatorEnum'
+          description: 'Comparison operator.
+
+
+            * `exact` - exact
+
+            * `is_not` - is_not
+
+            * `icontains` - icontains
+
+            * `not_icontains` - not_icontains
+
+            * `regex` - regex
+
+            * `not_regex` - not_regex
+
+            * `gt` - gt
+
+            * `lt` - lt
+
+            * `is_date_exact` - is_date_exact
+
+            * `is_date_before` - is_date_before
+
+            * `is_date_after` - is_date_after
+
+            * `is_set` - is_set
+
+            * `is_not_set` - is_not_set'
+        value:
+          nullable: true
+          description: Value to compare against. String, number, or array of strings. Omit for is_set/is_not_set operators.
+      required:
+      - key
+      - operator
+      - type
+    LogsAlertDestinationResponse:
+      type: object
+      properties:
+        hog_function_ids:
+          type: array
+          items:
+            type: string
+            format: uuid
+      required:
+      - hog_function_ids
+    OrderByEnum:
+      enum:
+      - latest
+      - earliest
+      type: string
+      description: '* `latest` - latest
+
+        * `earliest` - earliest'
+    _LogAttributeEntry:
+      type: object
+      properties:
+        name:
+          type: string
+        propertyFilterType:
+          type: string
+          description: 'Property filter type: "log_attribute" or "log_resource_attribute". Use this as the `type` field when filtering.'
+        matchedOn:
+          allOf:
+          - $ref: '#/components/schemas/MatchedOnEnum'
+          description: 'How the search query matched this row: "key" if the attribute key matched, "value" if a value matched.
+
+
+            * `key` - key
+
+            * `value` - value'
+        matchedValue:
+          type: string
+          nullable: true
+          description: Sample matching value — only set when matchedOn is "value".
+      required:
+      - matchedOn
+      - name
+      - propertyFilterType
+    LogsAlertCreateDestination:
+      type: object
+      properties:
+        type:
+          allOf:
+          - $ref: '#/components/schemas/NotificationDestinationTypeEnum'
+          description: 'Destination type — slack or webhook.
+
+
+            * `slack` - slack
+
+            * `webhook` - webhook'
+        slack_workspace_id:
+          type: integer
+          description: Integration ID for the Slack workspace. Required when type=slack.
+        slack_channel_id:
+          type: string
+          description: Slack channel ID. Required when type=slack.
+        slack_channel_name:
+          type: string
+          description: Human-readable channel name for display.
+        webhook_url:
+          type: string
+          format: uri
+          description: HTTPS endpoint to POST to. Required when type=webhook.
+      required:
+      - type
+    PaginatedLogsViewList:
+      type: object
+      required:
+      - count
+      - results
+      properties:
+        count:
+          type: integer
+          example: 123
+        next:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?offset=400&limit=100
+        previous:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?offset=200&limit=100
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/LogsView'
+    _LogsServicesSparklineBucket:
+      type: object
+      properties:
+        time:
+          type: string
+          description: Bucket start time (ISO 8601).
+        service_name:
+          type: string
+        count:
+          type: integer
+      required:
+      - count
+      - service_name
+      - time
+    _LogsCountRangeBucket:
+      type: object
+      properties:
+        date_from:
+          type: string
+          description: Bucket start as ISO 8601 timestamp. Inclusive lower bound. Pass back as `dateRange.date_from` to drill in.
+        date_to:
+          type: string
+          description: Bucket end as ISO 8601 timestamp. Exclusive upper bound. Pass back as `dateRange.date_to` to drill in.
+        count:
+          type: integer
+          description: Log entries matching the filters within this bucket.
+      required:
+      - count
+      - date_from
+      - date_to
+    _LogsServiceActiveRule:
+      type: object
+      properties:
+        rule_id:
+          type: string
+          format: uuid
+        rule_name:
+          type: string
+        summary_string:
+          type: string
+      required:
+      - rule_id
+      - rule_name
+      - summary_string
+    _LogsCountRangesRequest:
+      type: object
+      properties:
+        query:
+          allOf:
+          - $ref: '#/components/schemas/_LogsCountRangesBody'
+          description: The bucketed-count query to execute.
+      required:
+      - query
+    LogsAlertEvent:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+          readOnly: true
+        created_at:
+          type: string
+          format: date-time
+          readOnly: true
+        kind:
+          allOf:
+          - $ref: '#/components/schemas/LogsAlertEventKindEnum'
+          readOnly: true
+        state_before:
+          type: string
+          readOnly: true
+        state_after:
+          type: string
+          readOnly: true
+        threshold_breached:
+          type: boolean
+          readOnly: true
+        result_count:
+          type: integer
+          readOnly: true
+          nullable: true
+        error_message:
+          type: string
+          readOnly: true
+          nullable: true
+        query_duration_ms:
+          type: integer
+          readOnly: true
+          nullable: true
+      required:
+      - created_at
+      - error_message
+      - id
+      - kind
+      - query_duration_ms
+      - result_count
+      - state_after
+      - state_before
+      - threshold_breached
+    LogsAlertEventKindEnum:
+      enum:
+      - check
+      - reset
+      - enable
+      - disable
+      - snooze
+      - unsnooze
+      - threshold_change
+      type: string
+      description: '* `check` - Check
+
+        * `reset` - Reset
+
+        * `enable` - Enable
+
+        * `disable` - Disable
+
+        * `snooze` - Snooze
+
+        * `unsnooze` - Unsnooze
+
+        * `threshold_change` - Threshold change'
+    _LogsQueryBody:
+      type: object
+      properties:
+        dateRange:
+          allOf:
+          - $ref: '#/components/schemas/_DateRange'
+          description: Date range for the query. Defaults to last hour.
+        severityLevels:
+          type: array
+          items:
+            $ref: '#/components/schemas/SeverityLevelsEnum'
+          default: []
+          description: Filter by log severity levels.
+        serviceNames:
+          type: array
+          items:
+            type: string
+          default: []
+          description: Filter by service names.
+        orderBy:
+          allOf:
+          - $ref: '#/components/schemas/OrderByEnum'
+          description: 'Order results by timestamp.
+
+
+            * `latest` - latest
+
+            * `earliest` - earliest'
+        searchTerm:
+          type: string
+          description: Full-text search term to filter log bodies.
+        filterGroup:
+          type: array
+          items:
+            $ref: '#/components/schemas/_LogPropertyFilter'
+          default: []
+          description: Property filters for the query.
+        limit:
+          type: integer
+          default: 100
+          description: Max results (1-1000).
+        after:
+          type: string
+          description: Pagination cursor from previous response.
+    _LogsQueryResponse:
+      type: object
+      properties:
+        query:
+          type: object
+          additionalProperties: true
+          description: The parsed query that was executed, echoed back for confirmation.
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/_LogEntry'
+          description: Log entries matching the query.
+        hasMore:
+          type: boolean
+          description: True if more results exist beyond this page.
+        nextCursor:
+          type: string
+          nullable: true
+          description: Opaque cursor to pass as `after` in the next request to fetch the next page. Null when hasMore is false.
+        maxExportableLogs:
+          type: integer
+          description: Maximum number of rows the `export` endpoint will produce — informational.
+      required:
+      - hasMore
+      - maxExportableLogs
+      - query
+      - results
+    BlankEnum:
+      enum:
+      - ''
+    LogsSamplingRuleSimulateResponse:
+      type: object
+      properties:
+        estimated_reduction_pct:
+          type: number
+          format: double
+          description: Rough percent of log volume this rule would drop (0–100). Stub until ClickHouse-backed estimate ships.
+        notes:
+          type: string
+          description: Human-readable caveats for the estimate.
+      required:
+      - estimated_reduction_pct
+      - notes
+    _LogsCountBody:
+      type: object
+      properties:
+        dateRange:
+          allOf:
+          - $ref: '#/components/schemas/_DateRange'
+          description: Date range for the count. Defaults to last hour.
+        severityLevels:
+          type: array
+          items:
+            $ref: '#/components/schemas/SeverityLevelsEnum'
+          description: Filter by log severity levels.
+        serviceNames:
+          type: array
+          items:
+            type: string
+          description: Filter by service names.
+        searchTerm:
+          type: string
+          description: Full-text search term to filter log bodies.
+        filterGroup:
+          type: array
+          items:
+            $ref: '#/components/schemas/_LogPropertyFilter'
+          description: Property filters for the query.
+    SeverityLevelsEnum:
+      enum:
+      - trace
+      - debug
+      - info
+      - warn
+      - error
+      - fatal
+      type: string
+      description: '* `trace` - trace
+
+        * `debug` - debug
+
+        * `info` - info
+
+        * `warn` - warn
+
+        * `error` - error
+
+        * `fatal` - fatal'
+    _LogsCountRequest:
+      type: object
+      properties:
+        query:
+          allOf:
+          - $ref: '#/components/schemas/_LogsCountBody'
+          description: The count query to execute.
+      required:
+      - query
+    LogsAlertSimulateBucket:
+      type: object
+      properties:
+        timestamp:
+          type: string
+          format: date-time
+          description: Bucket start timestamp.
+        count:
+          type: integer
+          description: Number of matching logs in this bucket.
+        threshold_breached:
+          type: boolean
+          description: Whether the count crossed the threshold in this bucket.
+        state:
+          type: string
+          description: Alert state after evaluating this bucket.
+        notification:
+          type: string
+          description: 'Notification action: none, fire, or resolve.'
+        reason:
+          type: string
+          description: Human-readable explanation of the state transition.
+      required:
+      - count
+      - notification
+      - reason
+      - state
+      - threshold_breached
+      - timestamp
+    LogsAlertConfiguration:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+          readOnly: true
+          description: Unique identifier for this alert.
+        name:
+          type: string
+          description: Human-readable name for this alert. Defaults to 'Untitled alert' on create when omitted.
+          maxLength: 255
+        enabled:
+          type: boolean
+          default: true
+          description: Whether the alert is actively being evaluated. Disabling resets the state to not_firing.
+        filters:
+          description: 'Filter criteria — subset of LogsViewerFilters. Must contain at least one of: severityLevels (list of severity strings), serviceNames (list of service name strings), or filterGroup (property filter group object). May be empty on draft alerts (enabled=false).'
+        threshold_count:
+          type: integer
+          minimum: 1
+          default: 100
+          description: Number of matching log entries that constitutes a threshold breach within the evaluation window. Defaults to 100.
+        threshold_operator:
+          allOf:
+          - $ref: '#/components/schemas/ThresholdOperatorEnum'
+          default: above
+          description: 'Whether the alert fires when the count is above or below the threshold.
+
+
+            * `above` - Above
+
+            * `below` - Below'
+        window_minutes:
+          type: integer
+          default: 5
+          description: 'Time window in minutes over which log entries are counted. Allowed values: 5, 10, 15, 30, 60.'
+        check_interval_minutes:
+          type: integer
+          readOnly: true
+          description: How often the alert is evaluated, in minutes. Server-managed.
+        state:
+          allOf:
+          - $ref: '#/components/schemas/LogsAlertConfigurationStateEnum'
+          readOnly: true
+          description: 'Current alert state: not_firing, firing, pending_resolve, errored, or snoozed. Server-managed.
+
+
+            * `not_firing` - Not firing
+
+            * `firing` - Firing
+
+            * `pending_resolve` - Pending resolve
+
+            * `errored` - Errored
+
+            * `snoozed` - Snoozed
+
+            * `broken` - Broken'
+        evaluation_periods:
+          type: integer
+          maximum: 10
+          minimum: 1
+          default: 1
+          description: Total number of check periods in the sliding evaluation window for firing (M in N-of-M).
+        datapoints_to_alarm:
+          type: integer
+          maximum: 10
+          minimum: 1
+          default: 1
+          description: How many periods within the evaluation window must breach the threshold to fire (N in N-of-M).
+        cooldown_minutes:
+          type: integer
+          minimum: 0
+          default: 0
+          description: Minimum minutes between repeated notifications after the alert fires. 0 means no cooldown.
+        snooze_until:
+          type: string
+          format: date-time
+          nullable: true
+          description: ISO 8601 timestamp until which the alert is snoozed. Set to null to unsnooze.
+        next_check_at:
+          type: string
+          format: date-time
+          readOnly: true
+          nullable: true
+          description: When the next evaluation is scheduled. Server-managed.
+        last_notified_at:
+          type: string
+          format: date-time
+          readOnly: true
+          nullable: true
+          description: When the last notification was sent. Server-managed.
+        last_checked_at:
+          type: string
+          format: date-time
+          readOnly: true
+          nullable: true
+          description: When the alert was last evaluated. Server-managed.
+        consecutive_failures:
+          type: integer
+          readOnly: true
+          description: Number of consecutive evaluation failures. Resets on success. Server-managed.
+        last_error_message:
+          type: string
+          nullable: true
+          readOnly: true
+          description: Error message from the most recent errored check, or null if the alert's most recent check was successful. Sourced from LogsAlertEvent without denormalization so retention-aware cleanup rules stay the only source of truth.
+        state_timeline:
+          type: array
+          items:
+            $ref: '#/components/schemas/LogsAlertStateInterval'
+          readOnly: true
+          description: Continuous state intervals over the last 24h, ordered oldest-first. Each interval covers a span during which (state, enabled) was constant. Derived from LogsAlertEvent rows walked in chronological order; consecutive identical intervals are collapsed. Drives the 'Last 24h' status bar on the alert list.
+        destination_types:
+          type: array
+          items:
+            $ref: '#/components/schemas/NotificationDestinationTypeEnum'
+          readOnly: true
+          description: Notification destination types configured for this alert — e.g. 'slack', 'webhook'. Empty list means no notifications will fire. One or more destinations should be added after creating an alert.
+        first_enabled_at:
+          type: string
+          format: date-time
+          readOnly: true
+          nullable: true
+          description: When the alert was first enabled. Null means the alert is still in draft state.
+        created_at:
+          type: string
+          format: date-time
+          readOnly: true
+          description: When the alert was created.
+        created_by:
+          allOf:
+          - $ref: '#/components/schemas/UserBasic'
+          readOnly: true
+        updated_at:
+          type: string
+          format: date-time
+          readOnly: true
+          nullable: true
+          description: When the alert was last modified.
+      required:
+      - check_interval_minutes
+      - consecutive_failures
+      - created_at
+      - created_by
+      - destination_types
+      - first_enabled_at
+      - id
+      - last_checked_at
+      - last_error_message
+      - last_notified_at
+      - next_check_at
+      - state
+      - state_timeline
+      - updated_at
+    _LogsSparklineBody:
+      type: object
+      properties:
+        dateRange:
+          allOf:
+          - $ref: '#/components/schemas/_DateRange'
+          description: Date range for the sparkline. Defaults to last hour.
+        severityLevels:
+          type: array
+          items:
+            $ref: '#/components/schemas/SeverityLevelsEnum'
+          default: []
+          description: Filter by log severity levels.
+        serviceNames:
+          type: array
+          items:
+            type: string
+          default: []
+          description: Filter by service names.
+        searchTerm:
+          type: string
+          description: Full-text search term to filter log bodies.
+        filterGroup:
+          type: array
+          items:
+            $ref: '#/components/schemas/_LogPropertyFilter'
+          default: []
+          description: Property filters for the query.
+        sparklineBreakdownBy:
+          allOf:
+          - $ref: '#/components/schemas/SparklineBreakdownByEnum'
+          description: 'Break down sparkline by "severity" (default) or "service".
+
+
+            * `severity` - severity
+
+            * `service` - service'
+    LogsView:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+          readOnly: true
+        short_id:
+          type: string
+          readOnly: true
+        name:
+          type: string
+          maxLength: 400
+        filters:
+          type: object
+          additionalProperties: true
+          description: Filter criteria — subset of LogsViewerFilters. May contain severityLevels, serviceNames, searchTerm, filterGroup, dateRange, and other keys.
+        pinned:
+          type: boolean
+        created_at:
+          type: string
+          format: date-time
+          readOnly: true
+        created_by:
+          allOf:
+          - $ref: '#/components/schemas/UserBasic'
+          readOnly: true
+        updated_at:
+          type: string
+          format: date-time
+          readOnly: true
+          nullable: true
+      required:
+      - created_at
+      - created_by
+      - id
+      - name
+      - short_id
+      - updated_at
+  parameters:
+    EnvironmentIdPath:
+      in: path
+      name: environment_id
+      required: true
+      schema:
+        type: string
+      description: Deprecated. Use /api/projects/{project_id}/ instead.
+    ProjectIdPath:
+      in: path
+      name: project_id
+      required: true
+      schema:
+        type: string
+      description: Project ID of the project you're trying to access. To find the ID of the project, make a call to /api/projects/.
+  securitySchemes:
+    PersonalAPIKeyAuth:
+      type: http
+      scheme: bearer
+x-tagGroups:
+- name: All endpoints
+  tags:
+  - LLM Analytics
+  - actions
+  - activity_log
+  - activity_logs
+  - advanced_activity_logs
+  - alerts
+  - annotations
+  - approval_policies
+  - batch_exports
+  - cdp
+  - change_requests
+  - code
+  - code-invites
+  - cohorts
+  - comments
+  - conversations
+  - core
+  - customer_analytics
+  - customer_journeys
+  - customer_profile_configs
+  - dashboard_templates
+  - dashboards
+  - data_color_themes
+  - data_modeling_jobs
+  - data_warehouse
+  - dataset_items
+  - datasets
+  - desktop_recordings
+  - domains
+  - early_access_feature
+  - early_access_features
+  - elements
+  - endpoints
+  - environments
+  - error_tracking
+  - evaluation_runs
+  - evaluations
+  - event_definitions
+  - event_filter
+  - event_schemas
+  - events
+  - experiment_holdouts
+  - experiment_saved_metrics
+  - experiments
+  - exports
+  - external_data_schemas
+  - external_data_sources
+  - feature_flags
+  - file_system
+  - file_system_shortcut
+  - flag_value
+  - groups
+  - groups_types
+  - health_issues
+  - heatmap_screenshots
+  - heatmaps
+  - hog_flows
+  - hog_function_templates
+  - hog_functions
+  - insight_variables
+  - insights
+  - integrations
+  - invites
+  - js-snippet
+  - legal_documents
+  - lineage
+  - live_debugger_breakpoints
+  - llm_analytics
+  - llm_prompts
+  - llm_skills
+  - logs
+  - managed_viewsets
+  - max
+  - max_tools
+  - mcp_server_installations
+  - mcp_servers
+  - mcp_store
+  - mcp_tools
+  - members
+  - notebooks
+  - oauth_applications
+  - object_media_previews
+  - organizations
+  - persisted_folder
+  - persons
+  - platform_features
+  - plugin_configs
+  - product_analytics
+  - product_tours
+  - project_secret_api_keys
+  - projects
+  - property_definitions
+  - proxy_records
+  - public_hog_function_templates
+  - query
+  - replay
+  - reverse_proxy
+  - role_external_references
+  - roles
+  - sandbox-environments
+  - sandbox_environments
+  - saved
+  - schema_property_groups
+  - sdk_doctor
+  - session_group_summaries
+  - session_recording_playlists
+  - session_recordings
+  - session_summaries
+  - sessions
+  - signals
+  - subscriptions
+  - surveys
+  - taggers
+  - task-automations
+  - task-runs
+  - task_automations
+  - tasks
+  - uploaded_media
+  - user_home_settings
+  - user_interviews
+  - users
+  - visual_review
+  - warehouse_dag
+  - warehouse_model_paths
+  - warehouse_saved_queries
+  - warehouse_saved_query_folders
+  - warehouse_tables
+  - warehouse_view_link
+  - warehouse_view_links
+  - web_analytics
+  - web_experiments
+  - web_vitals
+  - welcome
+  - workflows

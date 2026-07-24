@@ -1,0 +1,975 @@
+openapi: 3.0.3
+info:
+  title: PostHog actions organizations API
+  version: 1.0.0
+  description: ''
+tags:
+- name: organizations
+paths:
+  /api/organizations/:
+    get:
+      operationId: list
+      parameters:
+      - name: limit
+        required: false
+        in: query
+        description: Number of results to return per page.
+        schema:
+          type: integer
+      - name: offset
+        required: false
+        in: query
+        description: The initial index from which to return the results.
+        schema:
+          type: integer
+      tags:
+      - organizations
+      security:
+      - PersonalAPIKeyAuth:
+        - organization:read
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedOrganizationList'
+          description: ''
+      x-explicit-tags:
+      - platform_features
+    post:
+      operationId: create
+      tags:
+      - organizations
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Organization'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/Organization'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/Organization'
+        required: true
+      security:
+      - PersonalAPIKeyAuth:
+        - organization:write
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Organization'
+          description: ''
+      x-explicit-tags:
+      - platform_features
+  /api/organizations/{id}/:
+    get:
+      operationId: retrieve
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this organization.
+        required: true
+      tags:
+      - organizations
+      security:
+      - PersonalAPIKeyAuth:
+        - organization:read
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Organization'
+          description: ''
+      x-explicit-tags:
+      - platform_features
+    put:
+      operationId: update
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this organization.
+        required: true
+      tags:
+      - organizations
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Organization'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/Organization'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/Organization'
+        required: true
+      security:
+      - PersonalAPIKeyAuth:
+        - organization:write
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Organization'
+          description: ''
+      x-explicit-tags:
+      - platform_features
+    patch:
+      operationId: partial_update
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this organization.
+        required: true
+      tags:
+      - organizations
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchedOrganization'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/PatchedOrganization'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/PatchedOrganization'
+      security:
+      - PersonalAPIKeyAuth:
+        - organization:write
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Organization'
+          description: ''
+      x-explicit-tags:
+      - platform_features
+    delete:
+      operationId: destroy
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this organization.
+        required: true
+      tags:
+      - organizations
+      security:
+      - PersonalAPIKeyAuth:
+        - organization:write
+      responses:
+        '204':
+          description: No response body
+      x-explicit-tags:
+      - platform_features
+  /api/organizations/{organization_id}/integrations/:
+    get:
+      operationId: org_organizations_integrations_list
+      description: 'ViewSet for organization-level integrations.
+
+
+        Provides access to integrations that are scoped to the entire organization
+
+        (vs. project-level integrations). Examples include Vercel, AWS Marketplace, etc.
+
+
+        Creation is handled by the integration installation flows
+
+        (e.g., Vercel marketplace installation). Users can disconnect integrations
+
+        via the DELETE endpoint.'
+      parameters:
+      - name: limit
+        required: false
+        in: query
+        description: Number of results to return per page.
+        schema:
+          type: integer
+      - name: offset
+        required: false
+        in: query
+        description: The initial index from which to return the results.
+        schema:
+          type: integer
+      - $ref: '#/components/parameters/OrganizationIdPath'
+      tags:
+      - organizations
+      security:
+      - PersonalAPIKeyAuth:
+        - organization_integration:read
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedOrganizationIntegrationList'
+          description: ''
+      x-explicit-tags:
+      - organizations
+      deprecated: true
+  /api/organizations/{organization_id}/integrations/{id}/:
+    get:
+      operationId: org_organizations_integrations_retrieve
+      description: 'ViewSet for organization-level integrations.
+
+
+        Provides access to integrations that are scoped to the entire organization
+
+        (vs. project-level integrations). Examples include Vercel, AWS Marketplace, etc.
+
+
+        Creation is handled by the integration installation flows
+
+        (e.g., Vercel marketplace installation). Users can disconnect integrations
+
+        via the DELETE endpoint.'
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this organization integration.
+        required: true
+      - $ref: '#/components/parameters/OrganizationIdPath'
+      tags:
+      - organizations
+      security:
+      - PersonalAPIKeyAuth:
+        - organization_integration:read
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OrganizationIntegration'
+          description: ''
+      x-explicit-tags:
+      - organizations
+      deprecated: true
+    delete:
+      operationId: org_organization_integrations_destroy
+      description: 'ViewSet for organization-level integrations.
+
+
+        Provides access to integrations that are scoped to the entire organization
+
+        (vs. project-level integrations). Examples include Vercel, AWS Marketplace, etc.
+
+
+        Creation is handled by the integration installation flows
+
+        (e.g., Vercel marketplace installation). Users can disconnect integrations
+
+        via the DELETE endpoint.'
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this organization integration.
+        required: true
+      - $ref: '#/components/parameters/OrganizationIdPath'
+      tags:
+      - organizations
+      security:
+      - PersonalAPIKeyAuth:
+        - organization_integration:write
+      responses:
+        '204':
+          description: No response body
+      x-explicit-tags:
+      - organizations
+      deprecated: true
+  /api/organizations/{organization_id}/integrations/{id}/environment-mapping/:
+    patch:
+      operationId: integrations_environment_mapping_partial_update
+      description: 'ViewSet for organization-level integrations.
+
+
+        Provides access to integrations that are scoped to the entire organization
+
+        (vs. project-level integrations). Examples include Vercel, AWS Marketplace, etc.
+
+
+        Creation is handled by the integration installation flows
+
+        (e.g., Vercel marketplace installation). Users can disconnect integrations
+
+        via the DELETE endpoint.'
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this organization integration.
+        required: true
+      - $ref: '#/components/parameters/OrganizationIdPath'
+      tags:
+      - organizations
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchedOrganizationIntegration'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/PatchedOrganizationIntegration'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/PatchedOrganizationIntegration'
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OrganizationIntegration'
+          description: ''
+      x-explicit-tags:
+      - organizations
+components:
+  schemas:
+    PatchedOrganization:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+          readOnly: true
+        name:
+          type: string
+          maxLength: 64
+        slug:
+          type: string
+          readOnly: true
+          pattern: ^[-a-zA-Z0-9_]+$
+        logo_media_id:
+          type: string
+          format: uuid
+          nullable: true
+        created_at:
+          type: string
+          format: date-time
+          readOnly: true
+        updated_at:
+          type: string
+          format: date-time
+          readOnly: true
+        membership_level:
+          allOf:
+          - $ref: '#/components/schemas/EffectiveMembershipLevelEnum'
+          nullable: true
+          readOnly: true
+        plugins_access_level:
+          allOf:
+          - $ref: '#/components/schemas/PluginsAccessLevelEnum'
+          readOnly: true
+        teams:
+          type: array
+          items:
+            type: object
+            additionalProperties: true
+          readOnly: true
+        projects:
+          type: array
+          items:
+            type: object
+            additionalProperties: true
+          readOnly: true
+        available_product_features:
+          type: array
+          items: {}
+          readOnly: true
+          nullable: true
+        is_member_join_email_enabled:
+          type: boolean
+          readOnly: true
+          description: Legacy field; member-join emails are controlled per user in account notification settings.
+        metadata:
+          type: object
+          additionalProperties:
+            type: string
+          readOnly: true
+        customer_id:
+          type: string
+          readOnly: true
+          nullable: true
+        enforce_2fa:
+          type: boolean
+          nullable: true
+        members_can_invite:
+          type: boolean
+          nullable: true
+        members_can_use_personal_api_keys:
+          type: boolean
+        allow_publicly_shared_resources:
+          type: boolean
+        member_count:
+          type: integer
+          readOnly: true
+        is_ai_data_processing_approved:
+          type: boolean
+          nullable: true
+        default_experiment_stats_method:
+          nullable: true
+          description: 'Default statistical method for new experiments in this organization.
+
+
+            * `bayesian` - Bayesian
+
+            * `frequentist` - Frequentist'
+          oneOf:
+          - $ref: '#/components/schemas/DefaultExperimentStatsMethodEnum'
+          - $ref: '#/components/schemas/BlankEnum'
+          - $ref: '#/components/schemas/NullEnum'
+        default_anonymize_ips:
+          type: boolean
+          description: Default setting for 'Discard client IP data' for new projects in this organization.
+        default_role_id:
+          type: string
+          nullable: true
+          description: ID of the role to automatically assign to new members joining the organization
+        is_active:
+          type: boolean
+          readOnly: true
+          nullable: true
+          title: Active
+          description: Set this to 'No' to temporarily disable an organization.
+        is_not_active_reason:
+          type: string
+          readOnly: true
+          nullable: true
+          title: De-activated reason
+          description: (optional) reason for why the organization has been de-activated. This will be displayed to users on the web app.
+        is_pending_deletion:
+          type: boolean
+          readOnly: true
+          nullable: true
+          description: Set to True when org deletion has been initiated. Blocks all UI access until the async task completes.
+    PatchedOrganizationIntegration:
+      type: object
+      description: Serializer for organization-level integrations.
+      properties:
+        id:
+          type: string
+          format: uuid
+          readOnly: true
+        kind:
+          allOf:
+          - $ref: '#/components/schemas/OrganizationIntegrationKindEnum'
+          readOnly: true
+        integration_id:
+          type: string
+          readOnly: true
+          nullable: true
+        config:
+          readOnly: true
+        created_at:
+          type: string
+          format: date-time
+          readOnly: true
+        updated_at:
+          type: string
+          format: date-time
+          readOnly: true
+        created_by:
+          allOf:
+          - $ref: '#/components/schemas/UserBasic'
+          readOnly: true
+    PaginatedOrganizationList:
+      type: object
+      required:
+      - count
+      - results
+      properties:
+        count:
+          type: integer
+          example: 123
+        next:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?offset=400&limit=100
+        previous:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?offset=200&limit=100
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/Organization'
+    BlankEnum:
+      enum:
+      - ''
+    PaginatedOrganizationIntegrationList:
+      type: object
+      required:
+      - count
+      - results
+      properties:
+        count:
+          type: integer
+          example: 123
+        next:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?offset=400&limit=100
+        previous:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?offset=200&limit=100
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/OrganizationIntegration'
+    UserBasic:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        uuid:
+          type: string
+          format: uuid
+          readOnly: true
+        distinct_id:
+          type: string
+          nullable: true
+          maxLength: 200
+        first_name:
+          type: string
+          maxLength: 150
+        last_name:
+          type: string
+          maxLength: 150
+        email:
+          type: string
+          format: email
+          title: Email address
+          maxLength: 254
+        is_email_verified:
+          type: boolean
+          nullable: true
+        hedgehog_config:
+          type: object
+          additionalProperties: true
+          nullable: true
+          readOnly: true
+        role_at_organization:
+          nullable: true
+          oneOf:
+          - $ref: '#/components/schemas/RoleAtOrganizationEnum'
+          - $ref: '#/components/schemas/BlankEnum'
+          - $ref: '#/components/schemas/NullEnum'
+      required:
+      - email
+      - hedgehog_config
+      - id
+      - uuid
+    PluginsAccessLevelEnum:
+      enum:
+      - 0
+      - 3
+      - 6
+      - 9
+      type: integer
+      description: '* `0` - none
+
+        * `3` - config
+
+        * `6` - install
+
+        * `9` - root'
+    OrganizationIntegrationKindEnum:
+      enum:
+      - vercel
+      type: string
+      description: '* `vercel` - Vercel'
+    OrganizationIntegration:
+      type: object
+      description: Serializer for organization-level integrations.
+      properties:
+        id:
+          type: string
+          format: uuid
+          readOnly: true
+        kind:
+          allOf:
+          - $ref: '#/components/schemas/OrganizationIntegrationKindEnum'
+          readOnly: true
+        integration_id:
+          type: string
+          readOnly: true
+          nullable: true
+        config:
+          readOnly: true
+        created_at:
+          type: string
+          format: date-time
+          readOnly: true
+        updated_at:
+          type: string
+          format: date-time
+          readOnly: true
+        created_by:
+          allOf:
+          - $ref: '#/components/schemas/UserBasic'
+          readOnly: true
+      required:
+      - config
+      - created_at
+      - created_by
+      - id
+      - integration_id
+      - kind
+      - updated_at
+    DefaultExperimentStatsMethodEnum:
+      enum:
+      - bayesian
+      - frequentist
+      type: string
+      description: '* `bayesian` - Bayesian
+
+        * `frequentist` - Frequentist'
+    RoleAtOrganizationEnum:
+      enum:
+      - engineering
+      - data
+      - product
+      - founder
+      - leadership
+      - marketing
+      - sales
+      - other
+      type: string
+      description: '* `engineering` - Engineering
+
+        * `data` - Data
+
+        * `product` - Product Management
+
+        * `founder` - Founder
+
+        * `leadership` - Leadership
+
+        * `marketing` - Marketing
+
+        * `sales` - Sales / Success
+
+        * `other` - Other'
+    EffectiveMembershipLevelEnum:
+      enum:
+      - 1
+      - 8
+      - 15
+      type: integer
+    Organization:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+          readOnly: true
+        name:
+          type: string
+          maxLength: 64
+        slug:
+          type: string
+          readOnly: true
+          pattern: ^[-a-zA-Z0-9_]+$
+        logo_media_id:
+          type: string
+          format: uuid
+          nullable: true
+        created_at:
+          type: string
+          format: date-time
+          readOnly: true
+        updated_at:
+          type: string
+          format: date-time
+          readOnly: true
+        membership_level:
+          allOf:
+          - $ref: '#/components/schemas/EffectiveMembershipLevelEnum'
+          nullable: true
+          readOnly: true
+        plugins_access_level:
+          allOf:
+          - $ref: '#/components/schemas/PluginsAccessLevelEnum'
+          readOnly: true
+        teams:
+          type: array
+          items:
+            type: object
+            additionalProperties: true
+          readOnly: true
+        projects:
+          type: array
+          items:
+            type: object
+            additionalProperties: true
+          readOnly: true
+        available_product_features:
+          type: array
+          items: {}
+          readOnly: true
+          nullable: true
+        is_member_join_email_enabled:
+          type: boolean
+          readOnly: true
+          description: Legacy field; member-join emails are controlled per user in account notification settings.
+        metadata:
+          type: object
+          additionalProperties:
+            type: string
+          readOnly: true
+        customer_id:
+          type: string
+          readOnly: true
+          nullable: true
+        enforce_2fa:
+          type: boolean
+          nullable: true
+        members_can_invite:
+          type: boolean
+          nullable: true
+        members_can_use_personal_api_keys:
+          type: boolean
+        allow_publicly_shared_resources:
+          type: boolean
+        member_count:
+          type: integer
+          readOnly: true
+        is_ai_data_processing_approved:
+          type: boolean
+          nullable: true
+        default_experiment_stats_method:
+          nullable: true
+          description: 'Default statistical method for new experiments in this organization.
+
+
+            * `bayesian` - Bayesian
+
+            * `frequentist` - Frequentist'
+          oneOf:
+          - $ref: '#/components/schemas/DefaultExperimentStatsMethodEnum'
+          - $ref: '#/components/schemas/BlankEnum'
+          - $ref: '#/components/schemas/NullEnum'
+        default_anonymize_ips:
+          type: boolean
+          description: Default setting for 'Discard client IP data' for new projects in this organization.
+        default_role_id:
+          type: string
+          nullable: true
+          description: ID of the role to automatically assign to new members joining the organization
+        is_active:
+          type: boolean
+          readOnly: true
+          nullable: true
+          title: Active
+          description: Set this to 'No' to temporarily disable an organization.
+        is_not_active_reason:
+          type: string
+          readOnly: true
+          nullable: true
+          title: De-activated reason
+          description: (optional) reason for why the organization has been de-activated. This will be displayed to users on the web app.
+        is_pending_deletion:
+          type: boolean
+          readOnly: true
+          nullable: true
+          description: Set to True when org deletion has been initiated. Blocks all UI access until the async task completes.
+      required:
+      - available_product_features
+      - created_at
+      - customer_id
+      - id
+      - is_active
+      - is_member_join_email_enabled
+      - is_not_active_reason
+      - is_pending_deletion
+      - member_count
+      - membership_level
+      - metadata
+      - name
+      - plugins_access_level
+      - projects
+      - slug
+      - teams
+      - updated_at
+    NullEnum:
+      enum:
+      - null
+  parameters:
+    OrganizationIdPath:
+      in: path
+      name: organization_id
+      required: true
+      schema:
+        type: string
+      description: ID of the organization you're trying to access. To find the ID of the organization, make a call to /api/organizations/.
+  securitySchemes:
+    PersonalAPIKeyAuth:
+      type: http
+      scheme: bearer
+x-tagGroups:
+- name: All endpoints
+  tags:
+  - LLM Analytics
+  - actions
+  - activity_log
+  - activity_logs
+  - advanced_activity_logs
+  - alerts
+  - annotations
+  - approval_policies
+  - batch_exports
+  - cdp
+  - change_requests
+  - code
+  - code-invites
+  - cohorts
+  - comments
+  - conversations
+  - core
+  - customer_analytics
+  - customer_journeys
+  - customer_profile_configs
+  - dashboard_templates
+  - dashboards
+  - data_color_themes
+  - data_modeling_jobs
+  - data_warehouse
+  - dataset_items
+  - datasets
+  - desktop_recordings
+  - domains
+  - early_access_feature
+  - early_access_features
+  - elements
+  - endpoints
+  - environments
+  - error_tracking
+  - evaluation_runs
+  - evaluations
+  - event_definitions
+  - event_filter
+  - event_schemas
+  - events
+  - experiment_holdouts
+  - experiment_saved_metrics
+  - experiments
+  - exports
+  - external_data_schemas
+  - external_data_sources
+  - feature_flags
+  - file_system
+  - file_system_shortcut
+  - flag_value
+  - groups
+  - groups_types
+  - health_issues
+  - heatmap_screenshots
+  - heatmaps
+  - hog_flows
+  - hog_function_templates
+  - hog_functions
+  - insight_variables
+  - insights
+  - integrations
+  - invites
+  - js-snippet
+  - legal_documents
+  - lineage
+  - live_debugger_breakpoints
+  - llm_analytics
+  - llm_prompts
+  - llm_skills
+  - logs
+  - managed_viewsets
+  - max
+  - max_tools
+  - mcp_server_installations
+  - mcp_servers
+  - mcp_store
+  - mcp_tools
+  - members
+  - notebooks
+  - oauth_applications
+  - object_media_previews
+  - organizations
+  - persisted_folder
+  - persons
+  - platform_features
+  - plugin_configs
+  - product_analytics
+  - product_tours
+  - project_secret_api_keys
+  - projects
+  - property_definitions
+  - proxy_records
+  - public_hog_function_templates
+  - query
+  - replay
+  - reverse_proxy
+  - role_external_references
+  - roles
+  - sandbox-environments
+  - sandbox_environments
+  - saved
+  - schema_property_groups
+  - sdk_doctor
+  - session_group_summaries
+  - session_recording_playlists
+  - session_recordings
+  - session_summaries
+  - sessions
+  - signals
+  - subscriptions
+  - surveys
+  - taggers
+  - task-automations
+  - task-runs
+  - task_automations
+  - tasks
+  - uploaded_media
+  - user_home_settings
+  - user_interviews
+  - users
+  - visual_review
+  - warehouse_dag
+  - warehouse_model_paths
+  - warehouse_saved_queries
+  - warehouse_saved_query_folders
+  - warehouse_tables
+  - warehouse_view_link
+  - warehouse_view_links
+  - web_analytics
+  - web_experiments
+  - web_vitals
+  - welcome
+  - workflows

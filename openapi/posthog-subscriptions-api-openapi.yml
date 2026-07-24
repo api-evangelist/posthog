@@ -1,0 +1,1285 @@
+openapi: 3.0.3
+info:
+  title: PostHog actions subscriptions API
+  version: 1.0.0
+  description: ''
+tags:
+- name: subscriptions
+paths:
+  /api/environments/{environment_id}/subscriptions/:
+    get:
+      operationId: environments_subscriptions_list
+      parameters:
+      - in: query
+        name: created_by
+        schema:
+          type: string
+        description: Filter by creator user UUID.
+      - in: query
+        name: dashboard
+        schema:
+          type: integer
+        description: Filter by dashboard ID.
+      - $ref: '#/components/parameters/EnvironmentIdPath'
+      - in: query
+        name: insight
+        schema:
+          type: integer
+        description: Filter by insight ID.
+      - name: limit
+        required: false
+        in: query
+        description: Number of results to return per page.
+        schema:
+          type: integer
+      - name: offset
+        required: false
+        in: query
+        description: The initial index from which to return the results.
+        schema:
+          type: integer
+      - name: ordering
+        required: false
+        in: query
+        description: Which field to use when ordering the results.
+        schema:
+          type: string
+      - in: query
+        name: resource_type
+        schema:
+          type: string
+          enum:
+          - dashboard
+          - insight
+        description: 'Filter by subscription resource: insight vs dashboard export.'
+      - name: search
+        required: false
+        in: query
+        description: A search term.
+        schema:
+          type: string
+      - in: query
+        name: target_type
+        schema:
+          type: string
+          enum:
+          - email
+          - slack
+          - webhook
+        description: Filter by delivery channel (email, Slack, or webhook).
+      tags:
+      - subscriptions
+      security:
+      - PersonalAPIKeyAuth:
+        - subscription:read
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedSubscriptionList'
+          description: ''
+      deprecated: true
+      x-explicit-tags:
+      - core
+    post:
+      operationId: environments_subscriptions_create
+      parameters:
+      - $ref: '#/components/parameters/EnvironmentIdPath'
+      tags:
+      - subscriptions
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Subscription'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/Subscription'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/Subscription'
+        required: true
+      security:
+      - PersonalAPIKeyAuth:
+        - subscription:write
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Subscription'
+          description: ''
+      deprecated: true
+      x-explicit-tags:
+      - core
+  /api/environments/{environment_id}/subscriptions/{id}/:
+    get:
+      operationId: environments_subscriptions_retrieve
+      parameters:
+      - $ref: '#/components/parameters/EnvironmentIdPath'
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this subscription.
+        required: true
+      tags:
+      - subscriptions
+      security:
+      - PersonalAPIKeyAuth:
+        - subscription:read
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Subscription'
+          description: ''
+      deprecated: true
+      x-explicit-tags:
+      - core
+    put:
+      operationId: environments_subscriptions_update
+      parameters:
+      - $ref: '#/components/parameters/EnvironmentIdPath'
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this subscription.
+        required: true
+      tags:
+      - subscriptions
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Subscription'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/Subscription'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/Subscription'
+        required: true
+      security:
+      - PersonalAPIKeyAuth:
+        - subscription:write
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Subscription'
+          description: ''
+      deprecated: true
+      x-explicit-tags:
+      - core
+    patch:
+      operationId: environments_subscriptions_partial_update
+      parameters:
+      - $ref: '#/components/parameters/EnvironmentIdPath'
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this subscription.
+        required: true
+      tags:
+      - subscriptions
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchedSubscription'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/PatchedSubscription'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/PatchedSubscription'
+      security:
+      - PersonalAPIKeyAuth:
+        - subscription:write
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Subscription'
+          description: ''
+      deprecated: true
+      x-explicit-tags:
+      - core
+    delete:
+      operationId: environments_subscriptions_destroy
+      description: Hard delete of this model is not allowed. Use a patch API call to set "deleted" to true
+      parameters:
+      - $ref: '#/components/parameters/EnvironmentIdPath'
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this subscription.
+        required: true
+      tags:
+      - subscriptions
+      security:
+      - PersonalAPIKeyAuth:
+        - subscription:write
+      responses:
+        '405':
+          description: No response body
+      deprecated: true
+      x-explicit-tags:
+      - core
+  /api/environments/{environment_id}/subscriptions/{id}/test-delivery/:
+    post:
+      operationId: environments_subscriptions_test_delivery_create
+      parameters:
+      - $ref: '#/components/parameters/EnvironmentIdPath'
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this subscription.
+        required: true
+      tags:
+      - subscriptions
+      security:
+      - PersonalAPIKeyAuth:
+        - subscription:write
+      responses:
+        '202':
+          description: Test delivery workflow started
+      deprecated: true
+      x-explicit-tags:
+      - core
+  /api/environments/{project_id}/subscriptions/{subscription_id}/deliveries/:
+    get:
+      operationId: subscriptions_deliveries_list
+      description: Paginated delivery history for a subscription. Requires premium subscriptions.
+      summary: List subscription deliveries
+      parameters:
+      - name: cursor
+        required: false
+        in: query
+        description: The pagination cursor value.
+        schema:
+          type: string
+      - $ref: '#/components/parameters/ProjectIdPath'
+      - in: query
+        name: status
+        schema:
+          type: string
+          enum:
+          - completed
+          - failed
+          - skipped
+          - starting
+        description: Return only deliveries in this run status (starting, completed, failed, or skipped).
+      - in: path
+        name: subscription_id
+        schema:
+          type: integer
+        required: true
+      tags:
+      - subscriptions
+      security:
+      - PersonalAPIKeyAuth:
+        - subscription:read
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedSubscriptionDeliveryList'
+          description: ''
+      x-explicit-tags:
+      - core
+  /api/environments/{project_id}/subscriptions/{subscription_id}/deliveries/{id}/:
+    get:
+      operationId: subscriptions_deliveries_retrieve
+      description: Fetch one delivery row by id.
+      summary: Retrieve subscription delivery
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this subscription delivery.
+        required: true
+      - $ref: '#/components/parameters/ProjectIdPath'
+      - in: path
+        name: subscription_id
+        schema:
+          type: integer
+        required: true
+      tags:
+      - subscriptions
+      security:
+      - PersonalAPIKeyAuth:
+        - subscription:read
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SubscriptionDelivery'
+          description: ''
+      x-explicit-tags:
+      - core
+  /api/projects/{project_id}/subscriptions/:
+    get:
+      operationId: subscriptions_list
+      parameters:
+      - in: query
+        name: created_by
+        schema:
+          type: string
+        description: Filter by creator user UUID.
+      - in: query
+        name: dashboard
+        schema:
+          type: integer
+        description: Filter by dashboard ID.
+      - in: query
+        name: insight
+        schema:
+          type: integer
+        description: Filter by insight ID.
+      - name: limit
+        required: false
+        in: query
+        description: Number of results to return per page.
+        schema:
+          type: integer
+      - name: offset
+        required: false
+        in: query
+        description: The initial index from which to return the results.
+        schema:
+          type: integer
+      - name: ordering
+        required: false
+        in: query
+        description: Which field to use when ordering the results.
+        schema:
+          type: string
+      - $ref: '#/components/parameters/ProjectIdPath'
+      - in: query
+        name: resource_type
+        schema:
+          type: string
+          enum:
+          - dashboard
+          - insight
+        description: 'Filter by subscription resource: insight vs dashboard export.'
+      - name: search
+        required: false
+        in: query
+        description: A search term.
+        schema:
+          type: string
+      - in: query
+        name: target_type
+        schema:
+          type: string
+          enum:
+          - email
+          - slack
+          - webhook
+        description: Filter by delivery channel (email, Slack, or webhook).
+      tags:
+      - subscriptions
+      security:
+      - PersonalAPIKeyAuth:
+        - subscription:read
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedSubscriptionList'
+          description: ''
+      x-explicit-tags:
+      - core
+    post:
+      operationId: subscriptions_create
+      parameters:
+      - $ref: '#/components/parameters/ProjectIdPath'
+      tags:
+      - subscriptions
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Subscription'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/Subscription'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/Subscription'
+        required: true
+      security:
+      - PersonalAPIKeyAuth:
+        - subscription:write
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Subscription'
+          description: ''
+      x-explicit-tags:
+      - core
+  /api/projects/{project_id}/subscriptions/{id}/:
+    get:
+      operationId: subscriptions_retrieve
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this subscription.
+        required: true
+      - $ref: '#/components/parameters/ProjectIdPath'
+      tags:
+      - subscriptions
+      security:
+      - PersonalAPIKeyAuth:
+        - subscription:read
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Subscription'
+          description: ''
+      x-explicit-tags:
+      - core
+    put:
+      operationId: subscriptions_update
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this subscription.
+        required: true
+      - $ref: '#/components/parameters/ProjectIdPath'
+      tags:
+      - subscriptions
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Subscription'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/Subscription'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/Subscription'
+        required: true
+      security:
+      - PersonalAPIKeyAuth:
+        - subscription:write
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Subscription'
+          description: ''
+      x-explicit-tags:
+      - core
+    patch:
+      operationId: subscriptions_partial_update
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this subscription.
+        required: true
+      - $ref: '#/components/parameters/ProjectIdPath'
+      tags:
+      - subscriptions
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchedSubscription'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/PatchedSubscription'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/PatchedSubscription'
+      security:
+      - PersonalAPIKeyAuth:
+        - subscription:write
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Subscription'
+          description: ''
+      x-explicit-tags:
+      - core
+    delete:
+      operationId: subscriptions_destroy
+      description: Hard delete of this model is not allowed. Use a patch API call to set "deleted" to true
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this subscription.
+        required: true
+      - $ref: '#/components/parameters/ProjectIdPath'
+      tags:
+      - subscriptions
+      security:
+      - PersonalAPIKeyAuth:
+        - subscription:write
+      responses:
+        '405':
+          description: No response body
+      x-explicit-tags:
+      - core
+  /api/projects/{project_id}/subscriptions/{id}/test-delivery/:
+    post:
+      operationId: subscriptions_test_delivery_create
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this subscription.
+        required: true
+      - $ref: '#/components/parameters/ProjectIdPath'
+      tags:
+      - subscriptions
+      security:
+      - PersonalAPIKeyAuth:
+        - subscription:write
+      responses:
+        '202':
+          description: Test delivery workflow started
+      x-explicit-tags:
+      - core
+components:
+  schemas:
+    SubscriptionDeliveryStatusEnum:
+      enum:
+      - starting
+      - completed
+      - failed
+      - skipped
+      type: string
+      description: '* `starting` - Starting
+
+        * `completed` - Completed
+
+        * `failed` - Failed
+
+        * `skipped` - Skipped'
+    BlankEnum:
+      enum:
+      - ''
+    PaginatedSubscriptionDeliveryList:
+      type: object
+      required:
+      - results
+      properties:
+        next:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?cursor=cD00ODY%3D"
+        previous:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?cursor=cj0xJnA9NDg3
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/SubscriptionDelivery'
+    PaginatedSubscriptionList:
+      type: object
+      required:
+      - count
+      - results
+      properties:
+        count:
+          type: integer
+          example: 123
+        next:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?offset=400&limit=100
+        previous:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?offset=200&limit=100
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/Subscription'
+    TargetTypeEnum:
+      enum:
+      - email
+      - slack
+      - webhook
+      type: string
+      description: '* `email` - Email
+
+        * `slack` - Slack
+
+        * `webhook` - Webhook'
+    UserBasic:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        uuid:
+          type: string
+          format: uuid
+          readOnly: true
+        distinct_id:
+          type: string
+          nullable: true
+          maxLength: 200
+        first_name:
+          type: string
+          maxLength: 150
+        last_name:
+          type: string
+          maxLength: 150
+        email:
+          type: string
+          format: email
+          title: Email address
+          maxLength: 254
+        is_email_verified:
+          type: boolean
+          nullable: true
+        hedgehog_config:
+          type: object
+          additionalProperties: true
+          nullable: true
+          readOnly: true
+        role_at_organization:
+          nullable: true
+          oneOf:
+          - $ref: '#/components/schemas/RoleAtOrganizationEnum'
+          - $ref: '#/components/schemas/BlankEnum'
+          - $ref: '#/components/schemas/NullEnum'
+      required:
+      - email
+      - hedgehog_config
+      - id
+      - uuid
+    Subscription:
+      type: object
+      description: Standard Subscription serializer.
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        dashboard:
+          type: integer
+          nullable: true
+          description: Dashboard ID to subscribe to (mutually exclusive with insight on create).
+        insight:
+          type: integer
+          nullable: true
+          description: Insight ID to subscribe to (mutually exclusive with dashboard on create).
+        insight_short_id:
+          type: string
+          nullable: true
+          readOnly: true
+        resource_name:
+          type: string
+          nullable: true
+          readOnly: true
+        dashboard_export_insights:
+          type: array
+          items:
+            type: integer
+          description: List of insight IDs from the dashboard to include. Required for dashboard subscriptions, max 6.
+        target_type:
+          allOf:
+          - $ref: '#/components/schemas/TargetTypeEnum'
+          description: 'Delivery channel: email, slack, or webhook.
+
+
+            * `email` - Email
+
+            * `slack` - Slack
+
+            * `webhook` - Webhook'
+        target_value:
+          type: string
+          description: 'Recipient(s): comma-separated email addresses for email, Slack channel name/ID for slack, or full URL for webhook.'
+        frequency:
+          allOf:
+          - $ref: '#/components/schemas/SubscriptionFrequencyEnum'
+          description: 'How often to deliver: daily, weekly, monthly, or yearly.
+
+
+            * `daily` - Daily
+
+            * `weekly` - Weekly
+
+            * `monthly` - Monthly
+
+            * `yearly` - Yearly'
+        interval:
+          type: integer
+          maximum: 2147483647
+          minimum: -2147483648
+          description: Interval multiplier (e.g. 2 with weekly frequency means every 2 weeks). Default 1.
+        byweekday:
+          type: array
+          items:
+            $ref: '#/components/schemas/ByweekdayEnum'
+          nullable: true
+          description: 'Days of week for weekly subscriptions: monday, tuesday, wednesday, thursday, friday, saturday, sunday.'
+        bysetpos:
+          type: integer
+          maximum: 2147483647
+          minimum: -2147483648
+          nullable: true
+          description: Position within byweekday set for monthly frequency (e.g. 1 for first, -1 for last).
+        count:
+          type: integer
+          maximum: 2147483647
+          minimum: -2147483648
+          nullable: true
+          description: Total number of deliveries before the subscription stops. Null for unlimited.
+        start_date:
+          type: string
+          format: date-time
+          description: When to start delivering (ISO 8601 datetime).
+        until_date:
+          type: string
+          format: date-time
+          nullable: true
+          description: When to stop delivering (ISO 8601 datetime). Null for indefinite.
+        created_at:
+          type: string
+          format: date-time
+          readOnly: true
+        created_by:
+          allOf:
+          - $ref: '#/components/schemas/UserBasic'
+          readOnly: true
+        deleted:
+          type: boolean
+          description: Set to true to soft-delete. Subscriptions cannot be hard-deleted.
+        title:
+          type: string
+          nullable: true
+          description: Human-readable name for this subscription.
+          maxLength: 100
+        summary:
+          type: string
+          readOnly: true
+          description: Human-readable schedule summary, e.g. 'sent daily'.
+        next_delivery_date:
+          type: string
+          format: date-time
+          readOnly: true
+          nullable: true
+        integration_id:
+          type: integer
+          nullable: true
+          description: ID of a connected Slack integration. Required when target_type is slack.
+        invite_message:
+          type: string
+          nullable: true
+          description: Optional message included in the invitation email when adding new recipients.
+        summary_enabled:
+          type: boolean
+        summary_prompt_guide:
+          type: string
+          maxLength: 500
+      required:
+      - created_at
+      - created_by
+      - frequency
+      - id
+      - insight_short_id
+      - next_delivery_date
+      - resource_name
+      - start_date
+      - summary
+      - target_type
+      - target_value
+    ByweekdayEnum:
+      enum:
+      - monday
+      - tuesday
+      - wednesday
+      - thursday
+      - friday
+      - saturday
+      - sunday
+      type: string
+      description: '* `monday` - Monday
+
+        * `tuesday` - Tuesday
+
+        * `wednesday` - Wednesday
+
+        * `thursday` - Thursday
+
+        * `friday` - Friday
+
+        * `saturday` - Saturday
+
+        * `sunday` - Sunday'
+    RoleAtOrganizationEnum:
+      enum:
+      - engineering
+      - data
+      - product
+      - founder
+      - leadership
+      - marketing
+      - sales
+      - other
+      type: string
+      description: '* `engineering` - Engineering
+
+        * `data` - Data
+
+        * `product` - Product Management
+
+        * `founder` - Founder
+
+        * `leadership` - Leadership
+
+        * `marketing` - Marketing
+
+        * `sales` - Sales / Success
+
+        * `other` - Other'
+    SubscriptionDelivery:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+          readOnly: true
+          description: Primary key for this delivery row.
+        subscription:
+          type: integer
+          readOnly: true
+          description: Parent subscription id.
+        temporal_workflow_id:
+          type: string
+          readOnly: true
+          description: Temporal workflow id for this delivery run.
+        idempotency_key:
+          type: string
+          readOnly: true
+          description: Dedupes activity retries for the same logical run.
+        trigger_type:
+          type: string
+          readOnly: true
+          description: Why the run started (e.g. scheduled, manual, target_change).
+        scheduled_at:
+          type: string
+          format: date-time
+          readOnly: true
+          nullable: true
+          description: Planned send time when applicable.
+        target_type:
+          type: string
+          readOnly: true
+          description: Channel snapshot at send time (email, slack, webhook).
+        target_value:
+          type: string
+          readOnly: true
+          description: Destination snapshot at send time (emails, channel id, URL).
+        exported_asset_ids:
+          type: array
+          items:
+            type: integer
+            maximum: 2147483647
+            minimum: -2147483648
+          readOnly: true
+          description: ExportedAsset ids generated for this send.
+        content_snapshot:
+          readOnly: true
+          description: 'Snapshot at send time: dashboard metadata, total_insight_count, and per-exported-insight entries (id, short_id, name, query_hash, cache_key, query_results, optional query_error).'
+        recipient_results:
+          readOnly: true
+          description: Per-destination outcomes; items use status success, failed, or partial.
+        status:
+          allOf:
+          - $ref: '#/components/schemas/SubscriptionDeliveryStatusEnum'
+          readOnly: true
+          description: 'Overall run status: starting, completed, failed, or skipped.
+
+
+            * `starting` - Starting
+
+            * `completed` - Completed
+
+            * `failed` - Failed
+
+            * `skipped` - Skipped'
+        error:
+          readOnly: true
+          nullable: true
+          description: Top-level failure payload when status is failed, if any.
+        created_at:
+          type: string
+          format: date-time
+          readOnly: true
+          description: When the delivery row was created.
+        last_updated_at:
+          type: string
+          format: date-time
+          readOnly: true
+          description: Last ORM update to this row.
+        finished_at:
+          type: string
+          format: date-time
+          readOnly: true
+          nullable: true
+          description: When the run finished, if applicable.
+        change_summary:
+          type: string
+          readOnly: true
+          nullable: true
+          description: AI-generated summary included in this delivery, when one was produced.
+      required:
+      - change_summary
+      - content_snapshot
+      - created_at
+      - error
+      - exported_asset_ids
+      - finished_at
+      - id
+      - idempotency_key
+      - last_updated_at
+      - recipient_results
+      - scheduled_at
+      - status
+      - subscription
+      - target_type
+      - target_value
+      - temporal_workflow_id
+      - trigger_type
+    PatchedSubscription:
+      type: object
+      description: Standard Subscription serializer.
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        dashboard:
+          type: integer
+          nullable: true
+          description: Dashboard ID to subscribe to (mutually exclusive with insight on create).
+        insight:
+          type: integer
+          nullable: true
+          description: Insight ID to subscribe to (mutually exclusive with dashboard on create).
+        insight_short_id:
+          type: string
+          nullable: true
+          readOnly: true
+        resource_name:
+          type: string
+          nullable: true
+          readOnly: true
+        dashboard_export_insights:
+          type: array
+          items:
+            type: integer
+          description: List of insight IDs from the dashboard to include. Required for dashboard subscriptions, max 6.
+        target_type:
+          allOf:
+          - $ref: '#/components/schemas/TargetTypeEnum'
+          description: 'Delivery channel: email, slack, or webhook.
+
+
+            * `email` - Email
+
+            * `slack` - Slack
+
+            * `webhook` - Webhook'
+        target_value:
+          type: string
+          description: 'Recipient(s): comma-separated email addresses for email, Slack channel name/ID for slack, or full URL for webhook.'
+        frequency:
+          allOf:
+          - $ref: '#/components/schemas/SubscriptionFrequencyEnum'
+          description: 'How often to deliver: daily, weekly, monthly, or yearly.
+
+
+            * `daily` - Daily
+
+            * `weekly` - Weekly
+
+            * `monthly` - Monthly
+
+            * `yearly` - Yearly'
+        interval:
+          type: integer
+          maximum: 2147483647
+          minimum: -2147483648
+          description: Interval multiplier (e.g. 2 with weekly frequency means every 2 weeks). Default 1.
+        byweekday:
+          type: array
+          items:
+            $ref: '#/components/schemas/ByweekdayEnum'
+          nullable: true
+          description: 'Days of week for weekly subscriptions: monday, tuesday, wednesday, thursday, friday, saturday, sunday.'
+        bysetpos:
+          type: integer
+          maximum: 2147483647
+          minimum: -2147483648
+          nullable: true
+          description: Position within byweekday set for monthly frequency (e.g. 1 for first, -1 for last).
+        count:
+          type: integer
+          maximum: 2147483647
+          minimum: -2147483648
+          nullable: true
+          description: Total number of deliveries before the subscription stops. Null for unlimited.
+        start_date:
+          type: string
+          format: date-time
+          description: When to start delivering (ISO 8601 datetime).
+        until_date:
+          type: string
+          format: date-time
+          nullable: true
+          description: When to stop delivering (ISO 8601 datetime). Null for indefinite.
+        created_at:
+          type: string
+          format: date-time
+          readOnly: true
+        created_by:
+          allOf:
+          - $ref: '#/components/schemas/UserBasic'
+          readOnly: true
+        deleted:
+          type: boolean
+          description: Set to true to soft-delete. Subscriptions cannot be hard-deleted.
+        title:
+          type: string
+          nullable: true
+          description: Human-readable name for this subscription.
+          maxLength: 100
+        summary:
+          type: string
+          readOnly: true
+          description: Human-readable schedule summary, e.g. 'sent daily'.
+        next_delivery_date:
+          type: string
+          format: date-time
+          readOnly: true
+          nullable: true
+        integration_id:
+          type: integer
+          nullable: true
+          description: ID of a connected Slack integration. Required when target_type is slack.
+        invite_message:
+          type: string
+          nullable: true
+          description: Optional message included in the invitation email when adding new recipients.
+        summary_enabled:
+          type: boolean
+        summary_prompt_guide:
+          type: string
+          maxLength: 500
+    SubscriptionFrequencyEnum:
+      enum:
+      - daily
+      - weekly
+      - monthly
+      - yearly
+      type: string
+      description: '* `daily` - Daily
+
+        * `weekly` - Weekly
+
+        * `monthly` - Monthly
+
+        * `yearly` - Yearly'
+    NullEnum:
+      enum:
+      - null
+  parameters:
+    ProjectIdPath:
+      in: path
+      name: project_id
+      required: true
+      schema:
+        type: string
+      description: Project ID of the project you're trying to access. To find the ID of the project, make a call to /api/projects/.
+    EnvironmentIdPath:
+      in: path
+      name: environment_id
+      required: true
+      schema:
+        type: string
+      description: Deprecated. Use /api/projects/{project_id}/ instead.
+  securitySchemes:
+    PersonalAPIKeyAuth:
+      type: http
+      scheme: bearer
+x-tagGroups:
+- name: All endpoints
+  tags:
+  - LLM Analytics
+  - actions
+  - activity_log
+  - activity_logs
+  - advanced_activity_logs
+  - alerts
+  - annotations
+  - approval_policies
+  - batch_exports
+  - cdp
+  - change_requests
+  - code
+  - code-invites
+  - cohorts
+  - comments
+  - conversations
+  - core
+  - customer_analytics
+  - customer_journeys
+  - customer_profile_configs
+  - dashboard_templates
+  - dashboards
+  - data_color_themes
+  - data_modeling_jobs
+  - data_warehouse
+  - dataset_items
+  - datasets
+  - desktop_recordings
+  - domains
+  - early_access_feature
+  - early_access_features
+  - elements
+  - endpoints
+  - environments
+  - error_tracking
+  - evaluation_runs
+  - evaluations
+  - event_definitions
+  - event_filter
+  - event_schemas
+  - events
+  - experiment_holdouts
+  - experiment_saved_metrics
+  - experiments
+  - exports
+  - external_data_schemas
+  - external_data_sources
+  - feature_flags
+  - file_system
+  - file_system_shortcut
+  - flag_value
+  - groups
+  - groups_types
+  - health_issues
+  - heatmap_screenshots
+  - heatmaps
+  - hog_flows
+  - hog_function_templates
+  - hog_functions
+  - insight_variables
+  - insights
+  - integrations
+  - invites
+  - js-snippet
+  - legal_documents
+  - lineage
+  - live_debugger_breakpoints
+  - llm_analytics
+  - llm_prompts
+  - llm_skills
+  - logs
+  - managed_viewsets
+  - max
+  - max_tools
+  - mcp_server_installations
+  - mcp_servers
+  - mcp_store
+  - mcp_tools
+  - members
+  - notebooks
+  - oauth_applications
+  - object_media_previews
+  - organizations
+  - persisted_folder
+  - persons
+  - platform_features
+  - plugin_configs
+  - product_analytics
+  - product_tours
+  - project_secret_api_keys
+  - projects
+  - property_definitions
+  - proxy_records
+  - public_hog_function_templates
+  - query
+  - replay
+  - reverse_proxy
+  - role_external_references
+  - roles
+  - sandbox-environments
+  - sandbox_environments
+  - saved
+  - schema_property_groups
+  - sdk_doctor
+  - session_group_summaries
+  - session_recording_playlists
+  - session_recordings
+  - session_summaries
+  - sessions
+  - signals
+  - subscriptions
+  - surveys
+  - taggers
+  - task-automations
+  - task-runs
+  - task_automations
+  - tasks
+  - uploaded_media
+  - user_home_settings
+  - user_interviews
+  - users
+  - visual_review
+  - warehouse_dag
+  - warehouse_model_paths
+  - warehouse_saved_queries
+  - warehouse_saved_query_folders
+  - warehouse_tables
+  - warehouse_view_link
+  - warehouse_view_links
+  - web_analytics
+  - web_experiments
+  - web_vitals
+  - welcome
+  - workflows

@@ -1,0 +1,835 @@
+openapi: 3.0.3
+info:
+  title: PostHog actions signals API
+  version: 1.0.0
+  description: ''
+tags:
+- name: signals
+paths:
+  /api/projects/{project_id}/signals/processing/:
+    get:
+      operationId: signals_processing_list
+      description: Return current processing state including pause status.
+      parameters:
+      - name: limit
+        required: false
+        in: query
+        description: Number of results to return per page.
+        schema:
+          type: integer
+      - name: offset
+        required: false
+        in: query
+        description: The initial index from which to return the results.
+        schema:
+          type: integer
+      - $ref: '#/components/parameters/ProjectIdPath'
+      tags:
+      - signals
+      security:
+      - PersonalAPIKeyAuth:
+        - task:read
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedPauseStateResponseList'
+          description: ''
+      x-explicit-tags:
+      - signals
+  /api/projects/{project_id}/signals/processing/pause/:
+    put:
+      operationId: signals_processing_pause_update
+      description: View and control signal processing pipeline state for a team.
+      parameters:
+      - $ref: '#/components/parameters/ProjectIdPath'
+      tags:
+      - signals
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PauseUntilRequest'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/PauseUntilRequest'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/PauseUntilRequest'
+        required: true
+      security:
+      - PersonalAPIKeyAuth:
+        - task:write
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PauseResponse'
+          description: ''
+      x-explicit-tags:
+      - signals
+    delete:
+      operationId: signals_processing_pause_destroy
+      description: View and control signal processing pipeline state for a team.
+      parameters:
+      - $ref: '#/components/parameters/ProjectIdPath'
+      tags:
+      - signals
+      security:
+      - PersonalAPIKeyAuth:
+        - task:write
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PauseResponse'
+          description: ''
+      x-explicit-tags:
+      - signals
+  /api/projects/{project_id}/signals/reports/:
+    get:
+      operationId: signals_reports_list
+      parameters:
+      - name: limit
+        required: false
+        in: query
+        description: Number of results to return per page.
+        schema:
+          type: integer
+      - name: offset
+        required: false
+        in: query
+        description: The initial index from which to return the results.
+        schema:
+          type: integer
+      - in: query
+        name: ordering
+        schema:
+          type: string
+        description: 'Comma-separated ordering clauses. Each clause is a field name optionally prefixed with ''-'' for descending. Allowed fields: status, is_suggested_reviewer, signal_count, total_weight, priority, created_at, updated_at, id. Defaults to ''-is_suggested_reviewer,status,-updated_at''.'
+      - $ref: '#/components/parameters/ProjectIdPath'
+      - in: query
+        name: search
+        schema:
+          type: string
+        description: Case-insensitive substring match against report title and summary.
+      - in: query
+        name: source_product
+        schema:
+          type: string
+        description: Comma-separated list of source products to include. Reports are kept if at least one of their contributing signals comes from one of these products (e.g. error_tracking, session_replay).
+      - in: query
+        name: status
+        schema:
+          type: string
+        description: 'Comma-separated list of statuses to include. Valid values: potential, candidate, in_progress, pending_input, ready, failed, suppressed. Defaults to all statuses except suppressed.'
+      - in: query
+        name: suggested_reviewers
+        schema:
+          type: string
+        description: Comma-separated list of PostHog user UUIDs. Reports are kept if their suggested reviewers include any of the given users.
+      tags:
+      - signals
+      security:
+      - PersonalAPIKeyAuth:
+        - task:read
+      - PersonalAPIKeyAuth:
+        - task:read
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedSignalReportList'
+          description: ''
+      x-explicit-tags:
+      - signals
+  /api/projects/{project_id}/signals/reports/{id}/:
+    get:
+      operationId: signals_reports_retrieve
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this signal report.
+        required: true
+      - $ref: '#/components/parameters/ProjectIdPath'
+      tags:
+      - signals
+      security:
+      - PersonalAPIKeyAuth:
+        - task:read
+      - PersonalAPIKeyAuth:
+        - task:read
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SignalReport'
+          description: ''
+      x-explicit-tags: []
+  /api/projects/{project_id}/signals/source_configs/:
+    get:
+      operationId: signals_source_configs_list
+      parameters:
+      - name: limit
+        required: false
+        in: query
+        description: Number of results to return per page.
+        schema:
+          type: integer
+      - name: offset
+        required: false
+        in: query
+        description: The initial index from which to return the results.
+        schema:
+          type: integer
+      - $ref: '#/components/parameters/ProjectIdPath'
+      tags:
+      - signals
+      security:
+      - PersonalAPIKeyAuth:
+        - task:read
+      - PersonalAPIKeyAuth:
+        - task:read
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedSignalSourceConfigList'
+          description: ''
+      x-explicit-tags:
+      - signals
+    post:
+      operationId: signals_source_configs_create
+      parameters:
+      - $ref: '#/components/parameters/ProjectIdPath'
+      tags:
+      - signals
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SignalSourceConfig'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/SignalSourceConfig'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/SignalSourceConfig'
+        required: true
+      security:
+      - PersonalAPIKeyAuth:
+        - task:write
+      - PersonalAPIKeyAuth:
+        - task:write
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SignalSourceConfig'
+          description: ''
+      x-explicit-tags:
+      - signals
+  /api/projects/{project_id}/signals/source_configs/{id}/:
+    get:
+      operationId: signals_source_configs_retrieve
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this signal source config.
+        required: true
+      - $ref: '#/components/parameters/ProjectIdPath'
+      tags:
+      - signals
+      security:
+      - PersonalAPIKeyAuth:
+        - task:read
+      - PersonalAPIKeyAuth:
+        - task:read
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SignalSourceConfig'
+          description: ''
+      x-explicit-tags: []
+    put:
+      operationId: signals_source_configs_update
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this signal source config.
+        required: true
+      - $ref: '#/components/parameters/ProjectIdPath'
+      tags:
+      - signals
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SignalSourceConfig'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/SignalSourceConfig'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/SignalSourceConfig'
+        required: true
+      security:
+      - PersonalAPIKeyAuth:
+        - task:write
+      - PersonalAPIKeyAuth:
+        - task:write
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SignalSourceConfig'
+          description: ''
+      x-explicit-tags: []
+    patch:
+      operationId: signals_source_configs_partial_update
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this signal source config.
+        required: true
+      - $ref: '#/components/parameters/ProjectIdPath'
+      tags:
+      - signals
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchedSignalSourceConfig'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/PatchedSignalSourceConfig'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/PatchedSignalSourceConfig'
+      security:
+      - PersonalAPIKeyAuth:
+        - task:write
+      - PersonalAPIKeyAuth:
+        - task:write
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SignalSourceConfig'
+          description: ''
+      x-explicit-tags: []
+    delete:
+      operationId: signals_source_configs_destroy
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this signal source config.
+        required: true
+      - $ref: '#/components/parameters/ProjectIdPath'
+      tags:
+      - signals
+      security:
+      - PersonalAPIKeyAuth:
+        - task:write
+      - PersonalAPIKeyAuth:
+        - task:write
+      responses:
+        '204':
+          description: No response body
+      x-explicit-tags: []
+components:
+  schemas:
+    PauseStateResponse:
+      type: object
+      properties:
+        paused_until:
+          type: string
+          format: date-time
+          nullable: true
+          description: The timestamp the pipeline is paused until, or null if not paused/not running.
+      required:
+      - paused_until
+    SignalReport:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+          readOnly: true
+        title:
+          type: string
+          readOnly: true
+          nullable: true
+        summary:
+          type: string
+          readOnly: true
+          nullable: true
+        status:
+          allOf:
+          - $ref: '#/components/schemas/SignalReportStatusEnum'
+          readOnly: true
+        total_weight:
+          type: number
+          format: double
+          readOnly: true
+        signal_count:
+          type: integer
+          readOnly: true
+        signals_at_run:
+          type: integer
+          readOnly: true
+        created_at:
+          type: string
+          format: date-time
+          readOnly: true
+        updated_at:
+          type: string
+          format: date-time
+          readOnly: true
+        artefact_count:
+          type: integer
+          readOnly: true
+        priority:
+          type: string
+          nullable: true
+          readOnly: true
+          description: P0–P4 from the latest priority judgment artefact (when present).
+        actionability:
+          type: string
+          nullable: true
+          readOnly: true
+          description: Actionability choice from the latest actionability judgment artefact (when present).
+        already_addressed:
+          type: boolean
+          nullable: true
+          readOnly: true
+          description: Whether the issue appears already fixed, from the actionability judgment artefact.
+        is_suggested_reviewer:
+          type: boolean
+          readOnly: true
+          default: false
+        source_products:
+          type: array
+          items:
+            type: string
+          readOnly: true
+          description: Distinct source products contributing signals to this report (from ClickHouse).
+        implementation_pr_url:
+          type: string
+          nullable: true
+          readOnly: true
+          description: PR URL from the latest implementation task run, if available.
+      required:
+      - actionability
+      - already_addressed
+      - artefact_count
+      - created_at
+      - id
+      - implementation_pr_url
+      - is_suggested_reviewer
+      - priority
+      - signal_count
+      - signals_at_run
+      - source_products
+      - status
+      - summary
+      - title
+      - total_weight
+      - updated_at
+    PaginatedSignalSourceConfigList:
+      type: object
+      required:
+      - count
+      - results
+      properties:
+        count:
+          type: integer
+          example: 123
+        next:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?offset=400&limit=100
+        previous:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?offset=200&limit=100
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/SignalSourceConfig'
+    PaginatedPauseStateResponseList:
+      type: object
+      required:
+      - count
+      - results
+      properties:
+        count:
+          type: integer
+          example: 123
+        next:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?offset=400&limit=100
+        previous:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?offset=200&limit=100
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/PauseStateResponse'
+    PaginatedSignalReportList:
+      type: object
+      required:
+      - count
+      - results
+      properties:
+        count:
+          type: integer
+          example: 123
+        next:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?offset=400&limit=100
+        previous:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?offset=200&limit=100
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/SignalReport'
+    SignalSourceConfig:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+          readOnly: true
+        source_product:
+          $ref: '#/components/schemas/SourceProductEnum'
+        source_type:
+          $ref: '#/components/schemas/SignalSourceConfigSourceTypeEnum'
+        enabled:
+          type: boolean
+        config: {}
+        created_at:
+          type: string
+          format: date-time
+          readOnly: true
+        updated_at:
+          type: string
+          format: date-time
+          readOnly: true
+        status:
+          type: string
+          nullable: true
+          readOnly: true
+      required:
+      - created_at
+      - id
+      - source_product
+      - source_type
+      - status
+      - updated_at
+    PauseResponse:
+      type: object
+      properties:
+        status:
+          type: string
+          description: Always 'paused'.
+        paused_until:
+          type: string
+          format: date-time
+          description: The timestamp the pipeline is paused until.
+      required:
+      - paused_until
+      - status
+    PatchedSignalSourceConfig:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+          readOnly: true
+        source_product:
+          $ref: '#/components/schemas/SourceProductEnum'
+        source_type:
+          $ref: '#/components/schemas/SignalSourceConfigSourceTypeEnum'
+        enabled:
+          type: boolean
+        config: {}
+        created_at:
+          type: string
+          format: date-time
+          readOnly: true
+        updated_at:
+          type: string
+          format: date-time
+          readOnly: true
+        status:
+          type: string
+          nullable: true
+          readOnly: true
+    SignalSourceConfigSourceTypeEnum:
+      enum:
+      - session_analysis_cluster
+      - evaluation
+      - issue
+      - ticket
+      - issue_created
+      - issue_reopened
+      - issue_spiking
+      type: string
+      description: '* `session_analysis_cluster` - Session analysis cluster
+
+        * `evaluation` - Evaluation
+
+        * `issue` - Issue
+
+        * `ticket` - Ticket
+
+        * `issue_created` - Issue created
+
+        * `issue_reopened` - Issue reopened
+
+        * `issue_spiking` - Issue spiking'
+    SignalReportStatusEnum:
+      enum:
+      - potential
+      - candidate
+      - in_progress
+      - pending_input
+      - ready
+      - failed
+      - deleted
+      - suppressed
+      type: string
+      description: '* `potential` - Potential
+
+        * `candidate` - Candidate
+
+        * `in_progress` - In Progress
+
+        * `pending_input` - Pending Input
+
+        * `ready` - Ready
+
+        * `failed` - Failed
+
+        * `deleted` - Deleted
+
+        * `suppressed` - Suppressed'
+    SourceProductEnum:
+      enum:
+      - session_replay
+      - llm_analytics
+      - github
+      - linear
+      - zendesk
+      - conversations
+      - error_tracking
+      type: string
+      description: '* `session_replay` - Session replay
+
+        * `llm_analytics` - LLM analytics
+
+        * `github` - GitHub
+
+        * `linear` - Linear
+
+        * `zendesk` - Zendesk
+
+        * `conversations` - Conversations
+
+        * `error_tracking` - Error tracking'
+    PauseUntilRequest:
+      type: object
+      properties:
+        timestamp:
+          type: string
+          format: date-time
+          description: Pause the grouping pipeline until this timestamp (ISO 8601).
+      required:
+      - timestamp
+  parameters:
+    ProjectIdPath:
+      in: path
+      name: project_id
+      required: true
+      schema:
+        type: string
+      description: Project ID of the project you're trying to access. To find the ID of the project, make a call to /api/projects/.
+  securitySchemes:
+    PersonalAPIKeyAuth:
+      type: http
+      scheme: bearer
+x-tagGroups:
+- name: All endpoints
+  tags:
+  - LLM Analytics
+  - actions
+  - activity_log
+  - activity_logs
+  - advanced_activity_logs
+  - alerts
+  - annotations
+  - approval_policies
+  - batch_exports
+  - cdp
+  - change_requests
+  - code
+  - code-invites
+  - cohorts
+  - comments
+  - conversations
+  - core
+  - customer_analytics
+  - customer_journeys
+  - customer_profile_configs
+  - dashboard_templates
+  - dashboards
+  - data_color_themes
+  - data_modeling_jobs
+  - data_warehouse
+  - dataset_items
+  - datasets
+  - desktop_recordings
+  - domains
+  - early_access_feature
+  - early_access_features
+  - elements
+  - endpoints
+  - environments
+  - error_tracking
+  - evaluation_runs
+  - evaluations
+  - event_definitions
+  - event_filter
+  - event_schemas
+  - events
+  - experiment_holdouts
+  - experiment_saved_metrics
+  - experiments
+  - exports
+  - external_data_schemas
+  - external_data_sources
+  - feature_flags
+  - file_system
+  - file_system_shortcut
+  - flag_value
+  - groups
+  - groups_types
+  - health_issues
+  - heatmap_screenshots
+  - heatmaps
+  - hog_flows
+  - hog_function_templates
+  - hog_functions
+  - insight_variables
+  - insights
+  - integrations
+  - invites
+  - js-snippet
+  - legal_documents
+  - lineage
+  - live_debugger_breakpoints
+  - llm_analytics
+  - llm_prompts
+  - llm_skills
+  - logs
+  - managed_viewsets
+  - max
+  - max_tools
+  - mcp_server_installations
+  - mcp_servers
+  - mcp_store
+  - mcp_tools
+  - members
+  - notebooks
+  - oauth_applications
+  - object_media_previews
+  - organizations
+  - persisted_folder
+  - persons
+  - platform_features
+  - plugin_configs
+  - product_analytics
+  - product_tours
+  - project_secret_api_keys
+  - projects
+  - property_definitions
+  - proxy_records
+  - public_hog_function_templates
+  - query
+  - replay
+  - reverse_proxy
+  - role_external_references
+  - roles
+  - sandbox-environments
+  - sandbox_environments
+  - saved
+  - schema_property_groups
+  - sdk_doctor
+  - session_group_summaries
+  - session_recording_playlists
+  - session_recordings
+  - session_summaries
+  - sessions
+  - signals
+  - subscriptions
+  - surveys
+  - taggers
+  - task-automations
+  - task-runs
+  - task_automations
+  - tasks
+  - uploaded_media
+  - user_home_settings
+  - user_interviews
+  - users
+  - visual_review
+  - warehouse_dag
+  - warehouse_model_paths
+  - warehouse_saved_queries
+  - warehouse_saved_query_folders
+  - warehouse_tables
+  - warehouse_view_link
+  - warehouse_view_links
+  - web_analytics
+  - web_experiments
+  - web_vitals
+  - welcome
+  - workflows

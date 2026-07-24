@@ -1,0 +1,4525 @@
+openapi: 3.0.3
+info:
+  title: PostHog actions batch_exports API
+  version: 1.0.0
+  description: ''
+tags:
+- name: batch_exports
+paths:
+  /api/environments/{environment_id}/batch_exports/:
+    get:
+      operationId: environments_batch_exports_list
+      parameters:
+      - $ref: '#/components/parameters/EnvironmentIdPath'
+      - name: limit
+        required: false
+        in: query
+        description: Number of results to return per page.
+        schema:
+          type: integer
+      - name: offset
+        required: false
+        in: query
+        description: The initial index from which to return the results.
+        schema:
+          type: integer
+      tags:
+      - batch_exports
+      security:
+      - PersonalAPIKeyAuth:
+        - batch_export:read
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedBatchExportList'
+          description: ''
+      deprecated: true
+      x-explicit-tags:
+      - batch_exports
+    post:
+      operationId: environments_batch_exports_create
+      parameters:
+      - $ref: '#/components/parameters/EnvironmentIdPath'
+      tags:
+      - batch_exports
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/BatchExport'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/BatchExport'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/BatchExport'
+        required: true
+      security:
+      - PersonalAPIKeyAuth:
+        - batch_export:write
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BatchExport'
+          description: ''
+      deprecated: true
+      x-explicit-tags:
+      - batch_exports
+  /api/environments/{environment_id}/batch_exports/{batch_export_id}/backfills/:
+    get:
+      operationId: environments_batch_exports_backfills_list
+      description: 'ViewSet for BatchExportBackfill models.
+
+
+        Allows creating and reading backfills, but not updating or deleting them.'
+      parameters:
+      - in: path
+        name: batch_export_id
+        schema:
+          type: string
+          format: uuid
+          description: The BatchExport this backfill belongs to.
+        required: true
+      - name: cursor
+        required: false
+        in: query
+        description: The pagination cursor value.
+        schema:
+          type: string
+      - $ref: '#/components/parameters/EnvironmentIdPath'
+      - name: ordering
+        required: false
+        in: query
+        description: Which field to use when ordering the results.
+        schema:
+          type: string
+      tags:
+      - batch_exports
+      security:
+      - PersonalAPIKeyAuth:
+        - batch_export:read
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedBatchExportBackfillList'
+          description: ''
+      deprecated: true
+      x-explicit-tags: []
+    post:
+      operationId: environments_batch_exports_backfills_create
+      description: Create a new backfill for a BatchExport.
+      parameters:
+      - in: path
+        name: batch_export_id
+        schema:
+          type: string
+          format: uuid
+          description: The BatchExport this backfill belongs to.
+        required: true
+      - $ref: '#/components/parameters/EnvironmentIdPath'
+      tags:
+      - batch_exports
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/BatchExportBackfill'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/BatchExportBackfill'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/BatchExportBackfill'
+        required: true
+      security:
+      - PersonalAPIKeyAuth:
+        - batch_export:write
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BatchExportBackfill'
+          description: ''
+      deprecated: true
+      x-explicit-tags: []
+  /api/environments/{environment_id}/batch_exports/{batch_export_id}/backfills/{id}/:
+    get:
+      operationId: environments_batch_exports_backfills_retrieve
+      description: 'ViewSet for BatchExportBackfill models.
+
+
+        Allows creating and reading backfills, but not updating or deleting them.'
+      parameters:
+      - in: path
+        name: batch_export_id
+        schema:
+          type: string
+          format: uuid
+          description: The BatchExport this backfill belongs to.
+        required: true
+      - $ref: '#/components/parameters/EnvironmentIdPath'
+      - in: path
+        name: id
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this batch export backfill.
+        required: true
+      tags:
+      - batch_exports
+      security:
+      - PersonalAPIKeyAuth:
+        - batch_export:read
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BatchExportBackfill'
+          description: ''
+      deprecated: true
+      x-explicit-tags: []
+  /api/environments/{environment_id}/batch_exports/{batch_export_id}/backfills/{id}/cancel/:
+    post:
+      operationId: environments_batch_exports_backfills_cancel_create
+      description: Cancel a batch export backfill.
+      parameters:
+      - in: path
+        name: batch_export_id
+        schema:
+          type: string
+          format: uuid
+          description: The BatchExport this backfill belongs to.
+        required: true
+      - $ref: '#/components/parameters/EnvironmentIdPath'
+      - in: path
+        name: id
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this batch export backfill.
+        required: true
+      tags:
+      - batch_exports
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/BatchExportBackfill'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/BatchExportBackfill'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/BatchExportBackfill'
+        required: true
+      security:
+      - PersonalAPIKeyAuth:
+        - batch_export:write
+      responses:
+        '200':
+          description: No response body
+      deprecated: true
+      x-explicit-tags: []
+  /api/environments/{environment_id}/batch_exports/{batch_export_id}/runs/:
+    get:
+      operationId: environments_batch_exports_runs_list
+      parameters:
+      - in: path
+        name: batch_export_id
+        schema:
+          type: string
+          format: uuid
+          description: The BatchExport this run belongs to.
+        required: true
+      - name: cursor
+        required: false
+        in: query
+        description: The pagination cursor value.
+        schema:
+          type: string
+      - $ref: '#/components/parameters/EnvironmentIdPath'
+      - name: ordering
+        required: false
+        in: query
+        description: Which field to use when ordering the results.
+        schema:
+          type: string
+      tags:
+      - batch_exports
+      security:
+      - PersonalAPIKeyAuth:
+        - batch_export:read
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedBatchExportRunList'
+          description: ''
+      deprecated: true
+      x-explicit-tags:
+      - batch_exports
+  /api/environments/{environment_id}/batch_exports/{batch_export_id}/runs/{id}/:
+    get:
+      operationId: environments_batch_exports_runs_retrieve
+      parameters:
+      - in: path
+        name: batch_export_id
+        schema:
+          type: string
+          format: uuid
+          description: The BatchExport this run belongs to.
+        required: true
+      - $ref: '#/components/parameters/EnvironmentIdPath'
+      - in: path
+        name: id
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this batch export run.
+        required: true
+      tags:
+      - batch_exports
+      security:
+      - PersonalAPIKeyAuth:
+        - batch_export:read
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BatchExportRun'
+          description: ''
+      deprecated: true
+      x-explicit-tags:
+      - batch_exports
+  /api/environments/{environment_id}/batch_exports/{batch_export_id}/runs/{id}/cancel/:
+    post:
+      operationId: environments_batch_exports_runs_cancel_create
+      description: Cancel a batch export run.
+      parameters:
+      - in: path
+        name: batch_export_id
+        schema:
+          type: string
+          format: uuid
+          description: The BatchExport this run belongs to.
+        required: true
+      - $ref: '#/components/parameters/EnvironmentIdPath'
+      - in: path
+        name: id
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this batch export run.
+        required: true
+      tags:
+      - batch_exports
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/BatchExportRun'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/BatchExportRun'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/BatchExportRun'
+        required: true
+      security:
+      - PersonalAPIKeyAuth:
+        - batch_export:write
+      responses:
+        '200':
+          description: No response body
+      deprecated: true
+      x-explicit-tags:
+      - batch_exports
+  /api/environments/{environment_id}/batch_exports/{batch_export_id}/runs/{id}/logs/:
+    get:
+      operationId: environments_batch_exports_runs_logs_retrieve
+      parameters:
+      - in: query
+        name: after
+        schema:
+          type: string
+          format: date-time
+        description: Only return entries after this ISO 8601 timestamp.
+      - in: path
+        name: batch_export_id
+        schema:
+          type: string
+          format: uuid
+          description: The BatchExport this run belongs to.
+        required: true
+      - in: query
+        name: before
+        schema:
+          type: string
+          format: date-time
+        description: Only return entries before this ISO 8601 timestamp.
+      - $ref: '#/components/parameters/EnvironmentIdPath'
+      - in: path
+        name: id
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this batch export run.
+        required: true
+      - in: query
+        name: instance_id
+        schema:
+          type: string
+          minLength: 1
+        description: Filter logs to a specific execution instance.
+      - in: query
+        name: level
+        schema:
+          type: string
+          minLength: 1
+        description: 'Comma-separated log levels to include, e.g. ''WARN,ERROR''. Valid levels: DEBUG, LOG, INFO, WARN, ERROR.'
+      - in: query
+        name: limit
+        schema:
+          type: integer
+          maximum: 500
+          minimum: 1
+          default: 50
+        description: Maximum number of log entries to return (1-500, default 50).
+      - in: query
+        name: search
+        schema:
+          type: string
+          minLength: 1
+        description: Case-insensitive substring search across log messages.
+      tags:
+      - batch_exports
+      responses:
+        '200':
+          description: No response body
+      deprecated: true
+      x-explicit-tags:
+      - batch_exports
+  /api/environments/{environment_id}/batch_exports/{batch_export_id}/runs/{id}/retry/:
+    post:
+      operationId: environments_batch_exports_runs_retry_create
+      description: 'Retry a batch export run.
+
+
+        We use the same underlying mechanism as when backfilling a batch export, as retrying
+
+        a run is the same as backfilling one run.'
+      parameters:
+      - in: path
+        name: batch_export_id
+        schema:
+          type: string
+          format: uuid
+          description: The BatchExport this run belongs to.
+        required: true
+      - $ref: '#/components/parameters/EnvironmentIdPath'
+      - in: path
+        name: id
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this batch export run.
+        required: true
+      tags:
+      - batch_exports
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/BatchExportRun'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/BatchExportRun'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/BatchExportRun'
+        required: true
+      security:
+      - PersonalAPIKeyAuth:
+        - batch_export:write
+      responses:
+        '200':
+          description: No response body
+      deprecated: true
+      x-explicit-tags:
+      - batch_exports
+  /api/environments/{environment_id}/batch_exports/{id}/:
+    get:
+      operationId: environments_batch_exports_retrieve
+      parameters:
+      - $ref: '#/components/parameters/EnvironmentIdPath'
+      - in: path
+        name: id
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this batch export.
+        required: true
+      tags:
+      - batch_exports
+      security:
+      - PersonalAPIKeyAuth:
+        - batch_export:read
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BatchExport'
+          description: ''
+      deprecated: true
+      x-explicit-tags:
+      - batch_exports
+    put:
+      operationId: environments_batch_exports_update
+      parameters:
+      - $ref: '#/components/parameters/EnvironmentIdPath'
+      - in: path
+        name: id
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this batch export.
+        required: true
+      tags:
+      - batch_exports
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/BatchExport'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/BatchExport'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/BatchExport'
+        required: true
+      security:
+      - PersonalAPIKeyAuth:
+        - batch_export:write
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BatchExport'
+          description: ''
+      deprecated: true
+      x-explicit-tags:
+      - batch_exports
+    patch:
+      operationId: environments_batch_exports_partial_update
+      parameters:
+      - $ref: '#/components/parameters/EnvironmentIdPath'
+      - in: path
+        name: id
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this batch export.
+        required: true
+      tags:
+      - batch_exports
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchedBatchExport'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/PatchedBatchExport'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/PatchedBatchExport'
+      security:
+      - PersonalAPIKeyAuth:
+        - batch_export:write
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BatchExport'
+          description: ''
+      deprecated: true
+      x-explicit-tags:
+      - batch_exports
+    delete:
+      operationId: environments_batch_exports_destroy
+      parameters:
+      - $ref: '#/components/parameters/EnvironmentIdPath'
+      - in: path
+        name: id
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this batch export.
+        required: true
+      tags:
+      - batch_exports
+      security:
+      - PersonalAPIKeyAuth:
+        - batch_export:write
+      responses:
+        '204':
+          description: No response body
+      deprecated: true
+      x-explicit-tags:
+      - batch_exports
+  /api/environments/{environment_id}/batch_exports/{id}/logs/:
+    get:
+      operationId: environments_batch_exports_logs_retrieve
+      parameters:
+      - in: query
+        name: after
+        schema:
+          type: string
+          format: date-time
+        description: Only return entries after this ISO 8601 timestamp.
+      - in: query
+        name: before
+        schema:
+          type: string
+          format: date-time
+        description: Only return entries before this ISO 8601 timestamp.
+      - $ref: '#/components/parameters/EnvironmentIdPath'
+      - in: path
+        name: id
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this batch export.
+        required: true
+      - in: query
+        name: instance_id
+        schema:
+          type: string
+          minLength: 1
+        description: Filter logs to a specific execution instance.
+      - in: query
+        name: level
+        schema:
+          type: string
+          minLength: 1
+        description: 'Comma-separated log levels to include, e.g. ''WARN,ERROR''. Valid levels: DEBUG, LOG, INFO, WARN, ERROR.'
+      - in: query
+        name: limit
+        schema:
+          type: integer
+          maximum: 500
+          minimum: 1
+          default: 50
+        description: Maximum number of log entries to return (1-500, default 50).
+      - in: query
+        name: search
+        schema:
+          type: string
+          minLength: 1
+        description: Case-insensitive substring search across log messages.
+      tags:
+      - batch_exports
+      responses:
+        '200':
+          description: No response body
+      deprecated: true
+      x-explicit-tags:
+      - batch_exports
+  /api/environments/{environment_id}/batch_exports/{id}/pause/:
+    post:
+      operationId: environments_batch_exports_pause_create
+      description: Pause a BatchExport.
+      parameters:
+      - $ref: '#/components/parameters/EnvironmentIdPath'
+      - in: path
+        name: id
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this batch export.
+        required: true
+      tags:
+      - batch_exports
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/BatchExport'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/BatchExport'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/BatchExport'
+        required: true
+      security:
+      - PersonalAPIKeyAuth:
+        - batch_export:write
+      responses:
+        '200':
+          description: No response body
+      deprecated: true
+      x-explicit-tags:
+      - batch_exports
+  /api/environments/{environment_id}/batch_exports/{id}/run_test_step/:
+    post:
+      operationId: environments_batch_exports_run_test_step_create
+      parameters:
+      - $ref: '#/components/parameters/EnvironmentIdPath'
+      - in: path
+        name: id
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this batch export.
+        required: true
+      tags:
+      - batch_exports
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/BatchExport'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/BatchExport'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/BatchExport'
+        required: true
+      security:
+      - PersonalAPIKeyAuth:
+        - batch_export:write
+      responses:
+        '200':
+          description: No response body
+      deprecated: true
+      x-explicit-tags:
+      - batch_exports
+  /api/environments/{environment_id}/batch_exports/{id}/unpause/:
+    post:
+      operationId: environments_batch_exports_unpause_create
+      description: Unpause a BatchExport.
+      parameters:
+      - $ref: '#/components/parameters/EnvironmentIdPath'
+      - in: path
+        name: id
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this batch export.
+        required: true
+      tags:
+      - batch_exports
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/BatchExport'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/BatchExport'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/BatchExport'
+        required: true
+      security:
+      - PersonalAPIKeyAuth:
+        - batch_export:write
+      responses:
+        '200':
+          description: No response body
+      deprecated: true
+      x-explicit-tags:
+      - batch_exports
+  /api/environments/{environment_id}/batch_exports/run_test_step_new/:
+    post:
+      operationId: environments_batch_exports_run_test_step_new_create
+      parameters:
+      - $ref: '#/components/parameters/EnvironmentIdPath'
+      tags:
+      - batch_exports
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/BatchExport'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/BatchExport'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/BatchExport'
+        required: true
+      security:
+      - PersonalAPIKeyAuth:
+        - batch_export:write
+      responses:
+        '200':
+          description: No response body
+      deprecated: true
+      x-explicit-tags:
+      - batch_exports
+  /api/environments/{environment_id}/batch_exports/test/:
+    get:
+      operationId: environments_batch_exports_test_retrieve
+      parameters:
+      - $ref: '#/components/parameters/EnvironmentIdPath'
+      tags:
+      - batch_exports
+      security:
+      - PersonalAPIKeyAuth:
+        - batch_export:read
+      responses:
+        '200':
+          description: No response body
+      deprecated: true
+      x-explicit-tags:
+      - batch_exports
+  /api/organizations/{organization_id}/batch_exports/:
+    get:
+      operationId: org_organizations_batch_exports_list
+      parameters:
+      - name: limit
+        required: false
+        in: query
+        description: Number of results to return per page.
+        schema:
+          type: integer
+      - name: offset
+        required: false
+        in: query
+        description: The initial index from which to return the results.
+        schema:
+          type: integer
+      - $ref: '#/components/parameters/OrganizationIdPath'
+      tags:
+      - batch_exports
+      security:
+      - PersonalAPIKeyAuth:
+        - batch_export:read
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedBatchExportList'
+          description: ''
+      x-explicit-tags:
+      - batch_exports
+      deprecated: true
+    post:
+      operationId: org_organizations_batch_exports_create
+      parameters:
+      - $ref: '#/components/parameters/OrganizationIdPath'
+      tags:
+      - batch_exports
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/BatchExport'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/BatchExport'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/BatchExport'
+        required: true
+      security:
+      - PersonalAPIKeyAuth:
+        - batch_export:write
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BatchExport'
+          description: ''
+      x-explicit-tags:
+      - batch_exports
+      deprecated: true
+  /api/organizations/{organization_id}/batch_exports/{id}/:
+    get:
+      operationId: org_organizations_batch_exports_retrieve
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this batch export.
+        required: true
+      - $ref: '#/components/parameters/OrganizationIdPath'
+      tags:
+      - batch_exports
+      security:
+      - PersonalAPIKeyAuth:
+        - batch_export:read
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BatchExport'
+          description: ''
+      x-explicit-tags:
+      - batch_exports
+      deprecated: true
+    put:
+      operationId: org_organizations_batch_exports_update
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this batch export.
+        required: true
+      - $ref: '#/components/parameters/OrganizationIdPath'
+      tags:
+      - batch_exports
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/BatchExport'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/BatchExport'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/BatchExport'
+        required: true
+      security:
+      - PersonalAPIKeyAuth:
+        - batch_export:write
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BatchExport'
+          description: ''
+      x-explicit-tags:
+      - batch_exports
+      deprecated: true
+    patch:
+      operationId: org_organizations_batch_exports_partial_update
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this batch export.
+        required: true
+      - $ref: '#/components/parameters/OrganizationIdPath'
+      tags:
+      - batch_exports
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchedBatchExport'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/PatchedBatchExport'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/PatchedBatchExport'
+      security:
+      - PersonalAPIKeyAuth:
+        - batch_export:write
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BatchExport'
+          description: ''
+      x-explicit-tags:
+      - batch_exports
+      deprecated: true
+    delete:
+      operationId: org_organizations_batch_exports_destroy
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this batch export.
+        required: true
+      - $ref: '#/components/parameters/OrganizationIdPath'
+      tags:
+      - batch_exports
+      security:
+      - PersonalAPIKeyAuth:
+        - batch_export:write
+      responses:
+        '204':
+          description: No response body
+      x-explicit-tags:
+      - batch_exports
+      deprecated: true
+  /api/organizations/{organization_id}/batch_exports/{id}/logs/:
+    get:
+      operationId: org_organizations_batch_exports_logs_retrieve
+      parameters:
+      - in: query
+        name: after
+        schema:
+          type: string
+          format: date-time
+        description: Only return entries after this ISO 8601 timestamp.
+      - in: query
+        name: before
+        schema:
+          type: string
+          format: date-time
+        description: Only return entries before this ISO 8601 timestamp.
+      - in: path
+        name: id
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this batch export.
+        required: true
+      - in: query
+        name: instance_id
+        schema:
+          type: string
+          minLength: 1
+        description: Filter logs to a specific execution instance.
+      - in: query
+        name: level
+        schema:
+          type: string
+          minLength: 1
+        description: 'Comma-separated log levels to include, e.g. ''WARN,ERROR''. Valid levels: DEBUG, LOG, INFO, WARN, ERROR.'
+      - in: query
+        name: limit
+        schema:
+          type: integer
+          maximum: 500
+          minimum: 1
+          default: 50
+        description: Maximum number of log entries to return (1-500, default 50).
+      - $ref: '#/components/parameters/OrganizationIdPath'
+      - in: query
+        name: search
+        schema:
+          type: string
+          minLength: 1
+        description: Case-insensitive substring search across log messages.
+      tags:
+      - batch_exports
+      responses:
+        '200':
+          description: No response body
+      x-explicit-tags:
+      - batch_exports
+      deprecated: true
+  /api/organizations/{organization_id}/batch_exports/{id}/pause/:
+    post:
+      operationId: org_organizations_batch_exports_pause_create
+      description: Pause a BatchExport.
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this batch export.
+        required: true
+      - $ref: '#/components/parameters/OrganizationIdPath'
+      tags:
+      - batch_exports
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/BatchExport'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/BatchExport'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/BatchExport'
+        required: true
+      security:
+      - PersonalAPIKeyAuth:
+        - batch_export:write
+      responses:
+        '200':
+          description: No response body
+      x-explicit-tags:
+      - batch_exports
+      deprecated: true
+  /api/organizations/{organization_id}/batch_exports/{id}/run_test_step/:
+    post:
+      operationId: org_organizations_batch_exports_run_test_step_create
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this batch export.
+        required: true
+      - $ref: '#/components/parameters/OrganizationIdPath'
+      tags:
+      - batch_exports
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/BatchExport'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/BatchExport'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/BatchExport'
+        required: true
+      security:
+      - PersonalAPIKeyAuth:
+        - batch_export:write
+      responses:
+        '200':
+          description: No response body
+      x-explicit-tags:
+      - batch_exports
+      deprecated: true
+  /api/organizations/{organization_id}/batch_exports/{id}/unpause/:
+    post:
+      operationId: org_organizations_batch_exports_unpause_create
+      description: Unpause a BatchExport.
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this batch export.
+        required: true
+      - $ref: '#/components/parameters/OrganizationIdPath'
+      tags:
+      - batch_exports
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/BatchExport'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/BatchExport'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/BatchExport'
+        required: true
+      security:
+      - PersonalAPIKeyAuth:
+        - batch_export:write
+      responses:
+        '200':
+          description: No response body
+      x-explicit-tags:
+      - batch_exports
+      deprecated: true
+  /api/organizations/{organization_id}/batch_exports/run_test_step_new/:
+    post:
+      operationId: org_organizations_batch_exports_run_test_step_new_create
+      parameters:
+      - $ref: '#/components/parameters/OrganizationIdPath'
+      tags:
+      - batch_exports
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/BatchExport'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/BatchExport'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/BatchExport'
+        required: true
+      security:
+      - PersonalAPIKeyAuth:
+        - batch_export:write
+      responses:
+        '200':
+          description: No response body
+      x-explicit-tags:
+      - batch_exports
+      deprecated: true
+  /api/organizations/{organization_id}/batch_exports/test/:
+    get:
+      operationId: org_organizations_batch_exports_test_retrieve
+      parameters:
+      - $ref: '#/components/parameters/OrganizationIdPath'
+      tags:
+      - batch_exports
+      security:
+      - PersonalAPIKeyAuth:
+        - batch_export:read
+      responses:
+        '200':
+          description: No response body
+      x-explicit-tags:
+      - batch_exports
+      deprecated: true
+  /api/projects/{project_id}/batch_exports/:
+    get:
+      operationId: batch_exports_list
+      parameters:
+      - name: limit
+        required: false
+        in: query
+        description: Number of results to return per page.
+        schema:
+          type: integer
+      - name: offset
+        required: false
+        in: query
+        description: The initial index from which to return the results.
+        schema:
+          type: integer
+      - $ref: '#/components/parameters/ProjectIdPath'
+      tags:
+      - batch_exports
+      security:
+      - PersonalAPIKeyAuth:
+        - batch_export:read
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedBatchExportList'
+          description: ''
+      x-explicit-tags:
+      - batch_exports
+    post:
+      operationId: batch_exports_create
+      parameters:
+      - $ref: '#/components/parameters/ProjectIdPath'
+      tags:
+      - batch_exports
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/BatchExport'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/BatchExport'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/BatchExport'
+        required: true
+      security:
+      - PersonalAPIKeyAuth:
+        - batch_export:write
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BatchExport'
+          description: ''
+      x-explicit-tags:
+      - batch_exports
+  /api/projects/{project_id}/batch_exports/{batch_export_id}/backfills/:
+    get:
+      operationId: batch_exports_backfills_list
+      description: 'ViewSet for BatchExportBackfill models.
+
+
+        Allows creating and reading backfills, but not updating or deleting them.'
+      parameters:
+      - in: path
+        name: batch_export_id
+        schema:
+          type: string
+          format: uuid
+          description: The BatchExport this backfill belongs to.
+        required: true
+      - name: cursor
+        required: false
+        in: query
+        description: The pagination cursor value.
+        schema:
+          type: string
+      - name: ordering
+        required: false
+        in: query
+        description: Which field to use when ordering the results.
+        schema:
+          type: string
+      - $ref: '#/components/parameters/ProjectIdPath'
+      tags:
+      - batch_exports
+      security:
+      - PersonalAPIKeyAuth:
+        - batch_export:read
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedBatchExportBackfillList'
+          description: ''
+      x-explicit-tags: []
+    post:
+      operationId: batch_exports_backfills_create
+      description: Create a new backfill for a BatchExport.
+      parameters:
+      - in: path
+        name: batch_export_id
+        schema:
+          type: string
+          format: uuid
+          description: The BatchExport this backfill belongs to.
+        required: true
+      - $ref: '#/components/parameters/ProjectIdPath'
+      tags:
+      - batch_exports
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/BatchExportBackfill'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/BatchExportBackfill'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/BatchExportBackfill'
+        required: true
+      security:
+      - PersonalAPIKeyAuth:
+        - batch_export:write
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BatchExportBackfill'
+          description: ''
+      x-explicit-tags: []
+  /api/projects/{project_id}/batch_exports/{batch_export_id}/backfills/{id}/:
+    get:
+      operationId: batch_exports_backfills_retrieve
+      description: 'ViewSet for BatchExportBackfill models.
+
+
+        Allows creating and reading backfills, but not updating or deleting them.'
+      parameters:
+      - in: path
+        name: batch_export_id
+        schema:
+          type: string
+          format: uuid
+          description: The BatchExport this backfill belongs to.
+        required: true
+      - in: path
+        name: id
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this batch export backfill.
+        required: true
+      - $ref: '#/components/parameters/ProjectIdPath'
+      tags:
+      - batch_exports
+      security:
+      - PersonalAPIKeyAuth:
+        - batch_export:read
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BatchExportBackfill'
+          description: ''
+      x-explicit-tags: []
+  /api/projects/{project_id}/batch_exports/{batch_export_id}/backfills/{id}/cancel/:
+    post:
+      operationId: batch_exports_backfills_cancel_create
+      description: Cancel a batch export backfill.
+      parameters:
+      - in: path
+        name: batch_export_id
+        schema:
+          type: string
+          format: uuid
+          description: The BatchExport this backfill belongs to.
+        required: true
+      - in: path
+        name: id
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this batch export backfill.
+        required: true
+      - $ref: '#/components/parameters/ProjectIdPath'
+      tags:
+      - batch_exports
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/BatchExportBackfill'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/BatchExportBackfill'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/BatchExportBackfill'
+        required: true
+      security:
+      - PersonalAPIKeyAuth:
+        - batch_export:write
+      responses:
+        '200':
+          description: No response body
+      x-explicit-tags: []
+  /api/projects/{project_id}/batch_exports/{batch_export_id}/runs/:
+    get:
+      operationId: batch_exports_runs_list
+      parameters:
+      - in: path
+        name: batch_export_id
+        schema:
+          type: string
+          format: uuid
+          description: The BatchExport this run belongs to.
+        required: true
+      - name: cursor
+        required: false
+        in: query
+        description: The pagination cursor value.
+        schema:
+          type: string
+      - name: ordering
+        required: false
+        in: query
+        description: Which field to use when ordering the results.
+        schema:
+          type: string
+      - $ref: '#/components/parameters/ProjectIdPath'
+      tags:
+      - batch_exports
+      security:
+      - PersonalAPIKeyAuth:
+        - batch_export:read
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedBatchExportRunList'
+          description: ''
+      x-explicit-tags:
+      - batch_exports
+  /api/projects/{project_id}/batch_exports/{batch_export_id}/runs/{id}/:
+    get:
+      operationId: batch_exports_runs_retrieve
+      parameters:
+      - in: path
+        name: batch_export_id
+        schema:
+          type: string
+          format: uuid
+          description: The BatchExport this run belongs to.
+        required: true
+      - in: path
+        name: id
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this batch export run.
+        required: true
+      - $ref: '#/components/parameters/ProjectIdPath'
+      tags:
+      - batch_exports
+      security:
+      - PersonalAPIKeyAuth:
+        - batch_export:read
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BatchExportRun'
+          description: ''
+      x-explicit-tags:
+      - batch_exports
+  /api/projects/{project_id}/batch_exports/{batch_export_id}/runs/{id}/cancel/:
+    post:
+      operationId: batch_exports_runs_cancel_create
+      description: Cancel a batch export run.
+      parameters:
+      - in: path
+        name: batch_export_id
+        schema:
+          type: string
+          format: uuid
+          description: The BatchExport this run belongs to.
+        required: true
+      - in: path
+        name: id
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this batch export run.
+        required: true
+      - $ref: '#/components/parameters/ProjectIdPath'
+      tags:
+      - batch_exports
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/BatchExportRun'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/BatchExportRun'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/BatchExportRun'
+        required: true
+      security:
+      - PersonalAPIKeyAuth:
+        - batch_export:write
+      responses:
+        '200':
+          description: No response body
+      x-explicit-tags:
+      - batch_exports
+  /api/projects/{project_id}/batch_exports/{batch_export_id}/runs/{id}/logs/:
+    get:
+      operationId: batch_exports_runs_logs_retrieve
+      parameters:
+      - in: query
+        name: after
+        schema:
+          type: string
+          format: date-time
+        description: Only return entries after this ISO 8601 timestamp.
+      - in: path
+        name: batch_export_id
+        schema:
+          type: string
+          format: uuid
+          description: The BatchExport this run belongs to.
+        required: true
+      - in: query
+        name: before
+        schema:
+          type: string
+          format: date-time
+        description: Only return entries before this ISO 8601 timestamp.
+      - in: path
+        name: id
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this batch export run.
+        required: true
+      - in: query
+        name: instance_id
+        schema:
+          type: string
+          minLength: 1
+        description: Filter logs to a specific execution instance.
+      - in: query
+        name: level
+        schema:
+          type: string
+          minLength: 1
+        description: 'Comma-separated log levels to include, e.g. ''WARN,ERROR''. Valid levels: DEBUG, LOG, INFO, WARN, ERROR.'
+      - in: query
+        name: limit
+        schema:
+          type: integer
+          maximum: 500
+          minimum: 1
+          default: 50
+        description: Maximum number of log entries to return (1-500, default 50).
+      - $ref: '#/components/parameters/ProjectIdPath'
+      - in: query
+        name: search
+        schema:
+          type: string
+          minLength: 1
+        description: Case-insensitive substring search across log messages.
+      tags:
+      - batch_exports
+      responses:
+        '200':
+          description: No response body
+      x-explicit-tags:
+      - batch_exports
+  /api/projects/{project_id}/batch_exports/{batch_export_id}/runs/{id}/retry/:
+    post:
+      operationId: batch_exports_runs_retry_create
+      description: 'Retry a batch export run.
+
+
+        We use the same underlying mechanism as when backfilling a batch export, as retrying
+
+        a run is the same as backfilling one run.'
+      parameters:
+      - in: path
+        name: batch_export_id
+        schema:
+          type: string
+          format: uuid
+          description: The BatchExport this run belongs to.
+        required: true
+      - in: path
+        name: id
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this batch export run.
+        required: true
+      - $ref: '#/components/parameters/ProjectIdPath'
+      tags:
+      - batch_exports
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/BatchExportRun'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/BatchExportRun'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/BatchExportRun'
+        required: true
+      security:
+      - PersonalAPIKeyAuth:
+        - batch_export:write
+      responses:
+        '200':
+          description: No response body
+      x-explicit-tags:
+      - batch_exports
+  /api/projects/{project_id}/batch_exports/{id}/:
+    get:
+      operationId: batch_exports_retrieve
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this batch export.
+        required: true
+      - $ref: '#/components/parameters/ProjectIdPath'
+      tags:
+      - batch_exports
+      security:
+      - PersonalAPIKeyAuth:
+        - batch_export:read
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BatchExport'
+          description: ''
+      x-explicit-tags:
+      - batch_exports
+    put:
+      operationId: batch_exports_update
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this batch export.
+        required: true
+      - $ref: '#/components/parameters/ProjectIdPath'
+      tags:
+      - batch_exports
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/BatchExport'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/BatchExport'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/BatchExport'
+        required: true
+      security:
+      - PersonalAPIKeyAuth:
+        - batch_export:write
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BatchExport'
+          description: ''
+      x-explicit-tags:
+      - batch_exports
+    patch:
+      operationId: batch_exports_partial_update
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this batch export.
+        required: true
+      - $ref: '#/components/parameters/ProjectIdPath'
+      tags:
+      - batch_exports
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchedBatchExport'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/PatchedBatchExport'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/PatchedBatchExport'
+      security:
+      - PersonalAPIKeyAuth:
+        - batch_export:write
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BatchExport'
+          description: ''
+      x-explicit-tags:
+      - batch_exports
+    delete:
+      operationId: batch_exports_destroy
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this batch export.
+        required: true
+      - $ref: '#/components/parameters/ProjectIdPath'
+      tags:
+      - batch_exports
+      security:
+      - PersonalAPIKeyAuth:
+        - batch_export:write
+      responses:
+        '204':
+          description: No response body
+      x-explicit-tags:
+      - batch_exports
+  /api/projects/{project_id}/batch_exports/{id}/logs/:
+    get:
+      operationId: batch_exports_logs_retrieve
+      parameters:
+      - in: query
+        name: after
+        schema:
+          type: string
+          format: date-time
+        description: Only return entries after this ISO 8601 timestamp.
+      - in: query
+        name: before
+        schema:
+          type: string
+          format: date-time
+        description: Only return entries before this ISO 8601 timestamp.
+      - in: path
+        name: id
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this batch export.
+        required: true
+      - in: query
+        name: instance_id
+        schema:
+          type: string
+          minLength: 1
+        description: Filter logs to a specific execution instance.
+      - in: query
+        name: level
+        schema:
+          type: string
+          minLength: 1
+        description: 'Comma-separated log levels to include, e.g. ''WARN,ERROR''. Valid levels: DEBUG, LOG, INFO, WARN, ERROR.'
+      - in: query
+        name: limit
+        schema:
+          type: integer
+          maximum: 500
+          minimum: 1
+          default: 50
+        description: Maximum number of log entries to return (1-500, default 50).
+      - $ref: '#/components/parameters/ProjectIdPath'
+      - in: query
+        name: search
+        schema:
+          type: string
+          minLength: 1
+        description: Case-insensitive substring search across log messages.
+      tags:
+      - batch_exports
+      responses:
+        '200':
+          description: No response body
+      x-explicit-tags:
+      - batch_exports
+  /api/projects/{project_id}/batch_exports/{id}/pause/:
+    post:
+      operationId: batch_exports_pause_create
+      description: Pause a BatchExport.
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this batch export.
+        required: true
+      - $ref: '#/components/parameters/ProjectIdPath'
+      tags:
+      - batch_exports
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/BatchExport'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/BatchExport'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/BatchExport'
+        required: true
+      security:
+      - PersonalAPIKeyAuth:
+        - batch_export:write
+      responses:
+        '200':
+          description: No response body
+      x-explicit-tags:
+      - batch_exports
+  /api/projects/{project_id}/batch_exports/{id}/run_test_step/:
+    post:
+      operationId: batch_exports_run_test_step_create
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this batch export.
+        required: true
+      - $ref: '#/components/parameters/ProjectIdPath'
+      tags:
+      - batch_exports
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/BatchExport'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/BatchExport'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/BatchExport'
+        required: true
+      security:
+      - PersonalAPIKeyAuth:
+        - batch_export:write
+      responses:
+        '200':
+          description: No response body
+      x-explicit-tags:
+      - batch_exports
+  /api/projects/{project_id}/batch_exports/{id}/unpause/:
+    post:
+      operationId: batch_exports_unpause_create
+      description: Unpause a BatchExport.
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this batch export.
+        required: true
+      - $ref: '#/components/parameters/ProjectIdPath'
+      tags:
+      - batch_exports
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/BatchExport'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/BatchExport'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/BatchExport'
+        required: true
+      security:
+      - PersonalAPIKeyAuth:
+        - batch_export:write
+      responses:
+        '200':
+          description: No response body
+      x-explicit-tags:
+      - batch_exports
+  /api/projects/{project_id}/batch_exports/run_test_step_new/:
+    post:
+      operationId: batch_exports_run_test_step_new_create
+      parameters:
+      - $ref: '#/components/parameters/ProjectIdPath'
+      tags:
+      - batch_exports
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/BatchExport'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/BatchExport'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/BatchExport'
+        required: true
+      security:
+      - PersonalAPIKeyAuth:
+        - batch_export:write
+      responses:
+        '200':
+          description: No response body
+      x-explicit-tags:
+      - batch_exports
+  /api/projects/{project_id}/batch_exports/test/:
+    get:
+      operationId: batch_exports_test_retrieve
+      parameters:
+      - $ref: '#/components/parameters/ProjectIdPath'
+      tags:
+      - batch_exports
+      security:
+      - PersonalAPIKeyAuth:
+        - batch_export:read
+      responses:
+        '200':
+          description: No response body
+      x-explicit-tags:
+      - batch_exports
+components:
+  schemas:
+    BatchExportRun:
+      type: object
+      description: Serializer for a BatchExportRun model.
+      properties:
+        id:
+          type: string
+          format: uuid
+          readOnly: true
+        status:
+          allOf:
+          - $ref: '#/components/schemas/BatchExportRunStatusEnum'
+          description: 'The status of this run.
+
+
+            * `Cancelled` - Cancelled
+
+            * `Completed` - Completed
+
+            * `ContinuedAsNew` - Continued As New
+
+            * `Failed` - Failed
+
+            * `FailedRetryable` - Failed Retryable
+
+            * `FailedBilling` - Failed Billing
+
+            * `Terminated` - Terminated
+
+            * `TimedOut` - Timedout
+
+            * `Running` - Running
+
+            * `Starting` - Starting'
+        records_completed:
+          type: integer
+          maximum: 2147483647
+          minimum: -2147483648
+          nullable: true
+          description: The number of records that have been exported.
+        records_failed:
+          type: integer
+          maximum: 2147483647
+          minimum: -2147483648
+          nullable: true
+          description: The number of records that failed downstream processing (e.g. hog function execution errors).
+        latest_error:
+          type: string
+          nullable: true
+          description: The latest error that occurred during this run.
+        data_interval_start:
+          type: string
+          format: date-time
+          nullable: true
+          description: The start of the data interval.
+        data_interval_end:
+          type: string
+          format: date-time
+          description: The end of the data interval.
+        cursor:
+          type: string
+          nullable: true
+          description: An opaque cursor that may be used to resume.
+        created_at:
+          type: string
+          format: date-time
+          readOnly: true
+          description: The timestamp at which this BatchExportRun was created.
+        finished_at:
+          type: string
+          format: date-time
+          nullable: true
+          description: The timestamp at which this BatchExportRun finished, successfully or not.
+        last_updated_at:
+          type: string
+          format: date-time
+          readOnly: true
+          description: The timestamp at which this BatchExportRun was last updated.
+        records_total_count:
+          type: integer
+          maximum: 2147483647
+          minimum: -2147483648
+          nullable: true
+          description: The total count of records that should be exported in this BatchExportRun.
+        bytes_exported:
+          type: integer
+          maximum: 9223372036854775807
+          minimum: -9223372036854775808
+          format: int64
+          nullable: true
+          description: The number of bytes that have been exported in this BatchExportRun.
+        batch_export:
+          type: string
+          format: uuid
+          readOnly: true
+          description: The BatchExport this run belongs to.
+        backfill:
+          type: string
+          format: uuid
+          nullable: true
+          description: The backfill this run belongs to.
+      required:
+      - batch_export
+      - created_at
+      - data_interval_end
+      - id
+      - last_updated_at
+      - status
+    PaginatedBatchExportList:
+      type: object
+      required:
+      - count
+      - results
+      properties:
+        count:
+          type: integer
+          example: 123
+        next:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?offset=400&limit=100
+        previous:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?offset=200&limit=100
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/BatchExport'
+    BatchExportDestinationTypeEnum:
+      enum:
+      - S3
+      - Snowflake
+      - Postgres
+      - Redshift
+      - BigQuery
+      - Databricks
+      - AzureBlob
+      - Workflows
+      - HTTP
+      - NoOp
+      type: string
+      description: '* `S3` - S3
+
+        * `Snowflake` - Snowflake
+
+        * `Postgres` - Postgres
+
+        * `Redshift` - Redshift
+
+        * `BigQuery` - Bigquery
+
+        * `Databricks` - Databricks
+
+        * `AzureBlob` - Azure Blob
+
+        * `Workflows` - Workflows
+
+        * `HTTP` - Http
+
+        * `NoOp` - Noop'
+    PatchedBatchExport:
+      type: object
+      description: Serializer for a BatchExport model.
+      properties:
+        id:
+          type: string
+          format: uuid
+          readOnly: true
+        team_id:
+          type: integer
+          description: The team this belongs to.
+          readOnly: true
+        name:
+          type: string
+          description: A human-readable name for this BatchExport.
+        model:
+          nullable: true
+          description: 'Which model this BatchExport is exporting.
+
+
+            * `events` - Events
+
+            * `persons` - Persons
+
+            * `sessions` - Sessions'
+          oneOf:
+          - $ref: '#/components/schemas/ModelEnum'
+          - $ref: '#/components/schemas/BlankEnum'
+          - $ref: '#/components/schemas/NullEnum'
+        destination:
+          $ref: '#/components/schemas/BatchExportDestination'
+        interval:
+          $ref: '#/components/schemas/IntervalEnum'
+        paused:
+          type: boolean
+          description: Whether this BatchExport is paused or not.
+        created_at:
+          type: string
+          format: date-time
+          readOnly: true
+          description: The timestamp at which this BatchExport was created.
+        last_updated_at:
+          type: string
+          format: date-time
+          readOnly: true
+          description: The timestamp at which this BatchExport was last updated.
+        last_paused_at:
+          type: string
+          format: date-time
+          nullable: true
+          description: The timestamp at which this BatchExport was last paused.
+        start_at:
+          type: string
+          format: date-time
+          nullable: true
+          description: Time before which any Batch Export runs won't be triggered.
+        end_at:
+          type: string
+          format: date-time
+          nullable: true
+          description: Time after which any Batch Export runs won't be triggered.
+        latest_runs:
+          type: array
+          items:
+            $ref: '#/components/schemas/BatchExportRun'
+          readOnly: true
+        hogql_query:
+          type: string
+        schema:
+          readOnly: true
+          nullable: true
+          description: A schema of custom fields to select when exporting data.
+        filters:
+          nullable: true
+        timezone:
+          nullable: true
+          oneOf:
+          - $ref: '#/components/schemas/TimezoneEnum'
+          - $ref: '#/components/schemas/NullEnum'
+        offset_day:
+          type: integer
+          maximum: 6
+          minimum: 0
+          nullable: true
+        offset_hour:
+          type: integer
+          maximum: 23
+          minimum: 0
+          nullable: true
+    PaginatedBatchExportRunList:
+      type: object
+      required:
+      - results
+      properties:
+        next:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?cursor=cD00ODY%3D"
+        previous:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?cursor=cj0xJnA9NDg3
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/BatchExportRun'
+    BatchExportRunStatusEnum:
+      enum:
+      - Cancelled
+      - Completed
+      - ContinuedAsNew
+      - Failed
+      - FailedRetryable
+      - FailedBilling
+      - Terminated
+      - TimedOut
+      - Running
+      - Starting
+      type: string
+      description: '* `Cancelled` - Cancelled
+
+        * `Completed` - Completed
+
+        * `ContinuedAsNew` - Continued As New
+
+        * `Failed` - Failed
+
+        * `FailedRetryable` - Failed Retryable
+
+        * `FailedBilling` - Failed Billing
+
+        * `Terminated` - Terminated
+
+        * `TimedOut` - Timedout
+
+        * `Running` - Running
+
+        * `Starting` - Starting'
+    NullEnum:
+      enum:
+      - null
+    BatchExport:
+      type: object
+      description: Serializer for a BatchExport model.
+      properties:
+        id:
+          type: string
+          format: uuid
+          readOnly: true
+        team_id:
+          type: integer
+          description: The team this belongs to.
+          readOnly: true
+        name:
+          type: string
+          description: A human-readable name for this BatchExport.
+        model:
+          nullable: true
+          description: 'Which model this BatchExport is exporting.
+
+
+            * `events` - Events
+
+            * `persons` - Persons
+
+            * `sessions` - Sessions'
+          oneOf:
+          - $ref: '#/components/schemas/ModelEnum'
+          - $ref: '#/components/schemas/BlankEnum'
+          - $ref: '#/components/schemas/NullEnum'
+        destination:
+          $ref: '#/components/schemas/BatchExportDestination'
+        interval:
+          $ref: '#/components/schemas/IntervalEnum'
+        paused:
+          type: boolean
+          description: Whether this BatchExport is paused or not.
+        created_at:
+          type: string
+          format: date-time
+          readOnly: true
+          description: The timestamp at which this BatchExport was created.
+        last_updated_at:
+          type: string
+          format: date-time
+          readOnly: true
+          description: The timestamp at which this BatchExport was last updated.
+        last_paused_at:
+          type: string
+          format: date-time
+          nullable: true
+          description: The timestamp at which this BatchExport was last paused.
+        start_at:
+          type: string
+          format: date-time
+          nullable: true
+          description: Time before which any Batch Export runs won't be triggered.
+        end_at:
+          type: string
+          format: date-time
+          nullable: true
+          description: Time after which any Batch Export runs won't be triggered.
+        latest_runs:
+          type: array
+          items:
+            $ref: '#/components/schemas/BatchExportRun'
+          readOnly: true
+        hogql_query:
+          type: string
+        schema:
+          readOnly: true
+          nullable: true
+          description: A schema of custom fields to select when exporting data.
+        filters:
+          nullable: true
+        timezone:
+          nullable: true
+          oneOf:
+          - $ref: '#/components/schemas/TimezoneEnum'
+          - $ref: '#/components/schemas/NullEnum'
+        offset_day:
+          type: integer
+          maximum: 6
+          minimum: 0
+          nullable: true
+        offset_hour:
+          type: integer
+          maximum: 23
+          minimum: 0
+          nullable: true
+      required:
+      - created_at
+      - destination
+      - id
+      - interval
+      - last_updated_at
+      - latest_runs
+      - name
+      - schema
+      - team_id
+    TimezoneEnum:
+      enum:
+      - Africa/Abidjan
+      - Africa/Accra
+      - Africa/Addis_Ababa
+      - Africa/Algiers
+      - Africa/Asmara
+      - Africa/Asmera
+      - Africa/Bamako
+      - Africa/Bangui
+      - Africa/Banjul
+      - Africa/Bissau
+      - Africa/Blantyre
+      - Africa/Brazzaville
+      - Africa/Bujumbura
+      - Africa/Cairo
+      - Africa/Casablanca
+      - Africa/Ceuta
+      - Africa/Conakry
+      - Africa/Dakar
+      - Africa/Dar_es_Salaam
+      - Africa/Djibouti
+      - Africa/Douala
+      - Africa/El_Aaiun
+      - Africa/Freetown
+      - Africa/Gaborone
+      - Africa/Harare
+      - Africa/Johannesburg
+      - Africa/Juba
+      - Africa/Kampala
+      - Africa/Khartoum
+      - Africa/Kigali
+      - Africa/Kinshasa
+      - Africa/Lagos
+      - Africa/Libreville
+      - Africa/Lome
+      - Africa/Luanda
+      - Africa/Lubumbashi
+      - Africa/Lusaka
+      - Africa/Malabo
+      - Africa/Maputo
+      - Africa/Maseru
+      - Africa/Mbabane
+      - Africa/Mogadishu
+      - Africa/Monrovia
+      - Africa/Nairobi
+      - Africa/Ndjamena
+      - Africa/Niamey
+      - Africa/Nouakchott
+      - Africa/Ouagadougou
+      - Africa/Porto-Novo
+      - Africa/Sao_Tome
+      - Africa/Timbuktu
+      - Africa/Tripoli
+      - Africa/Tunis
+      - Africa/Windhoek
+      - America/Adak
+      - America/Anchorage
+      - America/Anguilla
+      - America/Antigua
+      - America/Araguaina
+      - America/Argentina/Buenos_Aires
+      - America/Argentina/Catamarca
+      - America/Argentina/ComodRivadavia
+      - America/Argentina/Cordoba
+      - America/Argentina/Jujuy
+      - America/Argentina/La_Rioja
+      - America/Argentina/Mendoza
+      - America/Argentina/Rio_Gallegos
+      - America/Argentina/Salta
+      - America/Argentina/San_Juan
+      - America/Argentina/San_Luis
+      - America/Argentina/Tucuman
+      - America/Argentina/Ushuaia
+      - America/Aruba
+      - America/Asuncion
+      - America/Atikokan
+      - America/Atka
+      - America/Bahia
+      - America/Bahia_Banderas
+      - America/Barbados
+      - America/Belem
+      - America/Belize
+      - America/Blanc-Sablon
+      - America/Boa_Vista
+      - America/Bogota
+      - America/Boise
+      - America/Buenos_Aires
+      - America/Cambridge_Bay
+      - America/Campo_Grande
+      - America/Cancun
+      - America/Caracas
+      - America/Catamarca
+      - America/Cayenne
+      - America/Cayman
+      - America/Chicago
+      - America/Chihuahua
+      - America/Ciudad_Juarez
+      - America/Coral_Harbour
+      - America/Cordoba
+      - America/Costa_Rica
+      - America/Creston
+      - America/Cuiaba
+      - America/Curacao
+      - America/Danmarkshavn
+      - America/Dawson
+      - America/Dawson_Creek
+      - America/Denver
+      - America/Detroit
+      - America/Dominica
+      - America/Edmonton
+      - America/Eirunepe
+      - America/El_Salvador
+      - America/Ensenada
+      - America/Fort_Nelson
+      - America/Fort_Wayne
+      - America/Fortaleza
+      - America/Glace_Bay
+      - America/Godthab
+      - America/Goose_Bay
+      - America/Grand_Turk
+      - America/Grenada
+      - America/Guadeloupe
+      - America/Guatemala
+      - America/Guayaquil
+      - America/Guyana
+      - America/Halifax
+      - America/Havana
+      - America/Hermosillo
+      - America/Indiana/Indianapolis
+      - America/Indiana/Knox
+      - America/Indiana/Marengo
+      - America/Indiana/Petersburg
+      - America/Indiana/Tell_City
+      - America/Indiana/Vevay
+      - America/Indiana/Vincennes
+      - America/Indiana/Winamac
+      - America/Indianapolis
+      - America/Inuvik
+      - America/Iqaluit
+      - America/Jamaica
+      - America/Jujuy
+      - America/Juneau
+      - America/Kentucky/Louisville
+      - America/Kentucky/Monticello
+      - America/Knox_IN
+      - America/Kralendijk
+      - America/La_Paz
+      - America/Lima
+      - America/Los_Angeles
+      - America/Louisville
+      - America/Lower_Princes
+      - America/Maceio
+      - America/Managua
+      - America/Manaus
+      - America/Marigot
+      - America/Martinique
+      - America/Matamoros
+      - America/Mazatlan
+      - America/Mendoza
+      - America/Menominee
+      - America/Merida
+      - America/Metlakatla
+      - America/Mexico_City
+      - America/Miquelon
+      - America/Moncton
+      - America/Monterrey
+      - America/Montevideo
+      - America/Montreal
+      - America/Montserrat
+      - America/Nassau
+      - America/New_York
+      - America/Nipigon
+      - America/Nome
+      - America/Noronha
+      - America/North_Dakota/Beulah
+      - America/North_Dakota/Center
+      - America/North_Dakota/New_Salem
+      - America/Nuuk
+      - America/Ojinaga
+      - America/Panama
+      - America/Pangnirtung
+      - America/Paramaribo
+      - America/Phoenix
+      - America/Port-au-Prince
+      - America/Port_of_Spain
+      - America/Porto_Acre
+      - America/Porto_Velho
+      - America/Puerto_Rico
+      - America/Punta_Arenas
+      - America/Rainy_River
+      - America/Rankin_Inlet
+      - America/Recife
+      - America/Regina
+      - America/Resolute
+      - America/Rio_Branco
+      - America/Rosario
+      - America/Santa_Isabel
+      - America/Santarem
+      - America/Santiago
+      - America/Santo_Domingo
+      - America/Sao_Paulo
+      - America/Scoresbysund
+      - America/Shiprock
+      - America/Sitka
+      - America/St_Barthelemy
+      - America/St_Johns
+      - America/St_Kitts
+      - America/St_Lucia
+      - America/St_Thomas
+      - America/St_Vincent
+      - America/Swift_Current
+      - America/Tegucigalpa
+      - America/Thule
+      - America/Thunder_Bay
+      - America/Tijuana
+      - America/Toronto
+      - America/Tortola
+      - America/Vancouver
+      - America/Virgin
+      - America/Whitehorse
+      - America/Winnipeg
+      - America/Yakutat
+      - America/Yellowknife
+      - Antarctica/Casey
+      - Antarctica/Davis
+      - Antarctica/DumontDUrville
+      - Antarctica/Macquarie
+      - Antarctica/Mawson
+      - Antarctica/McMurdo
+      - Antarctica/Palmer
+      - Antarctica/Rothera
+      - Antarctica/South_Pole
+      - Antarctica/Syowa
+      - Antarctica/Troll
+      - Antarctica/Vostok
+      - Arctic/Longyearbyen
+      - Asia/Aden
+      - Asia/Almaty
+      - Asia/Amman
+      - Asia/Anadyr
+      - Asia/Aqtau
+      - Asia/Aqtobe
+      - Asia/Ashgabat
+      - Asia/Ashkhabad
+      - Asia/Atyrau
+      - Asia/Baghdad
+      - Asia/Bahrain
+      - Asia/Baku
+      - Asia/Bangkok
+      - Asia/Barnaul
+      - Asia/Beirut
+      - Asia/Bishkek
+      - Asia/Brunei
+      - Asia/Calcutta
+      - Asia/Chita
+      - Asia/Choibalsan
+      - Asia/Chongqing
+      - Asia/Chungking
+      - Asia/Colombo
+      - Asia/Dacca
+      - Asia/Damascus
+      - Asia/Dhaka
+      - Asia/Dili
+      - Asia/Dubai
+      - Asia/Dushanbe
+      - Asia/Famagusta
+      - Asia/Gaza
+      - Asia/Harbin
+      - Asia/Hebron
+      - Asia/Ho_Chi_Minh
+      - Asia/Hong_Kong
+      - Asia/Hovd
+      - Asia/Irkutsk
+      - Asia/Istanbul
+      - Asia/Jakarta
+      - Asia/Jayapura
+      - Asia/Jerusalem
+      - Asia/Kabul
+      - Asia/Kamchatka
+      - Asia/Karachi
+      - Asia/Kashgar
+      - Asia/Kathmandu
+      - Asia/Katmandu
+      - Asia/Khandyga
+      - Asia/Kolkata
+      - Asia/Krasnoyarsk
+      - Asia/Kuala_Lumpur
+      - Asia/Kuching
+      - Asia/Kuwait
+      - Asia/Macao
+      - Asia/Macau
+      - Asia/Magadan
+      - Asia/Makassar
+      - Asia/Manila
+      - Asia/Muscat
+      - Asia/Nicosia
+      - Asia/Novokuznetsk
+      - Asia/Novosibirsk
+      - Asia/Omsk
+      - Asia/Oral
+      - Asia/Phnom_Penh
+      - Asia/Pontianak
+      - Asia/Pyongyang
+      - Asia/Qatar
+      - Asia/Qostanay
+      - Asia/Qyzylorda
+      - Asia/Rangoon
+      - Asia/Riyadh
+      - Asia/Saigon
+      - Asia/Sakhalin
+      - Asia/Samarkand
+      - Asia/Seoul
+      - Asia/Shanghai
+      - Asia/Singapore
+      - Asia/Srednekolymsk
+      - Asia/Taipei
+      - Asia/Tashkent
+      - Asia/Tbilisi
+      - Asia/Tehran
+      - Asia/Tel_Aviv
+      - Asia/Thimbu
+      - Asia/Thimphu
+      - Asia/Tokyo
+      - Asia/Tomsk
+      - Asia/Ujung_Pandang
+      - Asia/Ulaanbaatar
+      - Asia/Ulan_Bator
+      - Asia/Urumqi
+      - Asia/Ust-Nera
+      - Asia/Vientiane
+      - Asia/Vladivostok
+      - Asia/Yakutsk
+      - Asia/Yangon
+      - Asia/Yekaterinburg
+      - Asia/Yerevan
+      - Atlantic/Azores
+      - Atlantic/Bermuda
+      - Atlantic/Canary
+      - Atlantic/Cape_Verde
+      - Atlantic/Faeroe
+      - Atlantic/Faroe
+      - Atlantic/Jan_Mayen
+      - Atlantic/Madeira
+      - Atlantic/Reykjavik
+      - Atlantic/South_Georgia
+      - Atlantic/St_Helena
+      - Atlantic/Stanley
+      - Australia/ACT
+      - Australia/Adelaide
+      - Australia/Brisbane
+      - Australia/Broken_Hill
+      - Australia/Canberra
+      - Australia/Currie
+      - Australia/Darwin
+      - Australia/Eucla
+      - Australia/Hobart
+      - Australia/LHI
+      - Australia/Lindeman
+      - Australia/Lord_Howe
+      - Australia/Melbourne
+      - Australia/NSW
+      - Australia/North
+      - Australia/Perth
+      - Australia/Queensland
+      - Australia/South
+      - Australia/Sydney
+      - Australia/Tasmania
+      - Australia/Victoria
+      - Australia/West
+      - Australia/Yancowinna
+      - Brazil/Acre
+      - Brazil/DeNoronha
+      - Brazil/East
+      - Brazil/West
+      - CET
+      - CST6CDT
+      - Canada/Atlantic
+      - Canada/Central
+      - Canada/Eastern
+      - Canada/Mountain
+      - Canada/Newfoundland
+      - Canada/Pacific
+      - Canada/Saskatchewan
+      - Canada/Yukon
+      - Chile/Continental
+      - Chile/EasterIsland
+      - Cuba
+      - EET
+      - EST
+      - EST5EDT
+      - Egypt
+      - Eire
+      - Etc/GMT
+      - Etc/GMT+0
+      - Etc/GMT+1
+      - Etc/GMT+10
+      - Etc/GMT+11
+      - Etc/GMT+12
+      - Etc/GMT+2
+      - Etc/GMT+3
+      - Etc/GMT+4
+      - Etc/GMT+5
+      - Etc/GMT+6
+      - Etc/GMT+7
+      - Etc/GMT+8
+      - Etc/GMT+9
+      - Etc/GMT-0
+      - Etc/GMT-1
+      - Etc/GMT-10
+      - Etc/GMT-11
+      - Etc/GMT-12
+      - Etc/GMT-13
+      - Etc/GMT-14
+      - Etc/GMT-2
+      - Etc/GMT-3
+      - Etc/GMT-4
+      - Etc/GMT-5
+      - Etc/GMT-6
+      - Etc/GMT-7
+      - Etc/GMT-8
+      - Etc/GMT-9
+      - Etc/GMT0
+      - Etc/Greenwich
+      - Etc/UCT
+      - Etc/UTC
+      - Etc/Universal
+      - Etc/Zulu
+      - Europe/Amsterdam
+      - Europe/Andorra
+      - Europe/Astrakhan
+      - Europe/Athens
+      - Europe/Belfast
+      - Europe/Belgrade
+      - Europe/Berlin
+      - Europe/Bratislava
+      - Europe/Brussels
+      - Europe/Bucharest
+      - Europe/Budapest
+      - Europe/Busingen
+      - Europe/Chisinau
+      - Europe/Copenhagen
+      - Europe/Dublin
+      - Europe/Gibraltar
+      - Europe/Guernsey
+      - Europe/Helsinki
+      - Europe/Isle_of_Man
+      - Europe/Istanbul
+      - Europe/Jersey
+      - Europe/Kaliningrad
+      - Europe/Kiev
+      - Europe/Kirov
+      - Europe/Kyiv
+      - Europe/Lisbon
+      - Europe/Ljubljana
+      - Europe/London
+      - Europe/Luxembourg
+      - Europe/Madrid
+      - Europe/Malta
+      - Europe/Mariehamn
+      - Europe/Minsk
+      - Europe/Monaco
+      - Europe/Moscow
+      - Europe/Nicosia
+      - Europe/Oslo
+      - Europe/Paris
+      - Europe/Podgorica
+      - Europe/Prague
+      - Europe/Riga
+      - Europe/Rome
+      - Europe/Samara
+      - Europe/San_Marino
+      - Europe/Sarajevo
+      - Europe/Saratov
+      - Europe/Simferopol
+      - Europe/Skopje
+      - Europe/Sofia
+      - Europe/Stockholm
+      - Europe/Tallinn
+      - Europe/Tirane
+      - Europe/Tiraspol
+      - Europe/Ulyanovsk
+      - Europe/Uzhgorod
+      - Europe/Vaduz
+      - Europe/Vatican
+      - Europe/Vienna
+      - Europe/Vilnius
+      - Europe/Volgograd
+      - Europe/Warsaw
+      - Europe/Zagreb
+      - Europe/Zaporozhye
+      - Europe/Zurich
+      - GB
+      - GB-Eire
+      - GMT
+      - GMT+0
+      - GMT-0
+      - GMT0
+      - Greenwich
+      - HST
+      - Hongkong
+      - Iceland
+      - Indian/Antananarivo
+      - Indian/Chagos
+      - Indian/Christmas
+      - Indian/Cocos
+      - Indian/Comoro
+      - Indian/Kerguelen
+      - Indian/Mahe
+      - Indian/Maldives
+      - Indian/Mauritius
+      - Indian/Mayotte
+      - Indian/Reunion
+      - Iran
+      - Israel
+      - Jamaica
+      - Japan
+      - Kwajalein
+      - Libya
+      - MET
+      - MST
+      - MST7MDT
+      - Mexico/BajaNorte
+      - Mexico/BajaSur
+      - Mexico/General
+      - NZ
+      - NZ-CHAT
+      - Navajo
+      - PRC
+      - PST8PDT
+      - Pacific/Apia
+      - Pacific/Auckland
+      - Pacific/Bougainville
+      - Pacific/Chatham
+      - Pacific/Chuuk
+      - Pacific/Easter
+      - Pacific/Efate
+      - Pacific/Enderbury
+      - Pacific/Fakaofo
+      - Pacific/Fiji
+      - Pacific/Funafuti
+      - Pacific/Galapagos
+      - Pacific/Gambier
+      - Pacific/Guadalcanal
+      - Pacific/Guam
+      - Pacific/Honolulu
+      - Pacific/Johnston
+      - Pacific/Kanton
+      - Pacific/Kiritimati
+      - Pacific/Kosrae
+      - Pacific/Kwajalein
+      - Pacific/Majuro
+      - Pacific/Marquesas
+      - Pacific/Midway
+      - Pacific/Nauru
+      - Pacific/Niue
+      - Pacific/Norfolk
+      - Pacific/Noumea
+      - Pacific/Pago_Pago
+      - Pacific/Palau
+      - Pacific/Pitcairn
+      - Pacific/Pohnpei
+      - Pacific/Ponape
+      - Pacific/Port_Moresby
+      - Pacific/Rarotonga
+      - Pacific/Saipan
+      - Pacific/Samoa
+      - Pacific/Tahiti
+      - Pacific/Tarawa
+      - Pacific/Tongatapu
+      - Pacific/Truk
+      - Pacific/Wake
+      - Pacific/Wallis
+      - Pacific/Yap
+      - Poland
+      - Portugal
+      - ROC
+      - ROK
+      - Singapore
+      - Turkey
+      - UCT
+      - US/Alaska
+      - US/Aleutian
+      - US/Arizona
+      - US/Central
+      - US/East-Indiana
+      - US/Eastern
+      - US/Hawaii
+      - US/Indiana-Starke
+      - US/Michigan
+      - US/Mountain
+      - US/Pacific
+      - US/Samoa
+      - UTC
+      - Universal
+      - W-SU
+      - WET
+      - Zulu
+      type: string
+      description: '* `Africa/Abidjan` - Africa/Abidjan
+
+        * `Africa/Accra` - Africa/Accra
+
+        * `Africa/Addis_Ababa` - Africa/Addis_Ababa
+
+        * `Africa/Algiers` - Africa/Algiers
+
+        * `Africa/Asmara` - Africa/Asmara
+
+        * `Africa/Asmera` - Africa/Asmera
+
+        * `Africa/Bamako` - Africa/Bamako
+
+        * `Africa/Bangui` - Africa/Bangui
+
+        * `Africa/Banjul` - Africa/Banjul
+
+        * `Africa/Bissau` - Africa/Bissau
+
+        * `Africa/Blantyre` - Africa/Blantyre
+
+        * `Africa/Brazzaville` - Africa/Brazzaville
+
+        * `Africa/Bujumbura` - Africa/Bujumbura
+
+        * `Africa/Cairo` - Africa/Cairo
+
+        * `Africa/Casablanca` - Africa/Casablanca
+
+        * `Africa/Ceuta` - Africa/Ceuta
+
+        * `Africa/Conakry` - Africa/Conakry
+
+        * `Africa/Dakar` - Africa/Dakar
+
+        * `Africa/Dar_es_Salaam` - Africa/Dar_es_Salaam
+
+        * `Africa/Djibouti` - Africa/Djibouti
+
+        * `Africa/Douala` - Africa/Douala
+
+        * `Africa/El_Aaiun` - Africa/El_Aaiun
+
+        * `Africa/Freetown` - Africa/Freetown
+
+        * `Africa/Gaborone` - Africa/Gaborone
+
+        * `Africa/Harare` - Africa/Harare
+
+        * `Africa/Johannesburg` - Africa/Johannesburg
+
+        * `Africa/Juba` - Africa/Juba
+
+        * `Africa/Kampala` - Africa/Kampala
+
+        * `Africa/Khartoum` - Africa/Khartoum
+
+        * `Africa/Kigali` - Africa/Kigali
+
+        * `Africa/Kinshasa` - Africa/Kinshasa
+
+        * `Africa/Lagos` - Africa/Lagos
+
+        * `Africa/Libreville` - Africa/Libreville
+
+        * `Africa/Lome` - Africa/Lome
+
+        * `Africa/Luanda` - Africa/Luanda
+
+        * `Africa/Lubumbashi` - Africa/Lubumbashi
+
+        * `Africa/Lusaka` - Africa/Lusaka
+
+        * `Africa/Malabo` - Africa/Malabo
+
+        * `Africa/Maputo` - Africa/Maputo
+
+        * `Africa/Maseru` - Africa/Maseru
+
+        * `Africa/Mbabane` - Africa/Mbabane
+
+        * `Africa/Mogadishu` - Africa/Mogadishu
+
+        * `Africa/Monrovia` - Africa/Monrovia
+
+        * `Africa/Nairobi` - Africa/Nairobi
+
+        * `Africa/Ndjamena` - Africa/Ndjamena
+
+        * `Africa/Niamey` - Africa/Niamey
+
+        * `Africa/Nouakchott` - Africa/Nouakchott
+
+        * `Africa/Ouagadougou` - Africa/Ouagadougou
+
+        * `Africa/Porto-Novo` - Africa/Porto-Novo
+
+        * `Africa/Sao_Tome` - Africa/Sao_Tome
+
+        * `Africa/Timbuktu` - Africa/Timbuktu
+
+        * `Africa/Tripoli` - Africa/Tripoli
+
+        * `Africa/Tunis` - Africa/Tunis
+
+        * `Africa/Windhoek` - Africa/Windhoek
+
+        * `America/Adak` - America/Adak
+
+        * `America/Anchorage` - America/Anchorage
+
+        * `America/Anguilla` - America/Anguilla
+
+        * `America/Antigua` - America/Antigua
+
+        * `America/Araguaina` - America/Araguaina
+
+        * `America/Argentina/Buenos_Aires` - America/Argentina/Buenos_Aires
+
+        * `America/Argentina/Catamarca` - America/Argentina/Catamarca
+
+        * `America/Argentina/ComodRivadavia` - America/Argentina/ComodRivadavia
+
+        * `America/Argentina/Cordoba` - America/Argentina/Cordoba
+
+        * `America/Argentina/Jujuy` - America/Argentina/Jujuy
+
+        * `America/Argentina/La_Rioja` - America/Argentina/La_Rioja
+
+        * `America/Argentina/Mendoza` - America/Argentina/Mendoza
+
+        * `America/Argentina/Rio_Gallegos` - America/Argentina/Rio_Gallegos
+
+        * `America/Argentina/Salta` - America/Argentina/Salta
+
+        * `America/Argentina/San_Juan` - America/Argentina/San_Juan
+
+        * `America/Argentina/San_Luis` - America/Argentina/San_Luis
+
+        * `America/Argentina/Tucuman` - America/Argentina/Tucuman
+
+        * `America/Argentina/Ushuaia` - America/Argentina/Ushuaia
+
+        * `America/Aruba` - America/Aruba
+
+        * `America/Asuncion` - America/Asuncion
+
+        * `America/Atikokan` - America/Atikokan
+
+        * `America/Atka` - America/Atka
+
+        * `America/Bahia` - America/Bahia
+
+        * `America/Bahia_Banderas` - America/Bahia_Banderas
+
+        * `America/Barbados` - America/Barbados
+
+        * `America/Belem` - America/Belem
+
+        * `America/Belize` - America/Belize
+
+        * `America/Blanc-Sablon` - America/Blanc-Sablon
+
+        * `America/Boa_Vista` - America/Boa_Vista
+
+        * `America/Bogota` - America/Bogota
+
+        * `America/Boise` - America/Boise
+
+        * `America/Buenos_Aires` - America/Buenos_Aires
+
+        * `America/Cambridge_Bay` - America/Cambridge_Bay
+
+        * `America/Campo_Grande` - America/Campo_Grande
+
+        * `America/Cancun` - America/Cancun
+
+        * `America/Caracas` - America/Caracas
+
+        * `America/Catamarca` - America/Catamarca
+
+        * `America/Cayenne` - America/Cayenne
+
+        * `America/Cayman` - America/Cayman
+
+        * `America/Chicago` - America/Chicago
+
+        * `America/Chihuahua` - America/Chihuahua
+
+        * `America/Ciudad_Juarez` - America/Ciudad_Juarez
+
+        * `America/Coral_Harbour` - America/Coral_Harbour
+
+        * `America/Cordoba` - America/Cordoba
+
+        * `America/Costa_Rica` - America/Costa_Rica
+
+        * `America/Creston` - America/Creston
+
+        * `America/Cuiaba` - America/Cuiaba
+
+        * `America/Curacao` - America/Curacao
+
+        * `America/Danmarkshavn` - America/Danmarkshavn
+
+        * `America/Dawson` - America/Dawson
+
+        * `America/Dawson_Creek` - America/Dawson_Creek
+
+        * `America/Denver` - America/Denver
+
+        * `America/Detroit` - America/Detroit
+
+        * `America/Dominica` - America/Dominica
+
+        * `America/Edmonton` - America/Edmonton
+
+        * `America/Eirunepe` - America/Eirunepe
+
+        * `America/El_Salvador` - America/El_Salvador
+
+        * `America/Ensenada` - America/Ensenada
+
+        * `America/Fort_Nelson` - America/Fort_Nelson
+
+        * `America/Fort_Wayne` - America/Fort_Wayne
+
+        * `America/Fortaleza` - America/Fortaleza
+
+        * `America/Glace_Bay` - America/Glace_Bay
+
+        * `America/Godthab` - America/Godthab
+
+        * `America/Goose_Bay` - America/Goose_Bay
+
+        * `America/Grand_Turk` - America/Grand_Turk
+
+        * `America/Grenada` - America/Grenada
+
+        * `America/Guadeloupe` - America/Guadeloupe
+
+        * `America/Guatemala` - America/Guatemala
+
+        * `America/Guayaquil` - America/Guayaquil
+
+        * `America/Guyana` - America/Guyana
+
+        * `America/Halifax` - America/Halifax
+
+        * `America/Havana` - America/Havana
+
+        * `America/Hermosillo` - America/Hermosillo
+
+        * `America/Indiana/Indianapolis` - America/Indiana/Indianapolis
+
+        * `America/Indiana/Knox` - America/Indiana/Knox
+
+        * `America/Indiana/Marengo` - America/Indiana/Marengo
+
+        * `America/Indiana/Petersburg` - America/Indiana/Petersburg
+
+        * `America/Indiana/Tell_City` - America/Indiana/Tell_City
+
+        * `America/Indiana/Vevay` - America/Indiana/Vevay
+
+        * `America/Indiana/Vincennes` - America/Indiana/Vincennes
+
+        * `America/Indiana/Winamac` - America/Indiana/Winamac
+
+        * `America/Indianapolis` - America/Indianapolis
+
+        * `America/Inuvik` - America/Inuvik
+
+        * `America/Iqaluit` - America/Iqaluit
+
+        * `America/Jamaica` - America/Jamaica
+
+        * `America/Jujuy` - America/Jujuy
+
+        * `America/Juneau` - America/Juneau
+
+        * `America/Kentucky/Louisville` - America/Kentucky/Louisville
+
+        * `America/Kentucky/Monticello` - America/Kentucky/Monticello
+
+        * `America/Knox_IN` - America/Knox_IN
+
+        * `America/Kralendijk` - America/Kralendijk
+
+        * `America/La_Paz` - America/La_Paz
+
+        * `America/Lima` - America/Lima
+
+        * `America/Los_Angeles` - America/Los_Angeles
+
+        * `America/Louisville` - America/Louisville
+
+        * `America/Lower_Princes` - America/Lower_Princes
+
+        * `America/Maceio` - America/Maceio
+
+        * `America/Managua` - America/Managua
+
+        * `America/Manaus` - America/Manaus
+
+        * `America/Marigot` - America/Marigot
+
+        * `America/Martinique` - America/Martinique
+
+        * `America/Matamoros` - America/Matamoros
+
+        * `America/Mazatlan` - America/Mazatlan
+
+        * `America/Mendoza` - America/Mendoza
+
+        * `America/Menominee` - America/Menominee
+
+        * `America/Merida` - America/Merida
+
+        * `America/Metlakatla` - America/Metlakatla
+
+        * `America/Mexico_City` - America/Mexico_City
+
+        * `America/Miquelon` - America/Miquelon
+
+        * `America/Moncton` - America/Moncton
+
+        * `America/Monterrey` - America/Monterrey
+
+        * `America/Montevideo` - America/Montevideo
+
+        * `America/Montreal` - America/Montreal
+
+        * `America/Montserrat` - America/Montserrat
+
+        * `America/Nassau` - America/Nassau
+
+        * `America/New_York` - America/New_York
+
+        * `America/Nipigon` - America/Nipigon
+
+        * `America/Nome` - America/Nome
+
+        * `America/Noronha` - America/Noronha
+
+        * `America/North_Dakota/Beulah` - America/North_Dakota/Beulah
+
+        * `America/North_Dakota/Center` - America/North_Dakota/Center
+
+        * `America/North_Dakota/New_Salem` - America/North_Dakota/New_Salem
+
+        * `America/Nuuk` - America/Nuuk
+
+        * `America/Ojinaga` - America/Ojinaga
+
+        * `America/Panama` - America/Panama
+
+        * `America/Pangnirtung` - America/Pangnirtung
+
+        * `America/Paramaribo` - America/Paramaribo
+
+        * `America/Phoenix` - America/Phoenix
+
+        * `America/Port-au-Prince` - America/Port-au-Prince
+
+        * `America/Port_of_Spain` - America/Port_of_Spain
+
+        * `America/Porto_Acre` - America/Porto_Acre
+
+        * `America/Porto_Velho` - America/Porto_Velho
+
+        * `America/Puerto_Rico` - America/Puerto_Rico
+
+        * `America/Punta_Arenas` - America/Punta_Arenas
+
+        * `America/Rainy_River` - America/Rainy_River
+
+        * `America/Rankin_Inlet` - America/Rankin_Inlet
+
+        * `America/Recife` - America/Recife
+
+        * `America/Regina` - America/Regina
+
+        * `America/Resolute` - America/Resolute
+
+        * `America/Rio_Branco` - America/Rio_Branco
+
+        * `America/Rosario` - America/Rosario
+
+        * `America/Santa_Isabel` - America/Santa_Isabel
+
+        * `America/Santarem` - America/Santarem
+
+        * `America/Santiago` - America/Santiago
+
+        * `America/Santo_Domingo` - America/Santo_Domingo
+
+        * `America/Sao_Paulo` - America/Sao_Paulo
+
+        * `America/Scoresbysund` - America/Scoresbysund
+
+        * `America/Shiprock` - America/Shiprock
+
+        * `America/Sitka` - America/Sitka
+
+        * `America/St_Barthelemy` - America/St_Barthelemy
+
+        * `America/St_Johns` - America/St_Johns
+
+        * `America/St_Kitts` - America/St_Kitts
+
+        * `America/St_Lucia` - America/St_Lucia
+
+        * `America/St_Thomas` - America/St_Thomas
+
+        * `America/St_Vincent` - America/St_Vincent
+
+        * `America/Swift_Current` - America/Swift_Current
+
+        * `America/Tegucigalpa` - America/Tegucigalpa
+
+        * `America/Thule` - America/Thule
+
+        * `America/Thunder_Bay` - America/Thunder_Bay
+
+        * `America/Tijuana` - America/Tijuana
+
+        * `America/Toronto` - America/Toronto
+
+        * `America/Tortola` - America/Tortola
+
+        * `America/Vancouver` - America/Vancouver
+
+        * `America/Virgin` - America/Virgin
+
+        * `America/Whitehorse` - America/Whitehorse
+
+        * `America/Winnipeg` - America/Winnipeg
+
+        * `America/Yakutat` - America/Yakutat
+
+        * `America/Yellowknife` - America/Yellowknife
+
+        * `Antarctica/Casey` - Antarctica/Casey
+
+        * `Antarctica/Davis` - Antarctica/Davis
+
+        * `Antarctica/DumontDUrville` - Antarctica/DumontDUrville
+
+        * `Antarctica/Macquarie` - Antarctica/Macquarie
+
+        * `Antarctica/Mawson` - Antarctica/Mawson
+
+        * `Antarctica/McMurdo` - Antarctica/McMurdo
+
+        * `Antarctica/Palmer` - Antarctica/Palmer
+
+        * `Antarctica/Rothera` - Antarctica/Rothera
+
+        * `Antarctica/South_Pole` - Antarctica/South_Pole
+
+        * `Antarctica/Syowa` - Antarctica/Syowa
+
+        * `Antarctica/Troll` - Antarctica/Troll
+
+        * `Antarctica/Vostok` - Antarctica/Vostok
+
+        * `Arctic/Longyearbyen` - Arctic/Longyearbyen
+
+        * `Asia/Aden` - Asia/Aden
+
+        * `Asia/Almaty` - Asia/Almaty
+
+        * `Asia/Amman` - Asia/Amman
+
+        * `Asia/Anadyr` - Asia/Anadyr
+
+        * `Asia/Aqtau` - Asia/Aqtau
+
+        * `Asia/Aqtobe` - Asia/Aqtobe
+
+        * `Asia/Ashgabat` - Asia/Ashgabat
+
+        * `Asia/Ashkhabad` - Asia/Ashkhabad
+
+        * `Asia/Atyrau` - Asia/Atyrau
+
+        * `Asia/Baghdad` - Asia/Baghdad
+
+        * `Asia/Bahrain` - Asia/Bahrain
+
+        * `Asia/Baku` - Asia/Baku
+
+        * `Asia/Bangkok` - Asia/Bangkok
+
+        * `Asia/Barnaul` - Asia/Barnaul
+
+        * `Asia/Beirut` - Asia/Beirut
+
+        * `Asia/Bishkek` - Asia/Bishkek
+
+        * `Asia/Brunei` - Asia/Brunei
+
+        * `Asia/Calcutta` - Asia/Calcutta
+
+        * `Asia/Chita` - Asia/Chita
+
+        * `Asia/Choibalsan` - Asia/Choibalsan
+
+        * `Asia/Chongqing` - Asia/Chongqing
+
+        * `Asia/Chungking` - Asia/Chungking
+
+        * `Asia/Colombo` - Asia/Colombo
+
+        * `Asia/Dacca` - Asia/Dacca
+
+        * `Asia/Damascus` - Asia/Damascus
+
+        * `Asia/Dhaka` - Asia/Dhaka
+
+        * `Asia/Dili` - Asia/Dili
+
+        * `Asia/Dubai` - Asia/Dubai
+
+        * `Asia/Dushanbe` - Asia/Dushanbe
+
+        * `Asia/Famagusta` - Asia/Famagusta
+
+        * `Asia/Gaza` - Asia/Gaza
+
+        * `Asia/Harbin` - Asia/Harbin
+
+        * `Asia/Hebron` - Asia/Hebron
+
+        * `Asia/Ho_Chi_Minh` - Asia/Ho_Chi_Minh
+
+        * `Asia/Hong_Kong` - Asia/Hong_Kong
+
+        * `Asia/Hovd` - Asia/Hovd
+
+        * `Asia/Irkutsk` - Asia/Irkutsk
+
+        * `Asia/Istanbul` - Asia/Istanbul
+
+        * `Asia/Jakarta` - Asia/Jakarta
+
+        * `Asia/Jayapura` - Asia/Jayapura
+
+        * `Asia/Jerusalem` - Asia/Jerusalem
+
+        * `Asia/Kabul` - Asia/Kabul
+
+        * `Asia/Kamchatka` - Asia/Kamchatka
+
+        * `Asia/Karachi` - Asia/Karachi
+
+        * `Asia/Kashgar` - Asia/Kashgar
+
+        * `Asia/Kathmandu` - Asia/Kathmandu
+
+        * `Asia/Katmandu` - Asia/Katmandu
+
+        * `Asia/Khandyga` - Asia/Khandyga
+
+        * `Asia/Kolkata` - Asia/Kolkata
+
+        * `Asia/Krasnoyarsk` - Asia/Krasnoyarsk
+
+        * `Asia/Kuala_Lumpur` - Asia/Kuala_Lumpur
+
+        * `Asia/Kuching` - Asia/Kuching
+
+        * `Asia/Kuwait` - Asia/Kuwait
+
+        * `Asia/Macao` - Asia/Macao
+
+        * `Asia/Macau` - Asia/Macau
+
+        * `Asia/Magadan` - Asia/Magadan
+
+        * `Asia/Makassar` - Asia/Makassar
+
+        * `Asia/Manila` - Asia/Manila
+
+        * `Asia/Muscat` - Asia/Muscat
+
+        * `Asia/Nicosia` - Asia/Nicosia
+
+        * `Asia/Novokuznetsk` - Asia/Novokuznetsk
+
+        * `Asia/Novosibirsk` - Asia/Novosibirsk
+
+        * `Asia/Omsk` - Asia/Omsk
+
+        * `Asia/Oral` - Asia/Oral
+
+        * `Asia/Phnom_Penh` - Asia/Phnom_Penh
+
+        * `Asia/Pontianak` - Asia/Pontianak
+
+        * `Asia/Pyongyang` - Asia/Pyongyang
+
+        * `Asia/Qatar` - Asia/Qatar
+
+        * `Asia/Qostanay` - Asia/Qostanay
+
+        * `Asia/Qyzylorda` - Asia/Qyzylorda
+
+        * `Asia/Rangoon` - Asia/Rangoon
+
+        * `Asia/Riyadh` - Asia/Riyadh
+
+        * `Asia/Saigon` - Asia/Saigon
+
+        * `Asia/Sakhalin` - Asia/Sakhalin
+
+        * `Asia/Samarkand` - Asia/Samarkand
+
+        * `Asia/Seoul` - Asia/Seoul
+
+        * `Asia/Shanghai` - Asia/Shanghai
+
+        * `Asia/Singapore` - Asia/Singapore
+
+        * `Asia/Srednekolymsk` - Asia/Srednekolymsk
+
+        * `Asia/Taipei` - Asia/Taipei
+
+        * `Asia/Tashkent` - Asia/Tashkent
+
+        * `Asia/Tbilisi` - Asia/Tbilisi
+
+        * `Asia/Tehran` - Asia/Tehran
+
+        * `Asia/Tel_Aviv` - Asia/Tel_Aviv
+
+        * `Asia/Thimbu` - Asia/Thimbu
+
+        * `Asia/Thimphu` - Asia/Thimphu
+
+        * `Asia/Tokyo` - Asia/Tokyo
+
+        * `Asia/Tomsk` - Asia/Tomsk
+
+        * `Asia/Ujung_Pandang` - Asia/Ujung_Pandang
+
+        * `Asia/Ulaanbaatar` - Asia/Ulaanbaatar
+
+        * `Asia/Ulan_Bator` - Asia/Ulan_Bator
+
+        * `Asia/Urumqi` - Asia/Urumqi
+
+        * `Asia/Ust-Nera` - Asia/Ust-Nera
+
+        * `Asia/Vientiane` - Asia/Vientiane
+
+        * `Asia/Vladivostok` - Asia/Vladivostok
+
+        * `Asia/Yakutsk` - Asia/Yakutsk
+
+        * `Asia/Yangon` - Asia/Yangon
+
+        * `Asia/Yekaterinburg` - Asia/Yekaterinburg
+
+        * `Asia/Yerevan` - Asia/Yerevan
+
+        * `Atlantic/Azores` - Atlantic/Azores
+
+        * `Atlantic/Bermuda` - Atlantic/Bermuda
+
+        * `Atlantic/Canary` - Atlantic/Canary
+
+        * `Atlantic/Cape_Verde` - Atlantic/Cape_Verde
+
+        * `Atlantic/Faeroe` - Atlantic/Faeroe
+
+        * `Atlantic/Faroe` - Atlantic/Faroe
+
+        * `Atlantic/Jan_Mayen` - Atlantic/Jan_Mayen
+
+        * `Atlantic/Madeira` - Atlantic/Madeira
+
+        * `Atlantic/Reykjavik` - Atlantic/Reykjavik
+
+        * `Atlantic/South_Georgia` - Atlantic/South_Georgia
+
+        * `Atlantic/St_Helena` - Atlantic/St_Helena
+
+        * `Atlantic/Stanley` - Atlantic/Stanley
+
+        * `Australia/ACT` - Australia/ACT
+
+        * `Australia/Adelaide` - Australia/Adelaide
+
+        * `Australia/Brisbane` - Australia/Brisbane
+
+        * `Australia/Broken_Hill` - Australia/Broken_Hill
+
+        * `Australia/Canberra` - Australia/Canberra
+
+        * `Australia/Currie` - Australia/Currie
+
+        * `Australia/Darwin` - Australia/Darwin
+
+        * `Australia/Eucla` - Australia/Eucla
+
+        * `Australia/Hobart` - Australia/Hobart
+
+        * `Australia/LHI` - Australia/LHI
+
+        * `Australia/Lindeman` - Australia/Lindeman
+
+        * `Australia/Lord_Howe` - Australia/Lord_Howe
+
+        * `Australia/Melbourne` - Australia/Melbourne
+
+        * `Australia/NSW` - Australia/NSW
+
+        * `Australia/North` - Australia/North
+
+        * `Australia/Perth` - Australia/Perth
+
+        * `Australia/Queensland` - Australia/Queensland
+
+        * `Australia/South` - Australia/South
+
+        * `Australia/Sydney` - Australia/Sydney
+
+        * `Australia/Tasmania` - Australia/Tasmania
+
+        * `Australia/Victoria` - Australia/Victoria
+
+        * `Australia/West` - Australia/West
+
+        * `Australia/Yancowinna` - Australia/Yancowinna
+
+        * `Brazil/Acre` - Brazil/Acre
+
+        * `Brazil/DeNoronha` - Brazil/DeNoronha
+
+        * `Brazil/East` - Brazil/East
+
+        * `Brazil/West` - Brazil/West
+
+        * `CET` - CET
+
+        * `CST6CDT` - CST6CDT
+
+        * `Canada/Atlantic` - Canada/Atlantic
+
+        * `Canada/Central` - Canada/Central
+
+        * `Canada/Eastern` - Canada/Eastern
+
+        * `Canada/Mountain` - Canada/Mountain
+
+        * `Canada/Newfoundland` - Canada/Newfoundland
+
+        * `Canada/Pacific` - Canada/Pacific
+
+        * `Canada/Saskatchewan` - Canada/Saskatchewan
+
+        * `Canada/Yukon` - Canada/Yukon
+
+        * `Chile/Continental` - Chile/Continental
+
+        * `Chile/EasterIsland` - Chile/EasterIsland
+
+        * `Cuba` - Cuba
+
+        * `EET` - EET
+
+        * `EST` - EST
+
+        * `EST5EDT` - EST5EDT
+
+        * `Egypt` - Egypt
+
+        * `Eire` - Eire
+
+        * `Etc/GMT` - Etc/GMT
+
+        * `Etc/GMT+0` - Etc/GMT+0
+
+        * `Etc/GMT+1` - Etc/GMT+1
+
+        * `Etc/GMT+10` - Etc/GMT+10
+
+        * `Etc/GMT+11` - Etc/GMT+11
+
+        * `Etc/GMT+12` - Etc/GMT+12
+
+        * `Etc/GMT+2` - Etc/GMT+2
+
+        * `Etc/GMT+3` - Etc/GMT+3
+
+        * `Etc/GMT+4` - Etc/GMT+4
+
+        * `Etc/GMT+5` - Etc/GMT+5
+
+        * `Etc/GMT+6` - Etc/GMT+6
+
+        * `Etc/GMT+7` - Etc/GMT+7
+
+        * `Etc/GMT+8` - Etc/GMT+8
+
+        * `Etc/GMT+9` - Etc/GMT+9
+
+        * `Etc/GMT-0` - Etc/GMT-0
+
+        * `Etc/GMT-1` - Etc/GMT-1
+
+        * `Etc/GMT-10` - Etc/GMT-10
+
+        * `Etc/GMT-11` - Etc/GMT-11
+
+        * `Etc/GMT-12` - Etc/GMT-12
+
+        * `Etc/GMT-13` - Etc/GMT-13
+
+        * `Etc/GMT-14` - Etc/GMT-14
+
+        * `Etc/GMT-2` - Etc/GMT-2
+
+        * `Etc/GMT-3` - Etc/GMT-3
+
+        * `Etc/GMT-4` - Etc/GMT-4
+
+        * `Etc/GMT-5` - Etc/GMT-5
+
+        * `Etc/GMT-6` - Etc/GMT-6
+
+        * `Etc/GMT-7` - Etc/GMT-7
+
+        * `Etc/GMT-8` - Etc/GMT-8
+
+        * `Etc/GMT-9` - Etc/GMT-9
+
+        * `Etc/GMT0` - Etc/GMT0
+
+        * `Etc/Greenwich` - Etc/Greenwich
+
+        * `Etc/UCT` - Etc/UCT
+
+        * `Etc/UTC` - Etc/UTC
+
+        * `Etc/Universal` - Etc/Universal
+
+        * `Etc/Zulu` - Etc/Zulu
+
+        * `Europe/Amsterdam` - Europe/Amsterdam
+
+        * `Europe/Andorra` - Europe/Andorra
+
+        * `Europe/Astrakhan` - Europe/Astrakhan
+
+        * `Europe/Athens` - Europe/Athens
+
+        * `Europe/Belfast` - Europe/Belfast
+
+        * `Europe/Belgrade` - Europe/Belgrade
+
+        * `Europe/Berlin` - Europe/Berlin
+
+        * `Europe/Bratislava` - Europe/Bratislava
+
+        * `Europe/Brussels` - Europe/Brussels
+
+        * `Europe/Bucharest` - Europe/Bucharest
+
+        * `Europe/Budapest` - Europe/Budapest
+
+        * `Europe/Busingen` - Europe/Busingen
+
+        * `Europe/Chisinau` - Europe/Chisinau
+
+        * `Europe/Copenhagen` - Europe/Copenhagen
+
+        * `Europe/Dublin` - Europe/Dublin
+
+        * `Europe/Gibraltar` - Europe/Gibraltar
+
+        * `Europe/Guernsey` - Europe/Guernsey
+
+        * `Europe/Helsinki` - Europe/Helsinki
+
+        * `Europe/Isle_of_Man` - Europe/Isle_of_Man
+
+        * `Europe/Istanbul` - Europe/Istanbul
+
+        * `Europe/Jersey` - Europe/Jersey
+
+        * `Europe/Kaliningrad` - Europe/Kaliningrad
+
+        * `Europe/Kiev` - Europe/Kiev
+
+        * `Europe/Kirov` - Europe/Kirov
+
+        * `Europe/Kyiv` - Europe/Kyiv
+
+        * `Europe/Lisbon` - Europe/Lisbon
+
+        * `Europe/Ljubljana` - Europe/Ljubljana
+
+        * `Europe/London` - Europe/London
+
+        * `Europe/Luxembourg` - Europe/Luxembourg
+
+        * `Europe/Madrid` - Europe/Madrid
+
+        * `Europe/Malta` - Europe/Malta
+
+        * `Europe/Mariehamn` - Europe/Mariehamn
+
+        * `Europe/Minsk` - Europe/Minsk
+
+        * `Europe/Monaco` - Europe/Monaco
+
+        * `Europe/Moscow` - Europe/Moscow
+
+        * `Europe/Nicosia` - Europe/Nicosia
+
+        * `Europe/Oslo` - Europe/Oslo
+
+        * `Europe/Paris` - Europe/Paris
+
+        * `Europe/Podgorica` - Europe/Podgorica
+
+        * `Europe/Prague` - Europe/Prague
+
+        * `Europe/Riga` - Europe/Riga
+
+        * `Europe/Rome` - Europe/Rome
+
+        * `Europe/Samara` - Europe/Samara
+
+        * `Europe/San_Marino` - Europe/San_Marino
+
+        * `Europe/Sarajevo` - Europe/Sarajevo
+
+        * `Europe/Saratov` - Europe/Saratov
+
+        * `Europe/Simferopol` - Europe/Simferopol
+
+        * `Europe/Skopje` - Europe/Skopje
+
+        * `Europe/Sofia` - Europe/Sofia
+
+        * `Europe/Stockholm` - Europe/Stockholm
+
+        * `Europe/Tallinn` - Europe/Tallinn
+
+        * `Europe/Tirane` - Europe/Tirane
+
+        * `Europe/Tiraspol` - Europe/Tiraspol
+
+        * `Europe/Ulyanovsk` - Europe/Ulyanovsk
+
+        * `Europe/Uzhgorod` - Europe/Uzhgorod
+
+        * `Europe/Vaduz` - Europe/Vaduz
+
+        * `Europe/Vatican` - Europe/Vatican
+
+        * `Europe/Vienna` - Europe/Vienna
+
+        * `Europe/Vilnius` - Europe/Vilnius
+
+        * `Europe/Volgograd` - Europe/Volgograd
+
+        * `Europe/Warsaw` - Europe/Warsaw
+
+        * `Europe/Zagreb` - Europe/Zagreb
+
+        * `Europe/Zaporozhye` - Europe/Zaporozhye
+
+        * `Europe/Zurich` - Europe/Zurich
+
+        * `GB` - GB
+
+        * `GB-Eire` - GB-Eire
+
+        * `GMT` - GMT
+
+        * `GMT+0` - GMT+0
+
+        * `GMT-0` - GMT-0
+
+        * `GMT0` - GMT0
+
+        * `Greenwich` - Greenwich
+
+        * `HST` - HST
+
+        * `Hongkong` - Hongkong
+
+        * `Iceland` - Iceland
+
+        * `Indian/Antananarivo` - Indian/Antananarivo
+
+        * `Indian/Chagos` - Indian/Chagos
+
+        * `Indian/Christmas` - Indian/Christmas
+
+        * `Indian/Cocos` - Indian/Cocos
+
+        * `Indian/Comoro` - Indian/Comoro
+
+        * `Indian/Kerguelen` - Indian/Kerguelen
+
+        * `Indian/Mahe` - Indian/Mahe
+
+        * `Indian/Maldives` - Indian/Maldives
+
+        * `Indian/Mauritius` - Indian/Mauritius
+
+        * `Indian/Mayotte` - Indian/Mayotte
+
+        * `Indian/Reunion` - Indian/Reunion
+
+        * `Iran` - Iran
+
+        * `Israel` - Israel
+
+        * `Jamaica` - Jamaica
+
+        * `Japan` - Japan
+
+        * `Kwajalein` - Kwajalein
+
+        * `Libya` - Libya
+
+        * `MET` - MET
+
+        * `MST` - MST
+
+        * `MST7MDT` - MST7MDT
+
+        * `Mexico/BajaNorte` - Mexico/BajaNorte
+
+        * `Mexico/BajaSur` - Mexico/BajaSur
+
+        * `Mexico/General` - Mexico/General
+
+        * `NZ` - NZ
+
+        * `NZ-CHAT` - NZ-CHAT
+
+        * `Navajo` - Navajo
+
+        * `PRC` - PRC
+
+        * `PST8PDT` - PST8PDT
+
+        * `Pacific/Apia` - Pacific/Apia
+
+        * `Pacific/Auckland` - Pacific/Auckland
+
+        * `Pacific/Bougainville` - Pacific/Bougainville
+
+        * `Pacific/Chatham` - Pacific/Chatham
+
+        * `Pacific/Chuuk` - Pacific/Chuuk
+
+        * `Pacific/Easter` - Pacific/Easter
+
+        * `Pacific/Efate` - Pacific/Efate
+
+        * `Pacific/Enderbury` - Pacific/Enderbury
+
+        * `Pacific/Fakaofo` - Pacific/Fakaofo
+
+        * `Pacific/Fiji` - Pacific/Fiji
+
+        * `Pacific/Funafuti` - Pacific/Funafuti
+
+        * `Pacific/Galapagos` - Pacific/Galapagos
+
+        * `Pacific/Gambier` - Pacific/Gambier
+
+        * `Pacific/Guadalcanal` - Pacific/Guadalcanal
+
+        * `Pacific/Guam` - Pacific/Guam
+
+        * `Pacific/Honolulu` - Pacific/Honolulu
+
+        * `Pacific/Johnston` - Pacific/Johnston
+
+        * `Pacific/Kanton` - Pacific/Kanton
+
+        * `Pacific/Kiritimati` - Pacific/Kiritimati
+
+        * `Pacific/Kosrae` - Pacific/Kosrae
+
+        * `Pacific/Kwajalein` - Pacific/Kwajalein
+
+        * `Pacific/Majuro` - Pacific/Majuro
+
+        * `Pacific/Marquesas` - Pacific/Marquesas
+
+        * `Pacific/Midway` - Pacific/Midway
+
+        * `Pacific/Nauru` - Pacific/Nauru
+
+        * `Pacific/Niue` - Pacific/Niue
+
+        * `Pacific/Norfolk` - Pacific/Norfolk
+
+        * `Pacific/Noumea` - Pacific/Noumea
+
+        * `Pacific/Pago_Pago` - Pacific/Pago_Pago
+
+        * `Pacific/Palau` - Pacific/Palau
+
+        * `Pacific/Pitcairn` - Pacific/Pitcairn
+
+        * `Pacific/Pohnpei` - Pacific/Pohnpei
+
+        * `Pacific/Ponape` - Pacific/Ponape
+
+        * `Pacific/Port_Moresby` - Pacific/Port_Moresby
+
+        * `Pacific/Rarotonga` - Pacific/Rarotonga
+
+        * `Pacific/Saipan` - Pacific/Saipan
+
+        * `Pacific/Samoa` - Pacific/Samoa
+
+        * `Pacific/Tahiti` - Pacific/Tahiti
+
+        * `Pacific/Tarawa` - Pacific/Tarawa
+
+        * `Pacific/Tongatapu` - Pacific/Tongatapu
+
+        * `Pacific/Truk` - Pacific/Truk
+
+        * `Pacific/Wake` - Pacific/Wake
+
+        * `Pacific/Wallis` - Pacific/Wallis
+
+        * `Pacific/Yap` - Pacific/Yap
+
+        * `Poland` - Poland
+
+        * `Portugal` - Portugal
+
+        * `ROC` - ROC
+
+        * `ROK` - ROK
+
+        * `Singapore` - Singapore
+
+        * `Turkey` - Turkey
+
+        * `UCT` - UCT
+
+        * `US/Alaska` - US/Alaska
+
+        * `US/Aleutian` - US/Aleutian
+
+        * `US/Arizona` - US/Arizona
+
+        * `US/Central` - US/Central
+
+        * `US/East-Indiana` - US/East-Indiana
+
+        * `US/Eastern` - US/Eastern
+
+        * `US/Hawaii` - US/Hawaii
+
+        * `US/Indiana-Starke` - US/Indiana-Starke
+
+        * `US/Michigan` - US/Michigan
+
+        * `US/Mountain` - US/Mountain
+
+        * `US/Pacific` - US/Pacific
+
+        * `US/Samoa` - US/Samoa
+
+        * `UTC` - UTC
+
+        * `Universal` - Universal
+
+        * `W-SU` - W-SU
+
+        * `WET` - WET
+
+        * `Zulu` - Zulu'
+    IntervalEnum:
+      enum:
+      - hour
+      - day
+      - week
+      - every 5 minutes
+      - every 15 minutes
+      type: string
+      description: '* `hour` - hour
+
+        * `day` - day
+
+        * `week` - week
+
+        * `every 5 minutes` - every 5 minutes
+
+        * `every 15 minutes` - every 15 minutes'
+    BatchExportDestination:
+      type: object
+      description: Serializer for an BatchExportDestination model.
+      properties:
+        type:
+          allOf:
+          - $ref: '#/components/schemas/BatchExportDestinationTypeEnum'
+          description: 'A choice of supported BatchExportDestination types.
+
+
+            * `S3` - S3
+
+            * `Snowflake` - Snowflake
+
+            * `Postgres` - Postgres
+
+            * `Redshift` - Redshift
+
+            * `BigQuery` - Bigquery
+
+            * `Databricks` - Databricks
+
+            * `AzureBlob` - Azure Blob
+
+            * `Workflows` - Workflows
+
+            * `HTTP` - Http
+
+            * `NoOp` - Noop'
+        config:
+          description: A JSON field to store all configuration parameters required to access a BatchExportDestination.
+        integration:
+          type: integer
+          nullable: true
+        integration_id:
+          type: integer
+          writeOnly: true
+          nullable: true
+      required:
+      - type
+    PaginatedBatchExportBackfillList:
+      type: object
+      required:
+      - results
+      properties:
+        next:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?cursor=cD00ODY%3D"
+        previous:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?cursor=cj0xJnA9NDg3
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/BatchExportBackfill'
+    BatchExportBackfill:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+          readOnly: true
+        progress:
+          type: object
+          nullable: true
+          properties:
+            total_runs:
+              type: integer
+              nullable: true
+            finished_runs:
+              type: integer
+              nullable: true
+            progress:
+              type: number
+              nullable: true
+          readOnly: true
+        start_at:
+          type: string
+          format: date-time
+          nullable: true
+          description: The start of the data interval.
+        end_at:
+          type: string
+          format: date-time
+          nullable: true
+          description: The end of the data interval.
+        status:
+          allOf:
+          - $ref: '#/components/schemas/BatchExportBackfillStatusEnum'
+          description: 'The status of this backfill.
+
+
+            * `Cancelled` - Cancelled
+
+            * `Completed` - Completed
+
+            * `ContinuedAsNew` - Continued As New
+
+            * `Failed` - Failed
+
+            * `FailedRetryable` - Failed Retryable
+
+            * `Terminated` - Terminated
+
+            * `TimedOut` - Timedout
+
+            * `Running` - Running
+
+            * `Starting` - Starting'
+        created_at:
+          type: string
+          format: date-time
+          readOnly: true
+          description: The timestamp at which this BatchExportBackfill was created.
+        finished_at:
+          type: string
+          format: date-time
+          nullable: true
+          description: The timestamp at which this BatchExportBackfill finished, successfully or not.
+        last_updated_at:
+          type: string
+          format: date-time
+          readOnly: true
+          description: The timestamp at which this BatchExportBackfill was last updated.
+        total_records_count:
+          type: integer
+          maximum: 9223372036854775807
+          minimum: -9223372036854775808
+          format: int64
+          nullable: true
+          description: The total number of records to export. Initially estimated, updated with actual count after completion.
+        adjusted_start_at:
+          type: string
+          format: date-time
+          nullable: true
+          description: The actual start time after adjustment for earliest available data. May differ from start_at if user requested a date before data exists.
+        team:
+          type: integer
+          description: The team this belongs to.
+        batch_export:
+          type: string
+          format: uuid
+          description: The BatchExport this backfill belongs to.
+      required:
+      - batch_export
+      - created_at
+      - id
+      - last_updated_at
+      - progress
+      - status
+      - team
+    ModelEnum:
+      enum:
+      - events
+      - persons
+      - sessions
+      type: string
+      description: '* `events` - Events
+
+        * `persons` - Persons
+
+        * `sessions` - Sessions'
+    BatchExportBackfillStatusEnum:
+      enum:
+      - Cancelled
+      - Completed
+      - ContinuedAsNew
+      - Failed
+      - FailedRetryable
+      - Terminated
+      - TimedOut
+      - Running
+      - Starting
+      type: string
+      description: '* `Cancelled` - Cancelled
+
+        * `Completed` - Completed
+
+        * `ContinuedAsNew` - Continued As New
+
+        * `Failed` - Failed
+
+        * `FailedRetryable` - Failed Retryable
+
+        * `Terminated` - Terminated
+
+        * `TimedOut` - Timedout
+
+        * `Running` - Running
+
+        * `Starting` - Starting'
+    BlankEnum:
+      enum:
+      - ''
+  parameters:
+    EnvironmentIdPath:
+      in: path
+      name: environment_id
+      required: true
+      schema:
+        type: string
+      description: Deprecated. Use /api/projects/{project_id}/ instead.
+    OrganizationIdPath:
+      in: path
+      name: organization_id
+      required: true
+      schema:
+        type: string
+      description: ID of the organization you're trying to access. To find the ID of the organization, make a call to /api/organizations/.
+    ProjectIdPath:
+      in: path
+      name: project_id
+      required: true
+      schema:
+        type: string
+      description: Project ID of the project you're trying to access. To find the ID of the project, make a call to /api/projects/.
+  securitySchemes:
+    PersonalAPIKeyAuth:
+      type: http
+      scheme: bearer
+x-tagGroups:
+- name: All endpoints
+  tags:
+  - LLM Analytics
+  - actions
+  - activity_log
+  - activity_logs
+  - advanced_activity_logs
+  - alerts
+  - annotations
+  - approval_policies
+  - batch_exports
+  - cdp
+  - change_requests
+  - code
+  - code-invites
+  - cohorts
+  - comments
+  - conversations
+  - core
+  - customer_analytics
+  - customer_journeys
+  - customer_profile_configs
+  - dashboard_templates
+  - dashboards
+  - data_color_themes
+  - data_modeling_jobs
+  - data_warehouse
+  - dataset_items
+  - datasets
+  - desktop_recordings
+  - domains
+  - early_access_feature
+  - early_access_features
+  - elements
+  - endpoints
+  - environments
+  - error_tracking
+  - evaluation_runs
+  - evaluations
+  - event_definitions
+  - event_filter
+  - event_schemas
+  - events
+  - experiment_holdouts
+  - experiment_saved_metrics
+  - experiments
+  - exports
+  - external_data_schemas
+  - external_data_sources
+  - feature_flags
+  - file_system
+  - file_system_shortcut
+  - flag_value
+  - groups
+  - groups_types
+  - health_issues
+  - heatmap_screenshots
+  - heatmaps
+  - hog_flows
+  - hog_function_templates
+  - hog_functions
+  - insight_variables
+  - insights
+  - integrations
+  - invites
+  - js-snippet
+  - legal_documents
+  - lineage
+  - live_debugger_breakpoints
+  - llm_analytics
+  - llm_prompts
+  - llm_skills
+  - logs
+  - managed_viewsets
+  - max
+  - max_tools
+  - mcp_server_installations
+  - mcp_servers
+  - mcp_store
+  - mcp_tools
+  - members
+  - notebooks
+  - oauth_applications
+  - object_media_previews
+  - organizations
+  - persisted_folder
+  - persons
+  - platform_features
+  - plugin_configs
+  - product_analytics
+  - product_tours
+  - project_secret_api_keys
+  - projects
+  - property_definitions
+  - proxy_records
+  - public_hog_function_templates
+  - query
+  - replay
+  - reverse_proxy
+  - role_external_references
+  - roles
+  - sandbox-environments
+  - sandbox_environments
+  - saved
+  - schema_property_groups
+  - sdk_doctor
+  - session_group_summaries
+  - session_recording_playlists
+  - session_recordings
+  - session_summaries
+  - sessions
+  - signals
+  - subscriptions
+  - surveys
+  - taggers
+  - task-automations
+  - task-runs
+  - task_automations
+  - tasks
+  - uploaded_media
+  - user_home_settings
+  - user_interviews
+  - users
+  - visual_review
+  - warehouse_dag
+  - warehouse_model_paths
+  - warehouse_saved_queries
+  - warehouse_saved_query_folders
+  - warehouse_tables
+  - warehouse_view_link
+  - warehouse_view_links
+  - web_analytics
+  - web_experiments
+  - web_vitals
+  - welcome
+  - workflows

@@ -1,0 +1,1244 @@
+openapi: 3.0.3
+info:
+  title: PostHog actions external_data_schemas API
+  version: 1.0.0
+  description: ''
+tags:
+- name: external_data_schemas
+paths:
+  /api/environments/{environment_id}/external_data_schemas/:
+    get:
+      operationId: environments_external_data_schemas_list
+      parameters:
+      - $ref: '#/components/parameters/EnvironmentIdPath'
+      - name: limit
+        required: false
+        in: query
+        description: Number of results to return per page.
+        schema:
+          type: integer
+      - name: offset
+        required: false
+        in: query
+        description: The initial index from which to return the results.
+        schema:
+          type: integer
+      - name: search
+        required: false
+        in: query
+        description: A search term.
+        schema:
+          type: string
+      tags:
+      - external_data_schemas
+      security:
+      - PersonalAPIKeyAuth:
+        - external_data_source:read
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedExternalDataSchemaList'
+          description: ''
+      deprecated: true
+      x-explicit-tags:
+      - data_warehouse
+    post:
+      operationId: environments_external_data_schemas_create
+      parameters:
+      - $ref: '#/components/parameters/EnvironmentIdPath'
+      tags:
+      - external_data_schemas
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ExternalDataSchema'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/ExternalDataSchema'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/ExternalDataSchema'
+      security:
+      - PersonalAPIKeyAuth:
+        - external_data_source:write
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ExternalDataSchema'
+          description: ''
+      deprecated: true
+      x-explicit-tags:
+      - data_warehouse
+  /api/environments/{environment_id}/external_data_schemas/{id}/:
+    get:
+      operationId: environments_external_data_schemas_retrieve
+      parameters:
+      - $ref: '#/components/parameters/EnvironmentIdPath'
+      - in: path
+        name: id
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this external data schema.
+        required: true
+      tags:
+      - external_data_schemas
+      security:
+      - PersonalAPIKeyAuth:
+        - external_data_source:read
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ExternalDataSchema'
+          description: ''
+      deprecated: true
+      x-explicit-tags:
+      - data_warehouse
+    put:
+      operationId: environments_external_data_schemas_update
+      parameters:
+      - $ref: '#/components/parameters/EnvironmentIdPath'
+      - in: path
+        name: id
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this external data schema.
+        required: true
+      tags:
+      - external_data_schemas
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ExternalDataSchema'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/ExternalDataSchema'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/ExternalDataSchema'
+      security:
+      - PersonalAPIKeyAuth:
+        - external_data_source:write
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ExternalDataSchema'
+          description: ''
+      deprecated: true
+      x-explicit-tags:
+      - data_warehouse
+    patch:
+      operationId: environments_external_data_schemas_partial_update
+      parameters:
+      - $ref: '#/components/parameters/EnvironmentIdPath'
+      - in: path
+        name: id
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this external data schema.
+        required: true
+      tags:
+      - external_data_schemas
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchedExternalDataSchema'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/PatchedExternalDataSchema'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/PatchedExternalDataSchema'
+      security:
+      - PersonalAPIKeyAuth:
+        - external_data_source:write
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ExternalDataSchema'
+          description: ''
+      deprecated: true
+      x-explicit-tags:
+      - data_warehouse
+    delete:
+      operationId: environments_external_data_schemas_destroy
+      parameters:
+      - $ref: '#/components/parameters/EnvironmentIdPath'
+      - in: path
+        name: id
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this external data schema.
+        required: true
+      tags:
+      - external_data_schemas
+      security:
+      - PersonalAPIKeyAuth:
+        - external_data_source:write
+      responses:
+        '204':
+          description: No response body
+      deprecated: true
+      x-explicit-tags:
+      - data_warehouse
+  /api/environments/{environment_id}/external_data_schemas/{id}/cancel/:
+    post:
+      operationId: environments_external_data_schemas_cancel_create
+      parameters:
+      - $ref: '#/components/parameters/EnvironmentIdPath'
+      - in: path
+        name: id
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this external data schema.
+        required: true
+      tags:
+      - external_data_schemas
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ExternalDataSchema'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/ExternalDataSchema'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/ExternalDataSchema'
+      security:
+      - PersonalAPIKeyAuth:
+        - external_data_source:write
+      responses:
+        '200':
+          description: No response body
+      deprecated: true
+      x-explicit-tags:
+      - data_warehouse
+  /api/environments/{environment_id}/external_data_schemas/{id}/delete_data/:
+    delete:
+      operationId: environments_external_data_schemas_delete_data_destroy
+      parameters:
+      - $ref: '#/components/parameters/EnvironmentIdPath'
+      - in: path
+        name: id
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this external data schema.
+        required: true
+      tags:
+      - external_data_schemas
+      security:
+      - PersonalAPIKeyAuth:
+        - external_data_source:write
+      responses:
+        '204':
+          description: No response body
+      deprecated: true
+      x-explicit-tags:
+      - data_warehouse
+  /api/environments/{environment_id}/external_data_schemas/{id}/incremental_fields/:
+    post:
+      operationId: environments_external_data_schemas_incremental_fields_create
+      parameters:
+      - $ref: '#/components/parameters/EnvironmentIdPath'
+      - in: path
+        name: id
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this external data schema.
+        required: true
+      tags:
+      - external_data_schemas
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ExternalDataSchema'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/ExternalDataSchema'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/ExternalDataSchema'
+      security:
+      - PersonalAPIKeyAuth:
+        - external_data_source:write
+      responses:
+        '200':
+          description: No response body
+      deprecated: true
+      x-explicit-tags:
+      - data_warehouse
+  /api/environments/{environment_id}/external_data_schemas/{id}/reload/:
+    post:
+      operationId: environments_external_data_schemas_reload_create
+      parameters:
+      - $ref: '#/components/parameters/EnvironmentIdPath'
+      - in: path
+        name: id
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this external data schema.
+        required: true
+      tags:
+      - external_data_schemas
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ExternalDataSchema'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/ExternalDataSchema'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/ExternalDataSchema'
+      security:
+      - PersonalAPIKeyAuth:
+        - external_data_source:write
+      responses:
+        '200':
+          description: No response body
+      deprecated: true
+      x-explicit-tags:
+      - data_warehouse
+  /api/environments/{environment_id}/external_data_schemas/{id}/resync/:
+    post:
+      operationId: environments_external_data_schemas_resync_create
+      parameters:
+      - $ref: '#/components/parameters/EnvironmentIdPath'
+      - in: path
+        name: id
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this external data schema.
+        required: true
+      tags:
+      - external_data_schemas
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ExternalDataSchema'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/ExternalDataSchema'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/ExternalDataSchema'
+      security:
+      - PersonalAPIKeyAuth:
+        - external_data_source:write
+      responses:
+        '200':
+          description: No response body
+      deprecated: true
+      x-explicit-tags:
+      - data_warehouse
+  /api/projects/{project_id}/external_data_schemas/:
+    get:
+      operationId: external_data_schemas_list
+      parameters:
+      - name: limit
+        required: false
+        in: query
+        description: Number of results to return per page.
+        schema:
+          type: integer
+      - name: offset
+        required: false
+        in: query
+        description: The initial index from which to return the results.
+        schema:
+          type: integer
+      - $ref: '#/components/parameters/ProjectIdPath'
+      - name: search
+        required: false
+        in: query
+        description: A search term.
+        schema:
+          type: string
+      tags:
+      - external_data_schemas
+      security:
+      - PersonalAPIKeyAuth:
+        - external_data_source:read
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedExternalDataSchemaList'
+          description: ''
+      x-explicit-tags:
+      - data_warehouse
+    post:
+      operationId: external_data_schemas_create
+      parameters:
+      - $ref: '#/components/parameters/ProjectIdPath'
+      tags:
+      - external_data_schemas
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ExternalDataSchema'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/ExternalDataSchema'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/ExternalDataSchema'
+      security:
+      - PersonalAPIKeyAuth:
+        - external_data_source:write
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ExternalDataSchema'
+          description: ''
+      x-explicit-tags:
+      - data_warehouse
+  /api/projects/{project_id}/external_data_schemas/{id}/:
+    get:
+      operationId: external_data_schemas_retrieve
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this external data schema.
+        required: true
+      - $ref: '#/components/parameters/ProjectIdPath'
+      tags:
+      - external_data_schemas
+      security:
+      - PersonalAPIKeyAuth:
+        - external_data_source:read
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ExternalDataSchema'
+          description: ''
+      x-explicit-tags:
+      - data_warehouse
+    put:
+      operationId: external_data_schemas_update
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this external data schema.
+        required: true
+      - $ref: '#/components/parameters/ProjectIdPath'
+      tags:
+      - external_data_schemas
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ExternalDataSchema'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/ExternalDataSchema'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/ExternalDataSchema'
+      security:
+      - PersonalAPIKeyAuth:
+        - external_data_source:write
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ExternalDataSchema'
+          description: ''
+      x-explicit-tags:
+      - data_warehouse
+    patch:
+      operationId: external_data_schemas_partial_update
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this external data schema.
+        required: true
+      - $ref: '#/components/parameters/ProjectIdPath'
+      tags:
+      - external_data_schemas
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchedExternalDataSchema'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/PatchedExternalDataSchema'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/PatchedExternalDataSchema'
+      security:
+      - PersonalAPIKeyAuth:
+        - external_data_source:write
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ExternalDataSchema'
+          description: ''
+      x-explicit-tags:
+      - data_warehouse
+    delete:
+      operationId: external_data_schemas_destroy
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this external data schema.
+        required: true
+      - $ref: '#/components/parameters/ProjectIdPath'
+      tags:
+      - external_data_schemas
+      security:
+      - PersonalAPIKeyAuth:
+        - external_data_source:write
+      responses:
+        '204':
+          description: No response body
+      x-explicit-tags:
+      - data_warehouse
+  /api/projects/{project_id}/external_data_schemas/{id}/cancel/:
+    post:
+      operationId: external_data_schemas_cancel_create
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this external data schema.
+        required: true
+      - $ref: '#/components/parameters/ProjectIdPath'
+      tags:
+      - external_data_schemas
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ExternalDataSchema'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/ExternalDataSchema'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/ExternalDataSchema'
+      security:
+      - PersonalAPIKeyAuth:
+        - external_data_source:write
+      responses:
+        '200':
+          description: No response body
+      x-explicit-tags:
+      - data_warehouse
+  /api/projects/{project_id}/external_data_schemas/{id}/delete_data/:
+    delete:
+      operationId: external_data_schemas_delete_data_destroy
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this external data schema.
+        required: true
+      - $ref: '#/components/parameters/ProjectIdPath'
+      tags:
+      - external_data_schemas
+      security:
+      - PersonalAPIKeyAuth:
+        - external_data_source:write
+      responses:
+        '204':
+          description: No response body
+      x-explicit-tags:
+      - data_warehouse
+  /api/projects/{project_id}/external_data_schemas/{id}/incremental_fields/:
+    post:
+      operationId: external_data_schemas_incremental_fields_create
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this external data schema.
+        required: true
+      - $ref: '#/components/parameters/ProjectIdPath'
+      tags:
+      - external_data_schemas
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ExternalDataSchema'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/ExternalDataSchema'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/ExternalDataSchema'
+      security:
+      - PersonalAPIKeyAuth:
+        - external_data_source:write
+      responses:
+        '200':
+          description: No response body
+      x-explicit-tags:
+      - data_warehouse
+  /api/projects/{project_id}/external_data_schemas/{id}/reload/:
+    post:
+      operationId: external_data_schemas_reload_create
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this external data schema.
+        required: true
+      - $ref: '#/components/parameters/ProjectIdPath'
+      tags:
+      - external_data_schemas
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ExternalDataSchema'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/ExternalDataSchema'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/ExternalDataSchema'
+      security:
+      - PersonalAPIKeyAuth:
+        - external_data_source:write
+      responses:
+        '200':
+          description: No response body
+      x-explicit-tags:
+      - data_warehouse
+  /api/projects/{project_id}/external_data_schemas/{id}/resync/:
+    post:
+      operationId: external_data_schemas_resync_create
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this external data schema.
+        required: true
+      - $ref: '#/components/parameters/ProjectIdPath'
+      tags:
+      - external_data_schemas
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ExternalDataSchema'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/ExternalDataSchema'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/ExternalDataSchema'
+      security:
+      - PersonalAPIKeyAuth:
+        - external_data_source:write
+      responses:
+        '200':
+          description: No response body
+      x-explicit-tags:
+      - data_warehouse
+components:
+  schemas:
+    PatchedExternalDataSchema:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+          readOnly: true
+        name:
+          type: string
+          readOnly: true
+        label:
+          type: string
+          readOnly: true
+          nullable: true
+        table:
+          type: object
+          additionalProperties: true
+          nullable: true
+          readOnly: true
+        should_sync:
+          type: boolean
+        last_synced_at:
+          type: string
+          format: date-time
+          readOnly: true
+          nullable: true
+        latest_error:
+          type: string
+          readOnly: true
+          nullable: true
+          description: The latest error that occurred when syncing this schema.
+        incremental:
+          type: boolean
+          readOnly: true
+        status:
+          type: string
+          nullable: true
+          readOnly: true
+        sync_type:
+          nullable: true
+          description: 'Sync strategy: incremental, full_refresh, append, or cdc.
+
+
+            * `full_refresh` - full_refresh
+
+            * `incremental` - incremental
+
+            * `append` - append
+
+            * `webhook` - webhook
+
+            * `cdc` - cdc'
+          oneOf:
+          - $ref: '#/components/schemas/SyncTypeEnum'
+          - $ref: '#/components/schemas/NullEnum'
+        incremental_field:
+          type: string
+          nullable: true
+          description: Column name used to track sync progress.
+        incremental_field_type:
+          nullable: true
+          description: 'Data type of the incremental field.
+
+
+            * `integer` - integer
+
+            * `numeric` - numeric
+
+            * `datetime` - datetime
+
+            * `date` - date
+
+            * `timestamp` - timestamp
+
+            * `objectid` - objectid'
+          oneOf:
+          - $ref: '#/components/schemas/IncrementalFieldTypeEnum'
+          - $ref: '#/components/schemas/NullEnum'
+        sync_frequency:
+          nullable: true
+          description: 'How often to sync.
+
+
+            * `never` - never
+
+            * `1min` - 1min
+
+            * `5min` - 5min
+
+            * `15min` - 15min
+
+            * `30min` - 30min
+
+            * `1hour` - 1hour
+
+            * `6hour` - 6hour
+
+            * `12hour` - 12hour
+
+            * `24hour` - 24hour
+
+            * `7day` - 7day
+
+            * `30day` - 30day'
+          oneOf:
+          - $ref: '#/components/schemas/SyncFrequencyEnum'
+          - $ref: '#/components/schemas/NullEnum'
+        sync_time_of_day:
+          type: string
+          format: time
+          nullable: true
+          description: UTC time of day to run the sync (HH:MM:SS).
+        description:
+          type: string
+          readOnly: true
+          nullable: true
+        primary_key_columns:
+          type: array
+          items:
+            type: string
+          nullable: true
+          description: Column names for primary key deduplication.
+        cdc_table_mode:
+          nullable: true
+          description: 'For CDC syncs: consolidated, cdc_only, or both.
+
+
+            * `consolidated` - consolidated
+
+            * `cdc_only` - cdc_only
+
+            * `both` - both'
+          oneOf:
+          - $ref: '#/components/schemas/CdcTableModeEnum'
+          - $ref: '#/components/schemas/NullEnum'
+    SyncTypeEnum:
+      enum:
+      - full_refresh
+      - incremental
+      - append
+      - webhook
+      - cdc
+      type: string
+      description: '* `full_refresh` - full_refresh
+
+        * `incremental` - incremental
+
+        * `append` - append
+
+        * `webhook` - webhook
+
+        * `cdc` - cdc'
+    SyncFrequencyEnum:
+      enum:
+      - never
+      - 1min
+      - 5min
+      - 15min
+      - 30min
+      - 1hour
+      - 6hour
+      - 12hour
+      - 24hour
+      - 7day
+      - 30day
+      type: string
+      description: '* `never` - never
+
+        * `1min` - 1min
+
+        * `5min` - 5min
+
+        * `15min` - 15min
+
+        * `30min` - 30min
+
+        * `1hour` - 1hour
+
+        * `6hour` - 6hour
+
+        * `12hour` - 12hour
+
+        * `24hour` - 24hour
+
+        * `7day` - 7day
+
+        * `30day` - 30day'
+    IncrementalFieldTypeEnum:
+      enum:
+      - integer
+      - numeric
+      - datetime
+      - date
+      - timestamp
+      - objectid
+      type: string
+      description: '* `integer` - integer
+
+        * `numeric` - numeric
+
+        * `datetime` - datetime
+
+        * `date` - date
+
+        * `timestamp` - timestamp
+
+        * `objectid` - objectid'
+    ExternalDataSchema:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+          readOnly: true
+        name:
+          type: string
+          readOnly: true
+        label:
+          type: string
+          readOnly: true
+          nullable: true
+        table:
+          type: object
+          additionalProperties: true
+          nullable: true
+          readOnly: true
+        should_sync:
+          type: boolean
+        last_synced_at:
+          type: string
+          format: date-time
+          readOnly: true
+          nullable: true
+        latest_error:
+          type: string
+          readOnly: true
+          nullable: true
+          description: The latest error that occurred when syncing this schema.
+        incremental:
+          type: boolean
+          readOnly: true
+        status:
+          type: string
+          nullable: true
+          readOnly: true
+        sync_type:
+          nullable: true
+          description: 'Sync strategy: incremental, full_refresh, append, or cdc.
+
+
+            * `full_refresh` - full_refresh
+
+            * `incremental` - incremental
+
+            * `append` - append
+
+            * `webhook` - webhook
+
+            * `cdc` - cdc'
+          oneOf:
+          - $ref: '#/components/schemas/SyncTypeEnum'
+          - $ref: '#/components/schemas/NullEnum'
+        incremental_field:
+          type: string
+          nullable: true
+          description: Column name used to track sync progress.
+        incremental_field_type:
+          nullable: true
+          description: 'Data type of the incremental field.
+
+
+            * `integer` - integer
+
+            * `numeric` - numeric
+
+            * `datetime` - datetime
+
+            * `date` - date
+
+            * `timestamp` - timestamp
+
+            * `objectid` - objectid'
+          oneOf:
+          - $ref: '#/components/schemas/IncrementalFieldTypeEnum'
+          - $ref: '#/components/schemas/NullEnum'
+        sync_frequency:
+          nullable: true
+          description: 'How often to sync.
+
+
+            * `never` - never
+
+            * `1min` - 1min
+
+            * `5min` - 5min
+
+            * `15min` - 15min
+
+            * `30min` - 30min
+
+            * `1hour` - 1hour
+
+            * `6hour` - 6hour
+
+            * `12hour` - 12hour
+
+            * `24hour` - 24hour
+
+            * `7day` - 7day
+
+            * `30day` - 30day'
+          oneOf:
+          - $ref: '#/components/schemas/SyncFrequencyEnum'
+          - $ref: '#/components/schemas/NullEnum'
+        sync_time_of_day:
+          type: string
+          format: time
+          nullable: true
+          description: UTC time of day to run the sync (HH:MM:SS).
+        description:
+          type: string
+          readOnly: true
+          nullable: true
+        primary_key_columns:
+          type: array
+          items:
+            type: string
+          nullable: true
+          description: Column names for primary key deduplication.
+        cdc_table_mode:
+          nullable: true
+          description: 'For CDC syncs: consolidated, cdc_only, or both.
+
+
+            * `consolidated` - consolidated
+
+            * `cdc_only` - cdc_only
+
+            * `both` - both'
+          oneOf:
+          - $ref: '#/components/schemas/CdcTableModeEnum'
+          - $ref: '#/components/schemas/NullEnum'
+      required:
+      - description
+      - id
+      - incremental
+      - label
+      - last_synced_at
+      - latest_error
+      - name
+      - status
+      - table
+    PaginatedExternalDataSchemaList:
+      type: object
+      required:
+      - count
+      - results
+      properties:
+        count:
+          type: integer
+          example: 123
+        next:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?offset=400&limit=100
+        previous:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?offset=200&limit=100
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/ExternalDataSchema'
+    CdcTableModeEnum:
+      enum:
+      - consolidated
+      - cdc_only
+      - both
+      type: string
+      description: '* `consolidated` - consolidated
+
+        * `cdc_only` - cdc_only
+
+        * `both` - both'
+    NullEnum:
+      enum:
+      - null
+  parameters:
+    EnvironmentIdPath:
+      in: path
+      name: environment_id
+      required: true
+      schema:
+        type: string
+      description: Deprecated. Use /api/projects/{project_id}/ instead.
+    ProjectIdPath:
+      in: path
+      name: project_id
+      required: true
+      schema:
+        type: string
+      description: Project ID of the project you're trying to access. To find the ID of the project, make a call to /api/projects/.
+  securitySchemes:
+    PersonalAPIKeyAuth:
+      type: http
+      scheme: bearer
+x-tagGroups:
+- name: All endpoints
+  tags:
+  - LLM Analytics
+  - actions
+  - activity_log
+  - activity_logs
+  - advanced_activity_logs
+  - alerts
+  - annotations
+  - approval_policies
+  - batch_exports
+  - cdp
+  - change_requests
+  - code
+  - code-invites
+  - cohorts
+  - comments
+  - conversations
+  - core
+  - customer_analytics
+  - customer_journeys
+  - customer_profile_configs
+  - dashboard_templates
+  - dashboards
+  - data_color_themes
+  - data_modeling_jobs
+  - data_warehouse
+  - dataset_items
+  - datasets
+  - desktop_recordings
+  - domains
+  - early_access_feature
+  - early_access_features
+  - elements
+  - endpoints
+  - environments
+  - error_tracking
+  - evaluation_runs
+  - evaluations
+  - event_definitions
+  - event_filter
+  - event_schemas
+  - events
+  - experiment_holdouts
+  - experiment_saved_metrics
+  - experiments
+  - exports
+  - external_data_schemas
+  - external_data_sources
+  - feature_flags
+  - file_system
+  - file_system_shortcut
+  - flag_value
+  - groups
+  - groups_types
+  - health_issues
+  - heatmap_screenshots
+  - heatmaps
+  - hog_flows
+  - hog_function_templates
+  - hog_functions
+  - insight_variables
+  - insights
+  - integrations
+  - invites
+  - js-snippet
+  - legal_documents
+  - lineage
+  - live_debugger_breakpoints
+  - llm_analytics
+  - llm_prompts
+  - llm_skills
+  - logs
+  - managed_viewsets
+  - max
+  - max_tools
+  - mcp_server_installations
+  - mcp_servers
+  - mcp_store
+  - mcp_tools
+  - members
+  - notebooks
+  - oauth_applications
+  - object_media_previews
+  - organizations
+  - persisted_folder
+  - persons
+  - platform_features
+  - plugin_configs
+  - product_analytics
+  - product_tours
+  - project_secret_api_keys
+  - projects
+  - property_definitions
+  - proxy_records
+  - public_hog_function_templates
+  - query
+  - replay
+  - reverse_proxy
+  - role_external_references
+  - roles
+  - sandbox-environments
+  - sandbox_environments
+  - saved
+  - schema_property_groups
+  - sdk_doctor
+  - session_group_summaries
+  - session_recording_playlists
+  - session_recordings
+  - session_summaries
+  - sessions
+  - signals
+  - subscriptions
+  - surveys
+  - taggers
+  - task-automations
+  - task-runs
+  - task_automations
+  - tasks
+  - uploaded_media
+  - user_home_settings
+  - user_interviews
+  - users
+  - visual_review
+  - warehouse_dag
+  - warehouse_model_paths
+  - warehouse_saved_queries
+  - warehouse_saved_query_folders
+  - warehouse_tables
+  - warehouse_view_link
+  - warehouse_view_links
+  - web_analytics
+  - web_experiments
+  - web_vitals
+  - welcome
+  - workflows

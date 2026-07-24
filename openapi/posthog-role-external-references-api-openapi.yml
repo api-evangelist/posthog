@@ -1,0 +1,442 @@
+openapi: 3.0.3
+info:
+  title: PostHog actions role_external_references API
+  version: 1.0.0
+  description: ''
+tags:
+- name: role_external_references
+paths:
+  /api/organizations/{organization_id}/role_external_references/:
+    get:
+      operationId: role_external_references_list
+      parameters:
+      - name: limit
+        required: false
+        in: query
+        description: Number of results to return per page.
+        schema:
+          type: integer
+      - name: offset
+        required: false
+        in: query
+        description: The initial index from which to return the results.
+        schema:
+          type: integer
+      - $ref: '#/components/parameters/OrganizationIdPath'
+      tags:
+      - role_external_references
+      security:
+      - PersonalAPIKeyAuth:
+        - organization:read
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedRoleExternalReferenceList'
+          description: ''
+      x-explicit-tags:
+      - integrations
+    post:
+      operationId: role_external_references_create
+      parameters:
+      - $ref: '#/components/parameters/OrganizationIdPath'
+      tags:
+      - role_external_references
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RoleExternalReference'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/RoleExternalReference'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/RoleExternalReference'
+        required: true
+      security:
+      - PersonalAPIKeyAuth:
+        - organization:write
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RoleExternalReference'
+          description: ''
+      x-explicit-tags:
+      - integrations
+  /api/organizations/{organization_id}/role_external_references/{id}/:
+    delete:
+      operationId: role_external_references_destroy
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this role external reference.
+        required: true
+      - $ref: '#/components/parameters/OrganizationIdPath'
+      tags:
+      - role_external_references
+      security:
+      - PersonalAPIKeyAuth:
+        - organization:write
+      responses:
+        '204':
+          description: No response body
+      x-explicit-tags:
+      - integrations
+  /api/organizations/{organization_id}/role_external_references/lookup/:
+    get:
+      operationId: role_external_references_lookup_retrieve
+      parameters:
+      - $ref: '#/components/parameters/OrganizationIdPath'
+      - in: query
+        name: provider
+        schema:
+          type: string
+          minLength: 1
+        description: Integration kind (e.g., github, linear, jira, slack).
+        required: true
+      - in: query
+        name: provider_organization_id
+        schema:
+          type: string
+          minLength: 1
+        description: Provider organization/workspace/site identifier.
+        required: true
+      - in: query
+        name: provider_role_id
+        schema:
+          type: string
+          minLength: 1
+        description: Stable provider role identifier.
+      - in: query
+        name: provider_role_slug
+        schema:
+          type: string
+          minLength: 1
+        description: Human-friendly provider role identifier.
+      tags:
+      - role_external_references
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RoleLookupResponse'
+          description: ''
+      x-explicit-tags:
+      - integrations
+components:
+  schemas:
+    BlankEnum:
+      enum:
+      - ''
+    PaginatedRoleExternalReferenceList:
+      type: object
+      required:
+      - count
+      - results
+      properties:
+        count:
+          type: integer
+          example: 123
+        next:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?offset=400&limit=100
+        previous:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?offset=200&limit=100
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/RoleExternalReference'
+    UserBasic:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        uuid:
+          type: string
+          format: uuid
+          readOnly: true
+        distinct_id:
+          type: string
+          nullable: true
+          maxLength: 200
+        first_name:
+          type: string
+          maxLength: 150
+        last_name:
+          type: string
+          maxLength: 150
+        email:
+          type: string
+          format: email
+          title: Email address
+          maxLength: 254
+        is_email_verified:
+          type: boolean
+          nullable: true
+        hedgehog_config:
+          type: object
+          additionalProperties: true
+          nullable: true
+          readOnly: true
+        role_at_organization:
+          nullable: true
+          oneOf:
+          - $ref: '#/components/schemas/RoleAtOrganizationEnum'
+          - $ref: '#/components/schemas/BlankEnum'
+          - $ref: '#/components/schemas/NullEnum'
+      required:
+      - email
+      - hedgehog_config
+      - id
+      - uuid
+    RoleLookupResponse:
+      type: object
+      properties:
+        reference:
+          allOf:
+          - $ref: '#/components/schemas/RoleExternalReference'
+          nullable: true
+          description: Matching reference, or null if none exists.
+      required:
+      - reference
+    RoleAtOrganizationEnum:
+      enum:
+      - engineering
+      - data
+      - product
+      - founder
+      - leadership
+      - marketing
+      - sales
+      - other
+      type: string
+      description: '* `engineering` - Engineering
+
+        * `data` - Data
+
+        * `product` - Product Management
+
+        * `founder` - Founder
+
+        * `leadership` - Leadership
+
+        * `marketing` - Marketing
+
+        * `sales` - Sales / Success
+
+        * `other` - Other'
+    RoleExternalReference:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+          readOnly: true
+        provider:
+          type: string
+          description: Integration kind (e.g., github, linear, jira, slack).
+          maxLength: 32
+        provider_organization_id:
+          type: string
+          description: Provider organization/workspace/site identifier.
+          maxLength: 255
+        provider_role_id:
+          type: string
+          description: Stable provider role identifier.
+          maxLength: 255
+        provider_role_slug:
+          type: string
+          nullable: true
+          description: Human-friendly provider role identifier.
+          maxLength: 255
+        provider_role_name:
+          type: string
+          description: Display name of the provider role.
+          maxLength: 255
+        role:
+          type: string
+          format: uuid
+          description: PostHog role UUID this external role maps to.
+        created_at:
+          type: string
+          format: date-time
+          readOnly: true
+        created_by:
+          allOf:
+          - $ref: '#/components/schemas/UserBasic'
+          readOnly: true
+      required:
+      - created_at
+      - created_by
+      - id
+      - provider
+      - provider_organization_id
+      - provider_role_id
+      - provider_role_name
+      - role
+    NullEnum:
+      enum:
+      - null
+  parameters:
+    OrganizationIdPath:
+      in: path
+      name: organization_id
+      required: true
+      schema:
+        type: string
+      description: ID of the organization you're trying to access. To find the ID of the organization, make a call to /api/organizations/.
+  securitySchemes:
+    PersonalAPIKeyAuth:
+      type: http
+      scheme: bearer
+x-tagGroups:
+- name: All endpoints
+  tags:
+  - LLM Analytics
+  - actions
+  - activity_log
+  - activity_logs
+  - advanced_activity_logs
+  - alerts
+  - annotations
+  - approval_policies
+  - batch_exports
+  - cdp
+  - change_requests
+  - code
+  - code-invites
+  - cohorts
+  - comments
+  - conversations
+  - core
+  - customer_analytics
+  - customer_journeys
+  - customer_profile_configs
+  - dashboard_templates
+  - dashboards
+  - data_color_themes
+  - data_modeling_jobs
+  - data_warehouse
+  - dataset_items
+  - datasets
+  - desktop_recordings
+  - domains
+  - early_access_feature
+  - early_access_features
+  - elements
+  - endpoints
+  - environments
+  - error_tracking
+  - evaluation_runs
+  - evaluations
+  - event_definitions
+  - event_filter
+  - event_schemas
+  - events
+  - experiment_holdouts
+  - experiment_saved_metrics
+  - experiments
+  - exports
+  - external_data_schemas
+  - external_data_sources
+  - feature_flags
+  - file_system
+  - file_system_shortcut
+  - flag_value
+  - groups
+  - groups_types
+  - health_issues
+  - heatmap_screenshots
+  - heatmaps
+  - hog_flows
+  - hog_function_templates
+  - hog_functions
+  - insight_variables
+  - insights
+  - integrations
+  - invites
+  - js-snippet
+  - legal_documents
+  - lineage
+  - live_debugger_breakpoints
+  - llm_analytics
+  - llm_prompts
+  - llm_skills
+  - logs
+  - managed_viewsets
+  - max
+  - max_tools
+  - mcp_server_installations
+  - mcp_servers
+  - mcp_store
+  - mcp_tools
+  - members
+  - notebooks
+  - oauth_applications
+  - object_media_previews
+  - organizations
+  - persisted_folder
+  - persons
+  - platform_features
+  - plugin_configs
+  - product_analytics
+  - product_tours
+  - project_secret_api_keys
+  - projects
+  - property_definitions
+  - proxy_records
+  - public_hog_function_templates
+  - query
+  - replay
+  - reverse_proxy
+  - role_external_references
+  - roles
+  - sandbox-environments
+  - sandbox_environments
+  - saved
+  - schema_property_groups
+  - sdk_doctor
+  - session_group_summaries
+  - session_recording_playlists
+  - session_recordings
+  - session_summaries
+  - sessions
+  - signals
+  - subscriptions
+  - surveys
+  - taggers
+  - task-automations
+  - task-runs
+  - task_automations
+  - tasks
+  - uploaded_media
+  - user_home_settings
+  - user_interviews
+  - users
+  - visual_review
+  - warehouse_dag
+  - warehouse_model_paths
+  - warehouse_saved_queries
+  - warehouse_saved_query_folders
+  - warehouse_tables
+  - warehouse_view_link
+  - warehouse_view_links
+  - web_analytics
+  - web_experiments
+  - web_vitals
+  - welcome
+  - workflows

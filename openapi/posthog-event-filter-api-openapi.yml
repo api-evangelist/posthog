@@ -1,0 +1,333 @@
+openapi: 3.0.3
+info:
+  title: PostHog actions event_filter API
+  version: 1.0.0
+  description: ''
+tags:
+- name: event_filter
+paths:
+  /api/environments/{project_id}/event_filter/:
+    get:
+      operationId: event_filter_retrieve
+      description: Returns the event filter config for the team, or null if not yet created.
+      parameters:
+      - $ref: '#/components/parameters/ProjectIdPath'
+      tags:
+      - event_filter
+      security:
+      - PersonalAPIKeyAuth:
+        - event_filter:read
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/EventFilterConfig'
+          description: ''
+      x-explicit-tags: []
+    post:
+      operationId: event_filter_create
+      description: Create or update the event filter config.
+      parameters:
+      - $ref: '#/components/parameters/ProjectIdPath'
+      tags:
+      - event_filter
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/EventFilterConfig'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/EventFilterConfig'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/EventFilterConfig'
+      security:
+      - PersonalAPIKeyAuth:
+        - event_filter:write
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/EventFilterConfig'
+          description: ''
+      x-explicit-tags: []
+  /api/environments/{project_id}/event_filter/metrics/:
+    get:
+      operationId: event_filter_metrics_retrieve
+      description: 'Single event filter per team.
+
+        GET  /event_filter/ — returns the config (or null if not yet created)
+
+        POST /event_filter/ — creates or updates the config (upsert)
+
+        GET  /event_filter/metrics/ — time-series metrics
+
+        GET  /event_filter/metrics/totals/ — aggregate totals'
+      parameters:
+      - $ref: '#/components/parameters/ProjectIdPath'
+      tags:
+      - event_filter
+      security:
+      - PersonalAPIKeyAuth:
+        - event_filter:read
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AppMetricsResponse'
+          description: ''
+      x-explicit-tags: []
+  /api/environments/{project_id}/event_filter/metrics/totals/:
+    get:
+      operationId: event_filter_metrics_totals_retrieve
+      description: 'Single event filter per team.
+
+        GET  /event_filter/ — returns the config (or null if not yet created)
+
+        POST /event_filter/ — creates or updates the config (upsert)
+
+        GET  /event_filter/metrics/ — time-series metrics
+
+        GET  /event_filter/metrics/totals/ — aggregate totals'
+      parameters:
+      - $ref: '#/components/parameters/ProjectIdPath'
+      tags:
+      - event_filter
+      security:
+      - PersonalAPIKeyAuth:
+        - event_filter:read
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AppMetricsTotalsResponse'
+          description: ''
+      x-explicit-tags: []
+components:
+  schemas:
+    EventFilterConfigModeEnum:
+      enum:
+      - disabled
+      - dry_run
+      - live
+      type: string
+      description: '* `disabled` - Disabled
+
+        * `dry_run` - Dry Run
+
+        * `live` - Live'
+    AppMetricsResponse:
+      type: object
+      properties:
+        labels:
+          type: array
+          items:
+            type: string
+        series:
+          type: array
+          items:
+            $ref: '#/components/schemas/AppMetricSeries'
+      required:
+      - labels
+      - series
+    AppMetricsTotalsResponse:
+      type: object
+      properties:
+        totals:
+          type: object
+          additionalProperties:
+            type: integer
+      required:
+      - totals
+    EventFilterConfig:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+          readOnly: true
+        mode:
+          $ref: '#/components/schemas/EventFilterConfigModeEnum'
+        filter_tree:
+          nullable: true
+          description: 'Boolean expression tree. Nodes: {"type": "and"|"or", "children": [...]}, {"type": "not", "child": {...}}, {"type": "condition", "field": "event_name"|"distinct_id", "operator": "exact"|"contains", "value": "<string>"}'
+        test_cases:
+          description: 'Test events to validate the filter. Each: {"event_name": "...", "distinct_id": "...", "expected_result": "drop"|"ingest"}'
+        created_at:
+          type: string
+          format: date-time
+          readOnly: true
+        updated_at:
+          type: string
+          format: date-time
+          readOnly: true
+      required:
+      - created_at
+      - id
+      - updated_at
+    AppMetricSeries:
+      type: object
+      properties:
+        name:
+          type: string
+        values:
+          type: array
+          items:
+            type: integer
+      required:
+      - name
+      - values
+  parameters:
+    ProjectIdPath:
+      in: path
+      name: project_id
+      required: true
+      schema:
+        type: string
+      description: Project ID of the project you're trying to access. To find the ID of the project, make a call to /api/projects/.
+  securitySchemes:
+    PersonalAPIKeyAuth:
+      type: http
+      scheme: bearer
+x-tagGroups:
+- name: All endpoints
+  tags:
+  - LLM Analytics
+  - actions
+  - activity_log
+  - activity_logs
+  - advanced_activity_logs
+  - alerts
+  - annotations
+  - approval_policies
+  - batch_exports
+  - cdp
+  - change_requests
+  - code
+  - code-invites
+  - cohorts
+  - comments
+  - conversations
+  - core
+  - customer_analytics
+  - customer_journeys
+  - customer_profile_configs
+  - dashboard_templates
+  - dashboards
+  - data_color_themes
+  - data_modeling_jobs
+  - data_warehouse
+  - dataset_items
+  - datasets
+  - desktop_recordings
+  - domains
+  - early_access_feature
+  - early_access_features
+  - elements
+  - endpoints
+  - environments
+  - error_tracking
+  - evaluation_runs
+  - evaluations
+  - event_definitions
+  - event_filter
+  - event_schemas
+  - events
+  - experiment_holdouts
+  - experiment_saved_metrics
+  - experiments
+  - exports
+  - external_data_schemas
+  - external_data_sources
+  - feature_flags
+  - file_system
+  - file_system_shortcut
+  - flag_value
+  - groups
+  - groups_types
+  - health_issues
+  - heatmap_screenshots
+  - heatmaps
+  - hog_flows
+  - hog_function_templates
+  - hog_functions
+  - insight_variables
+  - insights
+  - integrations
+  - invites
+  - js-snippet
+  - legal_documents
+  - lineage
+  - live_debugger_breakpoints
+  - llm_analytics
+  - llm_prompts
+  - llm_skills
+  - logs
+  - managed_viewsets
+  - max
+  - max_tools
+  - mcp_server_installations
+  - mcp_servers
+  - mcp_store
+  - mcp_tools
+  - members
+  - notebooks
+  - oauth_applications
+  - object_media_previews
+  - organizations
+  - persisted_folder
+  - persons
+  - platform_features
+  - plugin_configs
+  - product_analytics
+  - product_tours
+  - project_secret_api_keys
+  - projects
+  - property_definitions
+  - proxy_records
+  - public_hog_function_templates
+  - query
+  - replay
+  - reverse_proxy
+  - role_external_references
+  - roles
+  - sandbox-environments
+  - sandbox_environments
+  - saved
+  - schema_property_groups
+  - sdk_doctor
+  - session_group_summaries
+  - session_recording_playlists
+  - session_recordings
+  - session_summaries
+  - sessions
+  - signals
+  - subscriptions
+  - surveys
+  - taggers
+  - task-automations
+  - task-runs
+  - task_automations
+  - tasks
+  - uploaded_media
+  - user_home_settings
+  - user_interviews
+  - users
+  - visual_review
+  - warehouse_dag
+  - warehouse_model_paths
+  - warehouse_saved_queries
+  - warehouse_saved_query_folders
+  - warehouse_tables
+  - warehouse_view_link
+  - warehouse_view_links
+  - web_analytics
+  - web_experiments
+  - web_vitals
+  - welcome
+  - workflows

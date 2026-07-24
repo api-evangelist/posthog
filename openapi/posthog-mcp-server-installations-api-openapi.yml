@@ -1,0 +1,886 @@
+openapi: 3.0.3
+info:
+  title: PostHog actions mcp_server_installations API
+  version: 1.0.0
+  description: ''
+tags:
+- name: mcp_server_installations
+paths:
+  /api/environments/{project_id}/mcp_server_installations/:
+    get:
+      operationId: mcp_server_installations_list
+      parameters:
+      - name: limit
+        required: false
+        in: query
+        description: Number of results to return per page.
+        schema:
+          type: integer
+      - name: offset
+        required: false
+        in: query
+        description: The initial index from which to return the results.
+        schema:
+          type: integer
+      - $ref: '#/components/parameters/ProjectIdPath'
+      tags:
+      - mcp_server_installations
+      security:
+      - PersonalAPIKeyAuth:
+        - project:read
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedMCPServerInstallationList'
+          description: ''
+      x-explicit-tags:
+      - mcp_store
+    post:
+      operationId: mcp_server_installations_create
+      parameters:
+      - $ref: '#/components/parameters/ProjectIdPath'
+      tags:
+      - mcp_server_installations
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/MCPServerInstallation'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/MCPServerInstallation'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/MCPServerInstallation'
+      security:
+      - PersonalAPIKeyAuth:
+        - project:write
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MCPServerInstallation'
+          description: ''
+      x-explicit-tags:
+      - mcp_store
+  /api/environments/{project_id}/mcp_server_installations/{id}/:
+    get:
+      operationId: mcp_server_installations_retrieve
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this mcp server installation.
+        required: true
+      - $ref: '#/components/parameters/ProjectIdPath'
+      tags:
+      - mcp_server_installations
+      security:
+      - PersonalAPIKeyAuth:
+        - project:read
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MCPServerInstallation'
+          description: ''
+      x-explicit-tags:
+      - mcp_store
+    put:
+      operationId: mcp_server_installations_update
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this mcp server installation.
+        required: true
+      - $ref: '#/components/parameters/ProjectIdPath'
+      tags:
+      - mcp_server_installations
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/MCPServerInstallation'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/MCPServerInstallation'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/MCPServerInstallation'
+      security:
+      - PersonalAPIKeyAuth:
+        - project:write
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MCPServerInstallation'
+          description: ''
+      x-explicit-tags:
+      - mcp_store
+    patch:
+      operationId: mcp_server_installations_partial_update
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this mcp server installation.
+        required: true
+      - $ref: '#/components/parameters/ProjectIdPath'
+      tags:
+      - mcp_server_installations
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchedMCPServerInstallationUpdate'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/PatchedMCPServerInstallationUpdate'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/PatchedMCPServerInstallationUpdate'
+      security:
+      - PersonalAPIKeyAuth:
+        - project:read
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MCPServerInstallation'
+          description: ''
+      x-explicit-tags:
+      - mcp_store
+    delete:
+      operationId: mcp_server_installations_destroy
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this mcp server installation.
+        required: true
+      - $ref: '#/components/parameters/ProjectIdPath'
+      tags:
+      - mcp_server_installations
+      security:
+      - PersonalAPIKeyAuth:
+        - project:read
+      responses:
+        '204':
+          description: No response body
+      x-explicit-tags:
+      - mcp_store
+  /api/environments/{project_id}/mcp_server_installations/{id}/proxy/:
+    post:
+      operationId: mcp_server_installations_proxy_create
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this mcp server installation.
+        required: true
+      - $ref: '#/components/parameters/ProjectIdPath'
+      tags:
+      - mcp_server_installations
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/MCPServerInstallation'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/MCPServerInstallation'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/MCPServerInstallation'
+      security:
+      - PersonalAPIKeyAuth:
+        - project:read
+      responses:
+        '200':
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/MCPServerInstallation'
+          description: ''
+      x-explicit-tags:
+      - mcp_store
+  /api/environments/{project_id}/mcp_server_installations/{id}/tools/:
+    get:
+      operationId: mcp_server_installations_tools_retrieve
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this mcp server installation.
+        required: true
+      - $ref: '#/components/parameters/ProjectIdPath'
+      tags:
+      - mcp_server_installations
+      security:
+      - PersonalAPIKeyAuth:
+        - project:read
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedMCPServerInstallationToolList'
+          description: ''
+      x-explicit-tags:
+      - mcp_store
+  /api/environments/{project_id}/mcp_server_installations/{id}/tools/{tool_name}/:
+    patch:
+      operationId: mcp_server_installations_tools_partial_update
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this mcp server installation.
+        required: true
+      - $ref: '#/components/parameters/ProjectIdPath'
+      - in: path
+        name: tool_name
+        schema:
+          type: string
+          pattern: ^[^/]+$
+        required: true
+      tags:
+      - mcp_server_installations
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchedToolApprovalUpdate'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/PatchedToolApprovalUpdate'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/PatchedToolApprovalUpdate'
+      security:
+      - PersonalAPIKeyAuth:
+        - project:read
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MCPServerInstallationTool'
+          description: ''
+      x-explicit-tags:
+      - mcp_store
+  /api/environments/{project_id}/mcp_server_installations/{id}/tools/refresh/:
+    post:
+      operationId: mcp_server_installations_tools_refresh_create
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this mcp server installation.
+        required: true
+      - $ref: '#/components/parameters/ProjectIdPath'
+      tags:
+      - mcp_server_installations
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/MCPServerInstallation'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/MCPServerInstallation'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/MCPServerInstallation'
+      security:
+      - PersonalAPIKeyAuth:
+        - project:read
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedMCPServerInstallationToolList'
+          description: ''
+      x-explicit-tags:
+      - mcp_store
+  /api/environments/{project_id}/mcp_server_installations/authorize/:
+    get:
+      operationId: mcp_server_installations_authorize_retrieve
+      description: 'Start (or re-start) an OAuth flow.
+
+
+        Pass ``template_id`` to (re)connect a catalog template, or
+
+        ``installation_id`` to reconnect an existing custom install using its
+
+        cached metadata and per-user DCR creds.'
+      parameters:
+      - in: query
+        name: install_source
+        schema:
+          enum:
+          - posthog
+          - posthog-code
+          type: string
+          default: posthog
+          minLength: 1
+        description: '* `posthog` - posthog
+
+          * `posthog-code` - posthog-code'
+      - in: query
+        name: installation_id
+        schema:
+          type: string
+          format: uuid
+      - in: query
+        name: posthog_code_callback_url
+        schema:
+          type: string
+          default: ''
+      - $ref: '#/components/parameters/ProjectIdPath'
+      - in: query
+        name: template_id
+        schema:
+          type: string
+          format: uuid
+      tags:
+      - mcp_server_installations
+      security:
+      - PersonalAPIKeyAuth:
+        - project:read
+      responses:
+        '200':
+          description: No response body
+      x-explicit-tags:
+      - mcp_store
+  /api/environments/{project_id}/mcp_server_installations/install_custom/:
+    post:
+      operationId: mcp_server_installations_install_custom_create
+      parameters:
+      - $ref: '#/components/parameters/ProjectIdPath'
+      tags:
+      - mcp_server_installations
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/InstallCustom'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/InstallCustom'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/InstallCustom'
+        required: true
+      security:
+      - PersonalAPIKeyAuth:
+        - project:read
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OAuthRedirectResponse'
+          description: ''
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MCPServerInstallation'
+          description: ''
+      x-explicit-tags:
+      - mcp_store
+  /api/environments/{project_id}/mcp_server_installations/install_template/:
+    post:
+      operationId: mcp_server_installations_install_template_create
+      parameters:
+      - $ref: '#/components/parameters/ProjectIdPath'
+      tags:
+      - mcp_server_installations
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/InstallTemplate'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/InstallTemplate'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/InstallTemplate'
+        required: true
+      security:
+      - PersonalAPIKeyAuth:
+        - project:read
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OAuthRedirectResponse'
+          description: ''
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MCPServerInstallation'
+          description: ''
+      x-explicit-tags:
+      - mcp_store
+components:
+  schemas:
+    MCPServerInstallation:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+          readOnly: true
+        template_id:
+          type: string
+          format: uuid
+          readOnly: true
+          nullable: true
+        name:
+          type: string
+          readOnly: true
+        icon_key:
+          type: string
+          readOnly: true
+          default: ''
+          description: Lowercase key from the linked template for brand icons. Empty if custom install (no template).
+        display_name:
+          type: string
+          maxLength: 200
+        url:
+          type: string
+          format: uri
+          maxLength: 2048
+        description:
+          type: string
+        auth_type:
+          $ref: '#/components/schemas/MCPAuthTypeEnum'
+        is_enabled:
+          type: boolean
+        needs_reauth:
+          type: boolean
+          readOnly: true
+        pending_oauth:
+          type: boolean
+          readOnly: true
+        proxy_url:
+          type: string
+          readOnly: true
+        tool_count:
+          type: integer
+          readOnly: true
+          description: Number of live (non-removed) tools exposed by this installation.
+        created_at:
+          type: string
+          format: date-time
+          readOnly: true
+        updated_at:
+          type: string
+          format: date-time
+          readOnly: true
+          nullable: true
+      required:
+      - created_at
+      - icon_key
+      - id
+      - name
+      - needs_reauth
+      - pending_oauth
+      - proxy_url
+      - template_id
+      - tool_count
+      - updated_at
+    InstallTemplate:
+      type: object
+      properties:
+        template_id:
+          type: string
+          format: uuid
+        api_key:
+          type: string
+          default: ''
+        install_source:
+          allOf:
+          - $ref: '#/components/schemas/InstallSourceEnum'
+          default: posthog
+        posthog_code_callback_url:
+          type: string
+          default: ''
+      required:
+      - template_id
+    MCPServerInstallationTool:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+          readOnly: true
+        tool_name:
+          type: string
+          readOnly: true
+        display_name:
+          type: string
+          readOnly: true
+        description:
+          type: string
+          readOnly: true
+        input_schema:
+          readOnly: true
+        approval_state:
+          $ref: '#/components/schemas/MCPServerInstallationToolApprovalStateEnum'
+        last_seen_at:
+          type: string
+          format: date-time
+          readOnly: true
+        removed_at:
+          type: string
+          format: date-time
+          readOnly: true
+          nullable: true
+        created_at:
+          type: string
+          format: date-time
+          readOnly: true
+        updated_at:
+          type: string
+          format: date-time
+          readOnly: true
+          nullable: true
+      required:
+      - created_at
+      - description
+      - display_name
+      - id
+      - input_schema
+      - last_seen_at
+      - removed_at
+      - tool_name
+      - updated_at
+    OAuthRedirectResponse:
+      type: object
+      properties:
+        redirect_url:
+          type: string
+          format: uri
+      required:
+      - redirect_url
+    PatchedMCPServerInstallationUpdate:
+      type: object
+      properties:
+        display_name:
+          type: string
+        description:
+          type: string
+        is_enabled:
+          type: boolean
+    PaginatedMCPServerInstallationList:
+      type: object
+      required:
+      - count
+      - results
+      properties:
+        count:
+          type: integer
+          example: 123
+        next:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?offset=400&limit=100
+        previous:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?offset=200&limit=100
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/MCPServerInstallation'
+    PatchedToolApprovalUpdate:
+      type: object
+      properties:
+        approval_state:
+          $ref: '#/components/schemas/ToolApprovalUpdateApprovalStateEnum'
+    InstallCustomAuthTypeEnum:
+      enum:
+      - api_key
+      - oauth
+      type: string
+      description: '* `api_key` - api_key
+
+        * `oauth` - oauth'
+    MCPServerInstallationToolApprovalStateEnum:
+      enum:
+      - approved
+      - needs_approval
+      - do_not_use
+      type: string
+      description: '* `approved` - Approved
+
+        * `needs_approval` - Needs approval
+
+        * `do_not_use` - Do not use'
+    InstallSourceEnum:
+      enum:
+      - posthog
+      - posthog-code
+      type: string
+      description: '* `posthog` - posthog
+
+        * `posthog-code` - posthog-code'
+    InstallCustom:
+      type: object
+      properties:
+        name:
+          type: string
+          maxLength: 200
+        url:
+          type: string
+          format: uri
+          maxLength: 2048
+        auth_type:
+          $ref: '#/components/schemas/InstallCustomAuthTypeEnum'
+        api_key:
+          type: string
+          default: ''
+        description:
+          type: string
+          default: ''
+        client_id:
+          type: string
+          default: ''
+        client_secret:
+          type: string
+          default: ''
+        install_source:
+          allOf:
+          - $ref: '#/components/schemas/InstallSourceEnum'
+          default: posthog
+        posthog_code_callback_url:
+          type: string
+          default: ''
+      required:
+      - auth_type
+      - name
+      - url
+    PaginatedMCPServerInstallationToolList:
+      type: object
+      required:
+      - count
+      - results
+      properties:
+        count:
+          type: integer
+          example: 123
+        next:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?offset=400&limit=100
+        previous:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?offset=200&limit=100
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/MCPServerInstallationTool'
+    MCPAuthTypeEnum:
+      enum:
+      - api_key
+      - oauth
+      type: string
+      description: '* `api_key` - API Key
+
+        * `oauth` - OAuth'
+    ToolApprovalUpdateApprovalStateEnum:
+      enum:
+      - approved
+      - needs_approval
+      - do_not_use
+      type: string
+      description: '* `approved` - approved
+
+        * `needs_approval` - needs_approval
+
+        * `do_not_use` - do_not_use'
+  parameters:
+    ProjectIdPath:
+      in: path
+      name: project_id
+      required: true
+      schema:
+        type: string
+      description: Project ID of the project you're trying to access. To find the ID of the project, make a call to /api/projects/.
+  securitySchemes:
+    PersonalAPIKeyAuth:
+      type: http
+      scheme: bearer
+x-tagGroups:
+- name: All endpoints
+  tags:
+  - LLM Analytics
+  - actions
+  - activity_log
+  - activity_logs
+  - advanced_activity_logs
+  - alerts
+  - annotations
+  - approval_policies
+  - batch_exports
+  - cdp
+  - change_requests
+  - code
+  - code-invites
+  - cohorts
+  - comments
+  - conversations
+  - core
+  - customer_analytics
+  - customer_journeys
+  - customer_profile_configs
+  - dashboard_templates
+  - dashboards
+  - data_color_themes
+  - data_modeling_jobs
+  - data_warehouse
+  - dataset_items
+  - datasets
+  - desktop_recordings
+  - domains
+  - early_access_feature
+  - early_access_features
+  - elements
+  - endpoints
+  - environments
+  - error_tracking
+  - evaluation_runs
+  - evaluations
+  - event_definitions
+  - event_filter
+  - event_schemas
+  - events
+  - experiment_holdouts
+  - experiment_saved_metrics
+  - experiments
+  - exports
+  - external_data_schemas
+  - external_data_sources
+  - feature_flags
+  - file_system
+  - file_system_shortcut
+  - flag_value
+  - groups
+  - groups_types
+  - health_issues
+  - heatmap_screenshots
+  - heatmaps
+  - hog_flows
+  - hog_function_templates
+  - hog_functions
+  - insight_variables
+  - insights
+  - integrations
+  - invites
+  - js-snippet
+  - legal_documents
+  - lineage
+  - live_debugger_breakpoints
+  - llm_analytics
+  - llm_prompts
+  - llm_skills
+  - logs
+  - managed_viewsets
+  - max
+  - max_tools
+  - mcp_server_installations
+  - mcp_servers
+  - mcp_store
+  - mcp_tools
+  - members
+  - notebooks
+  - oauth_applications
+  - object_media_previews
+  - organizations
+  - persisted_folder
+  - persons
+  - platform_features
+  - plugin_configs
+  - product_analytics
+  - product_tours
+  - project_secret_api_keys
+  - projects
+  - property_definitions
+  - proxy_records
+  - public_hog_function_templates
+  - query
+  - replay
+  - reverse_proxy
+  - role_external_references
+  - roles
+  - sandbox-environments
+  - sandbox_environments
+  - saved
+  - schema_property_groups
+  - sdk_doctor
+  - session_group_summaries
+  - session_recording_playlists
+  - session_recordings
+  - session_summaries
+  - sessions
+  - signals
+  - subscriptions
+  - surveys
+  - taggers
+  - task-automations
+  - task-runs
+  - task_automations
+  - tasks
+  - uploaded_media
+  - user_home_settings
+  - user_interviews
+  - users
+  - visual_review
+  - warehouse_dag
+  - warehouse_model_paths
+  - warehouse_saved_queries
+  - warehouse_saved_query_folders
+  - warehouse_tables
+  - warehouse_view_link
+  - warehouse_view_links
+  - web_analytics
+  - web_experiments
+  - web_vitals
+  - welcome
+  - workflows

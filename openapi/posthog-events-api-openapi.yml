@@ -1,0 +1,749 @@
+openapi: 3.0.3
+info:
+  title: PostHog actions events API
+  version: 1.0.0
+  description: ''
+tags:
+- name: events
+paths:
+  /api/environments/{environment_id}/events/:
+    get:
+      operationId: environments_events_list
+      description: "\n        This endpoint allows you to list and filter events.\n        It is effectively deprecated and is kept only for backwards compatibility.\n        If you ever ask about it you will be advised to not use it...\n        If you want to ad-hoc list or aggregate events, use the Query endpoint instead.\n        If you want to export all events or many pages of events you should use our CDP/Batch Exports products instead.\n        "
+      parameters:
+      - in: query
+        name: after
+        schema:
+          type: string
+          format: date-time
+        description: 'Only return events with a timestamp after this time. Default: now() - 24 hours.'
+      - in: query
+        name: before
+        schema:
+          type: string
+          format: date-time
+        description: 'Only return events with a timestamp before this time. Default: now() + 5 seconds.'
+      - in: query
+        name: distinct_id
+        schema:
+          type: integer
+        description: Filter list by distinct id.
+      - $ref: '#/components/parameters/EnvironmentIdPath'
+      - in: query
+        name: event
+        schema:
+          type: string
+        description: Filter list by event. For example `user sign up` or `$pageview`.
+      - in: query
+        name: format
+        schema:
+          type: string
+          enum:
+          - csv
+          - json
+      - in: query
+        name: limit
+        schema:
+          type: integer
+        description: The maximum number of results to return
+      - in: query
+        name: offset
+        schema:
+          type: integer
+        description: 'Allows to skip first offset rows. Will fail for value larger than 100000. Read about proper way of paginating: https://posthog.com/docs/api/queries#5-use-timestamp-based-pagination-instead-of-offset'
+        deprecated: true
+      - in: query
+        name: person_id
+        schema:
+          type: integer
+        description: Filter list by person id.
+      - in: query
+        name: properties
+        schema:
+          type: array
+          items:
+            $ref: '#/components/schemas/Property'
+        description: Filter events by event property, person property, cohort, groups and more.
+      - in: query
+        name: select
+        schema:
+          type: array
+          items:
+            type: string
+        description: (Experimental) JSON-serialized array of HogQL expressions to return
+      - in: query
+        name: where
+        schema:
+          type: array
+          items:
+            type: string
+        description: (Experimental) JSON-serialized array of HogQL expressions that must pass
+      tags:
+      - events
+      security:
+      - PersonalAPIKeyAuth:
+        - query:read
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedClickhouseEventList'
+            text/csv:
+              schema:
+                $ref: '#/components/schemas/PaginatedClickhouseEventList'
+          description: ''
+      deprecated: true
+      x-explicit-tags: []
+  /api/environments/{environment_id}/events/{id}/:
+    get:
+      operationId: environments_events_retrieve
+      parameters:
+      - $ref: '#/components/parameters/EnvironmentIdPath'
+      - in: query
+        name: format
+        schema:
+          type: string
+          enum:
+          - csv
+          - json
+      - in: path
+        name: id
+        schema:
+          type: string
+        required: true
+      tags:
+      - events
+      security:
+      - PersonalAPIKeyAuth:
+        - query:read
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties: true
+            text/csv:
+              schema:
+                type: object
+                additionalProperties: true
+          description: ''
+      deprecated: true
+      x-explicit-tags: []
+  /api/environments/{environment_id}/events/values/:
+    get:
+      operationId: environments_events_values_retrieve
+      parameters:
+      - $ref: '#/components/parameters/EnvironmentIdPath'
+      - in: query
+        name: format
+        schema:
+          type: string
+          enum:
+          - csv
+          - json
+      tags:
+      - events
+      security:
+      - PersonalAPIKeyAuth:
+        - query:read
+      responses:
+        '200':
+          description: No response body
+      deprecated: true
+      x-explicit-tags: []
+  /api/projects/{project_id}/events/:
+    get:
+      operationId: events_list
+      description: "\n        This endpoint allows you to list and filter events.\n        It is effectively deprecated and is kept only for backwards compatibility.\n        If you ever ask about it you will be advised to not use it...\n        If you want to ad-hoc list or aggregate events, use the Query endpoint instead.\n        If you want to export all events or many pages of events you should use our CDP/Batch Exports products instead.\n        "
+      parameters:
+      - in: query
+        name: after
+        schema:
+          type: string
+          format: date-time
+        description: 'Only return events with a timestamp after this time. Default: now() - 24 hours.'
+      - in: query
+        name: before
+        schema:
+          type: string
+          format: date-time
+        description: 'Only return events with a timestamp before this time. Default: now() + 5 seconds.'
+      - in: query
+        name: distinct_id
+        schema:
+          type: integer
+        description: Filter list by distinct id.
+      - in: query
+        name: event
+        schema:
+          type: string
+        description: Filter list by event. For example `user sign up` or `$pageview`.
+      - in: query
+        name: format
+        schema:
+          type: string
+          enum:
+          - csv
+          - json
+      - in: query
+        name: limit
+        schema:
+          type: integer
+        description: The maximum number of results to return
+      - in: query
+        name: offset
+        schema:
+          type: integer
+        description: 'Allows to skip first offset rows. Will fail for value larger than 100000. Read about proper way of paginating: https://posthog.com/docs/api/queries#5-use-timestamp-based-pagination-instead-of-offset'
+        deprecated: true
+      - in: query
+        name: person_id
+        schema:
+          type: integer
+        description: Filter list by person id.
+      - $ref: '#/components/parameters/ProjectIdPath'
+      - in: query
+        name: properties
+        schema:
+          type: array
+          items:
+            $ref: '#/components/schemas/Property'
+        description: Filter events by event property, person property, cohort, groups and more.
+      - in: query
+        name: select
+        schema:
+          type: array
+          items:
+            type: string
+        description: (Experimental) JSON-serialized array of HogQL expressions to return
+      - in: query
+        name: where
+        schema:
+          type: array
+          items:
+            type: string
+        description: (Experimental) JSON-serialized array of HogQL expressions that must pass
+      tags:
+      - events
+      security:
+      - PersonalAPIKeyAuth:
+        - query:read
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedClickhouseEventList'
+            text/csv:
+              schema:
+                $ref: '#/components/schemas/PaginatedClickhouseEventList'
+          description: ''
+      x-explicit-tags: []
+  /api/projects/{project_id}/events/{id}/:
+    get:
+      operationId: events_retrieve
+      parameters:
+      - in: query
+        name: format
+        schema:
+          type: string
+          enum:
+          - csv
+          - json
+      - in: path
+        name: id
+        schema:
+          type: string
+        required: true
+      - $ref: '#/components/parameters/ProjectIdPath'
+      tags:
+      - events
+      security:
+      - PersonalAPIKeyAuth:
+        - query:read
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties: true
+            text/csv:
+              schema:
+                type: object
+                additionalProperties: true
+          description: ''
+      x-explicit-tags: []
+  /api/projects/{project_id}/events/values/:
+    get:
+      operationId: events_values_retrieve
+      parameters:
+      - in: query
+        name: format
+        schema:
+          type: string
+          enum:
+          - csv
+          - json
+      - $ref: '#/components/parameters/ProjectIdPath'
+      tags:
+      - events
+      security:
+      - PersonalAPIKeyAuth:
+        - query:read
+      responses:
+        '200':
+          description: No response body
+      x-explicit-tags: []
+components:
+  schemas:
+    ClickhouseEvent:
+      type: object
+      properties:
+        id:
+          type: string
+          readOnly: true
+        distinct_id:
+          type: string
+          readOnly: true
+        properties:
+          type: object
+          additionalProperties: true
+          readOnly: true
+        event:
+          type: string
+          readOnly: true
+        timestamp:
+          type: string
+          format: date-time
+          readOnly: true
+        person:
+          type: object
+          additionalProperties: true
+          nullable: true
+          readOnly: true
+        elements:
+          type: array
+          items:
+            $ref: '#/components/schemas/EventElement'
+          readOnly: true
+        elements_chain:
+          type: string
+          readOnly: true
+      required:
+      - distinct_id
+      - elements
+      - elements_chain
+      - event
+      - id
+      - person
+      - properties
+      - timestamp
+    PropertyItem:
+      type: object
+      properties:
+        key:
+          type: string
+          description: Key of the property you're filtering on. For example `email` or `$current_url`
+        value:
+          oneOf:
+          - type: string
+          - type: number
+          - type: boolean
+          - type: array
+            items:
+              oneOf:
+              - type: string
+              - type: number
+          description: Value of your filter. For example `test@example.com` or `https://example.com/test/`. Can be an array for an OR query, like `["test@example.com","ok@example.com"]`
+        operator:
+          nullable: true
+          default: exact
+          oneOf:
+          - $ref: '#/components/schemas/PropertyItemOperatorEnum'
+          - $ref: '#/components/schemas/BlankEnum'
+          - $ref: '#/components/schemas/NullEnum'
+        type:
+          default: event
+          oneOf:
+          - $ref: '#/components/schemas/PropertyFilterTypeEnum'
+          - $ref: '#/components/schemas/BlankEnum'
+      required:
+      - key
+      - value
+    PropertyGroupOperator:
+      enum:
+      - AND
+      - OR
+      type: string
+    BlankEnum:
+      enum:
+      - ''
+    Property:
+      type: object
+      properties:
+        type:
+          allOf:
+          - $ref: '#/components/schemas/PropertyGroupOperator'
+          default: AND
+          description: "\n You can use a simplified version:\n```json\n{\n    \"properties\": [\n        {\n            \"key\": \"email\",\n            \"value\": \"x@y.com\",\n            \"operator\": \"exact\",\n            \"type\": \"event\"\n        }\n    ]\n}\n```\n\nOr you can create more complicated queries with AND and OR:\n```json\n{\n    \"properties\": {\n        \"type\": \"AND\",\n        \"values\": [\n            {\n                \"type\": \"OR\",\n                \"values\": [\n                    {\"key\": \"email\", ...},\n                    {\"key\": \"email\", ...}\n                ]\n            },\n            {\n                \"type\": \"AND\",\n                \"values\": [\n                    {\"key\": \"email\", ...},\n                    {\"key\": \"email\", ...}\n                ]\n            }\n        ]\n    ]\n}\n```\n\n\n* `AND` - AND\n* `OR` - OR"
+        values:
+          type: array
+          items:
+            $ref: '#/components/schemas/PropertyItem'
+      required:
+      - values
+    EventElement:
+      type: object
+      properties:
+        event:
+          type: string
+        text:
+          type: string
+          nullable: true
+          maxLength: 10000
+        tag_name:
+          type: string
+          nullable: true
+          maxLength: 1000
+        attr_class:
+          type: array
+          items:
+            type: string
+            maxLength: 200
+          nullable: true
+        href:
+          type: string
+          nullable: true
+          maxLength: 10000
+        attr_id:
+          type: string
+          nullable: true
+          maxLength: 10000
+        nth_child:
+          type: integer
+          maximum: 2147483647
+          minimum: -2147483648
+          nullable: true
+        nth_of_type:
+          type: integer
+          maximum: 2147483647
+          minimum: -2147483648
+          nullable: true
+        attributes: {}
+        order:
+          type: integer
+          maximum: 2147483647
+          minimum: -2147483648
+          nullable: true
+      required:
+      - event
+    PropertyFilterTypeEnum:
+      enum:
+      - event
+      - event_metadata
+      - feature
+      - person
+      - cohort
+      - element
+      - static-cohort
+      - dynamic-cohort
+      - precalculated-cohort
+      - group
+      - recording
+      - log_entry
+      - behavioral
+      - session
+      - hogql
+      - data_warehouse
+      - data_warehouse_person_property
+      - error_tracking_issue
+      - log
+      - log_attribute
+      - log_resource_attribute
+      - span
+      - span_attribute
+      - span_resource_attribute
+      - revenue_analytics
+      - flag
+      - workflow_variable
+      type: string
+      description: '* `event` - event
+
+        * `event_metadata` - event_metadata
+
+        * `feature` - feature
+
+        * `person` - person
+
+        * `cohort` - cohort
+
+        * `element` - element
+
+        * `static-cohort` - static-cohort
+
+        * `dynamic-cohort` - dynamic-cohort
+
+        * `precalculated-cohort` - precalculated-cohort
+
+        * `group` - group
+
+        * `recording` - recording
+
+        * `log_entry` - log_entry
+
+        * `behavioral` - behavioral
+
+        * `session` - session
+
+        * `hogql` - hogql
+
+        * `data_warehouse` - data_warehouse
+
+        * `data_warehouse_person_property` - data_warehouse_person_property
+
+        * `error_tracking_issue` - error_tracking_issue
+
+        * `log` - log
+
+        * `log_attribute` - log_attribute
+
+        * `log_resource_attribute` - log_resource_attribute
+
+        * `span` - span
+
+        * `span_attribute` - span_attribute
+
+        * `span_resource_attribute` - span_resource_attribute
+
+        * `revenue_analytics` - revenue_analytics
+
+        * `flag` - flag
+
+        * `workflow_variable` - workflow_variable'
+    PaginatedClickhouseEventList:
+      type: object
+      properties:
+        next:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?offset=400&limit=100
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/ClickhouseEvent'
+    PropertyItemOperatorEnum:
+      enum:
+      - exact
+      - is_not
+      - icontains
+      - not_icontains
+      - regex
+      - not_regex
+      - gt
+      - lt
+      - gte
+      - lte
+      - is_set
+      - is_not_set
+      - is_date_exact
+      - is_date_after
+      - is_date_before
+      - in
+      - not_in
+      type: string
+      description: '* `exact` - exact
+
+        * `is_not` - is_not
+
+        * `icontains` - icontains
+
+        * `not_icontains` - not_icontains
+
+        * `regex` - regex
+
+        * `not_regex` - not_regex
+
+        * `gt` - gt
+
+        * `lt` - lt
+
+        * `gte` - gte
+
+        * `lte` - lte
+
+        * `is_set` - is_set
+
+        * `is_not_set` - is_not_set
+
+        * `is_date_exact` - is_date_exact
+
+        * `is_date_after` - is_date_after
+
+        * `is_date_before` - is_date_before
+
+        * `in` - in
+
+        * `not_in` - not_in'
+    NullEnum:
+      enum:
+      - null
+  parameters:
+    ProjectIdPath:
+      in: path
+      name: project_id
+      required: true
+      schema:
+        type: string
+      description: Project ID of the project you're trying to access. To find the ID of the project, make a call to /api/projects/.
+    EnvironmentIdPath:
+      in: path
+      name: environment_id
+      required: true
+      schema:
+        type: string
+      description: Deprecated. Use /api/projects/{project_id}/ instead.
+  securitySchemes:
+    PersonalAPIKeyAuth:
+      type: http
+      scheme: bearer
+x-tagGroups:
+- name: All endpoints
+  tags:
+  - LLM Analytics
+  - actions
+  - activity_log
+  - activity_logs
+  - advanced_activity_logs
+  - alerts
+  - annotations
+  - approval_policies
+  - batch_exports
+  - cdp
+  - change_requests
+  - code
+  - code-invites
+  - cohorts
+  - comments
+  - conversations
+  - core
+  - customer_analytics
+  - customer_journeys
+  - customer_profile_configs
+  - dashboard_templates
+  - dashboards
+  - data_color_themes
+  - data_modeling_jobs
+  - data_warehouse
+  - dataset_items
+  - datasets
+  - desktop_recordings
+  - domains
+  - early_access_feature
+  - early_access_features
+  - elements
+  - endpoints
+  - environments
+  - error_tracking
+  - evaluation_runs
+  - evaluations
+  - event_definitions
+  - event_filter
+  - event_schemas
+  - events
+  - experiment_holdouts
+  - experiment_saved_metrics
+  - experiments
+  - exports
+  - external_data_schemas
+  - external_data_sources
+  - feature_flags
+  - file_system
+  - file_system_shortcut
+  - flag_value
+  - groups
+  - groups_types
+  - health_issues
+  - heatmap_screenshots
+  - heatmaps
+  - hog_flows
+  - hog_function_templates
+  - hog_functions
+  - insight_variables
+  - insights
+  - integrations
+  - invites
+  - js-snippet
+  - legal_documents
+  - lineage
+  - live_debugger_breakpoints
+  - llm_analytics
+  - llm_prompts
+  - llm_skills
+  - logs
+  - managed_viewsets
+  - max
+  - max_tools
+  - mcp_server_installations
+  - mcp_servers
+  - mcp_store
+  - mcp_tools
+  - members
+  - notebooks
+  - oauth_applications
+  - object_media_previews
+  - organizations
+  - persisted_folder
+  - persons
+  - platform_features
+  - plugin_configs
+  - product_analytics
+  - product_tours
+  - project_secret_api_keys
+  - projects
+  - property_definitions
+  - proxy_records
+  - public_hog_function_templates
+  - query
+  - replay
+  - reverse_proxy
+  - role_external_references
+  - roles
+  - sandbox-environments
+  - sandbox_environments
+  - saved
+  - schema_property_groups
+  - sdk_doctor
+  - session_group_summaries
+  - session_recording_playlists
+  - session_recordings
+  - session_summaries
+  - sessions
+  - signals
+  - subscriptions
+  - surveys
+  - taggers
+  - task-automations
+  - task-runs
+  - task_automations
+  - tasks
+  - uploaded_media
+  - user_home_settings
+  - user_interviews
+  - users
+  - visual_review
+  - warehouse_dag
+  - warehouse_model_paths
+  - warehouse_saved_queries
+  - warehouse_saved_query_folders
+  - warehouse_tables
+  - warehouse_view_link
+  - warehouse_view_links
+  - web_analytics
+  - web_experiments
+  - web_vitals
+  - welcome
+  - workflows

@@ -1,0 +1,957 @@
+openapi: 3.0.3
+info:
+  title: PostHog actions product_tours API
+  version: 1.0.0
+  description: ''
+tags:
+- name: product_tours
+paths:
+  /api/projects/{project_id}/product_tours/:
+    get:
+      operationId: product_tours_list
+      parameters:
+      - name: limit
+        required: false
+        in: query
+        description: Number of results to return per page.
+        schema:
+          type: integer
+      - name: offset
+        required: false
+        in: query
+        description: The initial index from which to return the results.
+        schema:
+          type: integer
+      - $ref: '#/components/parameters/ProjectIdPath'
+      - name: search
+        required: false
+        in: query
+        description: A search term.
+        schema:
+          type: string
+      tags:
+      - product_tours
+      security:
+      - PersonalAPIKeyAuth:
+        - product_tour:read
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedProductTourList'
+          description: ''
+      x-explicit-tags:
+      - product_tours
+    post:
+      operationId: product_tours_create
+      parameters:
+      - $ref: '#/components/parameters/ProjectIdPath'
+      tags:
+      - product_tours
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ProductTourSerializerCreateUpdateOnly'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/ProductTourSerializerCreateUpdateOnly'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/ProductTourSerializerCreateUpdateOnly'
+        required: true
+      security:
+      - PersonalAPIKeyAuth:
+        - product_tour:write
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProductTourSerializerCreateUpdateOnly'
+          description: ''
+      x-explicit-tags:
+      - product_tours
+  /api/projects/{project_id}/product_tours/{id}/:
+    get:
+      operationId: product_tours_retrieve
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this product tour.
+        required: true
+      - $ref: '#/components/parameters/ProjectIdPath'
+      tags:
+      - product_tours
+      security:
+      - PersonalAPIKeyAuth:
+        - product_tour:read
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProductTour'
+          description: ''
+      x-explicit-tags: []
+    put:
+      operationId: product_tours_update
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this product tour.
+        required: true
+      - $ref: '#/components/parameters/ProjectIdPath'
+      tags:
+      - product_tours
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ProductTour'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/ProductTour'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/ProductTour'
+        required: true
+      security:
+      - PersonalAPIKeyAuth:
+        - product_tour:write
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProductTour'
+          description: ''
+      x-explicit-tags: []
+    patch:
+      operationId: product_tours_partial_update
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this product tour.
+        required: true
+      - $ref: '#/components/parameters/ProjectIdPath'
+      tags:
+      - product_tours
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchedProductTourSerializerCreateUpdateOnly'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/PatchedProductTourSerializerCreateUpdateOnly'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/PatchedProductTourSerializerCreateUpdateOnly'
+      security:
+      - PersonalAPIKeyAuth:
+        - product_tour:write
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProductTourSerializerCreateUpdateOnly'
+          description: ''
+      x-explicit-tags: []
+    delete:
+      operationId: product_tours_destroy
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this product tour.
+        required: true
+      - $ref: '#/components/parameters/ProjectIdPath'
+      tags:
+      - product_tours
+      security:
+      - PersonalAPIKeyAuth:
+        - product_tour:write
+      responses:
+        '204':
+          description: No response body
+      x-explicit-tags: []
+  /api/projects/{project_id}/product_tours/{id}/discard_draft/:
+    delete:
+      operationId: product_tours_discard_draft_destroy
+      description: Discard draft content.
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this product tour.
+        required: true
+      - $ref: '#/components/parameters/ProjectIdPath'
+      tags:
+      - product_tours
+      security:
+      - PersonalAPIKeyAuth:
+        - product_tour:write
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProductTour'
+          description: ''
+      x-explicit-tags: []
+  /api/projects/{project_id}/product_tours/{id}/draft/:
+    patch:
+      operationId: product_tours_draft_partial_update
+      description: Save draft content (server-side merge). No side effects triggered.
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this product tour.
+        required: true
+      - $ref: '#/components/parameters/ProjectIdPath'
+      tags:
+      - product_tours
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchedProductTourSerializerCreateUpdateOnly'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/PatchedProductTourSerializerCreateUpdateOnly'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/PatchedProductTourSerializerCreateUpdateOnly'
+      security:
+      - PersonalAPIKeyAuth:
+        - product_tour:write
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProductTour'
+          description: ''
+      x-explicit-tags: []
+  /api/projects/{project_id}/product_tours/{id}/draft_status/:
+    get:
+      operationId: product_tours_draft_status_retrieve
+      description: Lightweight polling endpoint for draft change detection.
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this product tour.
+        required: true
+      - $ref: '#/components/parameters/ProjectIdPath'
+      tags:
+      - product_tours
+      security:
+      - PersonalAPIKeyAuth:
+        - product_tour:read
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DraftStatusResponse'
+          description: ''
+      x-explicit-tags: []
+  /api/projects/{project_id}/product_tours/{id}/generate/:
+    post:
+      operationId: product_tours_generate_create
+      description: Generate tour step content using AI.
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this product tour.
+        required: true
+      - $ref: '#/components/parameters/ProjectIdPath'
+      tags:
+      - product_tours
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/GenerateRequest'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/GenerateRequest'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/GenerateRequest'
+      security:
+      - PersonalAPIKeyAuth:
+        - product_tour:write
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenerateResponse'
+          description: ''
+      x-explicit-tags: []
+  /api/projects/{project_id}/product_tours/{id}/publish_draft/:
+    post:
+      operationId: product_tours_publish_draft_create
+      description: 'Commit draft to live tour. Runs full validation and triggers side effects.
+
+
+        Accepts an optional body payload. If provided, merges it into the draft
+
+        before publishing so the caller can save + publish in a single request.'
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this product tour.
+        required: true
+      - $ref: '#/components/parameters/ProjectIdPath'
+      tags:
+      - product_tours
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ProductTourSerializerCreateUpdateOnly'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/ProductTourSerializerCreateUpdateOnly'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/ProductTourSerializerCreateUpdateOnly'
+        required: true
+      security:
+      - PersonalAPIKeyAuth:
+        - product_tour:write
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProductTour'
+          description: ''
+      x-explicit-tags: []
+components:
+  schemas:
+    PaginatedProductTourList:
+      type: object
+      required:
+      - count
+      - results
+      properties:
+        count:
+          type: integer
+          example: 123
+        next:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?offset=400&limit=100
+        previous:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?offset=200&limit=100
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/ProductTour'
+    EvaluationRuntimeEnum:
+      enum:
+      - server
+      - client
+      - all
+      type: string
+      description: '* `server` - Server
+
+        * `client` - Client
+
+        * `all` - All'
+    ProductTourSerializerCreateUpdateOnlyCreationContextEnum:
+      enum:
+      - app
+      - toolbar
+      type: string
+      description: '* `app` - app
+
+        * `toolbar` - toolbar'
+    GenerateResponse:
+      type: object
+      properties:
+        steps:
+          type: array
+          items:
+            $ref: '#/components/schemas/GenerateStepResponse'
+      required:
+      - steps
+    BlankEnum:
+      enum:
+      - ''
+    PatchedProductTourSerializerCreateUpdateOnly:
+      type: object
+      description: Serializer for creating and updating ProductTour.
+      properties:
+        id:
+          type: string
+          format: uuid
+          readOnly: true
+        name:
+          type: string
+          maxLength: 400
+        description:
+          type: string
+        internal_targeting_flag:
+          allOf:
+          - $ref: '#/components/schemas/MinimalFeatureFlag'
+          readOnly: true
+        linked_flag:
+          allOf:
+          - $ref: '#/components/schemas/MinimalFeatureFlag'
+          readOnly: true
+        linked_flag_id:
+          type: integer
+          writeOnly: true
+          nullable: true
+        targeting_flag_filters:
+          writeOnly: true
+          nullable: true
+        content: {}
+        auto_launch:
+          type: boolean
+        start_date:
+          type: string
+          format: date-time
+          nullable: true
+        end_date:
+          type: string
+          format: date-time
+          nullable: true
+        created_at:
+          type: string
+          format: date-time
+          readOnly: true
+        created_by:
+          allOf:
+          - $ref: '#/components/schemas/UserBasic'
+          readOnly: true
+        updated_at:
+          type: string
+          format: date-time
+          readOnly: true
+        archived:
+          type: boolean
+        creation_context:
+          allOf:
+          - $ref: '#/components/schemas/ProductTourSerializerCreateUpdateOnlyCreationContextEnum'
+          writeOnly: true
+          default: app
+          description: 'Where the tour was created/updated from
+
+
+            * `app` - app
+
+            * `toolbar` - toolbar'
+    GenerateStepResponse:
+      type: object
+      properties:
+        step_id:
+          type: string
+        title:
+          type: string
+        description:
+          type: string
+      required:
+      - description
+      - step_id
+      - title
+    NullEnum:
+      enum:
+      - null
+    MinimalFeatureFlag:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        team_id:
+          type: integer
+          readOnly: true
+        name:
+          type: string
+        key:
+          type: string
+          maxLength: 400
+        filters:
+          type: object
+          additionalProperties: true
+        deleted:
+          type: boolean
+        active:
+          type: boolean
+        ensure_experience_continuity:
+          type: boolean
+          nullable: true
+        has_encrypted_payloads:
+          type: boolean
+          nullable: true
+        version:
+          type: integer
+          maximum: 2147483647
+          minimum: -2147483648
+          nullable: true
+        evaluation_runtime:
+          nullable: true
+          description: 'Specifies where this feature flag should be evaluated
+
+
+            * `server` - Server
+
+            * `client` - Client
+
+            * `all` - All'
+          oneOf:
+          - $ref: '#/components/schemas/EvaluationRuntimeEnum'
+          - $ref: '#/components/schemas/BlankEnum'
+          - $ref: '#/components/schemas/NullEnum'
+        bucketing_identifier:
+          nullable: true
+          description: 'Identifier used for bucketing users into rollout and variants
+
+
+            * `distinct_id` - User ID (default)
+
+            * `device_id` - Device ID'
+          oneOf:
+          - $ref: '#/components/schemas/BucketingIdentifierEnum'
+          - $ref: '#/components/schemas/BlankEnum'
+          - $ref: '#/components/schemas/NullEnum'
+        evaluation_contexts:
+          type: array
+          items:
+            type: string
+          readOnly: true
+      required:
+      - evaluation_contexts
+      - id
+      - key
+      - team_id
+    UserBasic:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        uuid:
+          type: string
+          format: uuid
+          readOnly: true
+        distinct_id:
+          type: string
+          nullable: true
+          maxLength: 200
+        first_name:
+          type: string
+          maxLength: 150
+        last_name:
+          type: string
+          maxLength: 150
+        email:
+          type: string
+          format: email
+          title: Email address
+          maxLength: 254
+        is_email_verified:
+          type: boolean
+          nullable: true
+        hedgehog_config:
+          type: object
+          additionalProperties: true
+          nullable: true
+          readOnly: true
+        role_at_organization:
+          nullable: true
+          oneOf:
+          - $ref: '#/components/schemas/RoleAtOrganizationEnum'
+          - $ref: '#/components/schemas/BlankEnum'
+          - $ref: '#/components/schemas/NullEnum'
+      required:
+      - email
+      - hedgehog_config
+      - id
+      - uuid
+    BucketingIdentifierEnum:
+      enum:
+      - distinct_id
+      - device_id
+      type: string
+      description: '* `distinct_id` - User ID (default)
+
+        * `device_id` - Device ID'
+    RoleAtOrganizationEnum:
+      enum:
+      - engineering
+      - data
+      - product
+      - founder
+      - leadership
+      - marketing
+      - sales
+      - other
+      type: string
+      description: '* `engineering` - Engineering
+
+        * `data` - Data
+
+        * `product` - Product Management
+
+        * `founder` - Founder
+
+        * `leadership` - Leadership
+
+        * `marketing` - Marketing
+
+        * `sales` - Sales / Success
+
+        * `other` - Other'
+    DraftStatusResponse:
+      type: object
+      properties:
+        updated_at:
+          type: string
+          format: date-time
+        has_draft:
+          type: boolean
+      required:
+      - has_draft
+      - updated_at
+    ProductTour:
+      type: object
+      description: Read-only serializer for ProductTour.
+      properties:
+        id:
+          type: string
+          format: uuid
+          readOnly: true
+        name:
+          type: string
+          maxLength: 400
+        description:
+          type: string
+        internal_targeting_flag:
+          allOf:
+          - $ref: '#/components/schemas/MinimalFeatureFlag'
+          readOnly: true
+        linked_flag:
+          allOf:
+          - $ref: '#/components/schemas/MinimalFeatureFlag'
+          readOnly: true
+        targeting_flag_filters:
+          type: object
+          additionalProperties: true
+          nullable: true
+          description: Return the targeting flag filters, excluding the base exclusion properties.
+          readOnly: true
+        content: {}
+        draft_content:
+          readOnly: true
+          nullable: true
+        has_draft:
+          type: boolean
+          readOnly: true
+        auto_launch:
+          type: boolean
+        start_date:
+          type: string
+          format: date-time
+          nullable: true
+        end_date:
+          type: string
+          format: date-time
+          nullable: true
+        created_at:
+          type: string
+          format: date-time
+          readOnly: true
+        created_by:
+          allOf:
+          - $ref: '#/components/schemas/UserBasic'
+          readOnly: true
+        updated_at:
+          type: string
+          format: date-time
+          readOnly: true
+        archived:
+          type: boolean
+      required:
+      - created_at
+      - created_by
+      - draft_content
+      - has_draft
+      - id
+      - internal_targeting_flag
+      - linked_flag
+      - name
+      - targeting_flag_filters
+      - updated_at
+    ProductTourSerializerCreateUpdateOnly:
+      type: object
+      description: Serializer for creating and updating ProductTour.
+      properties:
+        id:
+          type: string
+          format: uuid
+          readOnly: true
+        name:
+          type: string
+          maxLength: 400
+        description:
+          type: string
+        internal_targeting_flag:
+          allOf:
+          - $ref: '#/components/schemas/MinimalFeatureFlag'
+          readOnly: true
+        linked_flag:
+          allOf:
+          - $ref: '#/components/schemas/MinimalFeatureFlag'
+          readOnly: true
+        linked_flag_id:
+          type: integer
+          writeOnly: true
+          nullable: true
+        targeting_flag_filters:
+          writeOnly: true
+          nullable: true
+        content: {}
+        auto_launch:
+          type: boolean
+        start_date:
+          type: string
+          format: date-time
+          nullable: true
+        end_date:
+          type: string
+          format: date-time
+          nullable: true
+        created_at:
+          type: string
+          format: date-time
+          readOnly: true
+        created_by:
+          allOf:
+          - $ref: '#/components/schemas/UserBasic'
+          readOnly: true
+        updated_at:
+          type: string
+          format: date-time
+          readOnly: true
+        archived:
+          type: boolean
+        creation_context:
+          allOf:
+          - $ref: '#/components/schemas/ProductTourSerializerCreateUpdateOnlyCreationContextEnum'
+          writeOnly: true
+          default: app
+          description: 'Where the tour was created/updated from
+
+
+            * `app` - app
+
+            * `toolbar` - toolbar'
+      required:
+      - created_at
+      - created_by
+      - id
+      - internal_targeting_flag
+      - linked_flag
+      - name
+      - updated_at
+    GenerateRequest:
+      type: object
+      properties:
+        title:
+          type: string
+          default: ''
+        goal:
+          type: string
+          default: ''
+        steps:
+          type: array
+          items:
+            type: object
+            additionalProperties: true
+  parameters:
+    ProjectIdPath:
+      in: path
+      name: project_id
+      required: true
+      schema:
+        type: string
+      description: Project ID of the project you're trying to access. To find the ID of the project, make a call to /api/projects/.
+  securitySchemes:
+    PersonalAPIKeyAuth:
+      type: http
+      scheme: bearer
+x-tagGroups:
+- name: All endpoints
+  tags:
+  - LLM Analytics
+  - actions
+  - activity_log
+  - activity_logs
+  - advanced_activity_logs
+  - alerts
+  - annotations
+  - approval_policies
+  - batch_exports
+  - cdp
+  - change_requests
+  - code
+  - code-invites
+  - cohorts
+  - comments
+  - conversations
+  - core
+  - customer_analytics
+  - customer_journeys
+  - customer_profile_configs
+  - dashboard_templates
+  - dashboards
+  - data_color_themes
+  - data_modeling_jobs
+  - data_warehouse
+  - dataset_items
+  - datasets
+  - desktop_recordings
+  - domains
+  - early_access_feature
+  - early_access_features
+  - elements
+  - endpoints
+  - environments
+  - error_tracking
+  - evaluation_runs
+  - evaluations
+  - event_definitions
+  - event_filter
+  - event_schemas
+  - events
+  - experiment_holdouts
+  - experiment_saved_metrics
+  - experiments
+  - exports
+  - external_data_schemas
+  - external_data_sources
+  - feature_flags
+  - file_system
+  - file_system_shortcut
+  - flag_value
+  - groups
+  - groups_types
+  - health_issues
+  - heatmap_screenshots
+  - heatmaps
+  - hog_flows
+  - hog_function_templates
+  - hog_functions
+  - insight_variables
+  - insights
+  - integrations
+  - invites
+  - js-snippet
+  - legal_documents
+  - lineage
+  - live_debugger_breakpoints
+  - llm_analytics
+  - llm_prompts
+  - llm_skills
+  - logs
+  - managed_viewsets
+  - max
+  - max_tools
+  - mcp_server_installations
+  - mcp_servers
+  - mcp_store
+  - mcp_tools
+  - members
+  - notebooks
+  - oauth_applications
+  - object_media_previews
+  - organizations
+  - persisted_folder
+  - persons
+  - platform_features
+  - plugin_configs
+  - product_analytics
+  - product_tours
+  - project_secret_api_keys
+  - projects
+  - property_definitions
+  - proxy_records
+  - public_hog_function_templates
+  - query
+  - replay
+  - reverse_proxy
+  - role_external_references
+  - roles
+  - sandbox-environments
+  - sandbox_environments
+  - saved
+  - schema_property_groups
+  - sdk_doctor
+  - session_group_summaries
+  - session_recording_playlists
+  - session_recordings
+  - session_summaries
+  - sessions
+  - signals
+  - subscriptions
+  - surveys
+  - taggers
+  - task-automations
+  - task-runs
+  - task_automations
+  - tasks
+  - uploaded_media
+  - user_home_settings
+  - user_interviews
+  - users
+  - visual_review
+  - warehouse_dag
+  - warehouse_model_paths
+  - warehouse_saved_queries
+  - warehouse_saved_query_folders
+  - warehouse_tables
+  - warehouse_view_link
+  - warehouse_view_links
+  - web_analytics
+  - web_experiments
+  - web_vitals
+  - welcome
+  - workflows

@@ -1,0 +1,4608 @@
+openapi: 3.0.3
+info:
+  title: PostHog actions error_tracking API
+  version: 1.0.0
+  description: ''
+tags:
+- name: error_tracking
+paths:
+  /api/environments/{environment_id}/error_tracking/releases/:
+    get:
+      operationId: environments_error_tracking_releases_list
+      parameters:
+      - $ref: '#/components/parameters/EnvironmentIdPath'
+      - name: limit
+        required: false
+        in: query
+        description: Number of results to return per page.
+        schema:
+          type: integer
+      - name: offset
+        required: false
+        in: query
+        description: The initial index from which to return the results.
+        schema:
+          type: integer
+      tags:
+      - error_tracking
+      security:
+      - PersonalAPIKeyAuth:
+        - error_tracking:read
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedErrorTrackingReleaseList'
+          description: ''
+      deprecated: true
+      x-explicit-tags:
+      - error_tracking
+    post:
+      operationId: environments_error_tracking_releases_create
+      parameters:
+      - $ref: '#/components/parameters/EnvironmentIdPath'
+      tags:
+      - error_tracking
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ErrorTrackingRelease'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/ErrorTrackingRelease'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/ErrorTrackingRelease'
+        required: true
+      security:
+      - PersonalAPIKeyAuth:
+        - error_tracking:write
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorTrackingRelease'
+          description: ''
+      deprecated: true
+      x-explicit-tags:
+      - error_tracking
+  /api/environments/{environment_id}/error_tracking/releases/{id}/:
+    get:
+      operationId: environments_error_tracking_releases_retrieve
+      parameters:
+      - $ref: '#/components/parameters/EnvironmentIdPath'
+      - in: path
+        name: id
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this error tracking release.
+        required: true
+      tags:
+      - error_tracking
+      security:
+      - PersonalAPIKeyAuth:
+        - error_tracking:read
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorTrackingRelease'
+          description: ''
+      deprecated: true
+      x-explicit-tags:
+      - error_tracking
+    put:
+      operationId: environments_error_tracking_releases_update
+      parameters:
+      - $ref: '#/components/parameters/EnvironmentIdPath'
+      - in: path
+        name: id
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this error tracking release.
+        required: true
+      tags:
+      - error_tracking
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ErrorTrackingRelease'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/ErrorTrackingRelease'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/ErrorTrackingRelease'
+        required: true
+      security:
+      - PersonalAPIKeyAuth:
+        - error_tracking:write
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorTrackingRelease'
+          description: ''
+      deprecated: true
+      x-explicit-tags:
+      - error_tracking
+    patch:
+      operationId: environments_error_tracking_releases_partial_update
+      parameters:
+      - $ref: '#/components/parameters/EnvironmentIdPath'
+      - in: path
+        name: id
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this error tracking release.
+        required: true
+      tags:
+      - error_tracking
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchedErrorTrackingRelease'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/PatchedErrorTrackingRelease'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/PatchedErrorTrackingRelease'
+      security:
+      - PersonalAPIKeyAuth:
+        - error_tracking:write
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorTrackingRelease'
+          description: ''
+      deprecated: true
+      x-explicit-tags:
+      - error_tracking
+    delete:
+      operationId: environments_error_tracking_releases_destroy
+      parameters:
+      - $ref: '#/components/parameters/EnvironmentIdPath'
+      - in: path
+        name: id
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this error tracking release.
+        required: true
+      tags:
+      - error_tracking
+      security:
+      - PersonalAPIKeyAuth:
+        - error_tracking:write
+      responses:
+        '204':
+          description: No response body
+      deprecated: true
+      x-explicit-tags:
+      - error_tracking
+  /api/environments/{environment_id}/error_tracking/releases/hash/{hash_id}/:
+    get:
+      operationId: environments_error_tracking_releases_hash_retrieve
+      parameters:
+      - $ref: '#/components/parameters/EnvironmentIdPath'
+      - in: path
+        name: hash_id
+        schema:
+          type: string
+        required: true
+      tags:
+      - error_tracking
+      security:
+      - PersonalAPIKeyAuth:
+        - error_tracking:read
+      responses:
+        '200':
+          description: No response body
+      deprecated: true
+      x-explicit-tags:
+      - error_tracking
+  /api/environments/{environment_id}/error_tracking/symbol_sets/:
+    get:
+      operationId: environments_error_tracking_symbol_sets_list
+      parameters:
+      - $ref: '#/components/parameters/EnvironmentIdPath'
+      - name: limit
+        required: false
+        in: query
+        description: Number of results to return per page.
+        schema:
+          type: integer
+      - name: offset
+        required: false
+        in: query
+        description: The initial index from which to return the results.
+        schema:
+          type: integer
+      tags:
+      - error_tracking
+      security:
+      - PersonalAPIKeyAuth:
+        - error_tracking:read
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedErrorTrackingSymbolSetList'
+          description: ''
+      deprecated: true
+      x-explicit-tags:
+      - error_tracking
+    post:
+      operationId: environments_error_tracking_symbol_sets_create
+      parameters:
+      - $ref: '#/components/parameters/EnvironmentIdPath'
+      tags:
+      - error_tracking
+      requestBody:
+        content:
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/ErrorTrackingSymbolSet'
+          '*/*':
+            schema:
+              $ref: '#/components/schemas/ErrorTrackingSymbolSet'
+        required: true
+      security:
+      - PersonalAPIKeyAuth:
+        - error_tracking:write
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorTrackingSymbolSet'
+          description: ''
+      deprecated: true
+      x-explicit-tags:
+      - error_tracking
+  /api/environments/{environment_id}/error_tracking/symbol_sets/{id}/:
+    get:
+      operationId: environments_error_tracking_symbol_sets_retrieve
+      parameters:
+      - $ref: '#/components/parameters/EnvironmentIdPath'
+      - in: path
+        name: id
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this error tracking symbol set.
+        required: true
+      tags:
+      - error_tracking
+      security:
+      - PersonalAPIKeyAuth:
+        - error_tracking:read
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorTrackingSymbolSet'
+          description: ''
+      deprecated: true
+      x-explicit-tags:
+      - error_tracking
+    put:
+      operationId: environments_error_tracking_symbol_sets_update
+      parameters:
+      - $ref: '#/components/parameters/EnvironmentIdPath'
+      - in: path
+        name: id
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this error tracking symbol set.
+        required: true
+      tags:
+      - error_tracking
+      requestBody:
+        content:
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/ErrorTrackingSymbolSet'
+          '*/*':
+            schema:
+              $ref: '#/components/schemas/ErrorTrackingSymbolSet'
+        required: true
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorTrackingSymbolSet'
+          description: ''
+      deprecated: true
+      x-explicit-tags:
+      - error_tracking
+    patch:
+      operationId: environments_error_tracking_symbol_sets_partial_update
+      parameters:
+      - $ref: '#/components/parameters/EnvironmentIdPath'
+      - in: path
+        name: id
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this error tracking symbol set.
+        required: true
+      tags:
+      - error_tracking
+      requestBody:
+        content:
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/PatchedErrorTrackingSymbolSet'
+          '*/*':
+            schema:
+              $ref: '#/components/schemas/PatchedErrorTrackingSymbolSet'
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorTrackingSymbolSet'
+          description: ''
+      deprecated: true
+      x-explicit-tags:
+      - error_tracking
+    delete:
+      operationId: environments_error_tracking_symbol_sets_destroy
+      parameters:
+      - $ref: '#/components/parameters/EnvironmentIdPath'
+      - in: path
+        name: id
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this error tracking symbol set.
+        required: true
+      tags:
+      - error_tracking
+      security:
+      - PersonalAPIKeyAuth:
+        - error_tracking:write
+      responses:
+        '204':
+          description: No response body
+      deprecated: true
+      x-explicit-tags:
+      - error_tracking
+  /api/environments/{environment_id}/error_tracking/symbol_sets/{id}/download/:
+    get:
+      operationId: environments_error_tracking_symbol_sets_download_retrieve
+      description: Return a presigned URL for downloading the symbol set's source map.
+      parameters:
+      - $ref: '#/components/parameters/EnvironmentIdPath'
+      - in: path
+        name: id
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this error tracking symbol set.
+        required: true
+      tags:
+      - error_tracking
+      security:
+      - PersonalAPIKeyAuth:
+        - error_tracking:read
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/_SymbolSetDownloadResponse'
+          description: ''
+      deprecated: true
+      x-explicit-tags:
+      - error_tracking
+  /api/environments/{environment_id}/error_tracking/symbol_sets/{id}/finish_upload/:
+    put:
+      operationId: environments_error_tracking_symbol_sets_finish_upload_update
+      parameters:
+      - $ref: '#/components/parameters/EnvironmentIdPath'
+      - in: path
+        name: id
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this error tracking symbol set.
+        required: true
+      tags:
+      - error_tracking
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ErrorTrackingSymbolSet'
+        required: true
+      security:
+      - PersonalAPIKeyAuth:
+        - error_tracking:write
+      responses:
+        '200':
+          description: No response body
+      deprecated: true
+      x-explicit-tags:
+      - error_tracking
+  /api/environments/{environment_id}/error_tracking/symbol_sets/bulk_delete/:
+    post:
+      operationId: environments_error_tracking_symbol_sets_bulk_delete_create
+      parameters:
+      - $ref: '#/components/parameters/EnvironmentIdPath'
+      tags:
+      - error_tracking
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ErrorTrackingSymbolSet'
+        required: true
+      security:
+      - PersonalAPIKeyAuth:
+        - error_tracking:write
+      responses:
+        '200':
+          description: No response body
+      deprecated: true
+      x-explicit-tags:
+      - error_tracking
+  /api/environments/{environment_id}/error_tracking/symbol_sets/bulk_finish_upload/:
+    post:
+      operationId: environments_error_tracking_symbol_sets_bulk_finish_upload_create
+      parameters:
+      - $ref: '#/components/parameters/EnvironmentIdPath'
+      tags:
+      - error_tracking
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ErrorTrackingSymbolSet'
+        required: true
+      security:
+      - PersonalAPIKeyAuth:
+        - error_tracking:write
+      responses:
+        '200':
+          description: No response body
+      deprecated: true
+      x-explicit-tags:
+      - error_tracking
+  /api/environments/{environment_id}/error_tracking/symbol_sets/bulk_start_upload/:
+    post:
+      operationId: environments_error_tracking_symbol_sets_bulk_start_upload_create
+      parameters:
+      - $ref: '#/components/parameters/EnvironmentIdPath'
+      tags:
+      - error_tracking
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ErrorTrackingSymbolSet'
+        required: true
+      security:
+      - PersonalAPIKeyAuth:
+        - error_tracking:write
+      responses:
+        '200':
+          description: No response body
+      deprecated: true
+      x-explicit-tags:
+      - error_tracking
+  /api/environments/{environment_id}/error_tracking/symbol_sets/start_upload/:
+    post:
+      operationId: environments_error_tracking_symbol_sets_start_upload_create
+      parameters:
+      - $ref: '#/components/parameters/EnvironmentIdPath'
+      tags:
+      - error_tracking
+      requestBody:
+        content:
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/ErrorTrackingSymbolSet'
+          '*/*':
+            schema:
+              $ref: '#/components/schemas/ErrorTrackingSymbolSet'
+        required: true
+      security:
+      - PersonalAPIKeyAuth:
+        - error_tracking:write
+      responses:
+        '200':
+          description: No response body
+      deprecated: true
+      x-explicit-tags:
+      - error_tracking
+  /api/environments/{project_id}/error_tracking/assignment_rules/:
+    get:
+      operationId: error_tracking_assignment_rules_list
+      parameters:
+      - name: limit
+        required: false
+        in: query
+        description: Number of results to return per page.
+        schema:
+          type: integer
+      - name: offset
+        required: false
+        in: query
+        description: The initial index from which to return the results.
+        schema:
+          type: integer
+      - $ref: '#/components/parameters/ProjectIdPath'
+      tags:
+      - error_tracking
+      security:
+      - PersonalAPIKeyAuth:
+        - error_tracking:read
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedErrorTrackingAssignmentRuleList'
+          description: ''
+      x-explicit-tags:
+      - error_tracking
+    post:
+      operationId: error_tracking_assignment_rules_create
+      parameters:
+      - $ref: '#/components/parameters/ProjectIdPath'
+      tags:
+      - error_tracking
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ErrorTrackingAssignmentRuleCreateRequest'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/ErrorTrackingAssignmentRuleCreateRequest'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/ErrorTrackingAssignmentRuleCreateRequest'
+        required: true
+      security:
+      - PersonalAPIKeyAuth:
+        - error_tracking:write
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorTrackingAssignmentRule'
+          description: ''
+      x-explicit-tags:
+      - error_tracking
+  /api/environments/{project_id}/error_tracking/assignment_rules/{id}/:
+    get:
+      operationId: error_tracking_assignment_rules_retrieve
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this error tracking assignment rule.
+        required: true
+      - $ref: '#/components/parameters/ProjectIdPath'
+      tags:
+      - error_tracking
+      security:
+      - PersonalAPIKeyAuth:
+        - error_tracking:read
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorTrackingAssignmentRule'
+          description: ''
+      x-explicit-tags: []
+    put:
+      operationId: error_tracking_assignment_rules_update
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this error tracking assignment rule.
+        required: true
+      - $ref: '#/components/parameters/ProjectIdPath'
+      tags:
+      - error_tracking
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ErrorTrackingAssignmentRuleUpdateRequest'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/ErrorTrackingAssignmentRuleUpdateRequest'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/ErrorTrackingAssignmentRuleUpdateRequest'
+      security:
+      - PersonalAPIKeyAuth:
+        - error_tracking:write
+      responses:
+        '204':
+          description: No response body
+      x-explicit-tags: []
+    patch:
+      operationId: error_tracking_assignment_rules_partial_update
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this error tracking assignment rule.
+        required: true
+      - $ref: '#/components/parameters/ProjectIdPath'
+      tags:
+      - error_tracking
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchedErrorTrackingAssignmentRuleUpdateRequest'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/PatchedErrorTrackingAssignmentRuleUpdateRequest'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/PatchedErrorTrackingAssignmentRuleUpdateRequest'
+      security:
+      - PersonalAPIKeyAuth:
+        - error_tracking:write
+      responses:
+        '204':
+          description: No response body
+      x-explicit-tags: []
+    delete:
+      operationId: error_tracking_assignment_rules_destroy
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this error tracking assignment rule.
+        required: true
+      - $ref: '#/components/parameters/ProjectIdPath'
+      tags:
+      - error_tracking
+      security:
+      - PersonalAPIKeyAuth:
+        - error_tracking:write
+      responses:
+        '204':
+          description: No response body
+      x-explicit-tags: []
+  /api/environments/{project_id}/error_tracking/assignment_rules/reorder/:
+    patch:
+      operationId: error_tracking_assignment_rules_reorder_partial_update
+      parameters:
+      - $ref: '#/components/parameters/ProjectIdPath'
+      tags:
+      - error_tracking
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchedErrorTrackingAssignmentRule'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/PatchedErrorTrackingAssignmentRule'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/PatchedErrorTrackingAssignmentRule'
+      responses:
+        '200':
+          description: No response body
+      x-explicit-tags:
+      - error_tracking
+  /api/environments/{project_id}/error_tracking/fingerprints/:
+    get:
+      operationId: error_tracking_fingerprints_list
+      parameters:
+      - name: limit
+        required: false
+        in: query
+        description: Number of results to return per page.
+        schema:
+          type: integer
+      - name: offset
+        required: false
+        in: query
+        description: The initial index from which to return the results.
+        schema:
+          type: integer
+      - $ref: '#/components/parameters/ProjectIdPath'
+      tags:
+      - error_tracking
+      security:
+      - PersonalAPIKeyAuth:
+        - error_tracking:read
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedErrorTrackingFingerprintList'
+          description: ''
+      x-explicit-tags:
+      - error_tracking
+  /api/environments/{project_id}/error_tracking/fingerprints/{id}/:
+    get:
+      operationId: error_tracking_fingerprints_retrieve
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+          format: uuid
+        description: Fingerprint ID.
+        required: true
+      - $ref: '#/components/parameters/ProjectIdPath'
+      tags:
+      - error_tracking
+      security:
+      - PersonalAPIKeyAuth:
+        - error_tracking:read
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorTrackingFingerprint'
+          description: ''
+      x-explicit-tags:
+      - error_tracking
+    delete:
+      operationId: error_tracking_fingerprints_destroy
+      description: Hard delete of this model is not allowed. Use a patch API call to set "deleted" to true
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+        required: true
+      - $ref: '#/components/parameters/ProjectIdPath'
+      tags:
+      - error_tracking
+      responses:
+        '405':
+          description: No response body
+      x-explicit-tags:
+      - error_tracking
+  /api/environments/{project_id}/error_tracking/git-provider-file-links/resolve_github/:
+    get:
+      operationId: error_tracking_git_provider_file_links_resolve_github_retrieve
+      parameters:
+      - in: query
+        name: code_sample
+        schema:
+          type: string
+          minLength: 1
+        description: Code snippet to search for in repository files.
+        required: true
+      - in: query
+        name: file_name
+        schema:
+          type: string
+          minLength: 1
+        description: File name to match in search results.
+        required: true
+      - in: query
+        name: owner
+        schema:
+          type: string
+          minLength: 1
+        description: Repository owner or namespace.
+        required: true
+      - $ref: '#/components/parameters/ProjectIdPath'
+      - in: query
+        name: repository
+        schema:
+          type: string
+          minLength: 1
+        description: Repository name.
+        required: true
+      tags:
+      - error_tracking
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GitProviderFileLinkResolveResponse'
+          description: ''
+      x-explicit-tags:
+      - error_tracking
+  /api/environments/{project_id}/error_tracking/git-provider-file-links/resolve_gitlab/:
+    get:
+      operationId: error_tracking_git_provider_file_links_resolve_gitlab_retrieve
+      parameters:
+      - in: query
+        name: code_sample
+        schema:
+          type: string
+          minLength: 1
+        description: Code snippet to search for in repository files.
+        required: true
+      - in: query
+        name: file_name
+        schema:
+          type: string
+          minLength: 1
+        description: File name to match in search results.
+        required: true
+      - in: query
+        name: owner
+        schema:
+          type: string
+          minLength: 1
+        description: Repository owner or namespace.
+        required: true
+      - $ref: '#/components/parameters/ProjectIdPath'
+      - in: query
+        name: repository
+        schema:
+          type: string
+          minLength: 1
+        description: Repository name.
+        required: true
+      tags:
+      - error_tracking
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GitProviderFileLinkResolveResponse'
+          description: ''
+      x-explicit-tags:
+      - error_tracking
+  /api/environments/{project_id}/error_tracking/grouping_rules/:
+    get:
+      operationId: error_tracking_grouping_rules_list
+      parameters:
+      - $ref: '#/components/parameters/ProjectIdPath'
+      tags:
+      - error_tracking
+      security:
+      - PersonalAPIKeyAuth:
+        - error_tracking:read
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorTrackingGroupingRuleListResponse'
+          description: ''
+      x-explicit-tags:
+      - error_tracking
+    post:
+      operationId: error_tracking_grouping_rules_create
+      parameters:
+      - $ref: '#/components/parameters/ProjectIdPath'
+      tags:
+      - error_tracking
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ErrorTrackingGroupingRuleCreateRequest'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/ErrorTrackingGroupingRuleCreateRequest'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/ErrorTrackingGroupingRuleCreateRequest'
+        required: true
+      security:
+      - PersonalAPIKeyAuth:
+        - error_tracking:write
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorTrackingGroupingRule'
+          description: ''
+      x-explicit-tags:
+      - error_tracking
+  /api/environments/{project_id}/error_tracking/grouping_rules/{id}/:
+    get:
+      operationId: error_tracking_grouping_rules_retrieve
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this error tracking grouping rule.
+        required: true
+      - $ref: '#/components/parameters/ProjectIdPath'
+      tags:
+      - error_tracking
+      security:
+      - PersonalAPIKeyAuth:
+        - error_tracking:read
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorTrackingGroupingRule'
+          description: ''
+      x-explicit-tags: []
+    put:
+      operationId: error_tracking_grouping_rules_update
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this error tracking grouping rule.
+        required: true
+      - $ref: '#/components/parameters/ProjectIdPath'
+      tags:
+      - error_tracking
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ErrorTrackingGroupingRule'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/ErrorTrackingGroupingRule'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/ErrorTrackingGroupingRule'
+        required: true
+      security:
+      - PersonalAPIKeyAuth:
+        - error_tracking:write
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorTrackingGroupingRule'
+          description: ''
+      x-explicit-tags: []
+    patch:
+      operationId: error_tracking_grouping_rules_partial_update
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this error tracking grouping rule.
+        required: true
+      - $ref: '#/components/parameters/ProjectIdPath'
+      tags:
+      - error_tracking
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchedErrorTrackingGroupingRule'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/PatchedErrorTrackingGroupingRule'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/PatchedErrorTrackingGroupingRule'
+      security:
+      - PersonalAPIKeyAuth:
+        - error_tracking:write
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorTrackingGroupingRule'
+          description: ''
+      x-explicit-tags: []
+    delete:
+      operationId: error_tracking_grouping_rules_destroy
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this error tracking grouping rule.
+        required: true
+      - $ref: '#/components/parameters/ProjectIdPath'
+      tags:
+      - error_tracking
+      security:
+      - PersonalAPIKeyAuth:
+        - error_tracking:write
+      responses:
+        '204':
+          description: No response body
+      x-explicit-tags: []
+  /api/environments/{project_id}/error_tracking/grouping_rules/reorder/:
+    patch:
+      operationId: error_tracking_grouping_rules_reorder_partial_update
+      parameters:
+      - $ref: '#/components/parameters/ProjectIdPath'
+      tags:
+      - error_tracking
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchedErrorTrackingGroupingRule'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/PatchedErrorTrackingGroupingRule'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/PatchedErrorTrackingGroupingRule'
+      responses:
+        '200':
+          description: No response body
+      x-explicit-tags:
+      - error_tracking
+  /api/environments/{project_id}/error_tracking/issues/:
+    get:
+      operationId: error_tracking_issues_list
+      parameters:
+      - name: limit
+        required: false
+        in: query
+        description: Number of results to return per page.
+        schema:
+          type: integer
+      - name: offset
+        required: false
+        in: query
+        description: The initial index from which to return the results.
+        schema:
+          type: integer
+      - $ref: '#/components/parameters/ProjectIdPath'
+      tags:
+      - error_tracking
+      security:
+      - PersonalAPIKeyAuth:
+        - error_tracking:read
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedErrorTrackingIssueFullList'
+          description: ''
+      x-explicit-tags:
+      - error_tracking
+    post:
+      operationId: error_tracking_issues_create
+      parameters:
+      - $ref: '#/components/parameters/ProjectIdPath'
+      tags:
+      - error_tracking
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ErrorTrackingIssueFull'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/ErrorTrackingIssueFull'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/ErrorTrackingIssueFull'
+        required: true
+      security:
+      - PersonalAPIKeyAuth:
+        - error_tracking:write
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorTrackingIssueFull'
+          description: ''
+      x-explicit-tags:
+      - error_tracking
+  /api/environments/{project_id}/error_tracking/issues/{id}/:
+    get:
+      operationId: error_tracking_issues_retrieve
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this error tracking issue.
+        required: true
+      - $ref: '#/components/parameters/ProjectIdPath'
+      tags:
+      - error_tracking
+      security:
+      - PersonalAPIKeyAuth:
+        - error_tracking:read
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorTrackingIssueFull'
+          description: ''
+      x-explicit-tags:
+      - error_tracking
+    put:
+      operationId: error_tracking_issues_update
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this error tracking issue.
+        required: true
+      - $ref: '#/components/parameters/ProjectIdPath'
+      tags:
+      - error_tracking
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ErrorTrackingIssueFull'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/ErrorTrackingIssueFull'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/ErrorTrackingIssueFull'
+        required: true
+      security:
+      - PersonalAPIKeyAuth:
+        - error_tracking:write
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorTrackingIssueFull'
+          description: ''
+      x-explicit-tags:
+      - error_tracking
+    patch:
+      operationId: error_tracking_issues_partial_update
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this error tracking issue.
+        required: true
+      - $ref: '#/components/parameters/ProjectIdPath'
+      tags:
+      - error_tracking
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchedErrorTrackingIssueFull'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/PatchedErrorTrackingIssueFull'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/PatchedErrorTrackingIssueFull'
+      security:
+      - PersonalAPIKeyAuth:
+        - error_tracking:write
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorTrackingIssueFull'
+          description: ''
+      x-explicit-tags:
+      - error_tracking
+    delete:
+      operationId: error_tracking_issues_destroy
+      description: Hard delete of this model is not allowed. Use a patch API call to set "deleted" to true
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this error tracking issue.
+        required: true
+      - $ref: '#/components/parameters/ProjectIdPath'
+      tags:
+      - error_tracking
+      security:
+      - PersonalAPIKeyAuth:
+        - error_tracking:write
+      responses:
+        '405':
+          description: No response body
+      x-explicit-tags:
+      - error_tracking
+  /api/environments/{project_id}/error_tracking/issues/{id}/activity/:
+    get:
+      operationId: error_tracking_issues_activity_retrieve
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this error tracking issue.
+        required: true
+      - $ref: '#/components/parameters/ProjectIdPath'
+      tags:
+      - error_tracking
+      security:
+      - PersonalAPIKeyAuth:
+        - activity_log:read
+      responses:
+        '200':
+          description: No response body
+      x-explicit-tags:
+      - error_tracking
+  /api/environments/{project_id}/error_tracking/issues/{id}/assign/:
+    patch:
+      operationId: error_tracking_issues_assign_partial_update
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this error tracking issue.
+        required: true
+      - $ref: '#/components/parameters/ProjectIdPath'
+      tags:
+      - error_tracking
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchedErrorTrackingIssueFull'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/PatchedErrorTrackingIssueFull'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/PatchedErrorTrackingIssueFull'
+      security:
+      - PersonalAPIKeyAuth:
+        - error_tracking:write
+      responses:
+        '200':
+          description: No response body
+      x-explicit-tags:
+      - error_tracking
+  /api/environments/{project_id}/error_tracking/issues/{id}/cohort/:
+    put:
+      operationId: error_tracking_issues_cohort_update
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this error tracking issue.
+        required: true
+      - $ref: '#/components/parameters/ProjectIdPath'
+      tags:
+      - error_tracking
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ErrorTrackingIssueFull'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/ErrorTrackingIssueFull'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/ErrorTrackingIssueFull'
+        required: true
+      security:
+      - PersonalAPIKeyAuth:
+        - error_tracking:write
+      responses:
+        '200':
+          description: No response body
+      x-explicit-tags:
+      - error_tracking
+  /api/environments/{project_id}/error_tracking/issues/{id}/merge/:
+    post:
+      operationId: error_tracking_issues_merge_create
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this error tracking issue.
+        required: true
+      - $ref: '#/components/parameters/ProjectIdPath'
+      tags:
+      - error_tracking
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ErrorTrackingIssueMergeRequest'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/ErrorTrackingIssueMergeRequest'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/ErrorTrackingIssueMergeRequest'
+        required: true
+      security:
+      - PersonalAPIKeyAuth:
+        - error_tracking:write
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorTrackingIssueMergeResponse'
+          description: ''
+      x-explicit-tags:
+      - error_tracking
+  /api/environments/{project_id}/error_tracking/issues/{id}/split/:
+    post:
+      operationId: error_tracking_issues_split_create
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this error tracking issue.
+        required: true
+      - $ref: '#/components/parameters/ProjectIdPath'
+      tags:
+      - error_tracking
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ErrorTrackingIssueSplitRequest'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/ErrorTrackingIssueSplitRequest'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/ErrorTrackingIssueSplitRequest'
+      security:
+      - PersonalAPIKeyAuth:
+        - error_tracking:write
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorTrackingIssueSplitResponse'
+          description: ''
+      x-explicit-tags:
+      - error_tracking
+  /api/environments/{project_id}/error_tracking/issues/activity/:
+    get:
+      operationId: error_tracking_issues_all_activity_retrieve
+      parameters:
+      - $ref: '#/components/parameters/ProjectIdPath'
+      tags:
+      - error_tracking
+      security:
+      - PersonalAPIKeyAuth:
+        - activity_log:read
+      responses:
+        '200':
+          description: No response body
+      x-explicit-tags:
+      - error_tracking
+  /api/environments/{project_id}/error_tracking/issues/bulk/:
+    post:
+      operationId: error_tracking_issues_bulk_create
+      parameters:
+      - $ref: '#/components/parameters/ProjectIdPath'
+      tags:
+      - error_tracking
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ErrorTrackingIssueFull'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/ErrorTrackingIssueFull'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/ErrorTrackingIssueFull'
+        required: true
+      security:
+      - PersonalAPIKeyAuth:
+        - error_tracking:write
+      responses:
+        '200':
+          description: No response body
+      x-explicit-tags:
+      - error_tracking
+  /api/environments/{project_id}/error_tracking/issues/exists/:
+    get:
+      operationId: error_tracking_issues_exists_retrieve
+      parameters:
+      - $ref: '#/components/parameters/ProjectIdPath'
+      tags:
+      - error_tracking
+      security:
+      - PersonalAPIKeyAuth:
+        - error_tracking:read
+      responses:
+        '200':
+          description: No response body
+      x-explicit-tags:
+      - error_tracking
+  /api/environments/{project_id}/error_tracking/issues/values/:
+    get:
+      operationId: error_tracking_issues_values_retrieve
+      parameters:
+      - $ref: '#/components/parameters/ProjectIdPath'
+      tags:
+      - error_tracking
+      security:
+      - PersonalAPIKeyAuth:
+        - error_tracking:read
+      responses:
+        '200':
+          description: No response body
+      x-explicit-tags:
+      - error_tracking
+  /api/environments/{project_id}/error_tracking/recommendations/:
+    get:
+      operationId: error_tracking_recommendations_list
+      parameters:
+      - name: limit
+        required: false
+        in: query
+        description: Number of results to return per page.
+        schema:
+          type: integer
+      - name: offset
+        required: false
+        in: query
+        description: The initial index from which to return the results.
+        schema:
+          type: integer
+      - $ref: '#/components/parameters/ProjectIdPath'
+      tags:
+      - error_tracking
+      security:
+      - PersonalAPIKeyAuth:
+        - error_tracking:read
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedErrorTrackingRecommendationList'
+          description: ''
+      x-explicit-tags:
+      - error_tracking
+  /api/environments/{project_id}/error_tracking/recommendations/{id}/dismiss/:
+    post:
+      operationId: error_tracking_recommendations_dismiss_create
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this error tracking recommendation.
+        required: true
+      - $ref: '#/components/parameters/ProjectIdPath'
+      tags:
+      - error_tracking
+      security:
+      - PersonalAPIKeyAuth:
+        - error_tracking:write
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorTrackingRecommendation'
+          description: ''
+      x-explicit-tags:
+      - error_tracking
+  /api/environments/{project_id}/error_tracking/recommendations/{id}/refresh/:
+    post:
+      operationId: error_tracking_recommendations_refresh_create
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this error tracking recommendation.
+        required: true
+      - $ref: '#/components/parameters/ProjectIdPath'
+      tags:
+      - error_tracking
+      security:
+      - PersonalAPIKeyAuth:
+        - error_tracking:write
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorTrackingRecommendation'
+          description: ''
+      x-explicit-tags:
+      - error_tracking
+  /api/environments/{project_id}/error_tracking/recommendations/{id}/restore/:
+    post:
+      operationId: error_tracking_recommendations_restore_create
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this error tracking recommendation.
+        required: true
+      - $ref: '#/components/parameters/ProjectIdPath'
+      tags:
+      - error_tracking
+      security:
+      - PersonalAPIKeyAuth:
+        - error_tracking:write
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorTrackingRecommendation'
+          description: ''
+      x-explicit-tags:
+      - error_tracking
+  /api/environments/{project_id}/error_tracking/spike_detection_config/:
+    get:
+      operationId: error_tracking_spike_detection_config_list
+      parameters:
+      - $ref: '#/components/parameters/ProjectIdPath'
+      tags:
+      - error_tracking
+      security:
+      - PersonalAPIKeyAuth:
+        - error_tracking:read
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/ErrorTrackingSpikeDetectionConfig'
+          description: ''
+      x-explicit-tags:
+      - error_tracking
+  /api/environments/{project_id}/error_tracking/spike_detection_config/update_config/:
+    patch:
+      operationId: error_tracking_spike_detection_config_update_config_partial_update
+      parameters:
+      - $ref: '#/components/parameters/ProjectIdPath'
+      tags:
+      - error_tracking
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchedErrorTrackingSpikeDetectionConfig'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/PatchedErrorTrackingSpikeDetectionConfig'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/PatchedErrorTrackingSpikeDetectionConfig'
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorTrackingSpikeDetectionConfig'
+          description: ''
+      x-explicit-tags:
+      - error_tracking
+  /api/environments/{project_id}/error_tracking/spike_events/:
+    get:
+      operationId: error_tracking_spike_events_list
+      parameters:
+      - name: limit
+        required: false
+        in: query
+        description: Number of results to return per page.
+        schema:
+          type: integer
+      - name: offset
+        required: false
+        in: query
+        description: The initial index from which to return the results.
+        schema:
+          type: integer
+      - $ref: '#/components/parameters/ProjectIdPath'
+      tags:
+      - error_tracking
+      security:
+      - PersonalAPIKeyAuth:
+        - error_tracking:read
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedErrorTrackingSpikeEventList'
+          description: ''
+      x-explicit-tags:
+      - error_tracking
+  /api/environments/{project_id}/error_tracking/stack_frames/:
+    get:
+      operationId: error_tracking_stack_frames_list
+      parameters:
+      - name: limit
+        required: false
+        in: query
+        description: Number of results to return per page.
+        schema:
+          type: integer
+      - name: offset
+        required: false
+        in: query
+        description: The initial index from which to return the results.
+        schema:
+          type: integer
+      - $ref: '#/components/parameters/ProjectIdPath'
+      tags:
+      - error_tracking
+      security:
+      - PersonalAPIKeyAuth:
+        - error_tracking:read
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedErrorTrackingStackFrameList'
+          description: ''
+      x-explicit-tags:
+      - error_tracking
+  /api/environments/{project_id}/error_tracking/stack_frames/{id}/:
+    get:
+      operationId: error_tracking_stack_frames_retrieve
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this error tracking stack frame.
+        required: true
+      - $ref: '#/components/parameters/ProjectIdPath'
+      tags:
+      - error_tracking
+      security:
+      - PersonalAPIKeyAuth:
+        - error_tracking:read
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorTrackingStackFrame'
+          description: ''
+      x-explicit-tags:
+      - error_tracking
+    delete:
+      operationId: error_tracking_stack_frames_destroy
+      description: Hard delete of this model is not allowed. Use a patch API call to set "deleted" to true
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this error tracking stack frame.
+        required: true
+      - $ref: '#/components/parameters/ProjectIdPath'
+      tags:
+      - error_tracking
+      responses:
+        '405':
+          description: No response body
+      x-explicit-tags:
+      - error_tracking
+  /api/environments/{project_id}/error_tracking/stack_frames/batch_get/:
+    post:
+      operationId: error_tracking_stack_frames_batch_get_create
+      parameters:
+      - $ref: '#/components/parameters/ProjectIdPath'
+      tags:
+      - error_tracking
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ErrorTrackingStackFrame'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/ErrorTrackingStackFrame'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/ErrorTrackingStackFrame'
+        required: true
+      security:
+      - PersonalAPIKeyAuth:
+        - error_tracking:read
+      responses:
+        '200':
+          description: No response body
+      x-explicit-tags:
+      - error_tracking
+  /api/environments/{project_id}/error_tracking/suppression_rules/:
+    get:
+      operationId: error_tracking_suppression_rules_list
+      parameters:
+      - name: limit
+        required: false
+        in: query
+        description: Number of results to return per page.
+        schema:
+          type: integer
+      - name: offset
+        required: false
+        in: query
+        description: The initial index from which to return the results.
+        schema:
+          type: integer
+      - $ref: '#/components/parameters/ProjectIdPath'
+      tags:
+      - error_tracking
+      security:
+      - PersonalAPIKeyAuth:
+        - error_tracking:read
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedErrorTrackingSuppressionRuleList'
+          description: ''
+      x-explicit-tags:
+      - error_tracking
+    post:
+      operationId: error_tracking_suppression_rules_create
+      parameters:
+      - $ref: '#/components/parameters/ProjectIdPath'
+      tags:
+      - error_tracking
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ErrorTrackingSuppressionRuleCreateRequest'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/ErrorTrackingSuppressionRuleCreateRequest'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/ErrorTrackingSuppressionRuleCreateRequest'
+      security:
+      - PersonalAPIKeyAuth:
+        - error_tracking:write
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorTrackingSuppressionRule'
+          description: ''
+      x-explicit-tags:
+      - error_tracking
+  /api/environments/{project_id}/error_tracking/suppression_rules/{id}/:
+    get:
+      operationId: error_tracking_suppression_rules_retrieve
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this error tracking suppression rule.
+        required: true
+      - $ref: '#/components/parameters/ProjectIdPath'
+      tags:
+      - error_tracking
+      security:
+      - PersonalAPIKeyAuth:
+        - error_tracking:read
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorTrackingSuppressionRule'
+          description: ''
+      x-explicit-tags: []
+    put:
+      operationId: error_tracking_suppression_rules_update
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this error tracking suppression rule.
+        required: true
+      - $ref: '#/components/parameters/ProjectIdPath'
+      tags:
+      - error_tracking
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ErrorTrackingSuppressionRule'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/ErrorTrackingSuppressionRule'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/ErrorTrackingSuppressionRule'
+        required: true
+      security:
+      - PersonalAPIKeyAuth:
+        - error_tracking:write
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorTrackingSuppressionRule'
+          description: ''
+      x-explicit-tags: []
+    patch:
+      operationId: error_tracking_suppression_rules_partial_update
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this error tracking suppression rule.
+        required: true
+      - $ref: '#/components/parameters/ProjectIdPath'
+      tags:
+      - error_tracking
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchedErrorTrackingSuppressionRule'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/PatchedErrorTrackingSuppressionRule'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/PatchedErrorTrackingSuppressionRule'
+      security:
+      - PersonalAPIKeyAuth:
+        - error_tracking:write
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorTrackingSuppressionRule'
+          description: ''
+      x-explicit-tags: []
+    delete:
+      operationId: error_tracking_suppression_rules_destroy
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this error tracking suppression rule.
+        required: true
+      - $ref: '#/components/parameters/ProjectIdPath'
+      tags:
+      - error_tracking
+      security:
+      - PersonalAPIKeyAuth:
+        - error_tracking:write
+      responses:
+        '204':
+          description: No response body
+      x-explicit-tags: []
+  /api/environments/{project_id}/error_tracking/suppression_rules/reorder/:
+    patch:
+      operationId: error_tracking_suppression_rules_reorder_partial_update
+      parameters:
+      - $ref: '#/components/parameters/ProjectIdPath'
+      tags:
+      - error_tracking
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchedErrorTrackingSuppressionRule'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/PatchedErrorTrackingSuppressionRule'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/PatchedErrorTrackingSuppressionRule'
+      responses:
+        '200':
+          description: No response body
+      x-explicit-tags:
+      - error_tracking
+  /api/projects/{project_id}/error_tracking/releases/:
+    get:
+      operationId: error_tracking_releases_list
+      parameters:
+      - name: limit
+        required: false
+        in: query
+        description: Number of results to return per page.
+        schema:
+          type: integer
+      - name: offset
+        required: false
+        in: query
+        description: The initial index from which to return the results.
+        schema:
+          type: integer
+      - $ref: '#/components/parameters/ProjectIdPath'
+      tags:
+      - error_tracking
+      security:
+      - PersonalAPIKeyAuth:
+        - error_tracking:read
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedErrorTrackingReleaseList'
+          description: ''
+      x-explicit-tags:
+      - error_tracking
+    post:
+      operationId: error_tracking_releases_create
+      parameters:
+      - $ref: '#/components/parameters/ProjectIdPath'
+      tags:
+      - error_tracking
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ErrorTrackingRelease'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/ErrorTrackingRelease'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/ErrorTrackingRelease'
+        required: true
+      security:
+      - PersonalAPIKeyAuth:
+        - error_tracking:write
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorTrackingRelease'
+          description: ''
+      x-explicit-tags:
+      - error_tracking
+  /api/projects/{project_id}/error_tracking/releases/{id}/:
+    get:
+      operationId: error_tracking_releases_retrieve
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this error tracking release.
+        required: true
+      - $ref: '#/components/parameters/ProjectIdPath'
+      tags:
+      - error_tracking
+      security:
+      - PersonalAPIKeyAuth:
+        - error_tracking:read
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorTrackingRelease'
+          description: ''
+      x-explicit-tags:
+      - error_tracking
+    put:
+      operationId: error_tracking_releases_update
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this error tracking release.
+        required: true
+      - $ref: '#/components/parameters/ProjectIdPath'
+      tags:
+      - error_tracking
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ErrorTrackingRelease'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/ErrorTrackingRelease'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/ErrorTrackingRelease'
+        required: true
+      security:
+      - PersonalAPIKeyAuth:
+        - error_tracking:write
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorTrackingRelease'
+          description: ''
+      x-explicit-tags:
+      - error_tracking
+    patch:
+      operationId: error_tracking_releases_partial_update
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this error tracking release.
+        required: true
+      - $ref: '#/components/parameters/ProjectIdPath'
+      tags:
+      - error_tracking
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchedErrorTrackingRelease'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/PatchedErrorTrackingRelease'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/PatchedErrorTrackingRelease'
+      security:
+      - PersonalAPIKeyAuth:
+        - error_tracking:write
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorTrackingRelease'
+          description: ''
+      x-explicit-tags:
+      - error_tracking
+    delete:
+      operationId: error_tracking_releases_destroy
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this error tracking release.
+        required: true
+      - $ref: '#/components/parameters/ProjectIdPath'
+      tags:
+      - error_tracking
+      security:
+      - PersonalAPIKeyAuth:
+        - error_tracking:write
+      responses:
+        '204':
+          description: No response body
+      x-explicit-tags:
+      - error_tracking
+  /api/projects/{project_id}/error_tracking/releases/hash/{hash_id}/:
+    get:
+      operationId: error_tracking_releases_hash_retrieve
+      parameters:
+      - in: path
+        name: hash_id
+        schema:
+          type: string
+        required: true
+      - $ref: '#/components/parameters/ProjectIdPath'
+      tags:
+      - error_tracking
+      security:
+      - PersonalAPIKeyAuth:
+        - error_tracking:read
+      responses:
+        '200':
+          description: No response body
+      x-explicit-tags:
+      - error_tracking
+  /api/projects/{project_id}/error_tracking/symbol_sets/:
+    get:
+      operationId: error_tracking_symbol_sets_list
+      parameters:
+      - name: limit
+        required: false
+        in: query
+        description: Number of results to return per page.
+        schema:
+          type: integer
+      - name: offset
+        required: false
+        in: query
+        description: The initial index from which to return the results.
+        schema:
+          type: integer
+      - $ref: '#/components/parameters/ProjectIdPath'
+      tags:
+      - error_tracking
+      security:
+      - PersonalAPIKeyAuth:
+        - error_tracking:read
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedErrorTrackingSymbolSetList'
+          description: ''
+      x-explicit-tags:
+      - error_tracking
+    post:
+      operationId: error_tracking_symbol_sets_create
+      parameters:
+      - $ref: '#/components/parameters/ProjectIdPath'
+      tags:
+      - error_tracking
+      requestBody:
+        content:
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/ErrorTrackingSymbolSet'
+          '*/*':
+            schema:
+              $ref: '#/components/schemas/ErrorTrackingSymbolSet'
+        required: true
+      security:
+      - PersonalAPIKeyAuth:
+        - error_tracking:write
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorTrackingSymbolSet'
+          description: ''
+      x-explicit-tags:
+      - error_tracking
+  /api/projects/{project_id}/error_tracking/symbol_sets/{id}/:
+    get:
+      operationId: error_tracking_symbol_sets_retrieve
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this error tracking symbol set.
+        required: true
+      - $ref: '#/components/parameters/ProjectIdPath'
+      tags:
+      - error_tracking
+      security:
+      - PersonalAPIKeyAuth:
+        - error_tracking:read
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorTrackingSymbolSet'
+          description: ''
+      x-explicit-tags:
+      - error_tracking
+    put:
+      operationId: error_tracking_symbol_sets_update
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this error tracking symbol set.
+        required: true
+      - $ref: '#/components/parameters/ProjectIdPath'
+      tags:
+      - error_tracking
+      requestBody:
+        content:
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/ErrorTrackingSymbolSet'
+          '*/*':
+            schema:
+              $ref: '#/components/schemas/ErrorTrackingSymbolSet'
+        required: true
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorTrackingSymbolSet'
+          description: ''
+      x-explicit-tags:
+      - error_tracking
+    patch:
+      operationId: error_tracking_symbol_sets_partial_update
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this error tracking symbol set.
+        required: true
+      - $ref: '#/components/parameters/ProjectIdPath'
+      tags:
+      - error_tracking
+      requestBody:
+        content:
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/PatchedErrorTrackingSymbolSet'
+          '*/*':
+            schema:
+              $ref: '#/components/schemas/PatchedErrorTrackingSymbolSet'
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorTrackingSymbolSet'
+          description: ''
+      x-explicit-tags:
+      - error_tracking
+    delete:
+      operationId: error_tracking_symbol_sets_destroy
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this error tracking symbol set.
+        required: true
+      - $ref: '#/components/parameters/ProjectIdPath'
+      tags:
+      - error_tracking
+      security:
+      - PersonalAPIKeyAuth:
+        - error_tracking:write
+      responses:
+        '204':
+          description: No response body
+      x-explicit-tags:
+      - error_tracking
+  /api/projects/{project_id}/error_tracking/symbol_sets/{id}/download/:
+    get:
+      operationId: error_tracking_symbol_sets_download_retrieve
+      description: Return a presigned URL for downloading the symbol set's source map.
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this error tracking symbol set.
+        required: true
+      - $ref: '#/components/parameters/ProjectIdPath'
+      tags:
+      - error_tracking
+      security:
+      - PersonalAPIKeyAuth:
+        - error_tracking:read
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/_SymbolSetDownloadResponse'
+          description: ''
+      x-explicit-tags:
+      - error_tracking
+  /api/projects/{project_id}/error_tracking/symbol_sets/{id}/finish_upload/:
+    put:
+      operationId: error_tracking_symbol_sets_finish_upload_update
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this error tracking symbol set.
+        required: true
+      - $ref: '#/components/parameters/ProjectIdPath'
+      tags:
+      - error_tracking
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ErrorTrackingSymbolSet'
+        required: true
+      security:
+      - PersonalAPIKeyAuth:
+        - error_tracking:write
+      responses:
+        '200':
+          description: No response body
+      x-explicit-tags:
+      - error_tracking
+  /api/projects/{project_id}/error_tracking/symbol_sets/bulk_delete/:
+    post:
+      operationId: error_tracking_symbol_sets_bulk_delete_create
+      parameters:
+      - $ref: '#/components/parameters/ProjectIdPath'
+      tags:
+      - error_tracking
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ErrorTrackingSymbolSet'
+        required: true
+      security:
+      - PersonalAPIKeyAuth:
+        - error_tracking:write
+      responses:
+        '200':
+          description: No response body
+      x-explicit-tags:
+      - error_tracking
+  /api/projects/{project_id}/error_tracking/symbol_sets/bulk_finish_upload/:
+    post:
+      operationId: error_tracking_symbol_sets_bulk_finish_upload_create
+      parameters:
+      - $ref: '#/components/parameters/ProjectIdPath'
+      tags:
+      - error_tracking
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ErrorTrackingSymbolSet'
+        required: true
+      security:
+      - PersonalAPIKeyAuth:
+        - error_tracking:write
+      responses:
+        '200':
+          description: No response body
+      x-explicit-tags:
+      - error_tracking
+  /api/projects/{project_id}/error_tracking/symbol_sets/bulk_start_upload/:
+    post:
+      operationId: error_tracking_symbol_sets_bulk_start_upload_create
+      parameters:
+      - $ref: '#/components/parameters/ProjectIdPath'
+      tags:
+      - error_tracking
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ErrorTrackingSymbolSet'
+        required: true
+      security:
+      - PersonalAPIKeyAuth:
+        - error_tracking:write
+      responses:
+        '200':
+          description: No response body
+      x-explicit-tags:
+      - error_tracking
+  /api/projects/{project_id}/error_tracking/symbol_sets/start_upload/:
+    post:
+      operationId: error_tracking_symbol_sets_start_upload_create
+      parameters:
+      - $ref: '#/components/parameters/ProjectIdPath'
+      tags:
+      - error_tracking
+      requestBody:
+        content:
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/ErrorTrackingSymbolSet'
+          '*/*':
+            schema:
+              $ref: '#/components/schemas/ErrorTrackingSymbolSet'
+        required: true
+      security:
+      - PersonalAPIKeyAuth:
+        - error_tracking:write
+      responses:
+        '200':
+          description: No response body
+      x-explicit-tags:
+      - error_tracking
+components:
+  schemas:
+    HogQLPropertyFilter:
+      additionalProperties: false
+      properties:
+        key:
+          title: Key
+          type: string
+        label:
+          default: null
+          title: Label
+          type: string
+          nullable: true
+        type:
+          default: hogql
+          title: Type
+          type: string
+          enum:
+          - hogql
+        value:
+          default: null
+          title: Value
+          anyOf:
+          - items:
+              anyOf:
+              - type: string
+              - type: number
+              - type: boolean
+            type: array
+          - type: string
+          - type: number
+          - type: boolean
+          nullable: true
+      required:
+      - key
+      title: HogQLPropertyFilter
+      type: object
+    ErrorTrackingStackFrame:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+          readOnly: true
+        raw_id:
+          type: string
+          description: Raw frame ID in 'hash/part' format
+          readOnly: true
+        created_at:
+          type: string
+          format: date-time
+          readOnly: true
+        contents: {}
+        resolved:
+          type: boolean
+        context:
+          nullable: true
+        symbol_set_ref:
+          type: string
+        release:
+          allOf:
+          - $ref: '#/components/schemas/ErrorTrackingRelease'
+          readOnly: true
+      required:
+      - contents
+      - created_at
+      - id
+      - raw_id
+      - release
+      - resolved
+    PaginatedErrorTrackingReleaseList:
+      type: object
+      required:
+      - count
+      - results
+      properties:
+        count:
+          type: integer
+          example: 123
+        next:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?offset=400&limit=100
+        previous:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?offset=200&limit=100
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/ErrorTrackingRelease'
+    ErrorTrackingIssueSplitRequest:
+      type: object
+      properties:
+        fingerprints:
+          type: array
+          items:
+            $ref: '#/components/schemas/ErrorTrackingIssueSplitFingerprint'
+          description: Fingerprints to split into new issues. Each fingerprint becomes its own new issue.
+    ErrorTrackingExternalReferenceIntegrationResult:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        kind:
+          type: string
+          readOnly: true
+        display_name:
+          type: string
+          readOnly: true
+      required:
+      - display_name
+      - id
+      - kind
+    ErrorTrackingIssueMergeResponse:
+      type: object
+      properties:
+        success:
+          type: boolean
+          description: Whether the merge completed successfully.
+      required:
+      - success
+    PaginatedErrorTrackingStackFrameList:
+      type: object
+      required:
+      - count
+      - results
+      properties:
+        count:
+          type: integer
+          example: 123
+        next:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?offset=400&limit=100
+        previous:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?offset=200&limit=100
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/ErrorTrackingStackFrame'
+    ErrorTrackingGroupingRule:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+          readOnly: true
+        filters: {}
+        assignee:
+          type: object
+          nullable: true
+          properties:
+            type:
+              type: string
+              enum:
+              - user
+              - role
+            id:
+              oneOf:
+              - type: integer
+              - type: string
+                format: uuid
+          readOnly: true
+        description:
+          type: string
+          nullable: true
+        issue:
+          type: object
+          additionalProperties:
+            type: string
+          nullable: true
+          description: Issue linked to this rule
+          readOnly: true
+        order_key:
+          type: integer
+          maximum: 2147483647
+          minimum: -2147483648
+        disabled_data:
+          nullable: true
+        created_at:
+          type: string
+          format: date-time
+          readOnly: true
+        updated_at:
+          type: string
+          format: date-time
+          readOnly: true
+      required:
+      - assignee
+      - created_at
+      - filters
+      - id
+      - issue
+      - order_key
+      - updated_at
+    RevenueAnalyticsPropertyFilter:
+      additionalProperties: false
+      properties:
+        key:
+          title: Key
+          type: string
+        label:
+          default: null
+          title: Label
+          type: string
+          nullable: true
+        operator:
+          $ref: '#/components/schemas/PropertyOperator'
+        type:
+          default: revenue_analytics
+          title: Type
+          type: string
+          enum:
+          - revenue_analytics
+        value:
+          default: null
+          title: Value
+          anyOf:
+          - items:
+              anyOf:
+              - type: string
+              - type: number
+              - type: boolean
+            type: array
+          - type: string
+          - type: number
+          - type: boolean
+          nullable: true
+      required:
+      - key
+      - operator
+      title: RevenueAnalyticsPropertyFilter
+      type: object
+    ErrorTrackingIssueAssignment:
+      type: object
+      properties:
+        id:
+          oneOf:
+          - type: integer
+          - type: string
+          nullable: true
+          readOnly: true
+        type:
+          type: string
+          readOnly: true
+      required:
+      - id
+      - type
+    Key10:
+      enum:
+      - tag_name
+      - text
+      - href
+      - selector
+      title: Key10
+      type: string
+    ErrorTrackingRecommendation:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+          readOnly: true
+        type:
+          type: string
+          readOnly: true
+        meta:
+          readOnly: true
+        computed_at:
+          type: string
+          format: date-time
+          readOnly: true
+          nullable: true
+        dismissed_at:
+          type: string
+          format: date-time
+          readOnly: true
+          nullable: true
+        next_refresh_at:
+          type: string
+          nullable: true
+          readOnly: true
+        created_at:
+          type: string
+          format: date-time
+          readOnly: true
+        updated_at:
+          type: string
+          format: date-time
+          readOnly: true
+      required:
+      - computed_at
+      - created_at
+      - dismissed_at
+      - id
+      - meta
+      - next_refresh_at
+      - type
+      - updated_at
+    ErrorTrackingAssignmentRuleUpdateRequest:
+      type: object
+      properties:
+        filters:
+          allOf:
+          - $ref: '#/components/schemas/PropertyGroupFilterValue'
+          nullable: true
+          description: Property-group filters that define when this rule matches incoming error events.
+        assignee:
+          allOf:
+          - $ref: '#/components/schemas/ErrorTrackingAssignmentRuleAssigneeRequest'
+          nullable: true
+          description: User or role to assign matching issues to.
+    DurationType:
+      enum:
+      - duration
+      - active_seconds
+      - inactive_seconds
+      title: DurationType
+      type: string
+    PatchedErrorTrackingSpikeDetectionConfig:
+      type: object
+      properties:
+        snooze_duration_minutes:
+          type: integer
+          minimum: 1
+          description: Time to wait before alerting again for the same issue after a spike is detected.
+        multiplier:
+          type: integer
+          minimum: 1
+          description: The factor by which the current exception count must exceed the baseline to be considered a spike.
+        threshold:
+          type: integer
+          minimum: 1
+          description: The minimum number of exceptions required in a 5-minute window before a spike can be detected.
+    ErrorTrackingIssueSplitResponse:
+      type: object
+      properties:
+        success:
+          type: boolean
+          description: Whether the split completed successfully.
+        new_issue_ids:
+          type: array
+          items:
+            type: string
+            format: uuid
+          description: IDs of the new issues created by the split.
+      required:
+      - new_issue_ids
+      - success
+    ElementPropertyFilter:
+      additionalProperties: false
+      properties:
+        key:
+          $ref: '#/components/schemas/Key10'
+        label:
+          default: null
+          title: Label
+          type: string
+          nullable: true
+        operator:
+          $ref: '#/components/schemas/PropertyOperator'
+        type:
+          default: element
+          title: Type
+          type: string
+          enum:
+          - element
+        value:
+          default: null
+          title: Value
+          anyOf:
+          - items:
+              anyOf:
+              - type: string
+              - type: number
+              - type: boolean
+            type: array
+          - type: string
+          - type: number
+          - type: boolean
+          nullable: true
+      required:
+      - key
+      - operator
+      title: ElementPropertyFilter
+      type: object
+    GroupPropertyFilter:
+      additionalProperties: false
+      properties:
+        group_key_names:
+          default: null
+          title: Group Key Names
+          additionalProperties:
+            type: string
+          type: object
+          nullable: true
+        group_type_index:
+          default: null
+          title: Group Type Index
+          type: integer
+          nullable: true
+        key:
+          title: Key
+          type: string
+        label:
+          default: null
+          title: Label
+          type: string
+          nullable: true
+        operator:
+          $ref: '#/components/schemas/PropertyOperator'
+        type:
+          default: group
+          title: Type
+          type: string
+          enum:
+          - group
+        value:
+          default: null
+          title: Value
+          anyOf:
+          - items:
+              anyOf:
+              - type: string
+              - type: number
+              - type: boolean
+            type: array
+          - type: string
+          - type: number
+          - type: boolean
+          nullable: true
+      required:
+      - key
+      - operator
+      title: GroupPropertyFilter
+      type: object
+    ErrorTrackingIssueSplitFingerprint:
+      type: object
+      properties:
+        fingerprint:
+          type: string
+          description: Fingerprint to split into a new issue.
+        name:
+          type: string
+          description: Optional name for the new issue created from this fingerprint.
+        description:
+          type: string
+          description: Optional description for the new issue created from this fingerprint.
+      required:
+      - fingerprint
+    PaginatedErrorTrackingSymbolSetList:
+      type: object
+      required:
+      - count
+      - results
+      properties:
+        count:
+          type: integer
+          example: 123
+        next:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?offset=400&limit=100
+        previous:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?offset=200&limit=100
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/ErrorTrackingSymbolSet'
+    PropertyGroupFilterValue:
+      additionalProperties: false
+      properties:
+        type:
+          $ref: '#/components/schemas/FilterLogicalOperator'
+        values:
+          items:
+            anyOf:
+            - $ref: '#/components/schemas/PropertyGroupFilterValue'
+            - $ref: '#/components/schemas/EventPropertyFilter'
+            - $ref: '#/components/schemas/PersonPropertyFilter'
+            - $ref: '#/components/schemas/ElementPropertyFilter'
+            - $ref: '#/components/schemas/EventMetadataPropertyFilter'
+            - $ref: '#/components/schemas/SessionPropertyFilter'
+            - $ref: '#/components/schemas/CohortPropertyFilter'
+            - $ref: '#/components/schemas/RecordingPropertyFilter'
+            - $ref: '#/components/schemas/LogEntryPropertyFilter'
+            - $ref: '#/components/schemas/GroupPropertyFilter'
+            - $ref: '#/components/schemas/FeaturePropertyFilter'
+            - $ref: '#/components/schemas/FlagPropertyFilter'
+            - $ref: '#/components/schemas/HogQLPropertyFilter'
+            - $ref: '#/components/schemas/EmptyPropertyFilter'
+            - $ref: '#/components/schemas/DataWarehousePropertyFilter'
+            - $ref: '#/components/schemas/DataWarehousePersonPropertyFilter'
+            - $ref: '#/components/schemas/ErrorTrackingIssueFilter'
+            - $ref: '#/components/schemas/LogPropertyFilter'
+            - $ref: '#/components/schemas/SpanPropertyFilter'
+            - $ref: '#/components/schemas/RevenueAnalyticsPropertyFilter'
+            - $ref: '#/components/schemas/WorkflowVariablePropertyFilter'
+          title: Values
+          type: array
+      required:
+      - type
+      - values
+      title: PropertyGroupFilterValue
+      type: object
+    ErrorTrackingIssueFull:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+          readOnly: true
+        status:
+          $ref: '#/components/schemas/ErrorTrackingIssueFullStatusEnum'
+        name:
+          type: string
+          nullable: true
+        description:
+          type: string
+          nullable: true
+        first_seen:
+          type: string
+          format: date-time
+        assignee:
+          $ref: '#/components/schemas/ErrorTrackingIssueAssignment'
+        external_issues:
+          type: array
+          items:
+            $ref: '#/components/schemas/ErrorTrackingExternalReferenceResult'
+        cohort:
+          type: object
+          nullable: true
+          properties:
+            id:
+              type: integer
+            name:
+              type: string
+          readOnly: true
+      required:
+      - assignee
+      - cohort
+      - external_issues
+      - first_seen
+      - id
+    ErrorTrackingSuppressionRule:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+          readOnly: true
+        filters: {}
+        order_key:
+          type: integer
+          maximum: 2147483647
+          minimum: -2147483648
+        disabled_data:
+          nullable: true
+        sampling_rate:
+          type: number
+          format: double
+        created_at:
+          type: string
+          format: date-time
+          readOnly: true
+        updated_at:
+          type: string
+          format: date-time
+          readOnly: true
+      required:
+      - created_at
+      - filters
+      - id
+      - order_key
+      - updated_at
+    PatchedErrorTrackingRelease:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+          readOnly: true
+        hash_id:
+          type: string
+        team_id:
+          type: integer
+          readOnly: true
+        created_at:
+          type: string
+          format: date-time
+          readOnly: true
+        metadata:
+          nullable: true
+        version:
+          type: string
+        project:
+          type: string
+    SpanPropertyFilterType:
+      enum:
+      - span
+      - span_attribute
+      - span_resource_attribute
+      title: SpanPropertyFilterType
+      type: string
+    ErrorTrackingAssignmentRuleAssigneeRequest:
+      type: object
+      properties:
+        type:
+          allOf:
+          - $ref: '#/components/schemas/AssigneeTypeEnum'
+          description: 'Assignee type. Use `user` for a user ID or `role` for a role UUID.
+
+
+            * `user` - user
+
+            * `role` - role'
+        id:
+          oneOf:
+          - type: integer
+          - type: string
+            format: uuid
+          description: User ID when `type` is `user`, or role UUID when `type` is `role`.
+      required:
+      - id
+      - type
+    ErrorTrackingAssignmentRule:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+          readOnly: true
+        filters: {}
+        assignee:
+          type: object
+          nullable: true
+          properties:
+            type:
+              type: string
+              enum:
+              - user
+              - role
+            id:
+              oneOf:
+              - type: integer
+              - type: string
+                format: uuid
+          readOnly: true
+        order_key:
+          type: integer
+          maximum: 2147483647
+          minimum: -2147483648
+        disabled_data:
+          nullable: true
+        created_at:
+          type: string
+          format: date-time
+          readOnly: true
+        updated_at:
+          type: string
+          format: date-time
+          readOnly: true
+      required:
+      - assignee
+      - created_at
+      - filters
+      - id
+      - order_key
+      - updated_at
+    EmptyPropertyFilter:
+      additionalProperties: false
+      properties:
+        type:
+          default: empty
+          title: Type
+          type: string
+          enum:
+          - empty
+      title: EmptyPropertyFilter
+      type: object
+    ErrorTrackingSymbolSet:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+          readOnly: true
+        ref:
+          type: string
+        team_id:
+          type: integer
+          readOnly: true
+        created_at:
+          type: string
+          format: date-time
+          readOnly: true
+        last_used:
+          type: string
+          format: date-time
+          nullable: true
+        storage_ptr:
+          type: string
+          nullable: true
+        failure_reason:
+          type: string
+          nullable: true
+        release:
+          type: object
+          additionalProperties: true
+          nullable: true
+          description: Release associated with this symbol set
+          readOnly: true
+      required:
+      - created_at
+      - id
+      - ref
+      - release
+      - team_id
+    PatchedErrorTrackingGroupingRule:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+          readOnly: true
+        filters: {}
+        assignee:
+          type: object
+          nullable: true
+          properties:
+            type:
+              type: string
+              enum:
+              - user
+              - role
+            id:
+              oneOf:
+              - type: integer
+              - type: string
+                format: uuid
+          readOnly: true
+        description:
+          type: string
+          nullable: true
+        issue:
+          type: object
+          additionalProperties:
+            type: string
+          nullable: true
+          description: Issue linked to this rule
+          readOnly: true
+        order_key:
+          type: integer
+          maximum: 2147483647
+          minimum: -2147483648
+        disabled_data:
+          nullable: true
+        created_at:
+          type: string
+          format: date-time
+          readOnly: true
+        updated_at:
+          type: string
+          format: date-time
+          readOnly: true
+    ErrorTrackingSpikeDetectionConfig:
+      type: object
+      properties:
+        snooze_duration_minutes:
+          type: integer
+          minimum: 1
+          description: Time to wait before alerting again for the same issue after a spike is detected.
+        multiplier:
+          type: integer
+          minimum: 1
+          description: The factor by which the current exception count must exceed the baseline to be considered a spike.
+        threshold:
+          type: integer
+          minimum: 1
+          description: The minimum number of exceptions required in a 5-minute window before a spike can be detected.
+      required:
+      - multiplier
+      - snooze_duration_minutes
+      - threshold
+    SessionPropertyFilter:
+      additionalProperties: false
+      properties:
+        key:
+          title: Key
+          type: string
+        label:
+          default: null
+          title: Label
+          type: string
+          nullable: true
+        operator:
+          $ref: '#/components/schemas/PropertyOperator'
+        type:
+          default: session
+          title: Type
+          type: string
+          enum:
+          - session
+        value:
+          default: null
+          title: Value
+          anyOf:
+          - items:
+              anyOf:
+              - type: string
+              - type: number
+              - type: boolean
+            type: array
+          - type: string
+          - type: number
+          - type: boolean
+          nullable: true
+      required:
+      - key
+      - operator
+      title: SessionPropertyFilter
+      type: object
+    LogPropertyFilter:
+      additionalProperties: false
+      properties:
+        key:
+          title: Key
+          type: string
+        label:
+          default: null
+          title: Label
+          type: string
+          nullable: true
+        operator:
+          $ref: '#/components/schemas/PropertyOperator'
+        type:
+          $ref: '#/components/schemas/LogPropertyFilterType'
+        value:
+          default: null
+          title: Value
+          anyOf:
+          - items:
+              anyOf:
+              - type: string
+              - type: number
+              - type: boolean
+            type: array
+          - type: string
+          - type: number
+          - type: boolean
+          nullable: true
+      required:
+      - key
+      - operator
+      - type
+      title: LogPropertyFilter
+      type: object
+    ErrorTrackingAssignmentRuleCreateRequest:
+      type: object
+      properties:
+        filters:
+          allOf:
+          - $ref: '#/components/schemas/PropertyGroupFilterValue'
+          description: Property-group filters that define when this rule matches incoming error events.
+        assignee:
+          allOf:
+          - $ref: '#/components/schemas/ErrorTrackingAssignmentRuleAssigneeRequest'
+          description: User or role to assign matching issues to.
+      required:
+      - assignee
+      - filters
+    ErrorTrackingGroupingRuleCreateRequest:
+      type: object
+      properties:
+        filters:
+          allOf:
+          - $ref: '#/components/schemas/PropertyGroupFilterValue'
+          description: Property-group filters that define which exceptions should be grouped into the same issue.
+        assignee:
+          allOf:
+          - $ref: '#/components/schemas/ErrorTrackingGroupingRuleAssigneeRequest'
+          nullable: true
+          description: Optional user or role to assign to issues created by this grouping rule.
+        description:
+          type: string
+          nullable: true
+          description: Optional human-readable description of what this grouping rule is for.
+      required:
+      - filters
+    GitProviderFileLinkResolveResponse:
+      type: object
+      properties:
+        found:
+          type: boolean
+          description: Whether a matching file URL was found.
+        url:
+          type: string
+          description: Resolved URL for the matching file.
+        error:
+          type: string
+          description: Error message when input parameters are invalid.
+      required:
+      - found
+    FilterLogicalOperator:
+      enum:
+      - AND
+      - OR
+      title: FilterLogicalOperator
+      type: string
+    PaginatedErrorTrackingSpikeEventList:
+      type: object
+      required:
+      - count
+      - results
+      properties:
+        count:
+          type: integer
+          example: 123
+        next:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?offset=400&limit=100
+        previous:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?offset=200&limit=100
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/ErrorTrackingSpikeEvent'
+    LogPropertyFilterType:
+      enum:
+      - log
+      - log_attribute
+      - log_resource_attribute
+      title: LogPropertyFilterType
+      type: string
+    _SymbolSetDownloadResponse:
+      type: object
+      properties:
+        url:
+          type: string
+          format: uri
+          description: Presigned URL to download the source map file
+      required:
+      - url
+    PatchedErrorTrackingSuppressionRule:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+          readOnly: true
+        filters: {}
+        order_key:
+          type: integer
+          maximum: 2147483647
+          minimum: -2147483648
+        disabled_data:
+          nullable: true
+        sampling_rate:
+          type: number
+          format: double
+        created_at:
+          type: string
+          format: date-time
+          readOnly: true
+        updated_at:
+          type: string
+          format: date-time
+          readOnly: true
+    ErrorTrackingSpikeEventIssue:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+          readOnly: true
+        name:
+          type: string
+          readOnly: true
+          nullable: true
+        description:
+          type: string
+          readOnly: true
+          nullable: true
+      required:
+      - description
+      - id
+      - name
+    ErrorTrackingIssueFullStatusEnum:
+      enum:
+      - archived
+      - active
+      - resolved
+      - pending_release
+      - suppressed
+      type: string
+      description: '* `archived` - Archived
+
+        * `active` - Active
+
+        * `resolved` - Resolved
+
+        * `pending_release` - Pending release
+
+        * `suppressed` - Suppressed'
+    ErrorTrackingFingerprint:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+          readOnly: true
+        fingerprint:
+          type: string
+          readOnly: true
+        issue_id:
+          type: string
+          format: uuid
+          readOnly: true
+        created_at:
+          type: string
+          format: date-time
+          readOnly: true
+      required:
+      - created_at
+      - fingerprint
+      - id
+      - issue_id
+    LogEntryPropertyFilter:
+      additionalProperties: false
+      properties:
+        key:
+          title: Key
+          type: string
+        label:
+          default: null
+          title: Label
+          type: string
+          nullable: true
+        operator:
+          $ref: '#/components/schemas/PropertyOperator'
+        type:
+          default: log_entry
+          title: Type
+          type: string
+          enum:
+          - log_entry
+        value:
+          default: null
+          title: Value
+          anyOf:
+          - items:
+              anyOf:
+              - type: string
+              - type: number
+              - type: boolean
+            type: array
+          - type: string
+          - type: number
+          - type: boolean
+          nullable: true
+      required:
+      - key
+      - operator
+      title: LogEntryPropertyFilter
+      type: object
+    ErrorTrackingGroupingRuleAssigneeRequest:
+      type: object
+      properties:
+        type:
+          allOf:
+          - $ref: '#/components/schemas/AssigneeTypeEnum'
+          description: 'Assignee type. Use `user` for a user ID or `role` for a role UUID.
+
+
+            * `user` - user
+
+            * `role` - role'
+        id:
+          oneOf:
+          - type: integer
+          - type: string
+            format: uuid
+          description: User ID when `type` is `user`, or role UUID when `type` is `role`.
+      required:
+      - id
+      - type
+    ErrorTrackingIssueMergeRequest:
+      type: object
+      properties:
+        ids:
+          type: array
+          items:
+            type: string
+            format: uuid
+          description: IDs of the issues to merge into the current issue.
+      required:
+      - ids
+    PatchedErrorTrackingAssignmentRule:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+          readOnly: true
+        filters: {}
+        assignee:
+          type: object
+          nullable: true
+          properties:
+            type:
+              type: string
+              enum:
+              - user
+              - role
+            id:
+              oneOf:
+              - type: integer
+              - type: string
+                format: uuid
+          readOnly: true
+        order_key:
+          type: integer
+          maximum: 2147483647
+          minimum: -2147483648
+        disabled_data:
+          nullable: true
+        created_at:
+          type: string
+          format: date-time
+          readOnly: true
+        updated_at:
+          type: string
+          format: date-time
+          readOnly: true
+    EventPropertyFilter:
+      additionalProperties: false
+      properties:
+        key:
+          title: Key
+          type: string
+        label:
+          default: null
+          title: Label
+          type: string
+          nullable: true
+        operator:
+          default: exact
+          allOf:
+          - $ref: '#/components/schemas/PropertyOperator'
+          nullable: true
+        type:
+          default: event
+          description: Event properties
+          title: Type
+          type: string
+          enum:
+          - event
+        value:
+          default: null
+          title: Value
+          anyOf:
+          - items:
+              anyOf:
+              - type: string
+              - type: number
+              - type: boolean
+            type: array
+          - type: string
+          - type: number
+          - type: boolean
+          nullable: true
+      required:
+      - key
+      title: EventPropertyFilter
+      type: object
+    PaginatedErrorTrackingIssueFullList:
+      type: object
+      required:
+      - count
+      - results
+      properties:
+        count:
+          type: integer
+          example: 123
+        next:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?offset=400&limit=100
+        previous:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?offset=200&limit=100
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/ErrorTrackingIssueFull'
+    ErrorTrackingSuppressionRuleCreateRequest:
+      type: object
+      properties:
+        filters:
+          allOf:
+          - $ref: '#/components/schemas/PropertyGroupFilterValue'
+          description: Optional property-group filters that define which incoming error events should be suppressed. Omit this field or provide an empty `values` array to create a match-all suppression rule.
+        sampling_rate:
+          type: number
+          format: double
+          maximum: 1.0
+          minimum: 0.0
+          default: 1.0
+          description: Fraction of matching events to suppress. Use `1.0` to suppress all matching events.
+    FlagPropertyFilter:
+      additionalProperties: false
+      properties:
+        key:
+          description: The key should be the flag ID
+          title: Key
+          type: string
+        label:
+          default: null
+          title: Label
+          type: string
+          nullable: true
+        operator:
+          default: flag_evaluates_to
+          description: Only flag_evaluates_to operator is allowed for flag dependencies
+          title: Operator
+          type: string
+          enum:
+          - flag_evaluates_to
+        type:
+          default: flag
+          description: Feature flag dependency
+          title: Type
+          type: string
+          enum:
+          - flag
+        value:
+          anyOf:
+          - type: boolean
+          - type: string
+          description: The value can be true, false, or a variant name
+          title: Value
+      required:
+      - key
+      - value
+      title: FlagPropertyFilter
+      type: object
+    SpanPropertyFilter:
+      additionalProperties: false
+      properties:
+        key:
+          title: Key
+          type: string
+        label:
+          default: null
+          title: Label
+          type: string
+          nullable: true
+        operator:
+          $ref: '#/components/schemas/PropertyOperator'
+        type:
+          $ref: '#/components/schemas/SpanPropertyFilterType'
+        value:
+          default: null
+          title: Value
+          anyOf:
+          - items:
+              anyOf:
+              - type: string
+              - type: number
+              - type: boolean
+            type: array
+          - type: string
+          - type: number
+          - type: boolean
+          nullable: true
+      required:
+      - key
+      - operator
+      - type
+      title: SpanPropertyFilter
+      type: object
+    PaginatedErrorTrackingFingerprintList:
+      type: object
+      required:
+      - count
+      - results
+      properties:
+        count:
+          type: integer
+          example: 123
+        next:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?offset=400&limit=100
+        previous:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?offset=200&limit=100
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/ErrorTrackingFingerprint'
+    PaginatedErrorTrackingRecommendationList:
+      type: object
+      required:
+      - count
+      - results
+      properties:
+        count:
+          type: integer
+          example: 123
+        next:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?offset=400&limit=100
+        previous:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?offset=200&limit=100
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/ErrorTrackingRecommendation'
+    DataWarehousePropertyFilter:
+      additionalProperties: false
+      properties:
+        key:
+          title: Key
+          type: string
+        label:
+          default: null
+          title: Label
+          type: string
+          nullable: true
+        operator:
+          $ref: '#/components/schemas/PropertyOperator'
+        type:
+          default: data_warehouse
+          title: Type
+          type: string
+          enum:
+          - data_warehouse
+        value:
+          default: null
+          title: Value
+          anyOf:
+          - items:
+              anyOf:
+              - type: string
+              - type: number
+              - type: boolean
+            type: array
+          - type: string
+          - type: number
+          - type: boolean
+          nullable: true
+      required:
+      - key
+      - operator
+      title: DataWarehousePropertyFilter
+      type: object
+    PropertyOperator:
+      enum:
+      - exact
+      - is_not
+      - icontains
+      - not_icontains
+      - regex
+      - not_regex
+      - gt
+      - gte
+      - lt
+      - lte
+      - is_set
+      - is_not_set
+      - is_date_exact
+      - is_date_before
+      - is_date_after
+      - between
+      - not_between
+      - min
+      - max
+      - in
+      - not_in
+      - is_cleaned_path_exact
+      - flag_evaluates_to
+      - semver_eq
+      - semver_neq
+      - semver_gt
+      - semver_gte
+      - semver_lt
+      - semver_lte
+      - semver_tilde
+      - semver_caret
+      - semver_wildcard
+      - icontains_multi
+      - not_icontains_multi
+      title: PropertyOperator
+      type: string
+    CohortPropertyFilter:
+      additionalProperties: false
+      properties:
+        cohort_name:
+          default: null
+          title: Cohort Name
+          type: string
+          nullable: true
+        key:
+          default: id
+          title: Key
+          type: string
+          enum:
+          - id
+        label:
+          default: null
+          title: Label
+          type: string
+          nullable: true
+        operator:
+          default: in
+          allOf:
+          - $ref: '#/components/schemas/PropertyOperator'
+          nullable: true
+        type:
+          default: cohort
+          title: Type
+          type: string
+          enum:
+          - cohort
+        value:
+          title: Value
+          type: integer
+      required:
+      - value
+      title: CohortPropertyFilter
+      type: object
+    ErrorTrackingRelease:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+          readOnly: true
+        hash_id:
+          type: string
+        team_id:
+          type: integer
+          readOnly: true
+        created_at:
+          type: string
+          format: date-time
+          readOnly: true
+        metadata:
+          nullable: true
+        version:
+          type: string
+        project:
+          type: string
+      required:
+      - created_at
+      - hash_id
+      - id
+      - project
+      - team_id
+      - version
+    DataWarehousePersonPropertyFilter:
+      additionalProperties: false
+      properties:
+        key:
+          title: Key
+          type: string
+        label:
+          default: null
+          title: Label
+          type: string
+          nullable: true
+        operator:
+          $ref: '#/components/schemas/PropertyOperator'
+        type:
+          default: data_warehouse_person_property
+          title: Type
+          type: string
+          enum:
+          - data_warehouse_person_property
+        value:
+          default: null
+          title: Value
+          anyOf:
+          - items:
+              anyOf:
+              - type: string
+              - type: number
+              - type: boolean
+            type: array
+          - type: string
+          - type: number
+          - type: boolean
+          nullable: true
+      required:
+      - key
+      - operator
+      title: DataWarehousePersonPropertyFilter
+      type: object
+    ErrorTrackingExternalReferenceResult:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+          readOnly: true
+        integration:
+          allOf:
+          - $ref: '#/components/schemas/ErrorTrackingExternalReferenceIntegrationResult'
+          readOnly: true
+        integration_id:
+          type: integer
+          writeOnly: true
+        config:
+          writeOnly: true
+        issue:
+          type: string
+          format: uuid
+          writeOnly: true
+        external_url:
+          type: string
+          readOnly: true
+      required:
+      - config
+      - external_url
+      - id
+      - integration
+      - integration_id
+      - issue
+    WorkflowVariablePropertyFilter:
+      additionalProperties: false
+      properties:
+        key:
+          title: Key
+          type: string
+        label:
+          default: null
+          title: Label
+          type: string
+          nullable: true
+        operator:
+          $ref: '#/components/schemas/PropertyOperator'
+        type:
+          default: workflow_variable
+          title: Type
+          type: string
+          enum:
+          - workflow_variable
+        value:
+          default: null
+          title: Value
+          anyOf:
+          - items:
+              anyOf:
+              - type: string
+              - type: number
+              - type: boolean
+            type: array
+          - type: string
+          - type: number
+          - type: boolean
+          nullable: true
+      required:
+      - key
+      - operator
+      title: WorkflowVariablePropertyFilter
+      type: object
+    ErrorTrackingSpikeEvent:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+          readOnly: true
+        issue:
+          allOf:
+          - $ref: '#/components/schemas/ErrorTrackingSpikeEventIssue'
+          readOnly: true
+        detected_at:
+          type: string
+          format: date-time
+          readOnly: true
+        computed_baseline:
+          type: number
+          format: double
+          readOnly: true
+        current_bucket_value:
+          type: integer
+          readOnly: true
+      required:
+      - computed_baseline
+      - current_bucket_value
+      - detected_at
+      - id
+      - issue
+    PatchedErrorTrackingIssueFull:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+          readOnly: true
+        status:
+          $ref: '#/components/schemas/ErrorTrackingIssueFullStatusEnum'
+        name:
+          type: string
+          nullable: true
+        description:
+          type: string
+          nullable: true
+        first_seen:
+          type: string
+          format: date-time
+        assignee:
+          $ref: '#/components/schemas/ErrorTrackingIssueAssignment'
+        external_issues:
+          type: array
+          items:
+            $ref: '#/components/schemas/ErrorTrackingExternalReferenceResult'
+        cohort:
+          type: object
+          nullable: true
+          properties:
+            id:
+              type: integer
+            name:
+              type: string
+          readOnly: true
+    FeaturePropertyFilter:
+      additionalProperties: false
+      properties:
+        key:
+          title: Key
+          type: string
+        label:
+          default: null
+          title: Label
+          type: string
+          nullable: true
+        operator:
+          $ref: '#/components/schemas/PropertyOperator'
+        type:
+          default: feature
+          description: Event property with "$feature/" prepended
+          title: Type
+          type: string
+          enum:
+          - feature
+        value:
+          default: null
+          title: Value
+          anyOf:
+          - items:
+              anyOf:
+              - type: string
+              - type: number
+              - type: boolean
+            type: array
+          - type: string
+          - type: number
+          - type: boolean
+          nullable: true
+      required:
+      - key
+      - operator
+      title: FeaturePropertyFilter
+      type: object
+    ErrorTrackingGroupingRuleListResponse:
+      type: object
+      properties:
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/ErrorTrackingGroupingRule'
+      required:
+      - results
+    AssigneeTypeEnum:
+      enum:
+      - user
+      - role
+      type: string
+      description: '* `user` - user
+
+        * `role` - role'
+    PersonPropertyFilter:
+      additionalProperties: false
+      properties:
+        key:
+          title: Key
+          type: string
+        label:
+          default: null
+          title: Label
+          type: string
+          nullable: true
+        operator:
+          $ref: '#/components/schemas/PropertyOperator'
+        type:
+          default: person
+          description: Person properties
+          title: Type
+          type: string
+          enum:
+          - person
+        value:
+          default: null
+          title: Value
+          anyOf:
+          - items:
+              anyOf:
+              - type: string
+              - type: number
+              - type: boolean
+            type: array
+          - type: string
+          - type: number
+          - type: boolean
+          nullable: true
+      required:
+      - key
+      - operator
+      title: PersonPropertyFilter
+      type: object
+    PatchedErrorTrackingSymbolSet:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+          readOnly: true
+        ref:
+          type: string
+        team_id:
+          type: integer
+          readOnly: true
+        created_at:
+          type: string
+          format: date-time
+          readOnly: true
+        last_used:
+          type: string
+          format: date-time
+          nullable: true
+        storage_ptr:
+          type: string
+          nullable: true
+        failure_reason:
+          type: string
+          nullable: true
+        release:
+          type: object
+          additionalProperties: true
+          nullable: true
+          description: Release associated with this symbol set
+          readOnly: true
+    PaginatedErrorTrackingAssignmentRuleList:
+      type: object
+      required:
+      - count
+      - results
+      properties:
+        count:
+          type: integer
+          example: 123
+        next:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?offset=400&limit=100
+        previous:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?offset=200&limit=100
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/ErrorTrackingAssignmentRule'
+    PaginatedErrorTrackingSuppressionRuleList:
+      type: object
+      required:
+      - count
+      - results
+      properties:
+        count:
+          type: integer
+          example: 123
+        next:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?offset=400&limit=100
+        previous:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?offset=200&limit=100
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/ErrorTrackingSuppressionRule'
+    ErrorTrackingIssueFilter:
+      additionalProperties: false
+      properties:
+        key:
+          title: Key
+          type: string
+        label:
+          default: null
+          title: Label
+          type: string
+          nullable: true
+        operator:
+          $ref: '#/components/schemas/PropertyOperator'
+        type:
+          default: error_tracking_issue
+          title: Type
+          type: string
+          enum:
+          - error_tracking_issue
+        value:
+          default: null
+          title: Value
+          anyOf:
+          - items:
+              anyOf:
+              - type: string
+              - type: number
+              - type: boolean
+            type: array
+          - type: string
+          - type: number
+          - type: boolean
+          nullable: true
+      required:
+      - key
+      - operator
+      title: ErrorTrackingIssueFilter
+      type: object
+    RecordingPropertyFilter:
+      additionalProperties: false
+      properties:
+        key:
+          anyOf:
+          - $ref: '#/components/schemas/DurationType'
+          - type: string
+          title: Key
+        label:
+          default: null
+          title: Label
+          type: string
+          nullable: true
+        operator:
+          $ref: '#/components/schemas/PropertyOperator'
+        type:
+          default: recording
+          title: Type
+          type: string
+          enum:
+          - recording
+        value:
+          default: null
+          title: Value
+          anyOf:
+          - items:
+              anyOf:
+              - type: string
+              - type: number
+              - type: boolean
+            type: array
+          - type: string
+          - type: number
+          - type: boolean
+          nullable: true
+      required:
+      - key
+      - operator
+      title: RecordingPropertyFilter
+      type: object
+    PatchedErrorTrackingAssignmentRuleUpdateRequest:
+      type: object
+      properties:
+        filters:
+          allOf:
+          - $ref: '#/components/schemas/PropertyGroupFilterValue'
+          nullable: true
+          description: Property-group filters that define when this rule matches incoming error events.
+        assignee:
+          allOf:
+          - $ref: '#/components/schemas/ErrorTrackingAssignmentRuleAssigneeRequest'
+          nullable: true
+          description: User or role to assign matching issues to.
+    EventMetadataPropertyFilter:
+      additionalProperties: false
+      properties:
+        key:
+          title: Key
+          type: string
+        label:
+          default: null
+          title: Label
+          type: string
+          nullable: true
+        operator:
+          $ref: '#/components/schemas/PropertyOperator'
+        type:
+          default: event_metadata
+          title: Type
+          type: string
+          enum:
+          - event_metadata
+        value:
+          default: null
+          title: Value
+          anyOf:
+          - items:
+              anyOf:
+              - type: string
+              - type: number
+              - type: boolean
+            type: array
+          - type: string
+          - type: number
+          - type: boolean
+          nullable: true
+      required:
+      - key
+      - operator
+      title: EventMetadataPropertyFilter
+      type: object
+  parameters:
+    ProjectIdPath:
+      in: path
+      name: project_id
+      required: true
+      schema:
+        type: string
+      description: Project ID of the project you're trying to access. To find the ID of the project, make a call to /api/projects/.
+    EnvironmentIdPath:
+      in: path
+      name: environment_id
+      required: true
+      schema:
+        type: string
+      description: Deprecated. Use /api/projects/{project_id}/ instead.
+  securitySchemes:
+    PersonalAPIKeyAuth:
+      type: http
+      scheme: bearer
+x-tagGroups:
+- name: All endpoints
+  tags:
+  - LLM Analytics
+  - actions
+  - activity_log
+  - activity_logs
+  - advanced_activity_logs
+  - alerts
+  - annotations
+  - approval_policies
+  - batch_exports
+  - cdp
+  - change_requests
+  - code
+  - code-invites
+  - cohorts
+  - comments
+  - conversations
+  - core
+  - customer_analytics
+  - customer_journeys
+  - customer_profile_configs
+  - dashboard_templates
+  - dashboards
+  - data_color_themes
+  - data_modeling_jobs
+  - data_warehouse
+  - dataset_items
+  - datasets
+  - desktop_recordings
+  - domains
+  - early_access_feature
+  - early_access_features
+  - elements
+  - endpoints
+  - environments
+  - error_tracking
+  - evaluation_runs
+  - evaluations
+  - event_definitions
+  - event_filter
+  - event_schemas
+  - events
+  - experiment_holdouts
+  - experiment_saved_metrics
+  - experiments
+  - exports
+  - external_data_schemas
+  - external_data_sources
+  - feature_flags
+  - file_system
+  - file_system_shortcut
+  - flag_value
+  - groups
+  - groups_types
+  - health_issues
+  - heatmap_screenshots
+  - heatmaps
+  - hog_flows
+  - hog_function_templates
+  - hog_functions
+  - insight_variables
+  - insights
+  - integrations
+  - invites
+  - js-snippet
+  - legal_documents
+  - lineage
+  - live_debugger_breakpoints
+  - llm_analytics
+  - llm_prompts
+  - llm_skills
+  - logs
+  - managed_viewsets
+  - max
+  - max_tools
+  - mcp_server_installations
+  - mcp_servers
+  - mcp_store
+  - mcp_tools
+  - members
+  - notebooks
+  - oauth_applications
+  - object_media_previews
+  - organizations
+  - persisted_folder
+  - persons
+  - platform_features
+  - plugin_configs
+  - product_analytics
+  - product_tours
+  - project_secret_api_keys
+  - projects
+  - property_definitions
+  - proxy_records
+  - public_hog_function_templates
+  - query
+  - replay
+  - reverse_proxy
+  - role_external_references
+  - roles
+  - sandbox-environments
+  - sandbox_environments
+  - saved
+  - schema_property_groups
+  - sdk_doctor
+  - session_group_summaries
+  - session_recording_playlists
+  - session_recordings
+  - session_summaries
+  - sessions
+  - signals
+  - subscriptions
+  - surveys
+  - taggers
+  - task-automations
+  - task-runs
+  - task_automations
+  - tasks
+  - uploaded_media
+  - user_home_settings
+  - user_interviews
+  - users
+  - visual_review
+  - warehouse_dag
+  - warehouse_model_paths
+  - warehouse_saved_queries
+  - warehouse_saved_query_folders
+  - warehouse_tables
+  - warehouse_view_link
+  - warehouse_view_links
+  - web_analytics
+  - web_experiments
+  - web_vitals
+  - welcome
+  - workflows

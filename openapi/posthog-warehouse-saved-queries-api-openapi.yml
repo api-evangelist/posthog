@@ -1,0 +1,1795 @@
+openapi: 3.0.3
+info:
+  title: PostHog actions warehouse_saved_queries API
+  version: 1.0.0
+  description: ''
+tags:
+- name: warehouse_saved_queries
+paths:
+  /api/environments/{environment_id}/warehouse_saved_queries/:
+    get:
+      operationId: environments_warehouse_saved_queries_list
+      description: Create, Read, Update and Delete Warehouse Tables.
+      parameters:
+      - $ref: '#/components/parameters/EnvironmentIdPath'
+      - name: page
+        required: false
+        in: query
+        description: A page number within the paginated result set.
+        schema:
+          type: integer
+      - name: search
+        required: false
+        in: query
+        description: A search term.
+        schema:
+          type: string
+      tags:
+      - warehouse_saved_queries
+      security:
+      - PersonalAPIKeyAuth:
+        - warehouse_view:read
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedDataWarehouseSavedQueryMinimalList'
+          description: ''
+      deprecated: true
+      x-explicit-tags:
+      - data_warehouse
+    post:
+      operationId: environments_warehouse_saved_queries_create
+      description: Create, Read, Update and Delete Warehouse Tables.
+      parameters:
+      - $ref: '#/components/parameters/EnvironmentIdPath'
+      tags:
+      - warehouse_saved_queries
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/DataWarehouseSavedQuery'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/DataWarehouseSavedQuery'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/DataWarehouseSavedQuery'
+        required: true
+      security:
+      - PersonalAPIKeyAuth:
+        - warehouse_view:write
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DataWarehouseSavedQuery'
+          description: ''
+      deprecated: true
+      x-explicit-tags:
+      - data_warehouse
+  /api/environments/{environment_id}/warehouse_saved_queries/{id}/:
+    get:
+      operationId: environments_warehouse_saved_queries_retrieve
+      description: Create, Read, Update and Delete Warehouse Tables.
+      parameters:
+      - $ref: '#/components/parameters/EnvironmentIdPath'
+      - in: path
+        name: id
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this data warehouse saved query.
+        required: true
+      tags:
+      - warehouse_saved_queries
+      security:
+      - PersonalAPIKeyAuth:
+        - warehouse_view:read
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DataWarehouseSavedQuery'
+          description: ''
+      deprecated: true
+      x-explicit-tags:
+      - data_warehouse
+    put:
+      operationId: environments_warehouse_saved_queries_update
+      description: Create, Read, Update and Delete Warehouse Tables.
+      parameters:
+      - $ref: '#/components/parameters/EnvironmentIdPath'
+      - in: path
+        name: id
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this data warehouse saved query.
+        required: true
+      tags:
+      - warehouse_saved_queries
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/DataWarehouseSavedQuery'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/DataWarehouseSavedQuery'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/DataWarehouseSavedQuery'
+        required: true
+      security:
+      - PersonalAPIKeyAuth:
+        - warehouse_view:write
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DataWarehouseSavedQuery'
+          description: ''
+      deprecated: true
+      x-explicit-tags:
+      - data_warehouse
+    patch:
+      operationId: environments_warehouse_saved_queries_partial_update
+      description: Create, Read, Update and Delete Warehouse Tables.
+      parameters:
+      - $ref: '#/components/parameters/EnvironmentIdPath'
+      - in: path
+        name: id
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this data warehouse saved query.
+        required: true
+      tags:
+      - warehouse_saved_queries
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchedDataWarehouseSavedQuery'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/PatchedDataWarehouseSavedQuery'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/PatchedDataWarehouseSavedQuery'
+      security:
+      - PersonalAPIKeyAuth:
+        - warehouse_view:write
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DataWarehouseSavedQuery'
+          description: ''
+      deprecated: true
+      x-explicit-tags:
+      - data_warehouse
+    delete:
+      operationId: environments_warehouse_saved_queries_destroy
+      description: Create, Read, Update and Delete Warehouse Tables.
+      parameters:
+      - $ref: '#/components/parameters/EnvironmentIdPath'
+      - in: path
+        name: id
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this data warehouse saved query.
+        required: true
+      tags:
+      - warehouse_saved_queries
+      security:
+      - PersonalAPIKeyAuth:
+        - warehouse_view:write
+      responses:
+        '204':
+          description: No response body
+      deprecated: true
+      x-explicit-tags:
+      - data_warehouse
+  /api/environments/{environment_id}/warehouse_saved_queries/{id}/activity/:
+    get:
+      operationId: environments_warehouse_saved_queries_activity_retrieve
+      description: Create, Read, Update and Delete Warehouse Tables.
+      parameters:
+      - $ref: '#/components/parameters/EnvironmentIdPath'
+      - in: path
+        name: id
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this data warehouse saved query.
+        required: true
+      tags:
+      - warehouse_saved_queries
+      security:
+      - PersonalAPIKeyAuth:
+        - activity_log:read
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DataWarehouseSavedQuery'
+          description: ''
+      deprecated: true
+      x-explicit-tags:
+      - data_warehouse
+  /api/environments/{environment_id}/warehouse_saved_queries/{id}/ancestors/:
+    post:
+      operationId: environments_warehouse_saved_queries_ancestors_create
+      description: 'Return the ancestors of this saved query.
+
+
+        By default, we return the immediate parents. The `level` parameter can be used to
+
+        look further back into the ancestor tree. If `level` overshoots (i.e. points to only
+
+        ancestors beyond the root), we return an empty list.'
+      parameters:
+      - $ref: '#/components/parameters/EnvironmentIdPath'
+      - in: path
+        name: id
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this data warehouse saved query.
+        required: true
+      tags:
+      - warehouse_saved_queries
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/DataWarehouseSavedQuery'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/DataWarehouseSavedQuery'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/DataWarehouseSavedQuery'
+        required: true
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DataWarehouseSavedQuery'
+          description: ''
+      deprecated: true
+      x-explicit-tags:
+      - data_warehouse
+  /api/environments/{environment_id}/warehouse_saved_queries/{id}/cancel/:
+    post:
+      operationId: environments_warehouse_saved_queries_cancel_create
+      description: Cancel a running saved query workflow.
+      parameters:
+      - $ref: '#/components/parameters/EnvironmentIdPath'
+      - in: path
+        name: id
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this data warehouse saved query.
+        required: true
+      tags:
+      - warehouse_saved_queries
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/DataWarehouseSavedQuery'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/DataWarehouseSavedQuery'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/DataWarehouseSavedQuery'
+        required: true
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DataWarehouseSavedQuery'
+          description: ''
+      deprecated: true
+      x-explicit-tags:
+      - data_warehouse
+  /api/environments/{environment_id}/warehouse_saved_queries/{id}/dependencies/:
+    get:
+      operationId: environments_warehouse_saved_queries_dependencies_retrieve
+      description: Return the count of immediate upstream and downstream dependencies for this saved query.
+      parameters:
+      - $ref: '#/components/parameters/EnvironmentIdPath'
+      - in: path
+        name: id
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this data warehouse saved query.
+        required: true
+      tags:
+      - warehouse_saved_queries
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DataWarehouseSavedQuery'
+          description: ''
+      deprecated: true
+      x-explicit-tags:
+      - data_warehouse
+  /api/environments/{environment_id}/warehouse_saved_queries/{id}/descendants/:
+    post:
+      operationId: environments_warehouse_saved_queries_descendants_create
+      description: 'Return the descendants of this saved query.
+
+
+        By default, we return the immediate children. The `level` parameter can be used to
+
+        look further ahead into the descendants tree. If `level` overshoots (i.e. points to only
+
+        descendants further than a leaf), we return an empty list.'
+      parameters:
+      - $ref: '#/components/parameters/EnvironmentIdPath'
+      - in: path
+        name: id
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this data warehouse saved query.
+        required: true
+      tags:
+      - warehouse_saved_queries
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/DataWarehouseSavedQuery'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/DataWarehouseSavedQuery'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/DataWarehouseSavedQuery'
+        required: true
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DataWarehouseSavedQuery'
+          description: ''
+      deprecated: true
+      x-explicit-tags:
+      - data_warehouse
+  /api/environments/{environment_id}/warehouse_saved_queries/{id}/materialize/:
+    post:
+      operationId: environments_warehouse_saved_queries_materialize_create
+      description: Enable materialization for this saved query with a 24-hour sync frequency.
+      parameters:
+      - $ref: '#/components/parameters/EnvironmentIdPath'
+      - in: path
+        name: id
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this data warehouse saved query.
+        required: true
+      tags:
+      - warehouse_saved_queries
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/DataWarehouseSavedQuery'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/DataWarehouseSavedQuery'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/DataWarehouseSavedQuery'
+        required: true
+      security:
+      - PersonalAPIKeyAuth:
+        - warehouse_view:write
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DataWarehouseSavedQuery'
+          description: ''
+      deprecated: true
+      x-explicit-tags:
+      - data_warehouse
+  /api/environments/{environment_id}/warehouse_saved_queries/{id}/revert_materialization/:
+    post:
+      operationId: environments_warehouse_saved_queries_revert_materialization_create
+      description: 'Undo materialization, revert back to the original view.
+
+        (i.e. delete the materialized table and the schedule)'
+      parameters:
+      - $ref: '#/components/parameters/EnvironmentIdPath'
+      - in: path
+        name: id
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this data warehouse saved query.
+        required: true
+      tags:
+      - warehouse_saved_queries
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/DataWarehouseSavedQuery'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/DataWarehouseSavedQuery'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/DataWarehouseSavedQuery'
+        required: true
+      security:
+      - PersonalAPIKeyAuth:
+        - warehouse_view:write
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DataWarehouseSavedQuery'
+          description: ''
+      deprecated: true
+      x-explicit-tags:
+      - data_warehouse
+  /api/environments/{environment_id}/warehouse_saved_queries/{id}/run/:
+    post:
+      operationId: environments_warehouse_saved_queries_run_create
+      description: Run this saved query.
+      parameters:
+      - $ref: '#/components/parameters/EnvironmentIdPath'
+      - in: path
+        name: id
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this data warehouse saved query.
+        required: true
+      tags:
+      - warehouse_saved_queries
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/DataWarehouseSavedQuery'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/DataWarehouseSavedQuery'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/DataWarehouseSavedQuery'
+        required: true
+      security:
+      - PersonalAPIKeyAuth:
+        - warehouse_view:write
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DataWarehouseSavedQuery'
+          description: ''
+      deprecated: true
+      x-explicit-tags:
+      - data_warehouse
+  /api/environments/{environment_id}/warehouse_saved_queries/{id}/run_history/:
+    get:
+      operationId: environments_warehouse_saved_queries_run_history_retrieve
+      description: Return the recent run history (up to 5 most recent) for this materialized view.
+      parameters:
+      - $ref: '#/components/parameters/EnvironmentIdPath'
+      - in: path
+        name: id
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this data warehouse saved query.
+        required: true
+      tags:
+      - warehouse_saved_queries
+      security:
+      - PersonalAPIKeyAuth:
+        - warehouse_view:read
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DataWarehouseSavedQuery'
+          description: ''
+      deprecated: true
+      x-explicit-tags:
+      - data_warehouse
+  /api/environments/{environment_id}/warehouse_saved_queries/resume_schedules/:
+    post:
+      operationId: environments_warehouse_saved_queries_resume_schedules_create
+      description: 'Resume paused materialization schedules for multiple matviews.
+
+
+        Accepts a list of view IDs in the request body: {"view_ids": ["id1", "id2", ...]}
+
+        This endpoint is idempotent - calling it on already running or non-existent schedules is safe.'
+      parameters:
+      - $ref: '#/components/parameters/EnvironmentIdPath'
+      tags:
+      - warehouse_saved_queries
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/DataWarehouseSavedQuery'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/DataWarehouseSavedQuery'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/DataWarehouseSavedQuery'
+        required: true
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DataWarehouseSavedQuery'
+          description: ''
+      deprecated: true
+      x-explicit-tags:
+      - data_warehouse
+  /api/projects/{project_id}/warehouse_saved_queries/:
+    get:
+      operationId: warehouse_saved_queries_list
+      description: Create, Read, Update and Delete Warehouse Tables.
+      parameters:
+      - name: page
+        required: false
+        in: query
+        description: A page number within the paginated result set.
+        schema:
+          type: integer
+      - $ref: '#/components/parameters/ProjectIdPath'
+      - name: search
+        required: false
+        in: query
+        description: A search term.
+        schema:
+          type: string
+      tags:
+      - warehouse_saved_queries
+      security:
+      - PersonalAPIKeyAuth:
+        - warehouse_view:read
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedDataWarehouseSavedQueryMinimalList'
+          description: ''
+      x-explicit-tags:
+      - data_warehouse
+    post:
+      operationId: warehouse_saved_queries_create
+      description: Create, Read, Update and Delete Warehouse Tables.
+      parameters:
+      - $ref: '#/components/parameters/ProjectIdPath'
+      tags:
+      - warehouse_saved_queries
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/DataWarehouseSavedQuery'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/DataWarehouseSavedQuery'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/DataWarehouseSavedQuery'
+        required: true
+      security:
+      - PersonalAPIKeyAuth:
+        - warehouse_view:write
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DataWarehouseSavedQuery'
+          description: ''
+      x-explicit-tags:
+      - data_warehouse
+  /api/projects/{project_id}/warehouse_saved_queries/{id}/:
+    get:
+      operationId: warehouse_saved_queries_retrieve
+      description: Create, Read, Update and Delete Warehouse Tables.
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this data warehouse saved query.
+        required: true
+      - $ref: '#/components/parameters/ProjectIdPath'
+      tags:
+      - warehouse_saved_queries
+      security:
+      - PersonalAPIKeyAuth:
+        - warehouse_view:read
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DataWarehouseSavedQuery'
+          description: ''
+      x-explicit-tags:
+      - data_warehouse
+    put:
+      operationId: warehouse_saved_queries_update
+      description: Create, Read, Update and Delete Warehouse Tables.
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this data warehouse saved query.
+        required: true
+      - $ref: '#/components/parameters/ProjectIdPath'
+      tags:
+      - warehouse_saved_queries
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/DataWarehouseSavedQuery'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/DataWarehouseSavedQuery'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/DataWarehouseSavedQuery'
+        required: true
+      security:
+      - PersonalAPIKeyAuth:
+        - warehouse_view:write
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DataWarehouseSavedQuery'
+          description: ''
+      x-explicit-tags:
+      - data_warehouse
+    patch:
+      operationId: warehouse_saved_queries_partial_update
+      description: Create, Read, Update and Delete Warehouse Tables.
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this data warehouse saved query.
+        required: true
+      - $ref: '#/components/parameters/ProjectIdPath'
+      tags:
+      - warehouse_saved_queries
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchedDataWarehouseSavedQuery'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/PatchedDataWarehouseSavedQuery'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/PatchedDataWarehouseSavedQuery'
+      security:
+      - PersonalAPIKeyAuth:
+        - warehouse_view:write
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DataWarehouseSavedQuery'
+          description: ''
+      x-explicit-tags:
+      - data_warehouse
+    delete:
+      operationId: warehouse_saved_queries_destroy
+      description: Create, Read, Update and Delete Warehouse Tables.
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this data warehouse saved query.
+        required: true
+      - $ref: '#/components/parameters/ProjectIdPath'
+      tags:
+      - warehouse_saved_queries
+      security:
+      - PersonalAPIKeyAuth:
+        - warehouse_view:write
+      responses:
+        '204':
+          description: No response body
+      x-explicit-tags:
+      - data_warehouse
+  /api/projects/{project_id}/warehouse_saved_queries/{id}/activity/:
+    get:
+      operationId: warehouse_saved_queries_activity_retrieve
+      description: Create, Read, Update and Delete Warehouse Tables.
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this data warehouse saved query.
+        required: true
+      - $ref: '#/components/parameters/ProjectIdPath'
+      tags:
+      - warehouse_saved_queries
+      security:
+      - PersonalAPIKeyAuth:
+        - activity_log:read
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DataWarehouseSavedQuery'
+          description: ''
+      x-explicit-tags:
+      - data_warehouse
+  /api/projects/{project_id}/warehouse_saved_queries/{id}/ancestors/:
+    post:
+      operationId: warehouse_saved_queries_ancestors_create
+      description: 'Return the ancestors of this saved query.
+
+
+        By default, we return the immediate parents. The `level` parameter can be used to
+
+        look further back into the ancestor tree. If `level` overshoots (i.e. points to only
+
+        ancestors beyond the root), we return an empty list.'
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this data warehouse saved query.
+        required: true
+      - $ref: '#/components/parameters/ProjectIdPath'
+      tags:
+      - warehouse_saved_queries
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/DataWarehouseSavedQuery'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/DataWarehouseSavedQuery'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/DataWarehouseSavedQuery'
+        required: true
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DataWarehouseSavedQuery'
+          description: ''
+      x-explicit-tags:
+      - data_warehouse
+  /api/projects/{project_id}/warehouse_saved_queries/{id}/cancel/:
+    post:
+      operationId: warehouse_saved_queries_cancel_create
+      description: Cancel a running saved query workflow.
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this data warehouse saved query.
+        required: true
+      - $ref: '#/components/parameters/ProjectIdPath'
+      tags:
+      - warehouse_saved_queries
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/DataWarehouseSavedQuery'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/DataWarehouseSavedQuery'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/DataWarehouseSavedQuery'
+        required: true
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DataWarehouseSavedQuery'
+          description: ''
+      x-explicit-tags:
+      - data_warehouse
+  /api/projects/{project_id}/warehouse_saved_queries/{id}/dependencies/:
+    get:
+      operationId: warehouse_saved_queries_dependencies_retrieve
+      description: Return the count of immediate upstream and downstream dependencies for this saved query.
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this data warehouse saved query.
+        required: true
+      - $ref: '#/components/parameters/ProjectIdPath'
+      tags:
+      - warehouse_saved_queries
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DataWarehouseSavedQuery'
+          description: ''
+      x-explicit-tags:
+      - data_warehouse
+  /api/projects/{project_id}/warehouse_saved_queries/{id}/descendants/:
+    post:
+      operationId: warehouse_saved_queries_descendants_create
+      description: 'Return the descendants of this saved query.
+
+
+        By default, we return the immediate children. The `level` parameter can be used to
+
+        look further ahead into the descendants tree. If `level` overshoots (i.e. points to only
+
+        descendants further than a leaf), we return an empty list.'
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this data warehouse saved query.
+        required: true
+      - $ref: '#/components/parameters/ProjectIdPath'
+      tags:
+      - warehouse_saved_queries
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/DataWarehouseSavedQuery'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/DataWarehouseSavedQuery'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/DataWarehouseSavedQuery'
+        required: true
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DataWarehouseSavedQuery'
+          description: ''
+      x-explicit-tags:
+      - data_warehouse
+  /api/projects/{project_id}/warehouse_saved_queries/{id}/materialize/:
+    post:
+      operationId: warehouse_saved_queries_materialize_create
+      description: Enable materialization for this saved query with a 24-hour sync frequency.
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this data warehouse saved query.
+        required: true
+      - $ref: '#/components/parameters/ProjectIdPath'
+      tags:
+      - warehouse_saved_queries
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/DataWarehouseSavedQuery'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/DataWarehouseSavedQuery'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/DataWarehouseSavedQuery'
+        required: true
+      security:
+      - PersonalAPIKeyAuth:
+        - warehouse_view:write
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DataWarehouseSavedQuery'
+          description: ''
+      x-explicit-tags:
+      - data_warehouse
+  /api/projects/{project_id}/warehouse_saved_queries/{id}/revert_materialization/:
+    post:
+      operationId: warehouse_saved_queries_revert_materialization_create
+      description: 'Undo materialization, revert back to the original view.
+
+        (i.e. delete the materialized table and the schedule)'
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this data warehouse saved query.
+        required: true
+      - $ref: '#/components/parameters/ProjectIdPath'
+      tags:
+      - warehouse_saved_queries
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/DataWarehouseSavedQuery'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/DataWarehouseSavedQuery'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/DataWarehouseSavedQuery'
+        required: true
+      security:
+      - PersonalAPIKeyAuth:
+        - warehouse_view:write
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DataWarehouseSavedQuery'
+          description: ''
+      x-explicit-tags:
+      - data_warehouse
+  /api/projects/{project_id}/warehouse_saved_queries/{id}/run/:
+    post:
+      operationId: warehouse_saved_queries_run_create
+      description: Run this saved query.
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this data warehouse saved query.
+        required: true
+      - $ref: '#/components/parameters/ProjectIdPath'
+      tags:
+      - warehouse_saved_queries
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/DataWarehouseSavedQuery'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/DataWarehouseSavedQuery'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/DataWarehouseSavedQuery'
+        required: true
+      security:
+      - PersonalAPIKeyAuth:
+        - warehouse_view:write
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DataWarehouseSavedQuery'
+          description: ''
+      x-explicit-tags:
+      - data_warehouse
+  /api/projects/{project_id}/warehouse_saved_queries/{id}/run_history/:
+    get:
+      operationId: warehouse_saved_queries_run_history_retrieve
+      description: Return the recent run history (up to 5 most recent) for this materialized view.
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this data warehouse saved query.
+        required: true
+      - $ref: '#/components/parameters/ProjectIdPath'
+      tags:
+      - warehouse_saved_queries
+      security:
+      - PersonalAPIKeyAuth:
+        - warehouse_view:read
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DataWarehouseSavedQuery'
+          description: ''
+      x-explicit-tags:
+      - data_warehouse
+  /api/projects/{project_id}/warehouse_saved_queries/resume_schedules/:
+    post:
+      operationId: warehouse_saved_queries_resume_schedules_create
+      description: 'Resume paused materialization schedules for multiple matviews.
+
+
+        Accepts a list of view IDs in the request body: {"view_ids": ["id1", "id2", ...]}
+
+        This endpoint is idempotent - calling it on already running or non-existent schedules is safe.'
+      parameters:
+      - $ref: '#/components/parameters/ProjectIdPath'
+      tags:
+      - warehouse_saved_queries
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/DataWarehouseSavedQuery'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/DataWarehouseSavedQuery'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/DataWarehouseSavedQuery'
+        required: true
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DataWarehouseSavedQuery'
+          description: ''
+      x-explicit-tags:
+      - data_warehouse
+components:
+  schemas:
+    BlankEnum:
+      enum:
+      - ''
+    SavedQueryStatusEnum:
+      enum:
+      - Cancelled
+      - Modified
+      - Completed
+      - Failed
+      - Running
+      type: string
+      description: '* `Cancelled` - Cancelled
+
+        * `Modified` - Modified
+
+        * `Completed` - Completed
+
+        * `Failed` - Failed
+
+        * `Running` - Running'
+    UserBasic:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        uuid:
+          type: string
+          format: uuid
+          readOnly: true
+        distinct_id:
+          type: string
+          nullable: true
+          maxLength: 200
+        first_name:
+          type: string
+          maxLength: 150
+        last_name:
+          type: string
+          maxLength: 150
+        email:
+          type: string
+          format: email
+          title: Email address
+          maxLength: 254
+        is_email_verified:
+          type: boolean
+          nullable: true
+        hedgehog_config:
+          type: object
+          additionalProperties: true
+          nullable: true
+          readOnly: true
+        role_at_organization:
+          nullable: true
+          oneOf:
+          - $ref: '#/components/schemas/RoleAtOrganizationEnum'
+          - $ref: '#/components/schemas/BlankEnum'
+          - $ref: '#/components/schemas/NullEnum'
+      required:
+      - email
+      - hedgehog_config
+      - id
+      - uuid
+    RoleAtOrganizationEnum:
+      enum:
+      - engineering
+      - data
+      - product
+      - founder
+      - leadership
+      - marketing
+      - sales
+      - other
+      type: string
+      description: '* `engineering` - Engineering
+
+        * `data` - Data
+
+        * `product` - Product Management
+
+        * `founder` - Founder
+
+        * `leadership` - Leadership
+
+        * `marketing` - Marketing
+
+        * `sales` - Sales / Success
+
+        * `other` - Other'
+    PaginatedDataWarehouseSavedQueryMinimalList:
+      type: object
+      required:
+      - count
+      - results
+      properties:
+        count:
+          type: integer
+          example: 123
+        next:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?page=4
+        previous:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?page=2
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/DataWarehouseSavedQueryMinimal'
+    DataWarehouseSavedQueryMinimal:
+      type: object
+      description: Lightweight serializer for list views - excludes large query field to reduce memory usage.
+      properties:
+        id:
+          type: string
+          format: uuid
+          readOnly: true
+        deleted:
+          type: boolean
+          readOnly: true
+          nullable: true
+        name:
+          type: string
+          readOnly: true
+        created_by:
+          allOf:
+          - $ref: '#/components/schemas/UserBasic'
+          readOnly: true
+        created_at:
+          type: string
+          format: date-time
+          readOnly: true
+        sync_frequency:
+          type: string
+          nullable: true
+          readOnly: true
+        columns:
+          type: array
+          items:
+            type: object
+            additionalProperties: true
+          readOnly: true
+        status:
+          readOnly: true
+          nullable: true
+          description: 'The status of when this SavedQuery last ran.
+
+
+            * `Cancelled` - Cancelled
+
+            * `Modified` - Modified
+
+            * `Completed` - Completed
+
+            * `Failed` - Failed
+
+            * `Running` - Running'
+          oneOf:
+          - $ref: '#/components/schemas/SavedQueryStatusEnum'
+          - $ref: '#/components/schemas/NullEnum'
+        last_run_at:
+          type: string
+          format: date-time
+          nullable: true
+          readOnly: true
+        managed_viewset_kind:
+          type: string
+          nullable: true
+          readOnly: true
+        folder_id:
+          type: string
+          format: uuid
+          readOnly: true
+          nullable: true
+        folder_name:
+          type: string
+          readOnly: true
+          nullable: true
+        latest_error:
+          type: string
+          readOnly: true
+          nullable: true
+        is_materialized:
+          type: boolean
+          readOnly: true
+          nullable: true
+        origin:
+          readOnly: true
+          nullable: true
+          description: 'Where this SavedQuery is created.
+
+
+            * `data_warehouse` - Data Warehouse
+
+            * `endpoint` - Endpoint
+
+            * `managed_viewset` - Managed Viewset'
+          oneOf:
+          - $ref: '#/components/schemas/OriginEnum'
+          - $ref: '#/components/schemas/NullEnum'
+        is_test:
+          type: boolean
+          readOnly: true
+          description: Whether this view is for testing only and will auto-expire.
+        expires_at:
+          type: string
+          format: date-time
+          readOnly: true
+          nullable: true
+          description: When this test view should be automatically deleted.
+        user_access_level:
+          type: string
+          nullable: true
+          readOnly: true
+          description: The effective access level the user has for this object
+      required:
+      - columns
+      - created_at
+      - created_by
+      - deleted
+      - expires_at
+      - folder_id
+      - folder_name
+      - id
+      - is_materialized
+      - is_test
+      - last_run_at
+      - latest_error
+      - managed_viewset_kind
+      - name
+      - origin
+      - status
+      - sync_frequency
+      - user_access_level
+    OriginEnum:
+      enum:
+      - data_warehouse
+      - endpoint
+      - managed_viewset
+      type: string
+      description: '* `data_warehouse` - Data Warehouse
+
+        * `endpoint` - Endpoint
+
+        * `managed_viewset` - Managed Viewset'
+    PatchedDataWarehouseSavedQuery:
+      type: object
+      description: 'Shared methods for DataWarehouseSavedQuery serializers.
+
+
+        This mixin is intended to be used with serializers.ModelSerializer subclasses.'
+      properties:
+        id:
+          type: string
+          format: uuid
+          readOnly: true
+        deleted:
+          type: boolean
+          nullable: true
+        name:
+          type: string
+          description: Unique name for the view. Used as the table name in HogQL queries and the node name in the data modeling Node.
+          maxLength: 128
+        query:
+          nullable: true
+          description: 'HogQL query definition as a JSON object with a "query" key containing the SQL string and a "kind" key containing the query type. Example: {"query": "SELECT * FROM events LIMIT 100", "kind": "HogQLQuery"}'
+        created_by:
+          allOf:
+          - $ref: '#/components/schemas/UserBasic'
+          readOnly: true
+        created_at:
+          type: string
+          format: date-time
+          readOnly: true
+        sync_frequency:
+          type: string
+          nullable: true
+          readOnly: true
+        columns:
+          type: array
+          items:
+            type: object
+            additionalProperties: true
+          readOnly: true
+        status:
+          readOnly: true
+          nullable: true
+          description: 'The status of when this SavedQuery last ran.
+
+
+            * `Cancelled` - Cancelled
+
+            * `Modified` - Modified
+
+            * `Completed` - Completed
+
+            * `Failed` - Failed
+
+            * `Running` - Running'
+          oneOf:
+          - $ref: '#/components/schemas/SavedQueryStatusEnum'
+          - $ref: '#/components/schemas/NullEnum'
+        last_run_at:
+          type: string
+          format: date-time
+          nullable: true
+          readOnly: true
+        managed_viewset_kind:
+          type: string
+          nullable: true
+          readOnly: true
+        folder_id:
+          type: string
+          format: uuid
+          nullable: true
+          description: Optional folder ID used to organize this view in the SQL editor sidebar.
+        folder_name:
+          type: string
+          readOnly: true
+          nullable: true
+          description: Folder name used to organize this view in the SQL editor sidebar.
+        latest_error:
+          type: string
+          readOnly: true
+          nullable: true
+        edited_history_id:
+          type: string
+          writeOnly: true
+          nullable: true
+          description: Activity log ID from the last known edit. Used for conflict detection.
+        latest_history_id:
+          type: integer
+          nullable: true
+          readOnly: true
+        soft_update:
+          type: boolean
+          writeOnly: true
+          nullable: true
+          description: If true, skip column inference and validation. For saving drafts.
+        dag_id:
+          type: string
+          format: uuid
+          writeOnly: true
+          nullable: true
+          description: Optional DAG to place this view into
+        is_materialized:
+          type: boolean
+          readOnly: true
+          nullable: true
+        origin:
+          readOnly: true
+          nullable: true
+          description: 'Where this SavedQuery is created.
+
+
+            * `data_warehouse` - Data Warehouse
+
+            * `endpoint` - Endpoint
+
+            * `managed_viewset` - Managed Viewset'
+          oneOf:
+          - $ref: '#/components/schemas/OriginEnum'
+          - $ref: '#/components/schemas/NullEnum'
+        is_test:
+          type: boolean
+          description: Whether this view is for testing only and will auto-expire.
+        expires_at:
+          type: string
+          format: date-time
+          readOnly: true
+          nullable: true
+          description: When this test view should be automatically deleted.
+        user_access_level:
+          type: string
+          nullable: true
+          readOnly: true
+          description: The effective access level the user has for this object
+    DataWarehouseSavedQuery:
+      type: object
+      description: 'Shared methods for DataWarehouseSavedQuery serializers.
+
+
+        This mixin is intended to be used with serializers.ModelSerializer subclasses.'
+      properties:
+        id:
+          type: string
+          format: uuid
+          readOnly: true
+        deleted:
+          type: boolean
+          nullable: true
+        name:
+          type: string
+          description: Unique name for the view. Used as the table name in HogQL queries and the node name in the data modeling Node.
+          maxLength: 128
+        query:
+          nullable: true
+          description: 'HogQL query definition as a JSON object with a "query" key containing the SQL string and a "kind" key containing the query type. Example: {"query": "SELECT * FROM events LIMIT 100", "kind": "HogQLQuery"}'
+        created_by:
+          allOf:
+          - $ref: '#/components/schemas/UserBasic'
+          readOnly: true
+        created_at:
+          type: string
+          format: date-time
+          readOnly: true
+        sync_frequency:
+          type: string
+          nullable: true
+          readOnly: true
+        columns:
+          type: array
+          items:
+            type: object
+            additionalProperties: true
+          readOnly: true
+        status:
+          readOnly: true
+          nullable: true
+          description: 'The status of when this SavedQuery last ran.
+
+
+            * `Cancelled` - Cancelled
+
+            * `Modified` - Modified
+
+            * `Completed` - Completed
+
+            * `Failed` - Failed
+
+            * `Running` - Running'
+          oneOf:
+          - $ref: '#/components/schemas/SavedQueryStatusEnum'
+          - $ref: '#/components/schemas/NullEnum'
+        last_run_at:
+          type: string
+          format: date-time
+          nullable: true
+          readOnly: true
+        managed_viewset_kind:
+          type: string
+          nullable: true
+          readOnly: true
+        folder_id:
+          type: string
+          format: uuid
+          nullable: true
+          description: Optional folder ID used to organize this view in the SQL editor sidebar.
+        folder_name:
+          type: string
+          readOnly: true
+          nullable: true
+          description: Folder name used to organize this view in the SQL editor sidebar.
+        latest_error:
+          type: string
+          readOnly: true
+          nullable: true
+        edited_history_id:
+          type: string
+          writeOnly: true
+          nullable: true
+          description: Activity log ID from the last known edit. Used for conflict detection.
+        latest_history_id:
+          type: integer
+          nullable: true
+          readOnly: true
+        soft_update:
+          type: boolean
+          writeOnly: true
+          nullable: true
+          description: If true, skip column inference and validation. For saving drafts.
+        dag_id:
+          type: string
+          format: uuid
+          writeOnly: true
+          nullable: true
+          description: Optional DAG to place this view into
+        is_materialized:
+          type: boolean
+          readOnly: true
+          nullable: true
+        origin:
+          readOnly: true
+          nullable: true
+          description: 'Where this SavedQuery is created.
+
+
+            * `data_warehouse` - Data Warehouse
+
+            * `endpoint` - Endpoint
+
+            * `managed_viewset` - Managed Viewset'
+          oneOf:
+          - $ref: '#/components/schemas/OriginEnum'
+          - $ref: '#/components/schemas/NullEnum'
+        is_test:
+          type: boolean
+          description: Whether this view is for testing only and will auto-expire.
+        expires_at:
+          type: string
+          format: date-time
+          readOnly: true
+          nullable: true
+          description: When this test view should be automatically deleted.
+        user_access_level:
+          type: string
+          nullable: true
+          readOnly: true
+          description: The effective access level the user has for this object
+      required:
+      - columns
+      - created_at
+      - created_by
+      - expires_at
+      - folder_name
+      - id
+      - is_materialized
+      - last_run_at
+      - latest_error
+      - latest_history_id
+      - managed_viewset_kind
+      - name
+      - origin
+      - status
+      - sync_frequency
+      - user_access_level
+    NullEnum:
+      enum:
+      - null
+  parameters:
+    ProjectIdPath:
+      in: path
+      name: project_id
+      required: true
+      schema:
+        type: string
+      description: Project ID of the project you're trying to access. To find the ID of the project, make a call to /api/projects/.
+    EnvironmentIdPath:
+      in: path
+      name: environment_id
+      required: true
+      schema:
+        type: string
+      description: Deprecated. Use /api/projects/{project_id}/ instead.
+  securitySchemes:
+    PersonalAPIKeyAuth:
+      type: http
+      scheme: bearer
+x-tagGroups:
+- name: All endpoints
+  tags:
+  - LLM Analytics
+  - actions
+  - activity_log
+  - activity_logs
+  - advanced_activity_logs
+  - alerts
+  - annotations
+  - approval_policies
+  - batch_exports
+  - cdp
+  - change_requests
+  - code
+  - code-invites
+  - cohorts
+  - comments
+  - conversations
+  - core
+  - customer_analytics
+  - customer_journeys
+  - customer_profile_configs
+  - dashboard_templates
+  - dashboards
+  - data_color_themes
+  - data_modeling_jobs
+  - data_warehouse
+  - dataset_items
+  - datasets
+  - desktop_recordings
+  - domains
+  - early_access_feature
+  - early_access_features
+  - elements
+  - endpoints
+  - environments
+  - error_tracking
+  - evaluation_runs
+  - evaluations
+  - event_definitions
+  - event_filter
+  - event_schemas
+  - events
+  - experiment_holdouts
+  - experiment_saved_metrics
+  - experiments
+  - exports
+  - external_data_schemas
+  - external_data_sources
+  - feature_flags
+  - file_system
+  - file_system_shortcut
+  - flag_value
+  - groups
+  - groups_types
+  - health_issues
+  - heatmap_screenshots
+  - heatmaps
+  - hog_flows
+  - hog_function_templates
+  - hog_functions
+  - insight_variables
+  - insights
+  - integrations
+  - invites
+  - js-snippet
+  - legal_documents
+  - lineage
+  - live_debugger_breakpoints
+  - llm_analytics
+  - llm_prompts
+  - llm_skills
+  - logs
+  - managed_viewsets
+  - max
+  - max_tools
+  - mcp_server_installations
+  - mcp_servers
+  - mcp_store
+  - mcp_tools
+  - members
+  - notebooks
+  - oauth_applications
+  - object_media_previews
+  - organizations
+  - persisted_folder
+  - persons
+  - platform_features
+  - plugin_configs
+  - product_analytics
+  - product_tours
+  - project_secret_api_keys
+  - projects
+  - property_definitions
+  - proxy_records
+  - public_hog_function_templates
+  - query
+  - replay
+  - reverse_proxy
+  - role_external_references
+  - roles
+  - sandbox-environments
+  - sandbox_environments
+  - saved
+  - schema_property_groups
+  - sdk_doctor
+  - session_group_summaries
+  - session_recording_playlists
+  - session_recordings
+  - session_summaries
+  - sessions
+  - signals
+  - subscriptions
+  - surveys
+  - taggers
+  - task-automations
+  - task-runs
+  - task_automations
+  - tasks
+  - uploaded_media
+  - user_home_settings
+  - user_interviews
+  - users
+  - visual_review
+  - warehouse_dag
+  - warehouse_model_paths
+  - warehouse_saved_queries
+  - warehouse_saved_query_folders
+  - warehouse_tables
+  - warehouse_view_link
+  - warehouse_view_links
+  - web_analytics
+  - web_experiments
+  - web_vitals
+  - welcome
+  - workflows

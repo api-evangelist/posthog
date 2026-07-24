@@ -1,0 +1,3117 @@
+openapi: 3.0.3
+info:
+  title: PostHog actions dashboards API
+  version: 1.0.0
+  description: ''
+tags:
+- name: dashboards
+paths:
+  /api/environments/{environment_id}/dashboards/:
+    get:
+      operationId: environments_dashboards_list
+      parameters:
+      - $ref: '#/components/parameters/EnvironmentIdPath'
+      - in: query
+        name: format
+        schema:
+          type: string
+          enum:
+          - json
+          - txt
+      - name: limit
+        required: false
+        in: query
+        description: Number of results to return per page.
+        schema:
+          type: integer
+      - name: offset
+        required: false
+        in: query
+        description: The initial index from which to return the results.
+        schema:
+          type: integer
+      tags:
+      - dashboards
+      security:
+      - PersonalAPIKeyAuth:
+        - dashboard:read
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedDashboardBasicList'
+            text/event-stream:
+              schema:
+                $ref: '#/components/schemas/PaginatedDashboardBasicList'
+          description: ''
+      deprecated: true
+      x-explicit-tags:
+      - core
+      - dashboards
+    post:
+      operationId: environments_dashboards_create
+      parameters:
+      - $ref: '#/components/parameters/EnvironmentIdPath'
+      - in: query
+        name: format
+        schema:
+          type: string
+          enum:
+          - json
+          - txt
+      tags:
+      - dashboards
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Dashboard'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/Dashboard'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/Dashboard'
+      security:
+      - PersonalAPIKeyAuth:
+        - dashboard:write
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Dashboard'
+            text/event-stream:
+              schema:
+                $ref: '#/components/schemas/Dashboard'
+          description: ''
+      deprecated: true
+      x-explicit-tags:
+      - core
+      - dashboards
+  /api/environments/{environment_id}/dashboards/{dashboard_id}/collaborators/:
+    get:
+      operationId: environments_dashboards_collaborators_list
+      parameters:
+      - in: path
+        name: dashboard_id
+        schema:
+          type: integer
+        required: true
+      - $ref: '#/components/parameters/EnvironmentIdPath'
+      tags:
+      - dashboards
+      security:
+      - PersonalAPIKeyAuth:
+        - dashboard:read
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/DashboardCollaborator'
+          description: ''
+      deprecated: true
+      x-explicit-tags: []
+    post:
+      operationId: environments_dashboards_collaborators_create
+      parameters:
+      - in: path
+        name: dashboard_id
+        schema:
+          type: integer
+        required: true
+      - $ref: '#/components/parameters/EnvironmentIdPath'
+      tags:
+      - dashboards
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/DashboardCollaborator'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/DashboardCollaborator'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/DashboardCollaborator'
+        required: true
+      security:
+      - PersonalAPIKeyAuth:
+        - dashboard:write
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DashboardCollaborator'
+          description: ''
+      deprecated: true
+      x-explicit-tags: []
+  /api/environments/{environment_id}/dashboards/{dashboard_id}/collaborators/{user__uuid}/:
+    delete:
+      operationId: environments_dashboards_collaborators_destroy
+      parameters:
+      - in: path
+        name: dashboard_id
+        schema:
+          type: integer
+        required: true
+      - $ref: '#/components/parameters/EnvironmentIdPath'
+      - in: path
+        name: user__uuid
+        schema:
+          type: string
+          format: uuid
+        required: true
+      tags:
+      - dashboards
+      security:
+      - PersonalAPIKeyAuth:
+        - dashboard:write
+      responses:
+        '204':
+          description: No response body
+      deprecated: true
+      x-explicit-tags: []
+  /api/environments/{environment_id}/dashboards/{dashboard_id}/sharing/:
+    get:
+      operationId: environments_dashboards_sharing_list
+      parameters:
+      - in: path
+        name: dashboard_id
+        schema:
+          type: integer
+        required: true
+      - $ref: '#/components/parameters/EnvironmentIdPath'
+      tags:
+      - dashboards
+      security:
+      - PersonalAPIKeyAuth:
+        - sharing_configuration:read
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/SharingConfiguration'
+          description: ''
+      deprecated: true
+      x-explicit-tags:
+      - core
+  /api/environments/{environment_id}/dashboards/{dashboard_id}/sharing/passwords/:
+    post:
+      operationId: environments_dashboards_sharing_passwords_create
+      description: Create a new password for the sharing configuration.
+      parameters:
+      - in: path
+        name: dashboard_id
+        schema:
+          type: integer
+        required: true
+      - $ref: '#/components/parameters/EnvironmentIdPath'
+      tags:
+      - dashboards
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SharingConfiguration'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/SharingConfiguration'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/SharingConfiguration'
+      security:
+      - PersonalAPIKeyAuth:
+        - sharing_configuration:write
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SharingConfiguration'
+          description: ''
+      deprecated: true
+      x-explicit-tags:
+      - core
+  /api/environments/{environment_id}/dashboards/{dashboard_id}/sharing/passwords/{password_id}/:
+    delete:
+      operationId: environments_dashboards_sharing_passwords_destroy
+      description: Delete a password from the sharing configuration.
+      parameters:
+      - in: path
+        name: dashboard_id
+        schema:
+          type: integer
+        required: true
+      - $ref: '#/components/parameters/EnvironmentIdPath'
+      - in: path
+        name: password_id
+        schema:
+          type: string
+        required: true
+      tags:
+      - dashboards
+      security:
+      - PersonalAPIKeyAuth:
+        - sharing_configuration:write
+      responses:
+        '204':
+          description: No response body
+      deprecated: true
+      x-explicit-tags:
+      - core
+  /api/environments/{environment_id}/dashboards/{dashboard_id}/sharing/refresh/:
+    post:
+      operationId: environments_dashboards_sharing_refresh_create
+      parameters:
+      - in: path
+        name: dashboard_id
+        schema:
+          type: integer
+        required: true
+      - $ref: '#/components/parameters/EnvironmentIdPath'
+      tags:
+      - dashboards
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SharingConfiguration'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/SharingConfiguration'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/SharingConfiguration'
+      security:
+      - PersonalAPIKeyAuth:
+        - sharing_configuration:write
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SharingConfiguration'
+          description: ''
+      deprecated: true
+      x-explicit-tags:
+      - core
+  /api/environments/{environment_id}/dashboards/{id}/:
+    get:
+      operationId: environments_dashboards_retrieve
+      parameters:
+      - $ref: '#/components/parameters/EnvironmentIdPath'
+      - in: query
+        name: filters_override
+        schema:
+          type: string
+        description: JSON object to override dashboard filters for this request only (not persisted). Top-level keys replace; nested values are not deep-merged — pass the complete value for any key you override. See the dashboard filters schema for available keys (e.g., `date_from`, `date_to`, `properties`). Ignored when accessed via a dashboard sharing token.
+      - in: query
+        name: format
+        schema:
+          type: string
+          enum:
+          - json
+          - txt
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this dashboard.
+        required: true
+      - in: query
+        name: variables_override
+        schema:
+          type: string
+        description: 'JSON object to override dashboard variables for this request only (not persisted). Format: {"<variable_id>": {"code_name": "<code_name>", "variableId": "<variable_id>", "value": <new_value>}}. Each entry must include `code_name` — partial entries are silently dropped. The simplest workflow is to call `dashboard-get` first, copy the matching entry from the response''s `variables` field, and mutate `value`. Top-level keys replace; nested values are not deep-merged. Ignored when accessed via a dashboard sharing token.'
+      tags:
+      - dashboards
+      security:
+      - PersonalAPIKeyAuth:
+        - dashboard:read
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Dashboard'
+            text/event-stream:
+              schema:
+                $ref: '#/components/schemas/Dashboard'
+          description: ''
+      deprecated: true
+      x-explicit-tags:
+      - core
+    put:
+      operationId: environments_dashboards_update
+      parameters:
+      - $ref: '#/components/parameters/EnvironmentIdPath'
+      - in: query
+        name: format
+        schema:
+          type: string
+          enum:
+          - json
+          - txt
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this dashboard.
+        required: true
+      tags:
+      - dashboards
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Dashboard'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/Dashboard'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/Dashboard'
+      security:
+      - PersonalAPIKeyAuth:
+        - dashboard:write
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Dashboard'
+            text/event-stream:
+              schema:
+                $ref: '#/components/schemas/Dashboard'
+          description: ''
+      deprecated: true
+      x-explicit-tags:
+      - core
+    patch:
+      operationId: environments_dashboards_partial_update
+      parameters:
+      - $ref: '#/components/parameters/EnvironmentIdPath'
+      - in: query
+        name: format
+        schema:
+          type: string
+          enum:
+          - json
+          - txt
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this dashboard.
+        required: true
+      tags:
+      - dashboards
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchedDashboard'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/PatchedDashboard'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/PatchedDashboard'
+      security:
+      - PersonalAPIKeyAuth:
+        - dashboard:write
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Dashboard'
+            text/event-stream:
+              schema:
+                $ref: '#/components/schemas/Dashboard'
+          description: ''
+      deprecated: true
+      x-explicit-tags:
+      - core
+    delete:
+      operationId: environments_dashboards_destroy
+      description: Hard delete of this model is not allowed. Use a patch API call to set "deleted" to true
+      parameters:
+      - $ref: '#/components/parameters/EnvironmentIdPath'
+      - in: query
+        name: format
+        schema:
+          type: string
+          enum:
+          - json
+          - txt
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this dashboard.
+        required: true
+      tags:
+      - dashboards
+      security:
+      - PersonalAPIKeyAuth:
+        - dashboard:write
+      responses:
+        '405':
+          description: No response body
+      deprecated: true
+      x-explicit-tags:
+      - core
+  /api/environments/{environment_id}/dashboards/{id}/analyze_refresh_result/:
+    post:
+      operationId: environments_dashboards_analyze_refresh_result_create
+      description: 'Generate AI analysis comparing before/after dashboard refresh.
+
+        Expects cache_key in request body pointing to the stored ''before'' state.'
+      parameters:
+      - $ref: '#/components/parameters/EnvironmentIdPath'
+      - in: query
+        name: format
+        schema:
+          type: string
+          enum:
+          - json
+          - txt
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this dashboard.
+        required: true
+      tags:
+      - dashboards
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Dashboard'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/Dashboard'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/Dashboard'
+      responses:
+        '200':
+          description: No response body
+      deprecated: true
+      x-explicit-tags:
+      - core
+  /api/environments/{environment_id}/dashboards/{id}/copy_tile/:
+    post:
+      operationId: environments_dashboards_copy_tile_create
+      description: Copy an existing dashboard tile to another dashboard (insight or text card; new tile row).
+      parameters:
+      - $ref: '#/components/parameters/EnvironmentIdPath'
+      - in: query
+        name: format
+        schema:
+          type: string
+          enum:
+          - json
+          - txt
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this dashboard.
+        required: true
+      tags:
+      - dashboards
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CopyDashboardTileRequest'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/CopyDashboardTileRequest'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/CopyDashboardTileRequest'
+        required: true
+      security:
+      - PersonalAPIKeyAuth:
+        - dashboard:write
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Dashboard'
+            text/event-stream:
+              schema:
+                $ref: '#/components/schemas/Dashboard'
+          description: ''
+      deprecated: true
+      x-explicit-tags:
+      - core
+  /api/environments/{environment_id}/dashboards/{id}/move_tile/:
+    patch:
+      operationId: environments_dashboards_move_tile_partial_update
+      parameters:
+      - $ref: '#/components/parameters/EnvironmentIdPath'
+      - in: query
+        name: format
+        schema:
+          type: string
+          enum:
+          - json
+          - txt
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this dashboard.
+        required: true
+      tags:
+      - dashboards
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchedDashboard'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/PatchedDashboard'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/PatchedDashboard'
+      responses:
+        '200':
+          description: No response body
+      deprecated: true
+      x-explicit-tags:
+      - core
+  /api/environments/{environment_id}/dashboards/{id}/reorder_tiles/:
+    post:
+      operationId: environments_dashboards_reorder_tiles_create
+      parameters:
+      - $ref: '#/components/parameters/EnvironmentIdPath'
+      - in: query
+        name: format
+        schema:
+          type: string
+          enum:
+          - json
+          - txt
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this dashboard.
+        required: true
+      tags:
+      - dashboards
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ReorderTilesRequest'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/ReorderTilesRequest'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/ReorderTilesRequest'
+        required: true
+      security:
+      - PersonalAPIKeyAuth:
+        - dashboard:write
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Dashboard'
+            text/event-stream:
+              schema:
+                $ref: '#/components/schemas/Dashboard'
+          description: ''
+      deprecated: true
+      x-explicit-tags:
+      - core
+  /api/environments/{environment_id}/dashboards/{id}/run_insights/:
+    get:
+      operationId: environments_dashboards_run_insights_retrieve
+      description: Run all insights on a dashboard and return their results.
+      parameters:
+      - $ref: '#/components/parameters/EnvironmentIdPath'
+      - in: query
+        name: filters_override
+        schema:
+          type: string
+        description: JSON object to override dashboard filters for this request only (not persisted). Top-level keys replace; nested values are not deep-merged — pass the complete value for any key you override. See the dashboard filters schema for available keys (e.g., `date_from`, `date_to`, `properties`). Ignored when accessed via a dashboard sharing token.
+      - in: query
+        name: format
+        schema:
+          type: string
+          enum:
+          - json
+          - txt
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this dashboard.
+        required: true
+      - in: query
+        name: output_format
+        schema:
+          type: string
+          enum:
+          - json
+          - optimized
+        description: '''optimized'' (default) returns LLM-friendly formatted text per insight. ''json'' returns the raw query result objects.'
+      - in: query
+        name: refresh
+        schema:
+          type: string
+          enum:
+          - blocking
+          - force_blocking
+          - force_cache
+        description: Cache behavior. 'force_cache' (default) serves from cache even if stale. 'blocking' uses cache if fresh, otherwise recalculates. 'force_blocking' always recalculates.
+      - in: query
+        name: variables_override
+        schema:
+          type: string
+        description: 'JSON object to override dashboard variables for this request only (not persisted). Format: {"<variable_id>": {"code_name": "<code_name>", "variableId": "<variable_id>", "value": <new_value>}}. Each entry must include `code_name` — partial entries are silently dropped. The simplest workflow is to call `dashboard-get` first, copy the matching entry from the response''s `variables` field, and mutate `value`. Top-level keys replace; nested values are not deep-merged. Ignored when accessed via a dashboard sharing token.'
+      tags:
+      - dashboards
+      security:
+      - PersonalAPIKeyAuth:
+        - query:read
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RunInsightsResponse'
+            text/event-stream:
+              schema:
+                $ref: '#/components/schemas/RunInsightsResponse'
+          description: ''
+      deprecated: true
+      x-explicit-tags:
+      - core
+  /api/environments/{environment_id}/dashboards/{id}/snapshot/:
+    post:
+      operationId: environments_dashboards_snapshot_create
+      description: 'Snapshot the current dashboard state (from cache) for AI analysis.
+
+        Returns a cache_key representing the ''before'' state, to be used with analyze_refresh_result.'
+      parameters:
+      - $ref: '#/components/parameters/EnvironmentIdPath'
+      - in: query
+        name: format
+        schema:
+          type: string
+          enum:
+          - json
+          - txt
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this dashboard.
+        required: true
+      tags:
+      - dashboards
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Dashboard'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/Dashboard'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/Dashboard'
+      responses:
+        '200':
+          description: No response body
+      deprecated: true
+      x-explicit-tags:
+      - core
+  /api/environments/{environment_id}/dashboards/{id}/stream_tiles/:
+    get:
+      operationId: environments_dashboards_stream_tiles_retrieve
+      description: Stream dashboard metadata and tiles via Server-Sent Events. Sends metadata first, then tiles as they are rendered.
+      parameters:
+      - $ref: '#/components/parameters/EnvironmentIdPath'
+      - in: query
+        name: filters_override
+        schema:
+          type: string
+        description: JSON object to override dashboard filters for this request only (not persisted). Top-level keys replace; nested values are not deep-merged — pass the complete value for any key you override. See the dashboard filters schema for available keys (e.g., `date_from`, `date_to`, `properties`). Ignored when accessed via a dashboard sharing token.
+      - in: query
+        name: format
+        schema:
+          type: string
+          enum:
+          - json
+          - txt
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this dashboard.
+        required: true
+      - in: query
+        name: layoutSize
+        schema:
+          type: string
+          enum:
+          - sm
+          - xs
+        description: Layout size for tile positioning. 'sm' (default) for standard, 'xs' for mobile. The snake_case alias `layout_size` is also accepted for backward compatibility.
+      - in: query
+        name: variables_override
+        schema:
+          type: string
+        description: 'JSON object to override dashboard variables for this request only (not persisted). Format: {"<variable_id>": {"code_name": "<code_name>", "variableId": "<variable_id>", "value": <new_value>}}. Each entry must include `code_name` — partial entries are silently dropped. The simplest workflow is to call `dashboard-get` first, copy the matching entry from the response''s `variables` field, and mutate `value`. Top-level keys replace; nested values are not deep-merged. Ignored when accessed via a dashboard sharing token.'
+      tags:
+      - dashboards
+      responses:
+        '200':
+          description: No response body
+      deprecated: true
+      x-explicit-tags:
+      - core
+  /api/environments/{environment_id}/dashboards/bulk_update_tags/:
+    post:
+      operationId: environments_dashboards_bulk_update_tags_create
+      description: 'Bulk update tags on multiple objects.
+
+
+        Accepts:
+
+        - {"ids": [...], "action": "add"|"remove"|"set", "tags": ["tag1", "tag2"]}
+
+
+        Actions:
+
+        - "add": Add tags to existing tags on each object
+
+        - "remove": Remove specific tags from each object
+
+        - "set": Replace all tags on each object with the provided list'
+      parameters:
+      - $ref: '#/components/parameters/EnvironmentIdPath'
+      - in: query
+        name: format
+        schema:
+          type: string
+          enum:
+          - json
+          - txt
+      tags:
+      - dashboards
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/BulkUpdateTagsRequest'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/BulkUpdateTagsRequest'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/BulkUpdateTagsRequest'
+        required: true
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BulkUpdateTagsResponse'
+            text/event-stream:
+              schema:
+                $ref: '#/components/schemas/BulkUpdateTagsResponse'
+          description: ''
+      deprecated: true
+      x-explicit-tags:
+      - core
+      - dashboards
+  /api/environments/{environment_id}/dashboards/create_from_template_json/:
+    post:
+      operationId: environments_dashboards_create_from_template_json_create
+      parameters:
+      - $ref: '#/components/parameters/EnvironmentIdPath'
+      - in: query
+        name: format
+        schema:
+          type: string
+          enum:
+          - json
+          - txt
+      tags:
+      - dashboards
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Dashboard'
+      responses:
+        '200':
+          description: No response body
+      deprecated: true
+      x-explicit-tags:
+      - core
+      - dashboards
+  /api/environments/{environment_id}/dashboards/create_unlisted_dashboard/:
+    post:
+      operationId: environments_dashboards_create_unlisted_dashboard_create
+      description: 'Creates an unlisted dashboard from template by tag.
+
+        Enforces uniqueness (one per tag per team).
+
+        Returns 409 if unlisted dashboard with this tag already exists.'
+      parameters:
+      - $ref: '#/components/parameters/EnvironmentIdPath'
+      - in: query
+        name: format
+        schema:
+          type: string
+          enum:
+          - json
+          - txt
+      tags:
+      - dashboards
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Dashboard'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/Dashboard'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/Dashboard'
+      responses:
+        '200':
+          description: No response body
+      deprecated: true
+      x-explicit-tags:
+      - core
+      - dashboards
+  /api/environments/{environment_id}/data_color_themes/:
+    get:
+      operationId: environments_data_color_themes_list
+      parameters:
+      - $ref: '#/components/parameters/EnvironmentIdPath'
+      - name: limit
+        required: false
+        in: query
+        description: Number of results to return per page.
+        schema:
+          type: integer
+      - name: offset
+        required: false
+        in: query
+        description: The initial index from which to return the results.
+        schema:
+          type: integer
+      tags:
+      - dashboards
+      security:
+      - PersonalAPIKeyAuth:
+        - project:read
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedDataColorThemeList'
+          description: ''
+      deprecated: true
+      x-explicit-tags:
+      - dashboards
+    post:
+      operationId: environments_data_color_themes_create
+      parameters:
+      - $ref: '#/components/parameters/EnvironmentIdPath'
+      tags:
+      - dashboards
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/DataColorTheme'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/DataColorTheme'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/DataColorTheme'
+        required: true
+      security:
+      - PersonalAPIKeyAuth:
+        - project:write
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DataColorTheme'
+          description: ''
+      deprecated: true
+      x-explicit-tags:
+      - dashboards
+  /api/environments/{environment_id}/data_color_themes/{id}/:
+    get:
+      operationId: environments_data_color_themes_retrieve
+      parameters:
+      - $ref: '#/components/parameters/EnvironmentIdPath'
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this data color theme.
+        required: true
+      tags:
+      - dashboards
+      security:
+      - PersonalAPIKeyAuth:
+        - project:read
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DataColorTheme'
+          description: ''
+      deprecated: true
+      x-explicit-tags:
+      - dashboards
+    put:
+      operationId: environments_data_color_themes_update
+      parameters:
+      - $ref: '#/components/parameters/EnvironmentIdPath'
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this data color theme.
+        required: true
+      tags:
+      - dashboards
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/DataColorTheme'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/DataColorTheme'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/DataColorTheme'
+        required: true
+      security:
+      - PersonalAPIKeyAuth:
+        - project:write
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DataColorTheme'
+          description: ''
+      deprecated: true
+      x-explicit-tags:
+      - dashboards
+    patch:
+      operationId: environments_data_color_themes_partial_update
+      parameters:
+      - $ref: '#/components/parameters/EnvironmentIdPath'
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this data color theme.
+        required: true
+      tags:
+      - dashboards
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchedDataColorTheme'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/PatchedDataColorTheme'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/PatchedDataColorTheme'
+      security:
+      - PersonalAPIKeyAuth:
+        - project:write
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DataColorTheme'
+          description: ''
+      deprecated: true
+      x-explicit-tags:
+      - dashboards
+    delete:
+      operationId: environments_data_color_themes_destroy
+      parameters:
+      - $ref: '#/components/parameters/EnvironmentIdPath'
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this data color theme.
+        required: true
+      tags:
+      - dashboards
+      security:
+      - PersonalAPIKeyAuth:
+        - project:write
+      responses:
+        '204':
+          description: No response body
+      deprecated: true
+      x-explicit-tags:
+      - dashboards
+  /api/projects/{project_id}/dashboards/:
+    get:
+      operationId: dashboards_list
+      parameters:
+      - in: query
+        name: format
+        schema:
+          type: string
+          enum:
+          - json
+          - txt
+      - name: limit
+        required: false
+        in: query
+        description: Number of results to return per page.
+        schema:
+          type: integer
+      - name: offset
+        required: false
+        in: query
+        description: The initial index from which to return the results.
+        schema:
+          type: integer
+      - $ref: '#/components/parameters/ProjectIdPath'
+      tags:
+      - dashboards
+      security:
+      - PersonalAPIKeyAuth:
+        - dashboard:read
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedDashboardBasicList'
+            text/event-stream:
+              schema:
+                $ref: '#/components/schemas/PaginatedDashboardBasicList'
+          description: ''
+      x-explicit-tags:
+      - core
+      - dashboards
+    post:
+      operationId: dashboards_create
+      parameters:
+      - in: query
+        name: format
+        schema:
+          type: string
+          enum:
+          - json
+          - txt
+      - $ref: '#/components/parameters/ProjectIdPath'
+      tags:
+      - dashboards
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Dashboard'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/Dashboard'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/Dashboard'
+      security:
+      - PersonalAPIKeyAuth:
+        - dashboard:write
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Dashboard'
+            text/event-stream:
+              schema:
+                $ref: '#/components/schemas/Dashboard'
+          description: ''
+      x-explicit-tags:
+      - core
+      - dashboards
+  /api/projects/{project_id}/dashboards/{dashboard_id}/collaborators/:
+    get:
+      operationId: dashboards_collaborators_list
+      parameters:
+      - in: path
+        name: dashboard_id
+        schema:
+          type: integer
+        required: true
+      - $ref: '#/components/parameters/ProjectIdPath'
+      tags:
+      - dashboards
+      security:
+      - PersonalAPIKeyAuth:
+        - dashboard:read
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/DashboardCollaborator'
+          description: ''
+      x-explicit-tags: []
+    post:
+      operationId: dashboards_collaborators_create
+      parameters:
+      - in: path
+        name: dashboard_id
+        schema:
+          type: integer
+        required: true
+      - $ref: '#/components/parameters/ProjectIdPath'
+      tags:
+      - dashboards
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/DashboardCollaborator'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/DashboardCollaborator'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/DashboardCollaborator'
+        required: true
+      security:
+      - PersonalAPIKeyAuth:
+        - dashboard:write
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DashboardCollaborator'
+          description: ''
+      x-explicit-tags: []
+  /api/projects/{project_id}/dashboards/{dashboard_id}/collaborators/{user__uuid}/:
+    delete:
+      operationId: dashboards_collaborators_destroy
+      parameters:
+      - in: path
+        name: dashboard_id
+        schema:
+          type: integer
+        required: true
+      - $ref: '#/components/parameters/ProjectIdPath'
+      - in: path
+        name: user__uuid
+        schema:
+          type: string
+          format: uuid
+        required: true
+      tags:
+      - dashboards
+      security:
+      - PersonalAPIKeyAuth:
+        - dashboard:write
+      responses:
+        '204':
+          description: No response body
+      x-explicit-tags: []
+  /api/projects/{project_id}/dashboards/{dashboard_id}/sharing/:
+    get:
+      operationId: dashboards_sharing_list
+      parameters:
+      - in: path
+        name: dashboard_id
+        schema:
+          type: integer
+        required: true
+      - $ref: '#/components/parameters/ProjectIdPath'
+      tags:
+      - dashboards
+      security:
+      - PersonalAPIKeyAuth:
+        - sharing_configuration:read
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/SharingConfiguration'
+          description: ''
+      x-explicit-tags:
+      - core
+  /api/projects/{project_id}/dashboards/{dashboard_id}/sharing/passwords/:
+    post:
+      operationId: dashboards_sharing_passwords_create
+      description: Create a new password for the sharing configuration.
+      parameters:
+      - in: path
+        name: dashboard_id
+        schema:
+          type: integer
+        required: true
+      - $ref: '#/components/parameters/ProjectIdPath'
+      tags:
+      - dashboards
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SharingConfiguration'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/SharingConfiguration'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/SharingConfiguration'
+      security:
+      - PersonalAPIKeyAuth:
+        - sharing_configuration:write
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SharingConfiguration'
+          description: ''
+      x-explicit-tags:
+      - core
+  /api/projects/{project_id}/dashboards/{dashboard_id}/sharing/passwords/{password_id}/:
+    delete:
+      operationId: dashboards_sharing_passwords_destroy
+      description: Delete a password from the sharing configuration.
+      parameters:
+      - in: path
+        name: dashboard_id
+        schema:
+          type: integer
+        required: true
+      - in: path
+        name: password_id
+        schema:
+          type: string
+        required: true
+      - $ref: '#/components/parameters/ProjectIdPath'
+      tags:
+      - dashboards
+      security:
+      - PersonalAPIKeyAuth:
+        - sharing_configuration:write
+      responses:
+        '204':
+          description: No response body
+      x-explicit-tags:
+      - core
+  /api/projects/{project_id}/dashboards/{dashboard_id}/sharing/refresh/:
+    post:
+      operationId: dashboards_sharing_refresh_create
+      parameters:
+      - in: path
+        name: dashboard_id
+        schema:
+          type: integer
+        required: true
+      - $ref: '#/components/parameters/ProjectIdPath'
+      tags:
+      - dashboards
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SharingConfiguration'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/SharingConfiguration'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/SharingConfiguration'
+      security:
+      - PersonalAPIKeyAuth:
+        - sharing_configuration:write
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SharingConfiguration'
+          description: ''
+      x-explicit-tags:
+      - core
+  /api/projects/{project_id}/dashboards/{id}/:
+    get:
+      operationId: dashboards_retrieve
+      parameters:
+      - in: query
+        name: filters_override
+        schema:
+          type: string
+        description: JSON object to override dashboard filters for this request only (not persisted). Top-level keys replace; nested values are not deep-merged — pass the complete value for any key you override. See the dashboard filters schema for available keys (e.g., `date_from`, `date_to`, `properties`). Ignored when accessed via a dashboard sharing token.
+      - in: query
+        name: format
+        schema:
+          type: string
+          enum:
+          - json
+          - txt
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this dashboard.
+        required: true
+      - $ref: '#/components/parameters/ProjectIdPath'
+      - in: query
+        name: variables_override
+        schema:
+          type: string
+        description: 'JSON object to override dashboard variables for this request only (not persisted). Format: {"<variable_id>": {"code_name": "<code_name>", "variableId": "<variable_id>", "value": <new_value>}}. Each entry must include `code_name` — partial entries are silently dropped. The simplest workflow is to call `dashboard-get` first, copy the matching entry from the response''s `variables` field, and mutate `value`. Top-level keys replace; nested values are not deep-merged. Ignored when accessed via a dashboard sharing token.'
+      tags:
+      - dashboards
+      security:
+      - PersonalAPIKeyAuth:
+        - dashboard:read
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Dashboard'
+            text/event-stream:
+              schema:
+                $ref: '#/components/schemas/Dashboard'
+          description: ''
+      x-explicit-tags:
+      - core
+    put:
+      operationId: dashboards_update
+      parameters:
+      - in: query
+        name: format
+        schema:
+          type: string
+          enum:
+          - json
+          - txt
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this dashboard.
+        required: true
+      - $ref: '#/components/parameters/ProjectIdPath'
+      tags:
+      - dashboards
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Dashboard'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/Dashboard'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/Dashboard'
+      security:
+      - PersonalAPIKeyAuth:
+        - dashboard:write
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Dashboard'
+            text/event-stream:
+              schema:
+                $ref: '#/components/schemas/Dashboard'
+          description: ''
+      x-explicit-tags:
+      - core
+    patch:
+      operationId: dashboards_partial_update
+      parameters:
+      - in: query
+        name: format
+        schema:
+          type: string
+          enum:
+          - json
+          - txt
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this dashboard.
+        required: true
+      - $ref: '#/components/parameters/ProjectIdPath'
+      tags:
+      - dashboards
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchedDashboard'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/PatchedDashboard'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/PatchedDashboard'
+      security:
+      - PersonalAPIKeyAuth:
+        - dashboard:write
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Dashboard'
+            text/event-stream:
+              schema:
+                $ref: '#/components/schemas/Dashboard'
+          description: ''
+      x-explicit-tags:
+      - core
+    delete:
+      operationId: dashboards_destroy
+      description: Hard delete of this model is not allowed. Use a patch API call to set "deleted" to true
+      parameters:
+      - in: query
+        name: format
+        schema:
+          type: string
+          enum:
+          - json
+          - txt
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this dashboard.
+        required: true
+      - $ref: '#/components/parameters/ProjectIdPath'
+      tags:
+      - dashboards
+      security:
+      - PersonalAPIKeyAuth:
+        - dashboard:write
+      responses:
+        '405':
+          description: No response body
+      x-explicit-tags:
+      - core
+  /api/projects/{project_id}/dashboards/{id}/analyze_refresh_result/:
+    post:
+      operationId: dashboards_analyze_refresh_result_create
+      description: 'Generate AI analysis comparing before/after dashboard refresh.
+
+        Expects cache_key in request body pointing to the stored ''before'' state.'
+      parameters:
+      - in: query
+        name: format
+        schema:
+          type: string
+          enum:
+          - json
+          - txt
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this dashboard.
+        required: true
+      - $ref: '#/components/parameters/ProjectIdPath'
+      tags:
+      - dashboards
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Dashboard'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/Dashboard'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/Dashboard'
+      responses:
+        '200':
+          description: No response body
+      x-explicit-tags:
+      - core
+  /api/projects/{project_id}/dashboards/{id}/copy_tile/:
+    post:
+      operationId: dashboards_copy_tile_create
+      description: Copy an existing dashboard tile to another dashboard (insight or text card; new tile row).
+      parameters:
+      - in: query
+        name: format
+        schema:
+          type: string
+          enum:
+          - json
+          - txt
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this dashboard.
+        required: true
+      - $ref: '#/components/parameters/ProjectIdPath'
+      tags:
+      - dashboards
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CopyDashboardTileRequest'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/CopyDashboardTileRequest'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/CopyDashboardTileRequest'
+        required: true
+      security:
+      - PersonalAPIKeyAuth:
+        - dashboard:write
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Dashboard'
+            text/event-stream:
+              schema:
+                $ref: '#/components/schemas/Dashboard'
+          description: ''
+      x-explicit-tags:
+      - core
+  /api/projects/{project_id}/dashboards/{id}/move_tile/:
+    patch:
+      operationId: dashboards_move_tile_partial_update
+      parameters:
+      - in: query
+        name: format
+        schema:
+          type: string
+          enum:
+          - json
+          - txt
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this dashboard.
+        required: true
+      - $ref: '#/components/parameters/ProjectIdPath'
+      tags:
+      - dashboards
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchedDashboard'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/PatchedDashboard'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/PatchedDashboard'
+      responses:
+        '200':
+          description: No response body
+      x-explicit-tags:
+      - core
+  /api/projects/{project_id}/dashboards/{id}/reorder_tiles/:
+    post:
+      operationId: dashboards_reorder_tiles_create
+      parameters:
+      - in: query
+        name: format
+        schema:
+          type: string
+          enum:
+          - json
+          - txt
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this dashboard.
+        required: true
+      - $ref: '#/components/parameters/ProjectIdPath'
+      tags:
+      - dashboards
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ReorderTilesRequest'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/ReorderTilesRequest'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/ReorderTilesRequest'
+        required: true
+      security:
+      - PersonalAPIKeyAuth:
+        - dashboard:write
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Dashboard'
+            text/event-stream:
+              schema:
+                $ref: '#/components/schemas/Dashboard'
+          description: ''
+      x-explicit-tags:
+      - core
+  /api/projects/{project_id}/dashboards/{id}/run_insights/:
+    get:
+      operationId: dashboards_run_insights_retrieve
+      description: Run all insights on a dashboard and return their results.
+      parameters:
+      - in: query
+        name: filters_override
+        schema:
+          type: string
+        description: JSON object to override dashboard filters for this request only (not persisted). Top-level keys replace; nested values are not deep-merged — pass the complete value for any key you override. See the dashboard filters schema for available keys (e.g., `date_from`, `date_to`, `properties`). Ignored when accessed via a dashboard sharing token.
+      - in: query
+        name: format
+        schema:
+          type: string
+          enum:
+          - json
+          - txt
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this dashboard.
+        required: true
+      - in: query
+        name: output_format
+        schema:
+          type: string
+          enum:
+          - json
+          - optimized
+        description: '''optimized'' (default) returns LLM-friendly formatted text per insight. ''json'' returns the raw query result objects.'
+      - $ref: '#/components/parameters/ProjectIdPath'
+      - in: query
+        name: refresh
+        schema:
+          type: string
+          enum:
+          - blocking
+          - force_blocking
+          - force_cache
+        description: Cache behavior. 'force_cache' (default) serves from cache even if stale. 'blocking' uses cache if fresh, otherwise recalculates. 'force_blocking' always recalculates.
+      - in: query
+        name: variables_override
+        schema:
+          type: string
+        description: 'JSON object to override dashboard variables for this request only (not persisted). Format: {"<variable_id>": {"code_name": "<code_name>", "variableId": "<variable_id>", "value": <new_value>}}. Each entry must include `code_name` — partial entries are silently dropped. The simplest workflow is to call `dashboard-get` first, copy the matching entry from the response''s `variables` field, and mutate `value`. Top-level keys replace; nested values are not deep-merged. Ignored when accessed via a dashboard sharing token.'
+      tags:
+      - dashboards
+      security:
+      - PersonalAPIKeyAuth:
+        - query:read
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RunInsightsResponse'
+            text/event-stream:
+              schema:
+                $ref: '#/components/schemas/RunInsightsResponse'
+          description: ''
+      x-explicit-tags:
+      - core
+  /api/projects/{project_id}/dashboards/{id}/snapshot/:
+    post:
+      operationId: dashboards_snapshot_create
+      description: 'Snapshot the current dashboard state (from cache) for AI analysis.
+
+        Returns a cache_key representing the ''before'' state, to be used with analyze_refresh_result.'
+      parameters:
+      - in: query
+        name: format
+        schema:
+          type: string
+          enum:
+          - json
+          - txt
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this dashboard.
+        required: true
+      - $ref: '#/components/parameters/ProjectIdPath'
+      tags:
+      - dashboards
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Dashboard'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/Dashboard'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/Dashboard'
+      responses:
+        '200':
+          description: No response body
+      x-explicit-tags:
+      - core
+  /api/projects/{project_id}/dashboards/{id}/stream_tiles/:
+    get:
+      operationId: dashboards_stream_tiles_retrieve
+      description: Stream dashboard metadata and tiles via Server-Sent Events. Sends metadata first, then tiles as they are rendered.
+      parameters:
+      - in: query
+        name: filters_override
+        schema:
+          type: string
+        description: JSON object to override dashboard filters for this request only (not persisted). Top-level keys replace; nested values are not deep-merged — pass the complete value for any key you override. See the dashboard filters schema for available keys (e.g., `date_from`, `date_to`, `properties`). Ignored when accessed via a dashboard sharing token.
+      - in: query
+        name: format
+        schema:
+          type: string
+          enum:
+          - json
+          - txt
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this dashboard.
+        required: true
+      - in: query
+        name: layoutSize
+        schema:
+          type: string
+          enum:
+          - sm
+          - xs
+        description: Layout size for tile positioning. 'sm' (default) for standard, 'xs' for mobile. The snake_case alias `layout_size` is also accepted for backward compatibility.
+      - $ref: '#/components/parameters/ProjectIdPath'
+      - in: query
+        name: variables_override
+        schema:
+          type: string
+        description: 'JSON object to override dashboard variables for this request only (not persisted). Format: {"<variable_id>": {"code_name": "<code_name>", "variableId": "<variable_id>", "value": <new_value>}}. Each entry must include `code_name` — partial entries are silently dropped. The simplest workflow is to call `dashboard-get` first, copy the matching entry from the response''s `variables` field, and mutate `value`. Top-level keys replace; nested values are not deep-merged. Ignored when accessed via a dashboard sharing token.'
+      tags:
+      - dashboards
+      responses:
+        '200':
+          description: No response body
+      x-explicit-tags:
+      - core
+  /api/projects/{project_id}/dashboards/bulk_update_tags/:
+    post:
+      operationId: dashboards_bulk_update_tags_create
+      description: 'Bulk update tags on multiple objects.
+
+
+        Accepts:
+
+        - {"ids": [...], "action": "add"|"remove"|"set", "tags": ["tag1", "tag2"]}
+
+
+        Actions:
+
+        - "add": Add tags to existing tags on each object
+
+        - "remove": Remove specific tags from each object
+
+        - "set": Replace all tags on each object with the provided list'
+      parameters:
+      - in: query
+        name: format
+        schema:
+          type: string
+          enum:
+          - json
+          - txt
+      - $ref: '#/components/parameters/ProjectIdPath'
+      tags:
+      - dashboards
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/BulkUpdateTagsRequest'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/BulkUpdateTagsRequest'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/BulkUpdateTagsRequest'
+        required: true
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BulkUpdateTagsResponse'
+            text/event-stream:
+              schema:
+                $ref: '#/components/schemas/BulkUpdateTagsResponse'
+          description: ''
+      x-explicit-tags:
+      - core
+      - dashboards
+  /api/projects/{project_id}/dashboards/create_from_template_json/:
+    post:
+      operationId: dashboards_create_from_template_json_create
+      parameters:
+      - in: query
+        name: format
+        schema:
+          type: string
+          enum:
+          - json
+          - txt
+      - $ref: '#/components/parameters/ProjectIdPath'
+      tags:
+      - dashboards
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Dashboard'
+      responses:
+        '200':
+          description: No response body
+      x-explicit-tags:
+      - core
+      - dashboards
+  /api/projects/{project_id}/dashboards/create_unlisted_dashboard/:
+    post:
+      operationId: dashboards_create_unlisted_dashboard_create
+      description: 'Creates an unlisted dashboard from template by tag.
+
+        Enforces uniqueness (one per tag per team).
+
+        Returns 409 if unlisted dashboard with this tag already exists.'
+      parameters:
+      - in: query
+        name: format
+        schema:
+          type: string
+          enum:
+          - json
+          - txt
+      - $ref: '#/components/parameters/ProjectIdPath'
+      tags:
+      - dashboards
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Dashboard'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/Dashboard'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/Dashboard'
+      responses:
+        '200':
+          description: No response body
+      x-explicit-tags:
+      - core
+      - dashboards
+  /api/projects/{project_id}/data_color_themes/:
+    get:
+      operationId: data_color_themes_list
+      parameters:
+      - name: limit
+        required: false
+        in: query
+        description: Number of results to return per page.
+        schema:
+          type: integer
+      - name: offset
+        required: false
+        in: query
+        description: The initial index from which to return the results.
+        schema:
+          type: integer
+      - $ref: '#/components/parameters/ProjectIdPath'
+      tags:
+      - dashboards
+      security:
+      - PersonalAPIKeyAuth:
+        - project:read
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedDataColorThemeList'
+          description: ''
+      x-explicit-tags:
+      - dashboards
+    post:
+      operationId: data_color_themes_create
+      parameters:
+      - $ref: '#/components/parameters/ProjectIdPath'
+      tags:
+      - dashboards
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/DataColorTheme'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/DataColorTheme'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/DataColorTheme'
+        required: true
+      security:
+      - PersonalAPIKeyAuth:
+        - project:write
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DataColorTheme'
+          description: ''
+      x-explicit-tags:
+      - dashboards
+  /api/projects/{project_id}/data_color_themes/{id}/:
+    get:
+      operationId: data_color_themes_retrieve
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this data color theme.
+        required: true
+      - $ref: '#/components/parameters/ProjectIdPath'
+      tags:
+      - dashboards
+      security:
+      - PersonalAPIKeyAuth:
+        - project:read
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DataColorTheme'
+          description: ''
+      x-explicit-tags:
+      - dashboards
+    put:
+      operationId: data_color_themes_update
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this data color theme.
+        required: true
+      - $ref: '#/components/parameters/ProjectIdPath'
+      tags:
+      - dashboards
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/DataColorTheme'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/DataColorTheme'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/DataColorTheme'
+        required: true
+      security:
+      - PersonalAPIKeyAuth:
+        - project:write
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DataColorTheme'
+          description: ''
+      x-explicit-tags:
+      - dashboards
+    patch:
+      operationId: data_color_themes_partial_update
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this data color theme.
+        required: true
+      - $ref: '#/components/parameters/ProjectIdPath'
+      tags:
+      - dashboards
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchedDataColorTheme'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/PatchedDataColorTheme'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/PatchedDataColorTheme'
+      security:
+      - PersonalAPIKeyAuth:
+        - project:write
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DataColorTheme'
+          description: ''
+      x-explicit-tags:
+      - dashboards
+    delete:
+      operationId: data_color_themes_destroy
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this data color theme.
+        required: true
+      - $ref: '#/components/parameters/ProjectIdPath'
+      tags:
+      - dashboards
+      security:
+      - PersonalAPIKeyAuth:
+        - project:write
+      responses:
+        '204':
+          description: No response body
+      x-explicit-tags:
+      - dashboards
+components:
+  schemas:
+    BulkUpdateTagsResponse:
+      type: object
+      properties:
+        updated:
+          type: array
+          items:
+            $ref: '#/components/schemas/BulkUpdateTagsItem'
+        skipped:
+          type: array
+          items:
+            $ref: '#/components/schemas/BulkUpdateTagsError'
+      required:
+      - skipped
+      - updated
+    DataColorTheme:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        name:
+          type: string
+          maxLength: 100
+        colors: {}
+        is_global:
+          type: boolean
+          readOnly: true
+        created_at:
+          type: string
+          format: date-time
+          readOnly: true
+          nullable: true
+        created_by:
+          allOf:
+          - $ref: '#/components/schemas/UserBasic'
+          readOnly: true
+      required:
+      - created_at
+      - created_by
+      - id
+      - is_global
+      - name
+    PatchedDashboard:
+      type: object
+      description: Serializer mixin that handles tags for objects.
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        name:
+          type: string
+          nullable: true
+          maxLength: 400
+        description:
+          type: string
+        pinned:
+          type: boolean
+        created_at:
+          type: string
+          format: date-time
+          readOnly: true
+        created_by:
+          allOf:
+          - $ref: '#/components/schemas/UserBasic'
+          readOnly: true
+        last_accessed_at:
+          type: string
+          format: date-time
+          nullable: true
+        last_viewed_at:
+          type: string
+          format: date-time
+          readOnly: true
+          nullable: true
+        is_shared:
+          type: boolean
+          readOnly: true
+        deleted:
+          type: boolean
+        creation_mode:
+          allOf:
+          - $ref: '#/components/schemas/CreationModeEnum'
+          readOnly: true
+        filters:
+          type: object
+          additionalProperties: true
+          readOnly: true
+        variables:
+          type: object
+          additionalProperties: true
+          nullable: true
+          readOnly: true
+        breakdown_colors:
+          description: Custom color mapping for breakdown values.
+        data_color_theme_id:
+          type: integer
+          nullable: true
+          description: ID of the color theme used for chart visualizations.
+        tags:
+          type: array
+          items: {}
+        restriction_level:
+          $ref: '#/components/schemas/RestrictionLevelEnum'
+        effective_restriction_level:
+          allOf:
+          - $ref: '#/components/schemas/EffectivePrivilegeLevelEnum'
+          readOnly: true
+        effective_privilege_level:
+          allOf:
+          - $ref: '#/components/schemas/EffectivePrivilegeLevelEnum'
+          readOnly: true
+        user_access_level:
+          type: string
+          nullable: true
+          readOnly: true
+          description: The effective access level the user has for this object
+        access_control_version:
+          type: string
+          readOnly: true
+        last_refresh:
+          type: string
+          format: date-time
+          nullable: true
+        persisted_filters:
+          type: object
+          additionalProperties: true
+          nullable: true
+          readOnly: true
+        persisted_variables:
+          type: object
+          additionalProperties: true
+          nullable: true
+          readOnly: true
+        team_id:
+          type: integer
+          readOnly: true
+        quick_filter_ids:
+          type: array
+          items:
+            type: string
+          nullable: true
+          description: List of quick filter IDs associated with this dashboard
+        tiles:
+          type: array
+          items:
+            type: object
+            additionalProperties: true
+          nullable: true
+          readOnly: true
+        use_template:
+          type: string
+          writeOnly: true
+          description: Template key to create the dashboard from a predefined template.
+        use_dashboard:
+          type: integer
+          writeOnly: true
+          nullable: true
+          description: ID of an existing dashboard to duplicate.
+        delete_insights:
+          type: boolean
+          writeOnly: true
+          default: false
+          description: When deleting, also delete insights that are only on this dashboard.
+        _create_in_folder:
+          type: string
+          writeOnly: true
+          title: ' create in folder'
+    ReorderTilesRequest:
+      type: object
+      properties:
+        tile_order:
+          type: array
+          items:
+            type: integer
+          description: Array of tile IDs in the desired display order (top to bottom, left to right).
+          minItems: 1
+      required:
+      - tile_order
+    RoleAtOrganizationEnum:
+      enum:
+      - engineering
+      - data
+      - product
+      - founder
+      - leadership
+      - marketing
+      - sales
+      - other
+      type: string
+      description: '* `engineering` - Engineering
+
+        * `data` - Data
+
+        * `product` - Product Management
+
+        * `founder` - Founder
+
+        * `leadership` - Leadership
+
+        * `marketing` - Marketing
+
+        * `sales` - Sales / Success
+
+        * `other` - Other'
+    PaginatedDataColorThemeList:
+      type: object
+      required:
+      - count
+      - results
+      properties:
+        count:
+          type: integer
+          example: 123
+        next:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?offset=400&limit=100
+        previous:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?offset=200&limit=100
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/DataColorTheme'
+    RunInsightsResponse:
+      type: object
+      properties:
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/DashboardTileResult'
+          description: Results for each insight tile on the dashboard.
+      required:
+      - results
+    DashboardCollaborator:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+          readOnly: true
+        dashboard_id:
+          type: integer
+          readOnly: true
+        user:
+          allOf:
+          - $ref: '#/components/schemas/UserBasic'
+          readOnly: true
+        level:
+          $ref: '#/components/schemas/RestrictionLevelEnum'
+        added_at:
+          type: string
+          format: date-time
+          readOnly: true
+        updated_at:
+          type: string
+          format: date-time
+          readOnly: true
+        user_uuid:
+          type: string
+          format: uuid
+          writeOnly: true
+      required:
+      - added_at
+      - dashboard_id
+      - id
+      - level
+      - updated_at
+      - user
+      - user_uuid
+    NullEnum:
+      enum:
+      - null
+    PaginatedDashboardBasicList:
+      type: object
+      required:
+      - count
+      - results
+      properties:
+        count:
+          type: integer
+          example: 123
+        next:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?offset=400&limit=100
+        previous:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?offset=200&limit=100
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/DashboardBasic'
+    DashboardTileResult:
+      type: object
+      description: DashboardTileSerializer restricted to tile id + insight result fields.
+      properties:
+        id:
+          type: integer
+        insight:
+          $ref: '#/components/schemas/InsightResult'
+      required:
+      - insight
+    UserBasic:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        uuid:
+          type: string
+          format: uuid
+          readOnly: true
+        distinct_id:
+          type: string
+          nullable: true
+          maxLength: 200
+        first_name:
+          type: string
+          maxLength: 150
+        last_name:
+          type: string
+          maxLength: 150
+        email:
+          type: string
+          format: email
+          title: Email address
+          maxLength: 254
+        is_email_verified:
+          type: boolean
+          nullable: true
+        hedgehog_config:
+          type: object
+          additionalProperties: true
+          nullable: true
+          readOnly: true
+        role_at_organization:
+          nullable: true
+          oneOf:
+          - $ref: '#/components/schemas/RoleAtOrganizationEnum'
+          - $ref: '#/components/schemas/BlankEnum'
+          - $ref: '#/components/schemas/NullEnum'
+      required:
+      - email
+      - hedgehog_config
+      - id
+      - uuid
+    SharingConfiguration:
+      type: object
+      properties:
+        created_at:
+          type: string
+          format: date-time
+          readOnly: true
+        enabled:
+          type: boolean
+        access_token:
+          type: string
+          readOnly: true
+          nullable: true
+        settings:
+          nullable: true
+        password_required:
+          type: boolean
+        share_passwords:
+          type: array
+          items:
+            $ref: '#/components/schemas/SharePassword'
+          readOnly: true
+      required:
+      - access_token
+      - created_at
+      - share_passwords
+    InsightResult:
+      type: object
+      description: InsightSerializer restricted to identifiers + result only.
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        short_id:
+          type: string
+          readOnly: true
+        name:
+          type: string
+          readOnly: true
+          nullable: true
+        derived_name:
+          type: string
+          readOnly: true
+          nullable: true
+        result:
+          readOnly: true
+      required:
+      - derived_name
+      - id
+      - name
+      - result
+      - short_id
+    ActionEnum:
+      enum:
+      - add
+      - remove
+      - set
+      type: string
+      description: '* `add` - add
+
+        * `remove` - remove
+
+        * `set` - set'
+    BulkUpdateTagsRequest:
+      type: object
+      properties:
+        ids:
+          type: array
+          items:
+            type: integer
+          description: List of object IDs to update tags on.
+          maxItems: 500
+        action:
+          allOf:
+          - $ref: '#/components/schemas/ActionEnum'
+          description: '''add'' merges with existing tags, ''remove'' deletes specific tags, ''set'' replaces all tags.
+
+
+            * `add` - add
+
+            * `remove` - remove
+
+            * `set` - set'
+        tags:
+          type: array
+          items:
+            type: string
+          description: Tag names to add, remove, or set.
+      required:
+      - action
+      - ids
+      - tags
+    DashboardBasic:
+      type: object
+      description: Serializer mixin that handles tags for objects.
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        name:
+          type: string
+          readOnly: true
+          nullable: true
+          description: Name of the dashboard.
+        description:
+          type: string
+          readOnly: true
+          description: Description of the dashboard.
+        pinned:
+          type: boolean
+          readOnly: true
+          description: Whether the dashboard is pinned to the top of the list.
+        created_at:
+          type: string
+          format: date-time
+          readOnly: true
+        created_by:
+          allOf:
+          - $ref: '#/components/schemas/UserBasic'
+          readOnly: true
+        last_accessed_at:
+          type: string
+          format: date-time
+          readOnly: true
+          nullable: true
+        last_viewed_at:
+          type: string
+          format: date-time
+          readOnly: true
+          nullable: true
+        is_shared:
+          type: boolean
+          readOnly: true
+        deleted:
+          type: boolean
+          readOnly: true
+        creation_mode:
+          allOf:
+          - $ref: '#/components/schemas/CreationModeEnum'
+          readOnly: true
+        tags:
+          type: array
+          items: {}
+        restriction_level:
+          allOf:
+          - $ref: '#/components/schemas/RestrictionLevelEnum'
+          readOnly: true
+          description: 'Controls who can edit the dashboard.
+
+
+            * `21` - Everyone in the project can edit
+
+            * `37` - Only those invited to this dashboard can edit'
+        effective_restriction_level:
+          allOf:
+          - $ref: '#/components/schemas/EffectivePrivilegeLevelEnum'
+          readOnly: true
+        effective_privilege_level:
+          allOf:
+          - $ref: '#/components/schemas/EffectivePrivilegeLevelEnum'
+          readOnly: true
+        user_access_level:
+          type: string
+          nullable: true
+          readOnly: true
+          description: The effective access level the user has for this object
+        access_control_version:
+          type: string
+          readOnly: true
+        last_refresh:
+          type: string
+          format: date-time
+          readOnly: true
+          nullable: true
+        team_id:
+          type: integer
+          readOnly: true
+      required:
+      - access_control_version
+      - created_at
+      - created_by
+      - creation_mode
+      - deleted
+      - description
+      - effective_privilege_level
+      - effective_restriction_level
+      - id
+      - is_shared
+      - last_accessed_at
+      - last_refresh
+      - last_viewed_at
+      - name
+      - pinned
+      - restriction_level
+      - team_id
+      - user_access_level
+    EffectivePrivilegeLevelEnum:
+      enum:
+      - 21
+      - 37
+      type: integer
+    CreationModeEnum:
+      enum:
+      - default
+      - template
+      - duplicate
+      - unlisted
+      type: string
+      description: '* `default` - Default
+
+        * `template` - Template
+
+        * `duplicate` - Duplicate
+
+        * `unlisted` - Unlisted (product-embedded)'
+    Dashboard:
+      type: object
+      description: Serializer mixin that handles tags for objects.
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        name:
+          type: string
+          nullable: true
+          maxLength: 400
+        description:
+          type: string
+        pinned:
+          type: boolean
+        created_at:
+          type: string
+          format: date-time
+          readOnly: true
+        created_by:
+          allOf:
+          - $ref: '#/components/schemas/UserBasic'
+          readOnly: true
+        last_accessed_at:
+          type: string
+          format: date-time
+          nullable: true
+        last_viewed_at:
+          type: string
+          format: date-time
+          readOnly: true
+          nullable: true
+        is_shared:
+          type: boolean
+          readOnly: true
+        deleted:
+          type: boolean
+        creation_mode:
+          allOf:
+          - $ref: '#/components/schemas/CreationModeEnum'
+          readOnly: true
+        filters:
+          type: object
+          additionalProperties: true
+          readOnly: true
+        variables:
+          type: object
+          additionalProperties: true
+          nullable: true
+          readOnly: true
+        breakdown_colors:
+          description: Custom color mapping for breakdown values.
+        data_color_theme_id:
+          type: integer
+          nullable: true
+          description: ID of the color theme used for chart visualizations.
+        tags:
+          type: array
+          items: {}
+        restriction_level:
+          $ref: '#/components/schemas/RestrictionLevelEnum'
+        effective_restriction_level:
+          allOf:
+          - $ref: '#/components/schemas/EffectivePrivilegeLevelEnum'
+          readOnly: true
+        effective_privilege_level:
+          allOf:
+          - $ref: '#/components/schemas/EffectivePrivilegeLevelEnum'
+          readOnly: true
+        user_access_level:
+          type: string
+          nullable: true
+          readOnly: true
+          description: The effective access level the user has for this object
+        access_control_version:
+          type: string
+          readOnly: true
+        last_refresh:
+          type: string
+          format: date-time
+          nullable: true
+        persisted_filters:
+          type: object
+          additionalProperties: true
+          nullable: true
+          readOnly: true
+        persisted_variables:
+          type: object
+          additionalProperties: true
+          nullable: true
+          readOnly: true
+        team_id:
+          type: integer
+          readOnly: true
+        quick_filter_ids:
+          type: array
+          items:
+            type: string
+          nullable: true
+          description: List of quick filter IDs associated with this dashboard
+        tiles:
+          type: array
+          items:
+            type: object
+            additionalProperties: true
+          nullable: true
+          readOnly: true
+        use_template:
+          type: string
+          writeOnly: true
+          description: Template key to create the dashboard from a predefined template.
+        use_dashboard:
+          type: integer
+          writeOnly: true
+          nullable: true
+          description: ID of an existing dashboard to duplicate.
+        delete_insights:
+          type: boolean
+          writeOnly: true
+          default: false
+          description: When deleting, also delete insights that are only on this dashboard.
+        _create_in_folder:
+          type: string
+          writeOnly: true
+          title: ' create in folder'
+      required:
+      - access_control_version
+      - created_at
+      - created_by
+      - creation_mode
+      - effective_privilege_level
+      - effective_restriction_level
+      - filters
+      - id
+      - is_shared
+      - last_viewed_at
+      - persisted_filters
+      - persisted_variables
+      - team_id
+      - tiles
+      - user_access_level
+      - variables
+    RestrictionLevelEnum:
+      enum:
+      - 21
+      - 37
+      type: integer
+      description: '* `21` - Everyone in the project can edit
+
+        * `37` - Only those invited to this dashboard can edit'
+    BulkUpdateTagsItem:
+      type: object
+      properties:
+        id:
+          type: integer
+        tags:
+          type: array
+          items:
+            type: string
+      required:
+      - id
+      - tags
+    BlankEnum:
+      enum:
+      - ''
+    PatchedDataColorTheme:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        name:
+          type: string
+          maxLength: 100
+        colors: {}
+        is_global:
+          type: boolean
+          readOnly: true
+        created_at:
+          type: string
+          format: date-time
+          readOnly: true
+          nullable: true
+        created_by:
+          allOf:
+          - $ref: '#/components/schemas/UserBasic'
+          readOnly: true
+    BulkUpdateTagsError:
+      type: object
+      properties:
+        id:
+          type: integer
+        reason:
+          type: string
+      required:
+      - id
+      - reason
+    CopyDashboardTileRequest:
+      type: object
+      properties:
+        fromDashboardId:
+          type: integer
+          description: Dashboard id the tile currently belongs to.
+        tileId:
+          type: integer
+          description: Dashboard tile id to copy.
+      required:
+      - fromDashboardId
+      - tileId
+    SharePassword:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        created_at:
+          type: string
+          format: date-time
+          readOnly: true
+        note:
+          type: string
+          nullable: true
+          maxLength: 100
+        created_by_email:
+          type: string
+          readOnly: true
+        is_active:
+          type: boolean
+          readOnly: true
+      required:
+      - created_at
+      - created_by_email
+      - id
+      - is_active
+  parameters:
+    EnvironmentIdPath:
+      in: path
+      name: environment_id
+      required: true
+      schema:
+        type: string
+      description: Deprecated. Use /api/projects/{project_id}/ instead.
+    ProjectIdPath:
+      in: path
+      name: project_id
+      required: true
+      schema:
+        type: string
+      description: Project ID of the project you're trying to access. To find the ID of the project, make a call to /api/projects/.
+  securitySchemes:
+    PersonalAPIKeyAuth:
+      type: http
+      scheme: bearer
+x-tagGroups:
+- name: All endpoints
+  tags:
+  - LLM Analytics
+  - actions
+  - activity_log
+  - activity_logs
+  - advanced_activity_logs
+  - alerts
+  - annotations
+  - approval_policies
+  - batch_exports
+  - cdp
+  - change_requests
+  - code
+  - code-invites
+  - cohorts
+  - comments
+  - conversations
+  - core
+  - customer_analytics
+  - customer_journeys
+  - customer_profile_configs
+  - dashboard_templates
+  - dashboards
+  - data_color_themes
+  - data_modeling_jobs
+  - data_warehouse
+  - dataset_items
+  - datasets
+  - desktop_recordings
+  - domains
+  - early_access_feature
+  - early_access_features
+  - elements
+  - endpoints
+  - environments
+  - error_tracking
+  - evaluation_runs
+  - evaluations
+  - event_definitions
+  - event_filter
+  - event_schemas
+  - events
+  - experiment_holdouts
+  - experiment_saved_metrics
+  - experiments
+  - exports
+  - external_data_schemas
+  - external_data_sources
+  - feature_flags
+  - file_system
+  - file_system_shortcut
+  - flag_value
+  - groups
+  - groups_types
+  - health_issues
+  - heatmap_screenshots
+  - heatmaps
+  - hog_flows
+  - hog_function_templates
+  - hog_functions
+  - insight_variables
+  - insights
+  - integrations
+  - invites
+  - js-snippet
+  - legal_documents
+  - lineage
+  - live_debugger_breakpoints
+  - llm_analytics
+  - llm_prompts
+  - llm_skills
+  - logs
+  - managed_viewsets
+  - max
+  - max_tools
+  - mcp_server_installations
+  - mcp_servers
+  - mcp_store
+  - mcp_tools
+  - members
+  - notebooks
+  - oauth_applications
+  - object_media_previews
+  - organizations
+  - persisted_folder
+  - persons
+  - platform_features
+  - plugin_configs
+  - product_analytics
+  - product_tours
+  - project_secret_api_keys
+  - projects
+  - property_definitions
+  - proxy_records
+  - public_hog_function_templates
+  - query
+  - replay
+  - reverse_proxy
+  - role_external_references
+  - roles
+  - sandbox-environments
+  - sandbox_environments
+  - saved
+  - schema_property_groups
+  - sdk_doctor
+  - session_group_summaries
+  - session_recording_playlists
+  - session_recordings
+  - session_summaries
+  - sessions
+  - signals
+  - subscriptions
+  - surveys
+  - taggers
+  - task-automations
+  - task-runs
+  - task_automations
+  - tasks
+  - uploaded_media
+  - user_home_settings
+  - user_interviews
+  - users
+  - visual_review
+  - warehouse_dag
+  - warehouse_model_paths
+  - warehouse_saved_queries
+  - warehouse_saved_query_folders
+  - warehouse_tables
+  - warehouse_view_link
+  - warehouse_view_links
+  - web_analytics
+  - web_experiments
+  - web_vitals
+  - welcome
+  - workflows

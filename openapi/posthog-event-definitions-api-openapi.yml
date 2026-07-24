@@ -1,0 +1,962 @@
+openapi: 3.0.3
+info:
+  title: PostHog actions event_definitions API
+  version: 1.0.0
+  description: ''
+tags:
+- name: event_definitions
+paths:
+  /api/projects/{project_id}/event_definitions/:
+    get:
+      operationId: event_definitions_list
+      parameters:
+      - name: limit
+        required: false
+        in: query
+        description: Number of results to return per page.
+        schema:
+          type: integer
+      - name: offset
+        required: false
+        in: query
+        description: The initial index from which to return the results.
+        schema:
+          type: integer
+      - $ref: '#/components/parameters/ProjectIdPath'
+      tags:
+      - event_definitions
+      security:
+      - PersonalAPIKeyAuth:
+        - event_definition:read
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedEnterpriseEventDefinitionList'
+          description: ''
+      x-explicit-tags:
+      - core
+    post:
+      operationId: event_definitions_create
+      parameters:
+      - $ref: '#/components/parameters/ProjectIdPath'
+      tags:
+      - event_definitions
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/EnterpriseEventDefinition'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/EnterpriseEventDefinition'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/EnterpriseEventDefinition'
+        required: true
+      security:
+      - PersonalAPIKeyAuth:
+        - event_definition:write
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/EnterpriseEventDefinition'
+          description: ''
+      x-explicit-tags:
+      - core
+  /api/projects/{project_id}/event_definitions/{id}/:
+    get:
+      operationId: event_definitions_retrieve
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this event definition.
+        required: true
+      - $ref: '#/components/parameters/ProjectIdPath'
+      tags:
+      - event_definitions
+      security:
+      - PersonalAPIKeyAuth:
+        - event_definition:read
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/EnterpriseEventDefinition'
+          description: ''
+      x-explicit-tags:
+      - core
+    put:
+      operationId: event_definitions_update
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this event definition.
+        required: true
+      - $ref: '#/components/parameters/ProjectIdPath'
+      tags:
+      - event_definitions
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/EnterpriseEventDefinition'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/EnterpriseEventDefinition'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/EnterpriseEventDefinition'
+        required: true
+      security:
+      - PersonalAPIKeyAuth:
+        - event_definition:write
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/EnterpriseEventDefinition'
+          description: ''
+      x-explicit-tags:
+      - core
+    patch:
+      operationId: event_definitions_partial_update
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this event definition.
+        required: true
+      - $ref: '#/components/parameters/ProjectIdPath'
+      tags:
+      - event_definitions
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchedEnterpriseEventDefinition'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/PatchedEnterpriseEventDefinition'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/PatchedEnterpriseEventDefinition'
+      security:
+      - PersonalAPIKeyAuth:
+        - event_definition:write
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/EnterpriseEventDefinition'
+          description: ''
+      x-explicit-tags:
+      - core
+    delete:
+      operationId: event_definitions_destroy
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this event definition.
+        required: true
+      - $ref: '#/components/parameters/ProjectIdPath'
+      tags:
+      - event_definitions
+      security:
+      - PersonalAPIKeyAuth:
+        - event_definition:write
+      responses:
+        '204':
+          description: No response body
+      x-explicit-tags:
+      - core
+  /api/projects/{project_id}/event_definitions/{id}/metrics/:
+    get:
+      operationId: event_definitions_metrics_retrieve
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this event definition.
+        required: true
+      - $ref: '#/components/parameters/ProjectIdPath'
+      tags:
+      - event_definitions
+      responses:
+        '200':
+          description: No response body
+      x-explicit-tags:
+      - core
+  /api/projects/{project_id}/event_definitions/bulk_update_tags/:
+    post:
+      operationId: event_definitions_bulk_update_tags_create
+      description: 'Bulk update tags on multiple objects.
+
+
+        Accepts:
+
+        - {"ids": [...], "action": "add"|"remove"|"set", "tags": ["tag1", "tag2"]}
+
+
+        Actions:
+
+        - "add": Add tags to existing tags on each object
+
+        - "remove": Remove specific tags from each object
+
+        - "set": Replace all tags on each object with the provided list'
+      parameters:
+      - $ref: '#/components/parameters/ProjectIdPath'
+      tags:
+      - event_definitions
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/BulkUpdateTagsRequest'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/BulkUpdateTagsRequest'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/BulkUpdateTagsRequest'
+        required: true
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BulkUpdateTagsResponse'
+          description: ''
+      x-explicit-tags:
+      - core
+  /api/projects/{project_id}/event_definitions/by_name/:
+    get:
+      operationId: event_definitions_by_name_retrieve
+      description: Get event definition by exact name
+      parameters:
+      - in: query
+        name: name
+        schema:
+          type: string
+        description: The exact event name to look up
+        required: true
+      - $ref: '#/components/parameters/ProjectIdPath'
+      tags:
+      - event_definitions
+      security:
+      - PersonalAPIKeyAuth:
+        - event_definition:read
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/EventDefinitionRecord'
+          description: ''
+      x-explicit-tags:
+      - core
+  /api/projects/{project_id}/event_definitions/golang/:
+    get:
+      operationId: event_definitions_golang_retrieve
+      parameters:
+      - $ref: '#/components/parameters/ProjectIdPath'
+      tags:
+      - event_definitions
+      security:
+      - PersonalAPIKeyAuth:
+        - event_definition:read
+      responses:
+        '200':
+          description: No response body
+      x-explicit-tags:
+      - core
+  /api/projects/{project_id}/event_definitions/promoted_properties/:
+    get:
+      operationId: event_definitions_promoted_properties_retrieve
+      description: 'Resolve team-configured promoted properties for event definitions.
+
+
+        The response only contains entries where a non-null promoted_property is set on the
+
+        EventDefinition. Callers should fall back to the core taxonomy defaults client-side
+
+        for names not present in the response.'
+      parameters:
+      - in: query
+        name: names
+        schema:
+          type: array
+          items:
+            type: string
+        description: 'Optional: restrict the response to these event names. Repeat the parameter for multiple names (e.g. `?names=a&names=b`). When omitted, returns every team-configured promoted property.'
+      - $ref: '#/components/parameters/ProjectIdPath'
+      tags:
+      - event_definitions
+      security:
+      - PersonalAPIKeyAuth:
+        - event_definition:read
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PromotedPropertiesResponse'
+          description: ''
+      x-explicit-tags:
+      - core
+  /api/projects/{project_id}/event_definitions/python/:
+    get:
+      operationId: event_definitions_python_retrieve
+      parameters:
+      - $ref: '#/components/parameters/ProjectIdPath'
+      tags:
+      - event_definitions
+      security:
+      - PersonalAPIKeyAuth:
+        - event_definition:read
+      responses:
+        '200':
+          description: No response body
+      x-explicit-tags:
+      - core
+  /api/projects/{project_id}/event_definitions/typescript/:
+    get:
+      operationId: event_definitions_typescript_retrieve
+      parameters:
+      - $ref: '#/components/parameters/ProjectIdPath'
+      tags:
+      - event_definitions
+      security:
+      - PersonalAPIKeyAuth:
+        - event_definition:read
+      responses:
+        '200':
+          description: No response body
+      x-explicit-tags:
+      - core
+components:
+  schemas:
+    BulkUpdateTagsResponse:
+      type: object
+      properties:
+        updated:
+          type: array
+          items:
+            $ref: '#/components/schemas/BulkUpdateTagsItem'
+        skipped:
+          type: array
+          items:
+            $ref: '#/components/schemas/BulkUpdateTagsError'
+      required:
+      - skipped
+      - updated
+    PatchedEnterpriseEventDefinition:
+      type: object
+      description: Serializer mixin that handles tags for objects.
+      properties:
+        id:
+          type: string
+          format: uuid
+          readOnly: true
+        name:
+          type: string
+          maxLength: 400
+        owner:
+          type: integer
+          nullable: true
+        description:
+          type: string
+          nullable: true
+        tags:
+          type: array
+          items: {}
+        created_at:
+          type: string
+          format: date-time
+          readOnly: true
+          nullable: true
+        updated_at:
+          type: string
+          format: date-time
+          readOnly: true
+        updated_by:
+          allOf:
+          - $ref: '#/components/schemas/UserBasic'
+          readOnly: true
+        last_seen_at:
+          type: string
+          format: date-time
+          readOnly: true
+          nullable: true
+        last_updated_at:
+          type: string
+          format: date-time
+          readOnly: true
+        verified:
+          type: boolean
+        verified_at:
+          type: string
+          format: date-time
+          readOnly: true
+          nullable: true
+        verified_by:
+          allOf:
+          - $ref: '#/components/schemas/UserBasic'
+          readOnly: true
+        hidden:
+          type: boolean
+          nullable: true
+        enforcement_mode:
+          $ref: '#/components/schemas/EnforcementModeEnum'
+        promoted_property:
+          type: string
+          nullable: true
+          description: Name of a single property on this event that PostHog UIs should display alongside the event (for example `$pathname` on `$pageview`). When set, surfaces like the session replay inspector show the property's value next to the event name without the user having to open the event.
+          maxLength: 400
+        is_action:
+          type: boolean
+          readOnly: true
+        action_id:
+          type: integer
+          readOnly: true
+        is_calculating:
+          type: boolean
+          readOnly: true
+        last_calculated_at:
+          type: string
+          format: date-time
+          readOnly: true
+        created_by:
+          allOf:
+          - $ref: '#/components/schemas/UserBasic'
+          readOnly: true
+        post_to_slack:
+          type: boolean
+          default: false
+        default_columns:
+          type: array
+          items:
+            type: string
+        media_preview_urls:
+          type: array
+          items:
+            type: string
+          readOnly: true
+    BlankEnum:
+      enum:
+      - ''
+    EnterpriseEventDefinition:
+      type: object
+      description: Serializer mixin that handles tags for objects.
+      properties:
+        id:
+          type: string
+          format: uuid
+          readOnly: true
+        name:
+          type: string
+          maxLength: 400
+        owner:
+          type: integer
+          nullable: true
+        description:
+          type: string
+          nullable: true
+        tags:
+          type: array
+          items: {}
+        created_at:
+          type: string
+          format: date-time
+          readOnly: true
+          nullable: true
+        updated_at:
+          type: string
+          format: date-time
+          readOnly: true
+        updated_by:
+          allOf:
+          - $ref: '#/components/schemas/UserBasic'
+          readOnly: true
+        last_seen_at:
+          type: string
+          format: date-time
+          readOnly: true
+          nullable: true
+        last_updated_at:
+          type: string
+          format: date-time
+          readOnly: true
+        verified:
+          type: boolean
+        verified_at:
+          type: string
+          format: date-time
+          readOnly: true
+          nullable: true
+        verified_by:
+          allOf:
+          - $ref: '#/components/schemas/UserBasic'
+          readOnly: true
+        hidden:
+          type: boolean
+          nullable: true
+        enforcement_mode:
+          $ref: '#/components/schemas/EnforcementModeEnum'
+        promoted_property:
+          type: string
+          nullable: true
+          description: Name of a single property on this event that PostHog UIs should display alongside the event (for example `$pathname` on `$pageview`). When set, surfaces like the session replay inspector show the property's value next to the event name without the user having to open the event.
+          maxLength: 400
+        is_action:
+          type: boolean
+          readOnly: true
+        action_id:
+          type: integer
+          readOnly: true
+        is_calculating:
+          type: boolean
+          readOnly: true
+        last_calculated_at:
+          type: string
+          format: date-time
+          readOnly: true
+        created_by:
+          allOf:
+          - $ref: '#/components/schemas/UserBasic'
+          readOnly: true
+        post_to_slack:
+          type: boolean
+          default: false
+        default_columns:
+          type: array
+          items:
+            type: string
+        media_preview_urls:
+          type: array
+          items:
+            type: string
+          readOnly: true
+      required:
+      - action_id
+      - created_at
+      - created_by
+      - id
+      - is_action
+      - is_calculating
+      - last_calculated_at
+      - last_seen_at
+      - last_updated_at
+      - media_preview_urls
+      - name
+      - updated_at
+      - updated_by
+      - verified_at
+      - verified_by
+    PromotedPropertiesResponse:
+      type: object
+      properties:
+        promoted_properties:
+          type: object
+          additionalProperties:
+            type: string
+          description: Mapping from event name to the team-configured promoted property for that event. Names without a configured promoted property are omitted; callers should fall back to the core taxonomy defaults for those.
+      required:
+      - promoted_properties
+    EventDefinitionRecord:
+      type: object
+      description: Serializer mixin that handles tags for objects.
+      properties:
+        id:
+          type: string
+          format: uuid
+          readOnly: true
+        name:
+          type: string
+          maxLength: 400
+        created_at:
+          type: string
+          format: date-time
+          nullable: true
+        last_seen_at:
+          type: string
+          format: date-time
+          nullable: true
+        last_updated_at:
+          type: string
+          format: date-time
+          readOnly: true
+        tags:
+          type: array
+          items: {}
+        enforcement_mode:
+          $ref: '#/components/schemas/EnforcementModeEnum'
+        promoted_property:
+          type: string
+          nullable: true
+          description: Name of a single property on this event that PostHog UIs should display alongside the event (for example `$pathname` on `$pageview`). When set, surfaces like the session replay inspector show the property's value next to the event name without the user having to open the event.
+          maxLength: 400
+        is_action:
+          type: boolean
+          readOnly: true
+        action_id:
+          type: integer
+          readOnly: true
+        is_calculating:
+          type: boolean
+          readOnly: true
+        last_calculated_at:
+          type: string
+          format: date-time
+          readOnly: true
+        created_by:
+          allOf:
+          - $ref: '#/components/schemas/UserBasic'
+          readOnly: true
+        post_to_slack:
+          type: boolean
+          default: false
+      required:
+      - action_id
+      - created_by
+      - id
+      - is_action
+      - is_calculating
+      - last_calculated_at
+      - last_updated_at
+      - name
+    BulkUpdateTagsError:
+      type: object
+      properties:
+        id:
+          type: integer
+        reason:
+          type: string
+      required:
+      - id
+      - reason
+    UserBasic:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        uuid:
+          type: string
+          format: uuid
+          readOnly: true
+        distinct_id:
+          type: string
+          nullable: true
+          maxLength: 200
+        first_name:
+          type: string
+          maxLength: 150
+        last_name:
+          type: string
+          maxLength: 150
+        email:
+          type: string
+          format: email
+          title: Email address
+          maxLength: 254
+        is_email_verified:
+          type: boolean
+          nullable: true
+        hedgehog_config:
+          type: object
+          additionalProperties: true
+          nullable: true
+          readOnly: true
+        role_at_organization:
+          nullable: true
+          oneOf:
+          - $ref: '#/components/schemas/RoleAtOrganizationEnum'
+          - $ref: '#/components/schemas/BlankEnum'
+          - $ref: '#/components/schemas/NullEnum'
+      required:
+      - email
+      - hedgehog_config
+      - id
+      - uuid
+    PaginatedEnterpriseEventDefinitionList:
+      type: object
+      required:
+      - count
+      - results
+      properties:
+        count:
+          type: integer
+          example: 123
+        next:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?offset=400&limit=100
+        previous:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?offset=200&limit=100
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/EnterpriseEventDefinition'
+    BulkUpdateTagsItem:
+      type: object
+      properties:
+        id:
+          type: integer
+        tags:
+          type: array
+          items:
+            type: string
+      required:
+      - id
+      - tags
+    ActionEnum:
+      enum:
+      - add
+      - remove
+      - set
+      type: string
+      description: '* `add` - add
+
+        * `remove` - remove
+
+        * `set` - set'
+    BulkUpdateTagsRequest:
+      type: object
+      properties:
+        ids:
+          type: array
+          items:
+            type: integer
+          description: List of object IDs to update tags on.
+          maxItems: 500
+        action:
+          allOf:
+          - $ref: '#/components/schemas/ActionEnum'
+          description: '''add'' merges with existing tags, ''remove'' deletes specific tags, ''set'' replaces all tags.
+
+
+            * `add` - add
+
+            * `remove` - remove
+
+            * `set` - set'
+        tags:
+          type: array
+          items:
+            type: string
+          description: Tag names to add, remove, or set.
+      required:
+      - action
+      - ids
+      - tags
+    RoleAtOrganizationEnum:
+      enum:
+      - engineering
+      - data
+      - product
+      - founder
+      - leadership
+      - marketing
+      - sales
+      - other
+      type: string
+      description: '* `engineering` - Engineering
+
+        * `data` - Data
+
+        * `product` - Product Management
+
+        * `founder` - Founder
+
+        * `leadership` - Leadership
+
+        * `marketing` - Marketing
+
+        * `sales` - Sales / Success
+
+        * `other` - Other'
+    EnforcementModeEnum:
+      enum:
+      - allow
+      - reject
+      type: string
+      description: '* `allow` - Allow
+
+        * `reject` - Reject'
+    NullEnum:
+      enum:
+      - null
+  parameters:
+    ProjectIdPath:
+      in: path
+      name: project_id
+      required: true
+      schema:
+        type: string
+      description: Project ID of the project you're trying to access. To find the ID of the project, make a call to /api/projects/.
+  securitySchemes:
+    PersonalAPIKeyAuth:
+      type: http
+      scheme: bearer
+x-tagGroups:
+- name: All endpoints
+  tags:
+  - LLM Analytics
+  - actions
+  - activity_log
+  - activity_logs
+  - advanced_activity_logs
+  - alerts
+  - annotations
+  - approval_policies
+  - batch_exports
+  - cdp
+  - change_requests
+  - code
+  - code-invites
+  - cohorts
+  - comments
+  - conversations
+  - core
+  - customer_analytics
+  - customer_journeys
+  - customer_profile_configs
+  - dashboard_templates
+  - dashboards
+  - data_color_themes
+  - data_modeling_jobs
+  - data_warehouse
+  - dataset_items
+  - datasets
+  - desktop_recordings
+  - domains
+  - early_access_feature
+  - early_access_features
+  - elements
+  - endpoints
+  - environments
+  - error_tracking
+  - evaluation_runs
+  - evaluations
+  - event_definitions
+  - event_filter
+  - event_schemas
+  - events
+  - experiment_holdouts
+  - experiment_saved_metrics
+  - experiments
+  - exports
+  - external_data_schemas
+  - external_data_sources
+  - feature_flags
+  - file_system
+  - file_system_shortcut
+  - flag_value
+  - groups
+  - groups_types
+  - health_issues
+  - heatmap_screenshots
+  - heatmaps
+  - hog_flows
+  - hog_function_templates
+  - hog_functions
+  - insight_variables
+  - insights
+  - integrations
+  - invites
+  - js-snippet
+  - legal_documents
+  - lineage
+  - live_debugger_breakpoints
+  - llm_analytics
+  - llm_prompts
+  - llm_skills
+  - logs
+  - managed_viewsets
+  - max
+  - max_tools
+  - mcp_server_installations
+  - mcp_servers
+  - mcp_store
+  - mcp_tools
+  - members
+  - notebooks
+  - oauth_applications
+  - object_media_previews
+  - organizations
+  - persisted_folder
+  - persons
+  - platform_features
+  - plugin_configs
+  - product_analytics
+  - product_tours
+  - project_secret_api_keys
+  - projects
+  - property_definitions
+  - proxy_records
+  - public_hog_function_templates
+  - query
+  - replay
+  - reverse_proxy
+  - role_external_references
+  - roles
+  - sandbox-environments
+  - sandbox_environments
+  - saved
+  - schema_property_groups
+  - sdk_doctor
+  - session_group_summaries
+  - session_recording_playlists
+  - session_recordings
+  - session_summaries
+  - sessions
+  - signals
+  - subscriptions
+  - surveys
+  - taggers
+  - task-automations
+  - task-runs
+  - task_automations
+  - tasks
+  - uploaded_media
+  - user_home_settings
+  - user_interviews
+  - users
+  - visual_review
+  - warehouse_dag
+  - warehouse_model_paths
+  - warehouse_saved_queries
+  - warehouse_saved_query_folders
+  - warehouse_tables
+  - warehouse_view_link
+  - warehouse_view_links
+  - web_analytics
+  - web_experiments
+  - web_vitals
+  - welcome
+  - workflows

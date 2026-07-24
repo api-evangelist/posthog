@@ -1,0 +1,555 @@
+openapi: 3.0.3
+info:
+  title: PostHog actions session_group_summaries API
+  version: 1.0.0
+  description: ''
+tags:
+- name: session_group_summaries
+paths:
+  /api/projects/{project_id}/session_group_summaries/:
+    get:
+      operationId: session_group_summaries_list
+      description: API for retrieving and managing stored group session summaries.
+      parameters:
+      - name: limit
+        required: false
+        in: query
+        description: Number of results to return per page.
+        schema:
+          type: integer
+      - name: offset
+        required: false
+        in: query
+        description: The initial index from which to return the results.
+        schema:
+          type: integer
+      - $ref: '#/components/parameters/ProjectIdPath'
+      tags:
+      - session_group_summaries
+      security:
+      - PersonalAPIKeyAuth:
+        - session_recording:read
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedSessionGroupSummaryMinimalList'
+          description: ''
+      x-explicit-tags: []
+    post:
+      operationId: session_group_summaries_create
+      description: API for retrieving and managing stored group session summaries.
+      parameters:
+      - $ref: '#/components/parameters/ProjectIdPath'
+      tags:
+      - session_group_summaries
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SessionGroupSummary'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/SessionGroupSummary'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/SessionGroupSummary'
+      security:
+      - PersonalAPIKeyAuth:
+        - session_recording:write
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SessionGroupSummary'
+          description: ''
+      x-explicit-tags: []
+  /api/projects/{project_id}/session_group_summaries/{id}/:
+    get:
+      operationId: session_group_summaries_retrieve
+      description: API for retrieving and managing stored group session summaries.
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this session group summary.
+        required: true
+      - $ref: '#/components/parameters/ProjectIdPath'
+      tags:
+      - session_group_summaries
+      security:
+      - PersonalAPIKeyAuth:
+        - session_recording:read
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SessionGroupSummary'
+          description: ''
+      x-explicit-tags: []
+    put:
+      operationId: session_group_summaries_update
+      description: API for retrieving and managing stored group session summaries.
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this session group summary.
+        required: true
+      - $ref: '#/components/parameters/ProjectIdPath'
+      tags:
+      - session_group_summaries
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SessionGroupSummary'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/SessionGroupSummary'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/SessionGroupSummary'
+      security:
+      - PersonalAPIKeyAuth:
+        - session_recording:write
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SessionGroupSummary'
+          description: ''
+      x-explicit-tags: []
+    patch:
+      operationId: session_group_summaries_partial_update
+      description: API for retrieving and managing stored group session summaries.
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this session group summary.
+        required: true
+      - $ref: '#/components/parameters/ProjectIdPath'
+      tags:
+      - session_group_summaries
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchedSessionGroupSummary'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/PatchedSessionGroupSummary'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/PatchedSessionGroupSummary'
+      security:
+      - PersonalAPIKeyAuth:
+        - session_recording:write
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SessionGroupSummary'
+          description: ''
+      x-explicit-tags: []
+    delete:
+      operationId: session_group_summaries_destroy
+      description: API for retrieving and managing stored group session summaries.
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this session group summary.
+        required: true
+      - $ref: '#/components/parameters/ProjectIdPath'
+      tags:
+      - session_group_summaries
+      security:
+      - PersonalAPIKeyAuth:
+        - session_recording:write
+      responses:
+        '204':
+          description: No response body
+      x-explicit-tags: []
+components:
+  schemas:
+    BlankEnum:
+      enum:
+      - ''
+    PaginatedSessionGroupSummaryMinimalList:
+      type: object
+      required:
+      - count
+      - results
+      properties:
+        count:
+          type: integer
+          example: 123
+        next:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?offset=400&limit=100
+        previous:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?offset=200&limit=100
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/SessionGroupSummaryMinimal'
+    UserBasic:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        uuid:
+          type: string
+          format: uuid
+          readOnly: true
+        distinct_id:
+          type: string
+          nullable: true
+          maxLength: 200
+        first_name:
+          type: string
+          maxLength: 150
+        last_name:
+          type: string
+          maxLength: 150
+        email:
+          type: string
+          format: email
+          title: Email address
+          maxLength: 254
+        is_email_verified:
+          type: boolean
+          nullable: true
+        hedgehog_config:
+          type: object
+          additionalProperties: true
+          nullable: true
+          readOnly: true
+        role_at_organization:
+          nullable: true
+          oneOf:
+          - $ref: '#/components/schemas/RoleAtOrganizationEnum'
+          - $ref: '#/components/schemas/BlankEnum'
+          - $ref: '#/components/schemas/NullEnum'
+      required:
+      - email
+      - hedgehog_config
+      - id
+      - uuid
+    SessionGroupSummary:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+          readOnly: true
+        title:
+          type: string
+          readOnly: true
+          description: Title of the group session summary
+        session_ids:
+          type: array
+          items:
+            type: string
+            maxLength: 200
+          readOnly: true
+          description: List of session replay IDs included in this group summary
+        summary:
+          readOnly: true
+          description: Group summary in JSON format (EnrichedSessionGroupSummaryPatternsList schema)
+        extra_summary_context:
+          readOnly: true
+          nullable: true
+          description: Additional context passed to the summary (ExtraSummaryContext schema)
+        run_metadata:
+          readOnly: true
+          nullable: true
+          description: Summary run metadata (SessionSummaryRunMeta schema)
+        created_at:
+          type: string
+          format: date-time
+          readOnly: true
+        created_by:
+          allOf:
+          - $ref: '#/components/schemas/UserBasic'
+          readOnly: true
+        team:
+          type: integer
+          readOnly: true
+      required:
+      - created_at
+      - created_by
+      - extra_summary_context
+      - id
+      - run_metadata
+      - session_ids
+      - summary
+      - team
+      - title
+    RoleAtOrganizationEnum:
+      enum:
+      - engineering
+      - data
+      - product
+      - founder
+      - leadership
+      - marketing
+      - sales
+      - other
+      type: string
+      description: '* `engineering` - Engineering
+
+        * `data` - Data
+
+        * `product` - Product Management
+
+        * `founder` - Founder
+
+        * `leadership` - Leadership
+
+        * `marketing` - Marketing
+
+        * `sales` - Sales / Success
+
+        * `other` - Other'
+    SessionGroupSummaryMinimal:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+          readOnly: true
+        title:
+          type: string
+          readOnly: true
+          description: Title of the group session summary
+        session_count:
+          type: integer
+          readOnly: true
+        created_at:
+          type: string
+          format: date-time
+          readOnly: true
+        created_by:
+          allOf:
+          - $ref: '#/components/schemas/UserBasic'
+          readOnly: true
+      required:
+      - created_at
+      - created_by
+      - id
+      - session_count
+      - title
+    PatchedSessionGroupSummary:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+          readOnly: true
+        title:
+          type: string
+          readOnly: true
+          description: Title of the group session summary
+        session_ids:
+          type: array
+          items:
+            type: string
+            maxLength: 200
+          readOnly: true
+          description: List of session replay IDs included in this group summary
+        summary:
+          readOnly: true
+          description: Group summary in JSON format (EnrichedSessionGroupSummaryPatternsList schema)
+        extra_summary_context:
+          readOnly: true
+          nullable: true
+          description: Additional context passed to the summary (ExtraSummaryContext schema)
+        run_metadata:
+          readOnly: true
+          nullable: true
+          description: Summary run metadata (SessionSummaryRunMeta schema)
+        created_at:
+          type: string
+          format: date-time
+          readOnly: true
+        created_by:
+          allOf:
+          - $ref: '#/components/schemas/UserBasic'
+          readOnly: true
+        team:
+          type: integer
+          readOnly: true
+    NullEnum:
+      enum:
+      - null
+  parameters:
+    ProjectIdPath:
+      in: path
+      name: project_id
+      required: true
+      schema:
+        type: string
+      description: Project ID of the project you're trying to access. To find the ID of the project, make a call to /api/projects/.
+  securitySchemes:
+    PersonalAPIKeyAuth:
+      type: http
+      scheme: bearer
+x-tagGroups:
+- name: All endpoints
+  tags:
+  - LLM Analytics
+  - actions
+  - activity_log
+  - activity_logs
+  - advanced_activity_logs
+  - alerts
+  - annotations
+  - approval_policies
+  - batch_exports
+  - cdp
+  - change_requests
+  - code
+  - code-invites
+  - cohorts
+  - comments
+  - conversations
+  - core
+  - customer_analytics
+  - customer_journeys
+  - customer_profile_configs
+  - dashboard_templates
+  - dashboards
+  - data_color_themes
+  - data_modeling_jobs
+  - data_warehouse
+  - dataset_items
+  - datasets
+  - desktop_recordings
+  - domains
+  - early_access_feature
+  - early_access_features
+  - elements
+  - endpoints
+  - environments
+  - error_tracking
+  - evaluation_runs
+  - evaluations
+  - event_definitions
+  - event_filter
+  - event_schemas
+  - events
+  - experiment_holdouts
+  - experiment_saved_metrics
+  - experiments
+  - exports
+  - external_data_schemas
+  - external_data_sources
+  - feature_flags
+  - file_system
+  - file_system_shortcut
+  - flag_value
+  - groups
+  - groups_types
+  - health_issues
+  - heatmap_screenshots
+  - heatmaps
+  - hog_flows
+  - hog_function_templates
+  - hog_functions
+  - insight_variables
+  - insights
+  - integrations
+  - invites
+  - js-snippet
+  - legal_documents
+  - lineage
+  - live_debugger_breakpoints
+  - llm_analytics
+  - llm_prompts
+  - llm_skills
+  - logs
+  - managed_viewsets
+  - max
+  - max_tools
+  - mcp_server_installations
+  - mcp_servers
+  - mcp_store
+  - mcp_tools
+  - members
+  - notebooks
+  - oauth_applications
+  - object_media_previews
+  - organizations
+  - persisted_folder
+  - persons
+  - platform_features
+  - plugin_configs
+  - product_analytics
+  - product_tours
+  - project_secret_api_keys
+  - projects
+  - property_definitions
+  - proxy_records
+  - public_hog_function_templates
+  - query
+  - replay
+  - reverse_proxy
+  - role_external_references
+  - roles
+  - sandbox-environments
+  - sandbox_environments
+  - saved
+  - schema_property_groups
+  - sdk_doctor
+  - session_group_summaries
+  - session_recording_playlists
+  - session_recordings
+  - session_summaries
+  - sessions
+  - signals
+  - subscriptions
+  - surveys
+  - taggers
+  - task-automations
+  - task-runs
+  - task_automations
+  - tasks
+  - uploaded_media
+  - user_home_settings
+  - user_interviews
+  - users
+  - visual_review
+  - warehouse_dag
+  - warehouse_model_paths
+  - warehouse_saved_queries
+  - warehouse_saved_query_folders
+  - warehouse_tables
+  - warehouse_view_link
+  - warehouse_view_links
+  - web_analytics
+  - web_experiments
+  - web_vitals
+  - welcome
+  - workflows

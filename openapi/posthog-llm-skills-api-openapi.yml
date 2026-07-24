@@ -1,0 +1,1147 @@
+openapi: 3.0.3
+info:
+  title: PostHog actions llm_skills API
+  version: 1.0.0
+  description: ''
+tags:
+- name: llm_skills
+paths:
+  /api/environments/{project_id}/llm_skills/:
+    get:
+      operationId: llm_skills_list
+      parameters:
+      - in: query
+        name: created_by_id
+        schema:
+          type: integer
+        description: Filter skills by the ID of the user who created them.
+      - name: limit
+        required: false
+        in: query
+        description: Number of results to return per page.
+        schema:
+          type: integer
+      - name: offset
+        required: false
+        in: query
+        description: The initial index from which to return the results.
+        schema:
+          type: integer
+      - $ref: '#/components/parameters/ProjectIdPath'
+      - in: query
+        name: search
+        schema:
+          type: string
+        description: Optional substring filter applied to skill names and descriptions.
+      tags:
+      - llm_skills
+      security:
+      - PersonalAPIKeyAuth:
+        - llm_skill:read
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedLLMSkillListList'
+          description: ''
+      x-explicit-tags:
+      - llm_analytics
+    post:
+      operationId: llm_skills_create
+      parameters:
+      - $ref: '#/components/parameters/ProjectIdPath'
+      tags:
+      - llm_skills
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/LLMSkillCreate'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/LLMSkillCreate'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/LLMSkillCreate'
+        required: true
+      security:
+      - PersonalAPIKeyAuth:
+        - llm_skill:write
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/LLMSkillCreate'
+          description: ''
+      x-explicit-tags:
+      - llm_analytics
+  /api/environments/{project_id}/llm_skills/name/{skill_name}/:
+    get:
+      operationId: llm_skills_name_retrieve
+      parameters:
+      - $ref: '#/components/parameters/ProjectIdPath'
+      - in: path
+        name: skill_name
+        schema:
+          type: string
+          pattern: ^[^/]+$
+        required: true
+      - in: query
+        name: version
+        schema:
+          type: integer
+          minimum: 1
+        description: Specific skill version to fetch. If omitted, the latest version is returned.
+      tags:
+      - llm_skills
+      security:
+      - PersonalAPIKeyAuth:
+        - llm_skill:read
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/LLMSkill'
+          description: ''
+      x-explicit-tags:
+      - llm_analytics
+    patch:
+      operationId: llm_skills_name_partial_update
+      parameters:
+      - $ref: '#/components/parameters/ProjectIdPath'
+      - in: path
+        name: skill_name
+        schema:
+          type: string
+          pattern: ^[^/]+$
+        required: true
+      tags:
+      - llm_skills
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchedLLMSkillPublish'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/PatchedLLMSkillPublish'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/PatchedLLMSkillPublish'
+      security:
+      - PersonalAPIKeyAuth:
+        - llm_skill:write
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/LLMSkill'
+          description: ''
+      x-explicit-tags:
+      - llm_analytics
+  /api/environments/{project_id}/llm_skills/name/{skill_name}/archive/:
+    post:
+      operationId: llm_skills_name_archive_create
+      parameters:
+      - $ref: '#/components/parameters/ProjectIdPath'
+      - in: path
+        name: skill_name
+        schema:
+          type: string
+          pattern: ^[^/]+$
+        required: true
+      tags:
+      - llm_skills
+      security:
+      - PersonalAPIKeyAuth:
+        - llm_skill:write
+      responses:
+        '204':
+          description: No response body
+      x-explicit-tags:
+      - llm_analytics
+  /api/environments/{project_id}/llm_skills/name/{skill_name}/duplicate/:
+    post:
+      operationId: llm_skills_name_duplicate_create
+      parameters:
+      - $ref: '#/components/parameters/ProjectIdPath'
+      - in: path
+        name: skill_name
+        schema:
+          type: string
+          pattern: ^[^/]+$
+        required: true
+      tags:
+      - llm_skills
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/LLMSkillDuplicate'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/LLMSkillDuplicate'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/LLMSkillDuplicate'
+        required: true
+      security:
+      - PersonalAPIKeyAuth:
+        - llm_skill:write
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/LLMSkill'
+          description: ''
+      x-explicit-tags:
+      - llm_analytics
+  /api/environments/{project_id}/llm_skills/name/{skill_name}/files/:
+    post:
+      operationId: llm_skills_name_files_create
+      parameters:
+      - $ref: '#/components/parameters/ProjectIdPath'
+      - in: path
+        name: skill_name
+        schema:
+          type: string
+          pattern: ^[^/]+$
+        required: true
+      tags:
+      - llm_skills
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/LLMSkillFileCreate'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/LLMSkillFileCreate'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/LLMSkillFileCreate'
+        required: true
+      security:
+      - PersonalAPIKeyAuth:
+        - llm_skill:write
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/LLMSkill'
+          description: ''
+      x-explicit-tags:
+      - llm_analytics
+  /api/environments/{project_id}/llm_skills/name/{skill_name}/files-rename/:
+    post:
+      operationId: llm_skills_name_files_rename_create
+      parameters:
+      - $ref: '#/components/parameters/ProjectIdPath'
+      - in: path
+        name: skill_name
+        schema:
+          type: string
+          pattern: ^[^/]+$
+        required: true
+      tags:
+      - llm_skills
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/LLMSkillFileRename'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/LLMSkillFileRename'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/LLMSkillFileRename'
+        required: true
+      security:
+      - PersonalAPIKeyAuth:
+        - llm_skill:write
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/LLMSkill'
+          description: ''
+      x-explicit-tags:
+      - llm_analytics
+  /api/environments/{project_id}/llm_skills/name/{skill_name}/files/{file_path}/:
+    get:
+      operationId: llm_skills_name_files_retrieve
+      parameters:
+      - in: path
+        name: file_path
+        schema:
+          type: string
+          pattern: ^.+$
+        required: true
+      - $ref: '#/components/parameters/ProjectIdPath'
+      - in: path
+        name: skill_name
+        schema:
+          type: string
+          pattern: ^[^/]+$
+        required: true
+      - in: query
+        name: version
+        schema:
+          type: integer
+          minimum: 1
+        description: Specific skill version to fetch. If omitted, the latest version is returned.
+      tags:
+      - llm_skills
+      security:
+      - PersonalAPIKeyAuth:
+        - llm_skill:read
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/LLMSkillFile'
+          description: ''
+      x-explicit-tags:
+      - llm_analytics
+    delete:
+      operationId: llm_skills_name_files_destroy
+      parameters:
+      - in: query
+        name: base_version
+        schema:
+          type: integer
+          minimum: 1
+        description: Latest version you are editing from. If provided, the request fails with 409 when another write has landed in the meantime.
+      - in: path
+        name: file_path
+        schema:
+          type: string
+          pattern: ^.+$
+        required: true
+      - $ref: '#/components/parameters/ProjectIdPath'
+      - in: path
+        name: skill_name
+        schema:
+          type: string
+          pattern: ^[^/]+$
+        required: true
+      tags:
+      - llm_skills
+      security:
+      - PersonalAPIKeyAuth:
+        - llm_skill:write
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/LLMSkill'
+          description: ''
+      x-explicit-tags:
+      - llm_analytics
+  /api/environments/{project_id}/llm_skills/resolve/name/{skill_name}/:
+    get:
+      operationId: llm_skills_resolve_name_retrieve
+      parameters:
+      - in: query
+        name: before_version
+        schema:
+          type: integer
+          minimum: 1
+        description: Return versions older than this version number. Mutually exclusive with offset.
+      - in: query
+        name: limit
+        schema:
+          type: integer
+          maximum: 100
+          minimum: 1
+          default: 50
+        description: Maximum number of versions to return per page (1-100).
+      - in: query
+        name: offset
+        schema:
+          type: integer
+          minimum: 0
+        description: Zero-based offset into version history for pagination. Mutually exclusive with before_version.
+      - $ref: '#/components/parameters/ProjectIdPath'
+      - in: path
+        name: skill_name
+        schema:
+          type: string
+          pattern: ^[^/]+$
+        required: true
+      - in: query
+        name: version
+        schema:
+          type: integer
+          minimum: 1
+        description: Specific skill version to fetch. If omitted, the latest version is returned.
+      - in: query
+        name: version_id
+        schema:
+          type: string
+          format: uuid
+        description: Exact skill version UUID to resolve.
+      tags:
+      - llm_skills
+      security:
+      - PersonalAPIKeyAuth:
+        - llm_skill:read
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/LLMSkillResolveResponse'
+          description: ''
+      x-explicit-tags:
+      - llm_analytics
+components:
+  schemas:
+    RoleAtOrganizationEnum:
+      enum:
+      - engineering
+      - data
+      - product
+      - founder
+      - leadership
+      - marketing
+      - sales
+      - other
+      type: string
+      description: '* `engineering` - Engineering
+
+        * `data` - Data
+
+        * `product` - Product Management
+
+        * `founder` - Founder
+
+        * `leadership` - Leadership
+
+        * `marketing` - Marketing
+
+        * `sales` - Sales / Success
+
+        * `other` - Other'
+    PaginatedLLMSkillListList:
+      type: object
+      required:
+      - count
+      - results
+      properties:
+        count:
+          type: integer
+          example: 123
+        next:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?offset=400&limit=100
+        previous:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?offset=200&limit=100
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/LLMSkillList'
+    LLMSkillVersionSummary:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+          readOnly: true
+        version:
+          type: integer
+          readOnly: true
+        created_by:
+          allOf:
+          - $ref: '#/components/schemas/UserBasic'
+          readOnly: true
+        created_at:
+          type: string
+          format: date-time
+          readOnly: true
+        is_latest:
+          type: boolean
+          readOnly: true
+      required:
+      - created_at
+      - created_by
+      - id
+      - is_latest
+      - version
+    NullEnum:
+      enum:
+      - null
+    LLMSkillResolveResponse:
+      type: object
+      properties:
+        skill:
+          $ref: '#/components/schemas/LLMSkill'
+        versions:
+          type: array
+          items:
+            $ref: '#/components/schemas/LLMSkillVersionSummary'
+        has_more:
+          type: boolean
+      required:
+      - has_more
+      - skill
+      - versions
+    LLMSkillOutlineEntry:
+      type: object
+      properties:
+        level:
+          type: integer
+          maximum: 6
+          minimum: 1
+          description: Markdown heading level (1-6).
+        text:
+          type: string
+          description: Heading text.
+      required:
+      - level
+      - text
+    UserBasic:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        uuid:
+          type: string
+          format: uuid
+          readOnly: true
+        distinct_id:
+          type: string
+          nullable: true
+          maxLength: 200
+        first_name:
+          type: string
+          maxLength: 150
+        last_name:
+          type: string
+          maxLength: 150
+        email:
+          type: string
+          format: email
+          title: Email address
+          maxLength: 254
+        is_email_verified:
+          type: boolean
+          nullable: true
+        hedgehog_config:
+          type: object
+          additionalProperties: true
+          nullable: true
+          readOnly: true
+        role_at_organization:
+          nullable: true
+          oneOf:
+          - $ref: '#/components/schemas/RoleAtOrganizationEnum'
+          - $ref: '#/components/schemas/BlankEnum'
+          - $ref: '#/components/schemas/NullEnum'
+      required:
+      - email
+      - hedgehog_config
+      - id
+      - uuid
+    LLMSkillFileRename:
+      type: object
+      properties:
+        old_path:
+          type: string
+          description: Current file path to rename.
+          maxLength: 500
+        new_path:
+          type: string
+          description: New file path. Must not already exist in the skill.
+          maxLength: 500
+        base_version:
+          type: integer
+          minimum: 1
+          description: Latest version you are editing from. If provided, the request fails with 409 when another write has landed in the meantime.
+      required:
+      - new_path
+      - old_path
+    LLMSkillFileInput:
+      type: object
+      properties:
+        path:
+          type: string
+          description: File path relative to skill root, e.g. 'scripts/setup.sh' or 'references/guide.md'.
+          maxLength: 500
+        content:
+          type: string
+          description: Text content of the file.
+        content_type:
+          type: string
+          default: text/plain
+          description: MIME type of the file content.
+          maxLength: 100
+      required:
+      - content
+      - path
+    LLMSkill:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+          readOnly: true
+        name:
+          type: string
+          description: Unique skill name. Lowercase letters, numbers, and hyphens only. Max 64 characters.
+          maxLength: 64
+        description:
+          type: string
+          description: What this skill does and when to use it. Max 4096 characters.
+          maxLength: 4096
+        body:
+          type: string
+          description: The SKILL.md instruction content (markdown).
+        license:
+          type: string
+          description: License name or reference to a bundled license file.
+          maxLength: 255
+        compatibility:
+          type: string
+          description: Environment requirements (intended product, system packages, network access, etc.).
+          maxLength: 500
+        allowed_tools:
+          type: array
+          items:
+            type: string
+          description: List of pre-approved tools the skill may use.
+        metadata:
+          type: object
+          additionalProperties: true
+          description: Arbitrary key-value metadata.
+        files:
+          type: array
+          items:
+            $ref: '#/components/schemas/LLMSkillFileManifest'
+          readOnly: true
+          description: Bundled files manifest. Each entry is path + content_type only; fetch content via /llm_skills/name/{name}/files/{path}/.
+        outline:
+          type: array
+          items:
+            $ref: '#/components/schemas/LLMSkillOutlineEntry'
+          readOnly: true
+          description: Flat list of markdown headings parsed from the skill body. Useful as a lightweight table of contents.
+        version:
+          type: integer
+          readOnly: true
+        created_by:
+          allOf:
+          - $ref: '#/components/schemas/UserBasic'
+          readOnly: true
+        created_at:
+          type: string
+          format: date-time
+          readOnly: true
+        updated_at:
+          type: string
+          format: date-time
+          readOnly: true
+        deleted:
+          type: boolean
+          readOnly: true
+        is_latest:
+          type: boolean
+          readOnly: true
+        latest_version:
+          type: integer
+          readOnly: true
+        version_count:
+          type: integer
+          readOnly: true
+        first_version_created_at:
+          type: string
+          readOnly: true
+      required:
+      - body
+      - created_at
+      - created_by
+      - deleted
+      - description
+      - files
+      - first_version_created_at
+      - id
+      - is_latest
+      - latest_version
+      - name
+      - outline
+      - updated_at
+      - version
+      - version_count
+    LLMSkillFileCreate:
+      type: object
+      properties:
+        path:
+          type: string
+          description: File path relative to skill root, e.g. 'scripts/setup.sh' or 'references/guide.md'.
+          maxLength: 500
+        content:
+          type: string
+          description: Text content of the file.
+        content_type:
+          type: string
+          default: text/plain
+          description: MIME type of the file content.
+          maxLength: 100
+        base_version:
+          type: integer
+          minimum: 1
+          description: Latest version you are editing from. If provided, the request fails with 409 when another write has landed in the meantime.
+      required:
+      - content
+      - path
+    LLMSkillEditOperation:
+      type: object
+      properties:
+        old:
+          type: string
+          description: Text to find in the target content. Must match exactly once.
+        new:
+          type: string
+          description: Replacement text.
+      required:
+      - new
+      - old
+    LLMSkillFileManifest:
+      type: object
+      properties:
+        path:
+          type: string
+          maxLength: 500
+        content_type:
+          type: string
+          maxLength: 100
+      required:
+      - path
+    BlankEnum:
+      enum:
+      - ''
+    LLMSkillList:
+      type: object
+      description: List serializer that omits body and file manifest — progressive disclosure (Level 1).
+      properties:
+        id:
+          type: string
+          format: uuid
+          readOnly: true
+        name:
+          type: string
+          description: Unique skill name. Lowercase letters, numbers, and hyphens only. Max 64 characters.
+          maxLength: 64
+        description:
+          type: string
+          description: What this skill does and when to use it. Max 4096 characters.
+          maxLength: 4096
+        license:
+          type: string
+          description: License name or reference to a bundled license file.
+          maxLength: 255
+        compatibility:
+          type: string
+          description: Environment requirements (intended product, system packages, network access, etc.).
+          maxLength: 500
+        allowed_tools:
+          type: array
+          items:
+            type: string
+          description: List of pre-approved tools the skill may use.
+        metadata:
+          type: object
+          additionalProperties: true
+          description: Arbitrary key-value metadata.
+        outline:
+          type: array
+          items:
+            $ref: '#/components/schemas/LLMSkillOutlineEntry'
+          readOnly: true
+          description: Flat list of markdown headings parsed from the skill body. Useful as a lightweight table of contents.
+        version:
+          type: integer
+          readOnly: true
+        created_by:
+          allOf:
+          - $ref: '#/components/schemas/UserBasic'
+          readOnly: true
+        created_at:
+          type: string
+          format: date-time
+          readOnly: true
+        updated_at:
+          type: string
+          format: date-time
+          readOnly: true
+        deleted:
+          type: boolean
+          readOnly: true
+        is_latest:
+          type: boolean
+          readOnly: true
+        latest_version:
+          type: integer
+          readOnly: true
+        version_count:
+          type: integer
+          readOnly: true
+        first_version_created_at:
+          type: string
+          readOnly: true
+      required:
+      - created_at
+      - created_by
+      - deleted
+      - description
+      - first_version_created_at
+      - id
+      - is_latest
+      - latest_version
+      - name
+      - outline
+      - updated_at
+      - version
+      - version_count
+    LLMSkillFile:
+      type: object
+      properties:
+        path:
+          type: string
+          maxLength: 500
+        content:
+          type: string
+        content_type:
+          type: string
+          maxLength: 100
+      required:
+      - content
+      - path
+    LLMSkillDuplicate:
+      type: object
+      properties:
+        new_name:
+          type: string
+          description: Name for the duplicated skill. Must be unique.
+          maxLength: 64
+      required:
+      - new_name
+    LLMSkillCreate:
+      type: object
+      description: Create serializer — accepts bundled files as write-only input on POST.
+      properties:
+        id:
+          type: string
+          format: uuid
+          readOnly: true
+        name:
+          type: string
+          description: Unique skill name. Lowercase letters, numbers, and hyphens only. Max 64 characters.
+          maxLength: 64
+        description:
+          type: string
+          description: What this skill does and when to use it. Max 4096 characters.
+          maxLength: 4096
+        body:
+          type: string
+          description: The SKILL.md instruction content (markdown).
+        license:
+          type: string
+          description: License name or reference to a bundled license file.
+          maxLength: 255
+        compatibility:
+          type: string
+          description: Environment requirements (intended product, system packages, network access, etc.).
+          maxLength: 500
+        allowed_tools:
+          type: array
+          items:
+            type: string
+          description: List of pre-approved tools the skill may use.
+        metadata:
+          type: object
+          additionalProperties: true
+          description: Arbitrary key-value metadata.
+        files:
+          type: array
+          items:
+            $ref: '#/components/schemas/LLMSkillFileInput'
+          writeOnly: true
+          description: Bundled files to include with the initial version (scripts, references, assets).
+        outline:
+          type: array
+          items:
+            $ref: '#/components/schemas/LLMSkillOutlineEntry'
+          readOnly: true
+          description: Flat list of markdown headings parsed from the skill body. Useful as a lightweight table of contents.
+        version:
+          type: integer
+          readOnly: true
+        created_by:
+          allOf:
+          - $ref: '#/components/schemas/UserBasic'
+          readOnly: true
+        created_at:
+          type: string
+          format: date-time
+          readOnly: true
+        updated_at:
+          type: string
+          format: date-time
+          readOnly: true
+        deleted:
+          type: boolean
+          readOnly: true
+        is_latest:
+          type: boolean
+          readOnly: true
+        latest_version:
+          type: integer
+          readOnly: true
+        version_count:
+          type: integer
+          readOnly: true
+        first_version_created_at:
+          type: string
+          readOnly: true
+      required:
+      - body
+      - created_at
+      - created_by
+      - deleted
+      - description
+      - first_version_created_at
+      - id
+      - is_latest
+      - latest_version
+      - name
+      - outline
+      - updated_at
+      - version
+      - version_count
+    PatchedLLMSkillPublish:
+      type: object
+      properties:
+        body:
+          type: string
+          description: Full skill body (SKILL.md instruction content) to publish as a new version. Mutually exclusive with edits.
+        edits:
+          type: array
+          items:
+            $ref: '#/components/schemas/LLMSkillEditOperation'
+          description: List of find/replace operations to apply to the current skill body. Each edit's 'old' text must match exactly once. Edits are applied sequentially. Mutually exclusive with body.
+        description:
+          type: string
+          description: Updated description for the new version.
+          maxLength: 4096
+        license:
+          type: string
+          description: License name or reference.
+          maxLength: 255
+        compatibility:
+          type: string
+          description: Environment requirements.
+          maxLength: 500
+        allowed_tools:
+          type: array
+          items:
+            type: string
+          description: List of pre-approved tools the skill may use.
+        metadata:
+          type: object
+          additionalProperties: true
+          description: Arbitrary key-value metadata.
+        files:
+          type: array
+          items:
+            $ref: '#/components/schemas/LLMSkillFileInput'
+          description: Bundled files to include with this version. Replaces all files from the previous version. Mutually exclusive with file_edits.
+        file_edits:
+          type: array
+          items:
+            $ref: '#/components/schemas/LLMSkillFileEdit'
+          description: Per-file find/replace updates. Each entry targets one existing file by path and applies sequential edits to its content. Non-targeted files carry forward unchanged. Cannot add, remove, or rename files — use 'files' for that. Mutually exclusive with files.
+        base_version:
+          type: integer
+          minimum: 1
+          description: Latest version you are editing from. Used for optimistic concurrency checks.
+    LLMSkillFileEdit:
+      type: object
+      properties:
+        path:
+          type: string
+          description: Path of the bundled file to edit. Must match an existing file on the current skill version.
+          maxLength: 500
+        edits:
+          type: array
+          items:
+            $ref: '#/components/schemas/LLMSkillEditOperation'
+          description: Sequential find/replace operations to apply to this file's content.
+      required:
+      - edits
+      - path
+  parameters:
+    ProjectIdPath:
+      in: path
+      name: project_id
+      required: true
+      schema:
+        type: string
+      description: Project ID of the project you're trying to access. To find the ID of the project, make a call to /api/projects/.
+  securitySchemes:
+    PersonalAPIKeyAuth:
+      type: http
+      scheme: bearer
+x-tagGroups:
+- name: All endpoints
+  tags:
+  - LLM Analytics
+  - actions
+  - activity_log
+  - activity_logs
+  - advanced_activity_logs
+  - alerts
+  - annotations
+  - approval_policies
+  - batch_exports
+  - cdp
+  - change_requests
+  - code
+  - code-invites
+  - cohorts
+  - comments
+  - conversations
+  - core
+  - customer_analytics
+  - customer_journeys
+  - customer_profile_configs
+  - dashboard_templates
+  - dashboards
+  - data_color_themes
+  - data_modeling_jobs
+  - data_warehouse
+  - dataset_items
+  - datasets
+  - desktop_recordings
+  - domains
+  - early_access_feature
+  - early_access_features
+  - elements
+  - endpoints
+  - environments
+  - error_tracking
+  - evaluation_runs
+  - evaluations
+  - event_definitions
+  - event_filter
+  - event_schemas
+  - events
+  - experiment_holdouts
+  - experiment_saved_metrics
+  - experiments
+  - exports
+  - external_data_schemas
+  - external_data_sources
+  - feature_flags
+  - file_system
+  - file_system_shortcut
+  - flag_value
+  - groups
+  - groups_types
+  - health_issues
+  - heatmap_screenshots
+  - heatmaps
+  - hog_flows
+  - hog_function_templates
+  - hog_functions
+  - insight_variables
+  - insights
+  - integrations
+  - invites
+  - js-snippet
+  - legal_documents
+  - lineage
+  - live_debugger_breakpoints
+  - llm_analytics
+  - llm_prompts
+  - llm_skills
+  - logs
+  - managed_viewsets
+  - max
+  - max_tools
+  - mcp_server_installations
+  - mcp_servers
+  - mcp_store
+  - mcp_tools
+  - members
+  - notebooks
+  - oauth_applications
+  - object_media_previews
+  - organizations
+  - persisted_folder
+  - persons
+  - platform_features
+  - plugin_configs
+  - product_analytics
+  - product_tours
+  - project_secret_api_keys
+  - projects
+  - property_definitions
+  - proxy_records
+  - public_hog_function_templates
+  - query
+  - replay
+  - reverse_proxy
+  - role_external_references
+  - roles
+  - sandbox-environments
+  - sandbox_environments
+  - saved
+  - schema_property_groups
+  - sdk_doctor
+  - session_group_summaries
+  - session_recording_playlists
+  - session_recordings
+  - session_summaries
+  - sessions
+  - signals
+  - subscriptions
+  - surveys
+  - taggers
+  - task-automations
+  - task-runs
+  - task_automations
+  - tasks
+  - uploaded_media
+  - user_home_settings
+  - user_interviews
+  - users
+  - visual_review
+  - warehouse_dag
+  - warehouse_model_paths
+  - warehouse_saved_queries
+  - warehouse_saved_query_folders
+  - warehouse_tables
+  - warehouse_view_link
+  - warehouse_view_links
+  - web_analytics
+  - web_experiments
+  - web_vitals
+  - welcome
+  - workflows

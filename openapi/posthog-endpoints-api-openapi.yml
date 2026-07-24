@@ -1,0 +1,2725 @@
+openapi: 3.0.3
+info:
+  title: PostHog actions endpoints API
+  version: 1.0.0
+  description: ''
+tags:
+- name: endpoints
+paths:
+  /api/environments/{environment_id}/endpoints/:
+    get:
+      operationId: environments_endpoints_list
+      description: List all endpoints for the team.
+      parameters:
+      - in: query
+        name: created_by
+        schema:
+          type: integer
+      - $ref: '#/components/parameters/EnvironmentIdPath'
+      - in: query
+        name: is_active
+        schema:
+          type: boolean
+      - name: limit
+        required: false
+        in: query
+        description: Number of results to return per page.
+        schema:
+          type: integer
+      - name: offset
+        required: false
+        in: query
+        description: The initial index from which to return the results.
+        schema:
+          type: integer
+      tags:
+      - endpoints
+      security:
+      - PersonalAPIKeyAuth:
+        - endpoint:read
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedEndpointResponseList'
+          description: ''
+      deprecated: true
+      x-explicit-tags:
+      - endpoints
+    post:
+      operationId: environments_endpoints_create
+      description: Create a new endpoint.
+      parameters:
+      - $ref: '#/components/parameters/EnvironmentIdPath'
+      tags:
+      - endpoints
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/EndpointRequest'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/EndpointRequest'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/EndpointRequest'
+      security:
+      - PersonalAPIKeyAuth:
+        - endpoint:write
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/EndpointResponse'
+          description: ''
+      deprecated: true
+      x-explicit-tags:
+      - endpoints
+  /api/environments/{environment_id}/endpoints/{name}/:
+    get:
+      operationId: environments_endpoints_retrieve
+      description: Retrieve an endpoint, or a specific version via ?version=N.
+      parameters:
+      - $ref: '#/components/parameters/EnvironmentIdPath'
+      - in: path
+        name: name
+        schema:
+          type: string
+          description: URL-safe name for the endpoint
+        required: true
+      tags:
+      - endpoints
+      security:
+      - PersonalAPIKeyAuth:
+        - endpoint:read
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/EndpointVersionResponse'
+          description: ''
+      deprecated: true
+      x-explicit-tags:
+      - endpoints
+    put:
+      operationId: environments_endpoints_update
+      description: Update an existing endpoint. Parameters are optional. Pass version in body or ?version=N query param to target a specific version.
+      parameters:
+      - $ref: '#/components/parameters/EnvironmentIdPath'
+      - in: path
+        name: name
+        schema:
+          type: string
+          description: URL-safe name for the endpoint
+        required: true
+      tags:
+      - endpoints
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/EndpointRequest'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/EndpointRequest'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/EndpointRequest'
+      security:
+      - PersonalAPIKeyAuth:
+        - endpoint:write
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/EndpointResponse'
+          description: ''
+      deprecated: true
+      x-explicit-tags:
+      - endpoints
+    patch:
+      operationId: environments_endpoints_partial_update
+      description: Update an existing endpoint.
+      parameters:
+      - $ref: '#/components/parameters/EnvironmentIdPath'
+      - in: path
+        name: name
+        schema:
+          type: string
+          description: URL-safe name for the endpoint
+        required: true
+      tags:
+      - endpoints
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchedEndpointRequest'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/PatchedEndpointRequest'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/PatchedEndpointRequest'
+      security:
+      - PersonalAPIKeyAuth:
+        - endpoint:write
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/EndpointResponse'
+          description: ''
+      deprecated: true
+      x-explicit-tags:
+      - endpoints
+    delete:
+      operationId: environments_endpoints_destroy
+      description: Delete an endpoint and clean up materialized query.
+      parameters:
+      - $ref: '#/components/parameters/EnvironmentIdPath'
+      - in: path
+        name: name
+        schema:
+          type: string
+          description: URL-safe name for the endpoint
+        required: true
+      tags:
+      - endpoints
+      security:
+      - PersonalAPIKeyAuth:
+        - endpoint:write
+      responses:
+        '204':
+          description: No response body
+      deprecated: true
+      x-explicit-tags:
+      - endpoints
+  /api/environments/{environment_id}/endpoints/{name}/materialization_preview/:
+    post:
+      operationId: environments_endpoints_materialization_preview_create
+      description: Preview the materialization transform for an endpoint. Shows what the query will look like after materialization, including range pair detection and bucket functions.
+      parameters:
+      - $ref: '#/components/parameters/EnvironmentIdPath'
+      - in: path
+        name: name
+        schema:
+          type: string
+          description: URL-safe name for the endpoint
+        required: true
+      tags:
+      - endpoints
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/MaterializationPreviewRequest'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/MaterializationPreviewRequest'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/MaterializationPreviewRequest'
+      security:
+      - PersonalAPIKeyAuth:
+        - endpoint:read
+      responses:
+        '200':
+          description: No response body
+      deprecated: true
+      x-explicit-tags:
+      - endpoints
+  /api/environments/{environment_id}/endpoints/{name}/materialization_status/:
+    get:
+      operationId: environments_endpoints_materialization_status_retrieve
+      description: Get materialization status for an endpoint. Supports ?version=N query param.
+      parameters:
+      - $ref: '#/components/parameters/EnvironmentIdPath'
+      - in: path
+        name: name
+        schema:
+          type: string
+          description: URL-safe name for the endpoint
+        required: true
+      tags:
+      - endpoints
+      security:
+      - PersonalAPIKeyAuth:
+        - endpoint:read
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/EndpointMaterialization'
+          description: ''
+      deprecated: true
+      x-explicit-tags:
+      - endpoints
+  /api/environments/{environment_id}/endpoints/{name}/openapi.json/:
+    get:
+      operationId: environments_endpoints_openapi.json_retrieve
+      description: Get OpenAPI 3.0 specification for this endpoint. Use this to generate typed SDK clients.
+      parameters:
+      - $ref: '#/components/parameters/EnvironmentIdPath'
+      - in: path
+        name: name
+        schema:
+          type: string
+          description: URL-safe name for the endpoint
+        required: true
+      - in: query
+        name: version
+        schema:
+          type: integer
+        description: Specific endpoint version to generate the spec for. Defaults to latest.
+      tags:
+      - endpoints
+      security:
+      - PersonalAPIKeyAuth:
+        - endpoint:read
+      responses:
+        '200':
+          description: No response body
+      deprecated: true
+      x-explicit-tags:
+      - endpoints
+  /api/environments/{environment_id}/endpoints/{name}/run/:
+    get:
+      operationId: environments_endpoints_run_retrieve
+      description: Execute endpoint with optional materialization. Supports version parameter, runs latest version if not set.
+      parameters:
+      - $ref: '#/components/parameters/EnvironmentIdPath'
+      - in: path
+        name: name
+        schema:
+          type: string
+          description: URL-safe name for the endpoint
+        required: true
+      tags:
+      - endpoints
+      security:
+      - PersonalAPIKeyAuth:
+        - endpoint:read
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/EndpointRunResponse'
+          description: ''
+      deprecated: true
+      x-explicit-tags:
+      - endpoints
+    post:
+      operationId: environments_endpoints_run_create
+      description: Execute endpoint with optional materialization. Supports version parameter, runs latest version if not set.
+      parameters:
+      - $ref: '#/components/parameters/EnvironmentIdPath'
+      - in: path
+        name: name
+        schema:
+          type: string
+          description: URL-safe name for the endpoint
+        required: true
+      tags:
+      - endpoints
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/EndpointRunRequest'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/EndpointRunRequest'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/EndpointRunRequest'
+      security:
+      - PersonalAPIKeyAuth:
+        - endpoint:read
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/EndpointRunResponse'
+          description: ''
+      deprecated: true
+      x-explicit-tags:
+      - endpoints
+  /api/environments/{environment_id}/endpoints/{name}/versions/:
+    get:
+      operationId: environments_endpoints_versions_list
+      description: List all versions for an endpoint.
+      parameters:
+      - in: query
+        name: created_by
+        schema:
+          type: integer
+      - $ref: '#/components/parameters/EnvironmentIdPath'
+      - in: query
+        name: is_active
+        schema:
+          type: boolean
+      - name: limit
+        required: false
+        in: query
+        description: Number of results to return per page.
+        schema:
+          type: integer
+      - in: path
+        name: name
+        schema:
+          type: string
+          description: URL-safe name for the endpoint
+        required: true
+      - name: offset
+        required: false
+        in: query
+        description: The initial index from which to return the results.
+        schema:
+          type: integer
+      tags:
+      - endpoints
+      security:
+      - PersonalAPIKeyAuth:
+        - endpoint:read
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedEndpointVersionResponseList'
+          description: ''
+      deprecated: true
+      x-explicit-tags:
+      - endpoints
+  /api/environments/{environment_id}/endpoints/last_execution_times/:
+    post:
+      operationId: environments_endpoints_last_execution_times_create
+      description: Get the last execution times in the past 6 months for multiple endpoints.
+      parameters:
+      - $ref: '#/components/parameters/EnvironmentIdPath'
+      tags:
+      - endpoints
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/EndpointLastExecutionTimesRequest'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/EndpointLastExecutionTimesRequest'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/EndpointLastExecutionTimesRequest'
+        required: true
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/QueryStatusResponse'
+          description: ''
+      deprecated: true
+      x-explicit-tags:
+      - endpoints
+  /api/projects/{project_id}/endpoints/:
+    get:
+      operationId: endpoints_list
+      description: List all endpoints for the team.
+      parameters:
+      - in: query
+        name: created_by
+        schema:
+          type: integer
+      - in: query
+        name: is_active
+        schema:
+          type: boolean
+      - name: limit
+        required: false
+        in: query
+        description: Number of results to return per page.
+        schema:
+          type: integer
+      - name: offset
+        required: false
+        in: query
+        description: The initial index from which to return the results.
+        schema:
+          type: integer
+      - $ref: '#/components/parameters/ProjectIdPath'
+      tags:
+      - endpoints
+      security:
+      - PersonalAPIKeyAuth:
+        - endpoint:read
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedEndpointResponseList'
+          description: ''
+      x-explicit-tags:
+      - endpoints
+    post:
+      operationId: endpoints_create
+      description: Create a new endpoint.
+      parameters:
+      - $ref: '#/components/parameters/ProjectIdPath'
+      tags:
+      - endpoints
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/EndpointRequest'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/EndpointRequest'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/EndpointRequest'
+      security:
+      - PersonalAPIKeyAuth:
+        - endpoint:write
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/EndpointResponse'
+          description: ''
+      x-explicit-tags:
+      - endpoints
+  /api/projects/{project_id}/endpoints/{name}/:
+    get:
+      operationId: endpoints_retrieve
+      description: Retrieve an endpoint, or a specific version via ?version=N.
+      parameters:
+      - in: path
+        name: name
+        schema:
+          type: string
+          description: URL-safe name for the endpoint
+        required: true
+      - $ref: '#/components/parameters/ProjectIdPath'
+      tags:
+      - endpoints
+      security:
+      - PersonalAPIKeyAuth:
+        - endpoint:read
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/EndpointVersionResponse'
+          description: ''
+      x-explicit-tags:
+      - endpoints
+    put:
+      operationId: endpoints_update
+      description: Update an existing endpoint. Parameters are optional. Pass version in body or ?version=N query param to target a specific version.
+      parameters:
+      - in: path
+        name: name
+        schema:
+          type: string
+          description: URL-safe name for the endpoint
+        required: true
+      - $ref: '#/components/parameters/ProjectIdPath'
+      tags:
+      - endpoints
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/EndpointRequest'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/EndpointRequest'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/EndpointRequest'
+      security:
+      - PersonalAPIKeyAuth:
+        - endpoint:write
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/EndpointResponse'
+          description: ''
+      x-explicit-tags:
+      - endpoints
+    patch:
+      operationId: endpoints_partial_update
+      description: Update an existing endpoint.
+      parameters:
+      - in: path
+        name: name
+        schema:
+          type: string
+          description: URL-safe name for the endpoint
+        required: true
+      - $ref: '#/components/parameters/ProjectIdPath'
+      tags:
+      - endpoints
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchedEndpointRequest'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/PatchedEndpointRequest'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/PatchedEndpointRequest'
+      security:
+      - PersonalAPIKeyAuth:
+        - endpoint:write
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/EndpointResponse'
+          description: ''
+      x-explicit-tags:
+      - endpoints
+    delete:
+      operationId: endpoints_destroy
+      description: Delete an endpoint and clean up materialized query.
+      parameters:
+      - in: path
+        name: name
+        schema:
+          type: string
+          description: URL-safe name for the endpoint
+        required: true
+      - $ref: '#/components/parameters/ProjectIdPath'
+      tags:
+      - endpoints
+      security:
+      - PersonalAPIKeyAuth:
+        - endpoint:write
+      responses:
+        '204':
+          description: No response body
+      x-explicit-tags:
+      - endpoints
+  /api/projects/{project_id}/endpoints/{name}/materialization_preview/:
+    post:
+      operationId: endpoints_materialization_preview_create
+      description: Preview the materialization transform for an endpoint. Shows what the query will look like after materialization, including range pair detection and bucket functions.
+      parameters:
+      - in: path
+        name: name
+        schema:
+          type: string
+          description: URL-safe name for the endpoint
+        required: true
+      - $ref: '#/components/parameters/ProjectIdPath'
+      tags:
+      - endpoints
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/MaterializationPreviewRequest'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/MaterializationPreviewRequest'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/MaterializationPreviewRequest'
+      security:
+      - PersonalAPIKeyAuth:
+        - endpoint:read
+      responses:
+        '200':
+          description: No response body
+      x-explicit-tags:
+      - endpoints
+  /api/projects/{project_id}/endpoints/{name}/materialization_status/:
+    get:
+      operationId: endpoints_materialization_status_retrieve
+      description: Get materialization status for an endpoint. Supports ?version=N query param.
+      parameters:
+      - in: path
+        name: name
+        schema:
+          type: string
+          description: URL-safe name for the endpoint
+        required: true
+      - $ref: '#/components/parameters/ProjectIdPath'
+      tags:
+      - endpoints
+      security:
+      - PersonalAPIKeyAuth:
+        - endpoint:read
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/EndpointMaterialization'
+          description: ''
+      x-explicit-tags:
+      - endpoints
+  /api/projects/{project_id}/endpoints/{name}/openapi.json/:
+    get:
+      operationId: endpoints_openapi.json_retrieve
+      description: Get OpenAPI 3.0 specification for this endpoint. Use this to generate typed SDK clients.
+      parameters:
+      - in: path
+        name: name
+        schema:
+          type: string
+          description: URL-safe name for the endpoint
+        required: true
+      - $ref: '#/components/parameters/ProjectIdPath'
+      - in: query
+        name: version
+        schema:
+          type: integer
+        description: Specific endpoint version to generate the spec for. Defaults to latest.
+      tags:
+      - endpoints
+      security:
+      - PersonalAPIKeyAuth:
+        - endpoint:read
+      responses:
+        '200':
+          description: No response body
+      x-explicit-tags:
+      - endpoints
+  /api/projects/{project_id}/endpoints/{name}/run/:
+    get:
+      operationId: endpoints_run_retrieve
+      description: Execute endpoint with optional materialization. Supports version parameter, runs latest version if not set.
+      parameters:
+      - in: path
+        name: name
+        schema:
+          type: string
+          description: URL-safe name for the endpoint
+        required: true
+      - $ref: '#/components/parameters/ProjectIdPath'
+      tags:
+      - endpoints
+      security:
+      - PersonalAPIKeyAuth:
+        - endpoint:read
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/EndpointRunResponse'
+          description: ''
+      x-explicit-tags:
+      - endpoints
+    post:
+      operationId: endpoints_run_create
+      description: Execute endpoint with optional materialization. Supports version parameter, runs latest version if not set.
+      parameters:
+      - in: path
+        name: name
+        schema:
+          type: string
+          description: URL-safe name for the endpoint
+        required: true
+      - $ref: '#/components/parameters/ProjectIdPath'
+      tags:
+      - endpoints
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/EndpointRunRequest'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/EndpointRunRequest'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/EndpointRunRequest'
+      security:
+      - PersonalAPIKeyAuth:
+        - endpoint:read
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/EndpointRunResponse'
+          description: ''
+      x-explicit-tags:
+      - endpoints
+  /api/projects/{project_id}/endpoints/{name}/versions/:
+    get:
+      operationId: endpoints_versions_list
+      description: List all versions for an endpoint.
+      parameters:
+      - in: query
+        name: created_by
+        schema:
+          type: integer
+      - in: query
+        name: is_active
+        schema:
+          type: boolean
+      - name: limit
+        required: false
+        in: query
+        description: Number of results to return per page.
+        schema:
+          type: integer
+      - in: path
+        name: name
+        schema:
+          type: string
+          description: URL-safe name for the endpoint
+        required: true
+      - name: offset
+        required: false
+        in: query
+        description: The initial index from which to return the results.
+        schema:
+          type: integer
+      - $ref: '#/components/parameters/ProjectIdPath'
+      tags:
+      - endpoints
+      security:
+      - PersonalAPIKeyAuth:
+        - endpoint:read
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedEndpointVersionResponseList'
+          description: ''
+      x-explicit-tags:
+      - endpoints
+  /api/projects/{project_id}/endpoints/last_execution_times/:
+    post:
+      operationId: endpoints_last_execution_times_create
+      description: Get the last execution times in the past 6 months for multiple endpoints.
+      parameters:
+      - $ref: '#/components/parameters/ProjectIdPath'
+      tags:
+      - endpoints
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/EndpointLastExecutionTimesRequest'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/EndpointLastExecutionTimesRequest'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/EndpointLastExecutionTimesRequest'
+        required: true
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/QueryStatusResponse'
+          description: ''
+      x-explicit-tags:
+      - endpoints
+components:
+  schemas:
+    DataWarehousePersonPropertyFilter:
+      additionalProperties: false
+      properties:
+        key:
+          title: Key
+          type: string
+        label:
+          default: null
+          title: Label
+          type: string
+          nullable: true
+        operator:
+          $ref: '#/components/schemas/PropertyOperator'
+        type:
+          default: data_warehouse_person_property
+          title: Type
+          type: string
+          enum:
+          - data_warehouse_person_property
+        value:
+          default: null
+          title: Value
+          anyOf:
+          - items:
+              anyOf:
+              - type: string
+              - type: number
+              - type: boolean
+            type: array
+          - type: string
+          - type: number
+          - type: boolean
+          nullable: true
+      required:
+      - key
+      - operator
+      title: DataWarehousePersonPropertyFilter
+      type: object
+    LogPropertyFilterType:
+      enum:
+      - log
+      - log_attribute
+      - log_resource_attribute
+      title: LogPropertyFilterType
+      type: string
+    ElementPropertyFilter:
+      additionalProperties: false
+      properties:
+        key:
+          $ref: '#/components/schemas/Key10'
+        label:
+          default: null
+          title: Label
+          type: string
+          nullable: true
+        operator:
+          $ref: '#/components/schemas/PropertyOperator'
+        type:
+          default: element
+          title: Type
+          type: string
+          enum:
+          - element
+        value:
+          default: null
+          title: Value
+          anyOf:
+          - items:
+              anyOf:
+              - type: string
+              - type: number
+              - type: boolean
+            type: array
+          - type: string
+          - type: number
+          - type: boolean
+          nullable: true
+      required:
+      - key
+      - operator
+      title: ElementPropertyFilter
+      type: object
+    MaterializationPreviewRequest:
+      type: object
+      properties:
+        version:
+          type: integer
+        bucket_overrides:
+          type: object
+          additionalProperties:
+            type: string
+          nullable: true
+          description: 'Per-column bucket function overrides, e.g. {"timestamp": "hour"}'
+    GroupPropertyFilter:
+      additionalProperties: false
+      properties:
+        group_key_names:
+          default: null
+          title: Group Key Names
+          additionalProperties:
+            type: string
+          type: object
+          nullable: true
+        group_type_index:
+          default: null
+          title: Group Type Index
+          type: integer
+          nullable: true
+        key:
+          title: Key
+          type: string
+        label:
+          default: null
+          title: Label
+          type: string
+          nullable: true
+        operator:
+          $ref: '#/components/schemas/PropertyOperator'
+        type:
+          default: group
+          title: Type
+          type: string
+          enum:
+          - group
+        value:
+          default: null
+          title: Value
+          anyOf:
+          - items:
+              anyOf:
+              - type: string
+              - type: number
+              - type: boolean
+            type: array
+          - type: string
+          - type: number
+          - type: boolean
+          nullable: true
+      required:
+      - key
+      - operator
+      title: GroupPropertyFilter
+      type: object
+    RoleAtOrganizationEnum:
+      enum:
+      - engineering
+      - data
+      - product
+      - founder
+      - leadership
+      - marketing
+      - sales
+      - other
+      type: string
+      description: '* `engineering` - Engineering
+
+        * `data` - Data
+
+        * `product` - Product Management
+
+        * `founder` - Founder
+
+        * `leadership` - Leadership
+
+        * `marketing` - Marketing
+
+        * `sales` - Sales / Success
+
+        * `other` - Other'
+    HogQLPropertyFilter:
+      additionalProperties: false
+      properties:
+        key:
+          title: Key
+          type: string
+        label:
+          default: null
+          title: Label
+          type: string
+          nullable: true
+        type:
+          default: hogql
+          title: Type
+          type: string
+          enum:
+          - hogql
+        value:
+          default: null
+          title: Value
+          anyOf:
+          - items:
+              anyOf:
+              - type: string
+              - type: number
+              - type: boolean
+            type: array
+          - type: string
+          - type: number
+          - type: boolean
+          nullable: true
+      required:
+      - key
+      title: HogQLPropertyFilter
+      type: object
+    QueryStatusResponse:
+      additionalProperties: false
+      properties:
+        query_status:
+          $ref: '#/components/schemas/QueryStatus'
+      required:
+      - query_status
+      title: QueryStatusResponse
+      type: object
+    EndpointRunResponse:
+      type: object
+      description: Response from executing an endpoint query.
+      properties:
+        name:
+          type: string
+          description: URL-safe endpoint name that was executed.
+        results:
+          type: array
+          items: {}
+          description: Query result rows. Each row is a list of values matching the columns order.
+        columns:
+          type: array
+          items:
+            type: string
+          description: Column names from the query SELECT clause.
+        hasMore:
+          type: boolean
+          description: Whether more results are available beyond the limit.
+        endpoint_version:
+          type: integer
+          description: Version number of the endpoint that was executed.
+      required:
+      - name
+    WorkflowVariablePropertyFilter:
+      additionalProperties: false
+      properties:
+        key:
+          title: Key
+          type: string
+        label:
+          default: null
+          title: Label
+          type: string
+          nullable: true
+        operator:
+          $ref: '#/components/schemas/PropertyOperator'
+        type:
+          default: workflow_variable
+          title: Type
+          type: string
+          enum:
+          - workflow_variable
+        value:
+          default: null
+          title: Value
+          anyOf:
+          - items:
+              anyOf:
+              - type: string
+              - type: number
+              - type: boolean
+            type: array
+          - type: string
+          - type: number
+          - type: boolean
+          nullable: true
+      required:
+      - key
+      - operator
+      title: WorkflowVariablePropertyFilter
+      type: object
+    NullEnum:
+      enum:
+      - null
+    EndpointColumn:
+      type: object
+      description: A column in the endpoint's query result.
+      properties:
+        name:
+          type: string
+          description: Column name from the query SELECT clause.
+        type:
+          type: string
+          description: 'Serialized column type: integer, float, string, datetime, date, boolean, array, json, or unknown.'
+      required:
+      - name
+      - type
+    QueryStatus:
+      additionalProperties: false
+      properties:
+        complete:
+          default: false
+          description: Whether the query is still running. Will be true if the query is complete, even if it errored. Either result or error will be set.
+          title: Complete
+          type: boolean
+          nullable: true
+        dashboard_id:
+          default: null
+          title: Dashboard Id
+          type: integer
+          nullable: true
+        end_time:
+          default: null
+          description: When did the query execution task finish (whether successfully or not).
+          title: End Time
+          format: date-time
+          type: string
+          nullable: true
+        error:
+          default: false
+          description: If the query failed, this will be set to true. More information can be found in the error_message field.
+          title: Error
+          type: boolean
+          nullable: true
+        error_message:
+          default: null
+          title: Error Message
+          type: string
+          nullable: true
+        expiration_time:
+          default: null
+          title: Expiration Time
+          format: date-time
+          type: string
+          nullable: true
+        id:
+          title: Id
+          type: string
+        insight_id:
+          default: null
+          title: Insight Id
+          type: integer
+          nullable: true
+        labels:
+          default: null
+          title: Labels
+          items:
+            type: string
+          type: array
+          nullable: true
+        pickup_time:
+          default: null
+          description: When was the query execution task picked up by a worker.
+          title: Pickup Time
+          format: date-time
+          type: string
+          nullable: true
+        query_async:
+          default: true
+          description: ONLY async queries use QueryStatus.
+          title: Query Async
+          type: boolean
+          enum:
+          - true
+        query_progress:
+          default: null
+          allOf:
+          - $ref: '#/components/schemas/ClickhouseQueryProgress'
+          nullable: true
+        results:
+          default: null
+          title: Results
+          nullable: true
+        start_time:
+          default: null
+          description: When was query execution task enqueued.
+          title: Start Time
+          format: date-time
+          type: string
+          nullable: true
+        task_id:
+          default: null
+          title: Task Id
+          type: string
+          nullable: true
+        team_id:
+          title: Team Id
+          type: integer
+      required:
+      - id
+      - team_id
+      title: QueryStatus
+      type: object
+    SpanPropertyFilterType:
+      enum:
+      - span
+      - span_attribute
+      - span_resource_attribute
+      title: SpanPropertyFilterType
+      type: string
+    PaginatedEndpointResponseList:
+      type: object
+      required:
+      - count
+      - results
+      properties:
+        count:
+          type: integer
+          example: 123
+        next:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?offset=400&limit=100
+        previous:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?offset=200&limit=100
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/EndpointResponse'
+    ClickhouseQueryProgress:
+      additionalProperties: false
+      properties:
+        active_cpu_time:
+          title: Active Cpu Time
+          type: integer
+        bytes_read:
+          title: Bytes Read
+          type: integer
+        estimated_rows_total:
+          title: Estimated Rows Total
+          type: integer
+        rows_read:
+          title: Rows Read
+          type: integer
+        time_elapsed:
+          title: Time Elapsed
+          type: integer
+      required:
+      - active_cpu_time
+      - bytes_read
+      - estimated_rows_total
+      - rows_read
+      - time_elapsed
+      title: ClickhouseQueryProgress
+      type: object
+    UserBasic:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        uuid:
+          type: string
+          format: uuid
+          readOnly: true
+        distinct_id:
+          type: string
+          nullable: true
+          maxLength: 200
+        first_name:
+          type: string
+          maxLength: 150
+        last_name:
+          type: string
+          maxLength: 150
+        email:
+          type: string
+          format: email
+          title: Email address
+          maxLength: 254
+        is_email_verified:
+          type: boolean
+          nullable: true
+        hedgehog_config:
+          type: object
+          additionalProperties: true
+          nullable: true
+          readOnly: true
+        role_at_organization:
+          nullable: true
+          oneOf:
+          - $ref: '#/components/schemas/RoleAtOrganizationEnum'
+          - $ref: '#/components/schemas/BlankEnum'
+          - $ref: '#/components/schemas/NullEnum'
+      required:
+      - email
+      - hedgehog_config
+      - id
+      - uuid
+    EndpointRefreshMode:
+      enum:
+      - cache
+      - force
+      - direct
+      title: EndpointRefreshMode
+      type: string
+    FeaturePropertyFilter:
+      additionalProperties: false
+      properties:
+        key:
+          title: Key
+          type: string
+        label:
+          default: null
+          title: Label
+          type: string
+          nullable: true
+        operator:
+          $ref: '#/components/schemas/PropertyOperator'
+        type:
+          default: feature
+          description: Event property with "$feature/" prepended
+          title: Type
+          type: string
+          enum:
+          - feature
+        value:
+          default: null
+          title: Value
+          anyOf:
+          - items:
+              anyOf:
+              - type: string
+              - type: number
+              - type: boolean
+            type: array
+          - type: string
+          - type: number
+          - type: boolean
+          nullable: true
+      required:
+      - key
+      - operator
+      title: FeaturePropertyFilter
+      type: object
+    EmptyPropertyFilter:
+      additionalProperties: false
+      properties:
+        type:
+          default: empty
+          title: Type
+          type: string
+          enum:
+          - empty
+      title: EmptyPropertyFilter
+      type: object
+    LogEntryPropertyFilter:
+      additionalProperties: false
+      properties:
+        key:
+          title: Key
+          type: string
+        label:
+          default: null
+          title: Label
+          type: string
+          nullable: true
+        operator:
+          $ref: '#/components/schemas/PropertyOperator'
+        type:
+          default: log_entry
+          title: Type
+          type: string
+          enum:
+          - log_entry
+        value:
+          default: null
+          title: Value
+          anyOf:
+          - items:
+              anyOf:
+              - type: string
+              - type: number
+              - type: boolean
+            type: array
+          - type: string
+          - type: number
+          - type: boolean
+          nullable: true
+      required:
+      - key
+      - operator
+      title: LogEntryPropertyFilter
+      type: object
+    EndpointVersionResponse:
+      type: object
+      description: Extended endpoint representation when viewing a specific version.
+      properties:
+        id:
+          type: string
+          format: uuid
+          description: Unique endpoint identifier (UUID).
+        name:
+          type: string
+          description: URL-safe endpoint name, unique per team.
+        description:
+          type: string
+          nullable: true
+          description: Human-readable description of the endpoint.
+        query:
+          description: The HogQL or insight query definition (JSON object with 'kind' key).
+        is_active:
+          type: boolean
+          description: Whether the endpoint can be executed via the API.
+        data_freshness_seconds:
+          type: integer
+          description: 'How fresh the data is, in seconds. One of: 900, 1800, 3600, 21600, 43200, 86400, 604800.'
+        endpoint_path:
+          type: string
+          description: Relative API path to execute this endpoint (e.g. /api/environments/{team_id}/endpoints/{name}/run).
+        url:
+          type: string
+          nullable: true
+          description: Absolute URL to execute this endpoint.
+        ui_url:
+          type: string
+          nullable: true
+          description: Absolute URL to view this endpoint in the PostHog UI.
+        created_at:
+          type: string
+          format: date-time
+          description: When the endpoint was created (ISO 8601).
+        updated_at:
+          type: string
+          format: date-time
+          description: When the endpoint was last updated (ISO 8601).
+        created_by:
+          allOf:
+          - $ref: '#/components/schemas/UserBasic'
+          readOnly: true
+          description: User who created the endpoint.
+        is_materialized:
+          type: boolean
+          description: Whether the current version's results are pre-computed to S3.
+        current_version:
+          type: integer
+          description: Latest version number.
+        current_version_id:
+          type: string
+          format: uuid
+          nullable: true
+          description: UUID of the current EndpointVersion row.
+        versions_count:
+          type: integer
+          description: Total number of versions for this endpoint.
+        derived_from_insight:
+          type: string
+          nullable: true
+          description: Short ID of the source insight, if derived from one.
+        last_executed_at:
+          type: string
+          format: date-time
+          nullable: true
+          description: When this endpoint was last executed via the API (ISO 8601), or null if never executed.
+        materialization:
+          allOf:
+          - $ref: '#/components/schemas/EndpointMaterialization'
+          description: Materialization status and configuration for the current version.
+        bucket_overrides:
+          type: object
+          additionalProperties: true
+          nullable: true
+          description: Per-column bucket overrides for range variable materialization.
+        columns:
+          type: array
+          items:
+            $ref: '#/components/schemas/EndpointColumn'
+          description: Column names and types from the query's SELECT clause.
+        version:
+          type: integer
+          description: Version number.
+        version_id:
+          type: string
+          format: uuid
+          description: Version unique identifier (UUID).
+        endpoint_is_active:
+          type: boolean
+          description: Whether the parent endpoint is active (distinct from version.is_active).
+        version_created_at:
+          type: string
+          description: ISO 8601 timestamp when this version was created.
+        version_updated_at:
+          type: string
+          nullable: true
+          description: ISO 8601 timestamp when this version was last updated.
+        version_created_by:
+          allOf:
+          - $ref: '#/components/schemas/UserBasic'
+          readOnly: true
+          nullable: true
+          description: User who created this version.
+      required:
+      - bucket_overrides
+      - columns
+      - created_at
+      - created_by
+      - current_version
+      - data_freshness_seconds
+      - derived_from_insight
+      - description
+      - endpoint_is_active
+      - endpoint_path
+      - id
+      - is_active
+      - is_materialized
+      - last_executed_at
+      - materialization
+      - name
+      - query
+      - ui_url
+      - updated_at
+      - url
+      - version
+      - version_created_at
+      - version_created_by
+      - version_id
+      - version_updated_at
+      - versions_count
+    BreakdownType:
+      enum:
+      - cohort
+      - person
+      - event
+      - event_metadata
+      - group
+      - session
+      - hogql
+      - data_warehouse
+      - data_warehouse_person_property
+      - revenue_analytics
+      title: BreakdownType
+      type: string
+    EndpointLastExecutionTimesRequest:
+      additionalProperties: false
+      properties:
+        names:
+          items:
+            type: string
+          title: Names
+          type: array
+      required:
+      - names
+      title: EndpointLastExecutionTimesRequest
+      type: object
+    MultipleBreakdownType:
+      enum:
+      - person
+      - event
+      - event_metadata
+      - group
+      - session
+      - hogql
+      - cohort
+      - revenue_analytics
+      - data_warehouse
+      - data_warehouse_person_property
+      title: MultipleBreakdownType
+      type: string
+    EventPropertyFilter:
+      additionalProperties: false
+      properties:
+        key:
+          title: Key
+          type: string
+        label:
+          default: null
+          title: Label
+          type: string
+          nullable: true
+        operator:
+          default: exact
+          allOf:
+          - $ref: '#/components/schemas/PropertyOperator'
+          nullable: true
+        type:
+          default: event
+          description: Event properties
+          title: Type
+          type: string
+          enum:
+          - event
+        value:
+          default: null
+          title: Value
+          anyOf:
+          - items:
+              anyOf:
+              - type: string
+              - type: number
+              - type: boolean
+            type: array
+          - type: string
+          - type: number
+          - type: boolean
+          nullable: true
+      required:
+      - key
+      title: EventPropertyFilter
+      type: object
+    EndpointMaterialization:
+      type: object
+      description: Materialization status for an endpoint version.
+      properties:
+        name:
+          type: string
+          description: URL-safe endpoint name.
+        status:
+          type: string
+          description: Current materialization status (e.g. 'Completed', 'Running').
+        can_materialize:
+          type: boolean
+          description: Whether this endpoint query can be materialized.
+        reason:
+          type: string
+          nullable: true
+          description: Reason why materialization is not possible (only when can_materialize is false).
+        last_materialized_at:
+          type: string
+          nullable: true
+          description: ISO 8601 timestamp of the last successful materialization.
+        error:
+          type: string
+          description: Last materialization error message, if any.
+        saved_query_id:
+          type: string
+          format: uuid
+          nullable: true
+          description: UUID of the underlying saved query backing this materialization. Only populated when the version is materialized.
+      required:
+      - can_materialize
+      - name
+    PersonPropertyFilter:
+      additionalProperties: false
+      properties:
+        key:
+          title: Key
+          type: string
+        label:
+          default: null
+          title: Label
+          type: string
+          nullable: true
+        operator:
+          $ref: '#/components/schemas/PropertyOperator'
+        type:
+          default: person
+          description: Person properties
+          title: Type
+          type: string
+          enum:
+          - person
+        value:
+          default: null
+          title: Value
+          anyOf:
+          - items:
+              anyOf:
+              - type: string
+              - type: number
+              - type: boolean
+            type: array
+          - type: string
+          - type: number
+          - type: boolean
+          nullable: true
+      required:
+      - key
+      - operator
+      title: PersonPropertyFilter
+      type: object
+    PaginatedEndpointVersionResponseList:
+      type: object
+      required:
+      - count
+      - results
+      properties:
+        count:
+          type: integer
+          example: 123
+        next:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?offset=400&limit=100
+        previous:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?offset=200&limit=100
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/EndpointVersionResponse'
+    SessionPropertyFilter:
+      additionalProperties: false
+      properties:
+        key:
+          title: Key
+          type: string
+        label:
+          default: null
+          title: Label
+          type: string
+          nullable: true
+        operator:
+          $ref: '#/components/schemas/PropertyOperator'
+        type:
+          default: session
+          title: Type
+          type: string
+          enum:
+          - session
+        value:
+          default: null
+          title: Value
+          anyOf:
+          - items:
+              anyOf:
+              - type: string
+              - type: number
+              - type: boolean
+            type: array
+          - type: string
+          - type: number
+          - type: boolean
+          nullable: true
+      required:
+      - key
+      - operator
+      title: SessionPropertyFilter
+      type: object
+    DashboardFilter:
+      additionalProperties: false
+      properties:
+        breakdown_filter:
+          default: null
+          allOf:
+          - $ref: '#/components/schemas/BreakdownFilter'
+          nullable: true
+        date_from:
+          default: null
+          title: Date From
+          type: string
+          nullable: true
+        date_to:
+          default: null
+          title: Date To
+          type: string
+          nullable: true
+        explicitDate:
+          default: null
+          title: Explicitdate
+          type: boolean
+          nullable: true
+        properties:
+          default: null
+          title: Properties
+          items:
+            anyOf:
+            - $ref: '#/components/schemas/EventPropertyFilter'
+            - $ref: '#/components/schemas/PersonPropertyFilter'
+            - $ref: '#/components/schemas/ElementPropertyFilter'
+            - $ref: '#/components/schemas/EventMetadataPropertyFilter'
+            - $ref: '#/components/schemas/SessionPropertyFilter'
+            - $ref: '#/components/schemas/CohortPropertyFilter'
+            - $ref: '#/components/schemas/RecordingPropertyFilter'
+            - $ref: '#/components/schemas/LogEntryPropertyFilter'
+            - $ref: '#/components/schemas/GroupPropertyFilter'
+            - $ref: '#/components/schemas/FeaturePropertyFilter'
+            - $ref: '#/components/schemas/FlagPropertyFilter'
+            - $ref: '#/components/schemas/HogQLPropertyFilter'
+            - $ref: '#/components/schemas/EmptyPropertyFilter'
+            - $ref: '#/components/schemas/DataWarehousePropertyFilter'
+            - $ref: '#/components/schemas/DataWarehousePersonPropertyFilter'
+            - $ref: '#/components/schemas/ErrorTrackingIssueFilter'
+            - $ref: '#/components/schemas/LogPropertyFilter'
+            - $ref: '#/components/schemas/SpanPropertyFilter'
+            - $ref: '#/components/schemas/RevenueAnalyticsPropertyFilter'
+            - $ref: '#/components/schemas/WorkflowVariablePropertyFilter'
+          type: array
+          nullable: true
+      title: DashboardFilter
+      type: object
+    ErrorTrackingIssueFilter:
+      additionalProperties: false
+      properties:
+        key:
+          title: Key
+          type: string
+        label:
+          default: null
+          title: Label
+          type: string
+          nullable: true
+        operator:
+          $ref: '#/components/schemas/PropertyOperator'
+        type:
+          default: error_tracking_issue
+          title: Type
+          type: string
+          enum:
+          - error_tracking_issue
+        value:
+          default: null
+          title: Value
+          anyOf:
+          - items:
+              anyOf:
+              - type: string
+              - type: number
+              - type: boolean
+            type: array
+          - type: string
+          - type: number
+          - type: boolean
+          nullable: true
+      required:
+      - key
+      - operator
+      title: ErrorTrackingIssueFilter
+      type: object
+    EndpointRequest:
+      type: object
+      description: Schema for creating/updating endpoints. OpenAPI docs only — validation uses Pydantic.
+      properties:
+        name:
+          type: string
+          nullable: true
+          description: Unique URL-safe name. Must start with a letter, only letters/numbers/hyphens/underscores, max 128 chars.
+        query:
+          nullable: true
+          description: HogQL or insight query this endpoint executes. Changing this auto-creates a new version.
+        description:
+          type: string
+          nullable: true
+          description: Human-readable description of what this endpoint returns.
+        data_freshness_seconds:
+          type: integer
+          nullable: true
+          description: 'How fresh the data should be, in seconds. Must be one of: 900 (15 min), 1800 (30 min), 3600 (1 h), 21600 (6 h), 43200 (12 h), 86400 (24 h, default), 604800 (7 d). Controls cache TTL and materialization sync frequency.'
+        is_active:
+          type: boolean
+          nullable: true
+          description: Whether this endpoint is available for execution via the API.
+        is_materialized:
+          type: boolean
+          nullable: true
+          description: Whether query results are materialized to S3.
+        derived_from_insight:
+          type: string
+          nullable: true
+          description: Short ID of the insight this endpoint was derived from.
+        version:
+          type: integer
+          nullable: true
+          description: Target a specific version for updates (defaults to current version).
+        bucket_overrides:
+          type: object
+          additionalProperties: true
+          nullable: true
+          description: Per-column bucket overrides for range variable materialization. Keys are column names, values are bucket keys.
+        deleted:
+          type: boolean
+          nullable: true
+          description: Set to true to soft-delete this endpoint.
+    EndpointResponse:
+      type: object
+      description: Full endpoint representation returned by list/retrieve/create/update.
+      properties:
+        id:
+          type: string
+          format: uuid
+          description: Unique endpoint identifier (UUID).
+        name:
+          type: string
+          description: URL-safe endpoint name, unique per team.
+        description:
+          type: string
+          nullable: true
+          description: Human-readable description of the endpoint.
+        query:
+          description: The HogQL or insight query definition (JSON object with 'kind' key).
+        is_active:
+          type: boolean
+          description: Whether the endpoint can be executed via the API.
+        data_freshness_seconds:
+          type: integer
+          description: 'How fresh the data is, in seconds. One of: 900, 1800, 3600, 21600, 43200, 86400, 604800.'
+        endpoint_path:
+          type: string
+          description: Relative API path to execute this endpoint (e.g. /api/environments/{team_id}/endpoints/{name}/run).
+        url:
+          type: string
+          nullable: true
+          description: Absolute URL to execute this endpoint.
+        ui_url:
+          type: string
+          nullable: true
+          description: Absolute URL to view this endpoint in the PostHog UI.
+        created_at:
+          type: string
+          format: date-time
+          description: When the endpoint was created (ISO 8601).
+        updated_at:
+          type: string
+          format: date-time
+          description: When the endpoint was last updated (ISO 8601).
+        created_by:
+          allOf:
+          - $ref: '#/components/schemas/UserBasic'
+          readOnly: true
+          description: User who created the endpoint.
+        is_materialized:
+          type: boolean
+          description: Whether the current version's results are pre-computed to S3.
+        current_version:
+          type: integer
+          description: Latest version number.
+        current_version_id:
+          type: string
+          format: uuid
+          nullable: true
+          description: UUID of the current EndpointVersion row.
+        versions_count:
+          type: integer
+          description: Total number of versions for this endpoint.
+        derived_from_insight:
+          type: string
+          nullable: true
+          description: Short ID of the source insight, if derived from one.
+        last_executed_at:
+          type: string
+          format: date-time
+          nullable: true
+          description: When this endpoint was last executed via the API (ISO 8601), or null if never executed.
+        materialization:
+          allOf:
+          - $ref: '#/components/schemas/EndpointMaterialization'
+          description: Materialization status and configuration for the current version.
+        bucket_overrides:
+          type: object
+          additionalProperties: true
+          nullable: true
+          description: Per-column bucket overrides for range variable materialization.
+        columns:
+          type: array
+          items:
+            $ref: '#/components/schemas/EndpointColumn'
+          description: Column names and types from the query's SELECT clause.
+      required:
+      - bucket_overrides
+      - columns
+      - created_at
+      - created_by
+      - current_version
+      - data_freshness_seconds
+      - derived_from_insight
+      - description
+      - endpoint_path
+      - id
+      - is_active
+      - is_materialized
+      - last_executed_at
+      - materialization
+      - name
+      - query
+      - ui_url
+      - updated_at
+      - url
+      - versions_count
+    FlagPropertyFilter:
+      additionalProperties: false
+      properties:
+        key:
+          description: The key should be the flag ID
+          title: Key
+          type: string
+        label:
+          default: null
+          title: Label
+          type: string
+          nullable: true
+        operator:
+          default: flag_evaluates_to
+          description: Only flag_evaluates_to operator is allowed for flag dependencies
+          title: Operator
+          type: string
+          enum:
+          - flag_evaluates_to
+        type:
+          default: flag
+          description: Feature flag dependency
+          title: Type
+          type: string
+          enum:
+          - flag
+        value:
+          anyOf:
+          - type: boolean
+          - type: string
+          description: The value can be true, false, or a variant name
+          title: Value
+      required:
+      - key
+      - value
+      title: FlagPropertyFilter
+      type: object
+    RevenueAnalyticsPropertyFilter:
+      additionalProperties: false
+      properties:
+        key:
+          title: Key
+          type: string
+        label:
+          default: null
+          title: Label
+          type: string
+          nullable: true
+        operator:
+          $ref: '#/components/schemas/PropertyOperator'
+        type:
+          default: revenue_analytics
+          title: Type
+          type: string
+          enum:
+          - revenue_analytics
+        value:
+          default: null
+          title: Value
+          anyOf:
+          - items:
+              anyOf:
+              - type: string
+              - type: number
+              - type: boolean
+            type: array
+          - type: string
+          - type: number
+          - type: boolean
+          nullable: true
+      required:
+      - key
+      - operator
+      title: RevenueAnalyticsPropertyFilter
+      type: object
+    RecordingPropertyFilter:
+      additionalProperties: false
+      properties:
+        key:
+          anyOf:
+          - $ref: '#/components/schemas/DurationType'
+          - type: string
+          title: Key
+        label:
+          default: null
+          title: Label
+          type: string
+          nullable: true
+        operator:
+          $ref: '#/components/schemas/PropertyOperator'
+        type:
+          default: recording
+          title: Type
+          type: string
+          enum:
+          - recording
+        value:
+          default: null
+          title: Value
+          anyOf:
+          - items:
+              anyOf:
+              - type: string
+              - type: number
+              - type: boolean
+            type: array
+          - type: string
+          - type: number
+          - type: boolean
+          nullable: true
+      required:
+      - key
+      - operator
+      title: RecordingPropertyFilter
+      type: object
+    PatchedEndpointRequest:
+      type: object
+      description: Schema for creating/updating endpoints. OpenAPI docs only — validation uses Pydantic.
+      properties:
+        name:
+          type: string
+          nullable: true
+          description: Unique URL-safe name. Must start with a letter, only letters/numbers/hyphens/underscores, max 128 chars.
+        query:
+          nullable: true
+          description: HogQL or insight query this endpoint executes. Changing this auto-creates a new version.
+        description:
+          type: string
+          nullable: true
+          description: Human-readable description of what this endpoint returns.
+        data_freshness_seconds:
+          type: integer
+          nullable: true
+          description: 'How fresh the data should be, in seconds. Must be one of: 900 (15 min), 1800 (30 min), 3600 (1 h), 21600 (6 h), 43200 (12 h), 86400 (24 h, default), 604800 (7 d). Controls cache TTL and materialization sync frequency.'
+        is_active:
+          type: boolean
+          nullable: true
+          description: Whether this endpoint is available for execution via the API.
+        is_materialized:
+          type: boolean
+          nullable: true
+          description: Whether query results are materialized to S3.
+        derived_from_insight:
+          type: string
+          nullable: true
+          description: Short ID of the insight this endpoint was derived from.
+        version:
+          type: integer
+          nullable: true
+          description: Target a specific version for updates (defaults to current version).
+        bucket_overrides:
+          type: object
+          additionalProperties: true
+          nullable: true
+          description: Per-column bucket overrides for range variable materialization. Keys are column names, values are bucket keys.
+        deleted:
+          type: boolean
+          nullable: true
+          description: Set to true to soft-delete this endpoint.
+    Key10:
+      enum:
+      - tag_name
+      - text
+      - href
+      - selector
+      title: Key10
+      type: string
+    BreakdownFilter:
+      additionalProperties: false
+      properties:
+        breakdown:
+          default: null
+          title: Breakdown
+          anyOf:
+          - type: string
+          - items:
+              anyOf:
+              - type: string
+              - type: integer
+            type: array
+          - type: integer
+          nullable: true
+        breakdown_group_type_index:
+          default: null
+          title: Breakdown Group Type Index
+          type: integer
+          nullable: true
+        breakdown_hide_other_aggregation:
+          default: null
+          title: Breakdown Hide Other Aggregation
+          type: boolean
+          nullable: true
+        breakdown_histogram_bin_count:
+          default: null
+          title: Breakdown Histogram Bin Count
+          type: integer
+          nullable: true
+        breakdown_limit:
+          default: null
+          title: Breakdown Limit
+          type: integer
+          nullable: true
+        breakdown_normalize_url:
+          default: null
+          title: Breakdown Normalize Url
+          type: boolean
+          nullable: true
+        breakdown_path_cleaning:
+          default: null
+          title: Breakdown Path Cleaning
+          type: boolean
+          nullable: true
+        breakdown_type:
+          default: event
+          allOf:
+          - $ref: '#/components/schemas/BreakdownType'
+          nullable: true
+        breakdowns:
+          default: null
+          title: Breakdowns
+          items:
+            $ref: '#/components/schemas/Breakdown'
+          maxItems: 3
+          type: array
+          nullable: true
+      title: BreakdownFilter
+      type: object
+    SpanPropertyFilter:
+      additionalProperties: false
+      properties:
+        key:
+          title: Key
+          type: string
+        label:
+          default: null
+          title: Label
+          type: string
+          nullable: true
+        operator:
+          $ref: '#/components/schemas/PropertyOperator'
+        type:
+          $ref: '#/components/schemas/SpanPropertyFilterType'
+        value:
+          default: null
+          title: Value
+          anyOf:
+          - items:
+              anyOf:
+              - type: string
+              - type: number
+              - type: boolean
+            type: array
+          - type: string
+          - type: number
+          - type: boolean
+          nullable: true
+      required:
+      - key
+      - operator
+      - type
+      title: SpanPropertyFilter
+      type: object
+    BlankEnum:
+      enum:
+      - ''
+    DurationType:
+      enum:
+      - duration
+      - active_seconds
+      - inactive_seconds
+      title: DurationType
+      type: string
+    EndpointRunRequest:
+      additionalProperties: false
+      properties:
+        client_query_id:
+          default: null
+          description: Client provided query ID. Can be used to retrieve the status or cancel the query.
+          title: Client Query Id
+          type: string
+          nullable: true
+        debug:
+          default: false
+          description: Whether to include debug information (such as the executed HogQL) in the response.
+          title: Debug
+          type: boolean
+          nullable: true
+        filters_override:
+          default: null
+          allOf:
+          - $ref: '#/components/schemas/DashboardFilter'
+          nullable: true
+        limit:
+          default: null
+          description: Maximum number of results to return. If not provided, returns all results.
+          title: Limit
+          type: integer
+          nullable: true
+        offset:
+          default: null
+          description: Number of results to skip. Must be used together with limit. Only supported for HogQL endpoints.
+          title: Offset
+          type: integer
+          nullable: true
+        refresh:
+          default: cache
+          allOf:
+          - $ref: '#/components/schemas/EndpointRefreshMode'
+          nullable: true
+        variables:
+          default: null
+          description: 'Variables to parameterize the endpoint query. The key is the variable name and the value is the variable value.
+
+
+            For HogQL endpoints:   Keys must match a variable `code_name` defined in the query (referenced as `{variables.code_name}`).   Example: `{"event_name": "$pageview"}`
+
+
+            For non-materialized insight endpoints (e.g. TrendsQuery):   - `date_from` and `date_to` are built-in variables that filter the date range.     Example: `{"date_from": "2024-01-01", "date_to": "2024-01-31"}`
+
+
+            For materialized insight endpoints:   - Use the breakdown property name as the key to filter by breakdown value.     Example: `{"$browser": "Chrome"}`   - `date_from`/`date_to` are not supported on materialized insight endpoints.
+
+
+            Unknown variable names will return a 400 error.'
+          title: Variables
+          additionalProperties: true
+          type: object
+          nullable: true
+        version:
+          default: null
+          description: Specific endpoint version to execute. If not provided, the latest version is used.
+          title: Version
+          type: integer
+          nullable: true
+      title: EndpointRunRequest
+      type: object
+    EventMetadataPropertyFilter:
+      additionalProperties: false
+      properties:
+        key:
+          title: Key
+          type: string
+        label:
+          default: null
+          title: Label
+          type: string
+          nullable: true
+        operator:
+          $ref: '#/components/schemas/PropertyOperator'
+        type:
+          default: event_metadata
+          title: Type
+          type: string
+          enum:
+          - event_metadata
+        value:
+          default: null
+          title: Value
+          anyOf:
+          - items:
+              anyOf:
+              - type: string
+              - type: number
+              - type: boolean
+            type: array
+          - type: string
+          - type: number
+          - type: boolean
+          nullable: true
+      required:
+      - key
+      - operator
+      title: EventMetadataPropertyFilter
+      type: object
+    LogPropertyFilter:
+      additionalProperties: false
+      properties:
+        key:
+          title: Key
+          type: string
+        label:
+          default: null
+          title: Label
+          type: string
+          nullable: true
+        operator:
+          $ref: '#/components/schemas/PropertyOperator'
+        type:
+          $ref: '#/components/schemas/LogPropertyFilterType'
+        value:
+          default: null
+          title: Value
+          anyOf:
+          - items:
+              anyOf:
+              - type: string
+              - type: number
+              - type: boolean
+            type: array
+          - type: string
+          - type: number
+          - type: boolean
+          nullable: true
+      required:
+      - key
+      - operator
+      - type
+      title: LogPropertyFilter
+      type: object
+    DataWarehousePropertyFilter:
+      additionalProperties: false
+      properties:
+        key:
+          title: Key
+          type: string
+        label:
+          default: null
+          title: Label
+          type: string
+          nullable: true
+        operator:
+          $ref: '#/components/schemas/PropertyOperator'
+        type:
+          default: data_warehouse
+          title: Type
+          type: string
+          enum:
+          - data_warehouse
+        value:
+          default: null
+          title: Value
+          anyOf:
+          - items:
+              anyOf:
+              - type: string
+              - type: number
+              - type: boolean
+            type: array
+          - type: string
+          - type: number
+          - type: boolean
+          nullable: true
+      required:
+      - key
+      - operator
+      title: DataWarehousePropertyFilter
+      type: object
+    Breakdown:
+      additionalProperties: false
+      properties:
+        group_type_index:
+          default: null
+          title: Group Type Index
+          type: integer
+          nullable: true
+        histogram_bin_count:
+          default: null
+          title: Histogram Bin Count
+          type: integer
+          nullable: true
+        normalize_url:
+          default: null
+          title: Normalize Url
+          type: boolean
+          nullable: true
+        property:
+          anyOf:
+          - type: string
+          - type: integer
+          title: Property
+        type:
+          default: null
+          allOf:
+          - $ref: '#/components/schemas/MultipleBreakdownType'
+          nullable: true
+      required:
+      - property
+      title: Breakdown
+      type: object
+    PropertyOperator:
+      enum:
+      - exact
+      - is_not
+      - icontains
+      - not_icontains
+      - regex
+      - not_regex
+      - gt
+      - gte
+      - lt
+      - lte
+      - is_set
+      - is_not_set
+      - is_date_exact
+      - is_date_before
+      - is_date_after
+      - between
+      - not_between
+      - min
+      - max
+      - in
+      - not_in
+      - is_cleaned_path_exact
+      - flag_evaluates_to
+      - semver_eq
+      - semver_neq
+      - semver_gt
+      - semver_gte
+      - semver_lt
+      - semver_lte
+      - semver_tilde
+      - semver_caret
+      - semver_wildcard
+      - icontains_multi
+      - not_icontains_multi
+      title: PropertyOperator
+      type: string
+    CohortPropertyFilter:
+      additionalProperties: false
+      properties:
+        cohort_name:
+          default: null
+          title: Cohort Name
+          type: string
+          nullable: true
+        key:
+          default: id
+          title: Key
+          type: string
+          enum:
+          - id
+        label:
+          default: null
+          title: Label
+          type: string
+          nullable: true
+        operator:
+          default: in
+          allOf:
+          - $ref: '#/components/schemas/PropertyOperator'
+          nullable: true
+        type:
+          default: cohort
+          title: Type
+          type: string
+          enum:
+          - cohort
+        value:
+          title: Value
+          type: integer
+      required:
+      - value
+      title: CohortPropertyFilter
+      type: object
+  parameters:
+    EnvironmentIdPath:
+      in: path
+      name: environment_id
+      required: true
+      schema:
+        type: string
+      description: Deprecated. Use /api/projects/{project_id}/ instead.
+    ProjectIdPath:
+      in: path
+      name: project_id
+      required: true
+      schema:
+        type: string
+      description: Project ID of the project you're trying to access. To find the ID of the project, make a call to /api/projects/.
+  securitySchemes:
+    PersonalAPIKeyAuth:
+      type: http
+      scheme: bearer
+x-tagGroups:
+- name: All endpoints
+  tags:
+  - LLM Analytics
+  - actions
+  - activity_log
+  - activity_logs
+  - advanced_activity_logs
+  - alerts
+  - annotations
+  - approval_policies
+  - batch_exports
+  - cdp
+  - change_requests
+  - code
+  - code-invites
+  - cohorts
+  - comments
+  - conversations
+  - core
+  - customer_analytics
+  - customer_journeys
+  - customer_profile_configs
+  - dashboard_templates
+  - dashboards
+  - data_color_themes
+  - data_modeling_jobs
+  - data_warehouse
+  - dataset_items
+  - datasets
+  - desktop_recordings
+  - domains
+  - early_access_feature
+  - early_access_features
+  - elements
+  - endpoints
+  - environments
+  - error_tracking
+  - evaluation_runs
+  - evaluations
+  - event_definitions
+  - event_filter
+  - event_schemas
+  - events
+  - experiment_holdouts
+  - experiment_saved_metrics
+  - experiments
+  - exports
+  - external_data_schemas
+  - external_data_sources
+  - feature_flags
+  - file_system
+  - file_system_shortcut
+  - flag_value
+  - groups
+  - groups_types
+  - health_issues
+  - heatmap_screenshots
+  - heatmaps
+  - hog_flows
+  - hog_function_templates
+  - hog_functions
+  - insight_variables
+  - insights
+  - integrations
+  - invites
+  - js-snippet
+  - legal_documents
+  - lineage
+  - live_debugger_breakpoints
+  - llm_analytics
+  - llm_prompts
+  - llm_skills
+  - logs
+  - managed_viewsets
+  - max
+  - max_tools
+  - mcp_server_installations
+  - mcp_servers
+  - mcp_store
+  - mcp_tools
+  - members
+  - notebooks
+  - oauth_applications
+  - object_media_previews
+  - organizations
+  - persisted_folder
+  - persons
+  - platform_features
+  - plugin_configs
+  - product_analytics
+  - product_tours
+  - project_secret_api_keys
+  - projects
+  - property_definitions
+  - proxy_records
+  - public_hog_function_templates
+  - query
+  - replay
+  - reverse_proxy
+  - role_external_references
+  - roles
+  - sandbox-environments
+  - sandbox_environments
+  - saved
+  - schema_property_groups
+  - sdk_doctor
+  - session_group_summaries
+  - session_recording_playlists
+  - session_recordings
+  - session_summaries
+  - sessions
+  - signals
+  - subscriptions
+  - surveys
+  - taggers
+  - task-automations
+  - task-runs
+  - task_automations
+  - tasks
+  - uploaded_media
+  - user_home_settings
+  - user_interviews
+  - users
+  - visual_review
+  - warehouse_dag
+  - warehouse_model_paths
+  - warehouse_saved_queries
+  - warehouse_saved_query_folders
+  - warehouse_tables
+  - warehouse_view_link
+  - warehouse_view_links
+  - web_analytics
+  - web_experiments
+  - web_vitals
+  - welcome
+  - workflows

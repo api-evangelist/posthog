@@ -1,0 +1,1631 @@
+openapi: 3.0.3
+info:
+  title: PostHog actions replay API
+  version: 1.0.0
+  description: ''
+tags:
+- name: replay
+paths:
+  /api/environments/{environment_id}/session_recording_playlists/:
+    get:
+      operationId: environments_session_recording_playlists_list
+      description: Override list to include synthetic playlists
+      parameters:
+      - in: query
+        name: created_by
+        schema:
+          type: integer
+      - $ref: '#/components/parameters/EnvironmentIdPath'
+      - name: limit
+        required: false
+        in: query
+        description: Number of results to return per page.
+        schema:
+          type: integer
+      - name: offset
+        required: false
+        in: query
+        description: The initial index from which to return the results.
+        schema:
+          type: integer
+      - in: query
+        name: short_id
+        schema:
+          type: string
+      tags:
+      - replay
+      security:
+      - PersonalAPIKeyAuth:
+        - session_recording_playlist:read
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedSessionRecordingPlaylistList'
+          description: ''
+      deprecated: true
+      x-explicit-tags:
+      - replay
+    post:
+      operationId: environments_session_recording_playlists_create
+      parameters:
+      - $ref: '#/components/parameters/EnvironmentIdPath'
+      tags:
+      - replay
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SessionRecordingPlaylist'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/SessionRecordingPlaylist'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/SessionRecordingPlaylist'
+      security:
+      - PersonalAPIKeyAuth:
+        - session_recording_playlist:write
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SessionRecordingPlaylist'
+          description: ''
+      deprecated: true
+      x-explicit-tags:
+      - replay
+  /api/environments/{environment_id}/session_recording_playlists/{short_id}/:
+    get:
+      operationId: environments_session_recording_playlists_retrieve
+      parameters:
+      - $ref: '#/components/parameters/EnvironmentIdPath'
+      - in: path
+        name: short_id
+        schema:
+          type: string
+        required: true
+      tags:
+      - replay
+      security:
+      - PersonalAPIKeyAuth:
+        - session_recording_playlist:read
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SessionRecordingPlaylist'
+          description: ''
+      deprecated: true
+      x-explicit-tags:
+      - replay
+    put:
+      operationId: environments_session_recording_playlists_update
+      parameters:
+      - $ref: '#/components/parameters/EnvironmentIdPath'
+      - in: path
+        name: short_id
+        schema:
+          type: string
+        required: true
+      tags:
+      - replay
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SessionRecordingPlaylist'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/SessionRecordingPlaylist'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/SessionRecordingPlaylist'
+      security:
+      - PersonalAPIKeyAuth:
+        - session_recording_playlist:write
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SessionRecordingPlaylist'
+          description: ''
+      deprecated: true
+      x-explicit-tags:
+      - replay
+    patch:
+      operationId: environments_session_recording_playlists_partial_update
+      parameters:
+      - $ref: '#/components/parameters/EnvironmentIdPath'
+      - in: path
+        name: short_id
+        schema:
+          type: string
+        required: true
+      tags:
+      - replay
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchedSessionRecordingPlaylist'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/PatchedSessionRecordingPlaylist'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/PatchedSessionRecordingPlaylist'
+      security:
+      - PersonalAPIKeyAuth:
+        - session_recording_playlist:write
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SessionRecordingPlaylist'
+          description: ''
+      deprecated: true
+      x-explicit-tags:
+      - replay
+    delete:
+      operationId: environments_session_recording_playlists_destroy
+      description: Hard delete of this model is not allowed. Use a patch API call to set "deleted" to true
+      parameters:
+      - $ref: '#/components/parameters/EnvironmentIdPath'
+      - in: path
+        name: short_id
+        schema:
+          type: string
+        required: true
+      tags:
+      - replay
+      security:
+      - PersonalAPIKeyAuth:
+        - session_recording_playlist:write
+      responses:
+        '405':
+          description: No response body
+      deprecated: true
+      x-explicit-tags:
+      - replay
+  /api/environments/{environment_id}/session_recording_playlists/{short_id}/recordings/:
+    get:
+      operationId: environments_session_recording_playlists_recordings_retrieve
+      parameters:
+      - $ref: '#/components/parameters/EnvironmentIdPath'
+      - in: path
+        name: short_id
+        schema:
+          type: string
+        required: true
+      tags:
+      - replay
+      security:
+      - PersonalAPIKeyAuth:
+        - session_recording_playlist:read
+      responses:
+        '200':
+          description: No response body
+      deprecated: true
+      x-explicit-tags:
+      - replay
+  /api/environments/{environment_id}/session_recording_playlists/{short_id}/recordings/{session_recording_id}/:
+    post:
+      operationId: environments_session_recording_playlists_recordings_create
+      parameters:
+      - $ref: '#/components/parameters/EnvironmentIdPath'
+      - in: path
+        name: session_recording_id
+        schema:
+          type: string
+        required: true
+      - in: path
+        name: short_id
+        schema:
+          type: string
+        required: true
+      tags:
+      - replay
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SessionRecordingPlaylist'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/SessionRecordingPlaylist'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/SessionRecordingPlaylist'
+      responses:
+        '200':
+          description: No response body
+      deprecated: true
+      x-explicit-tags:
+      - replay
+    delete:
+      operationId: environments_session_recording_playlists_recordings_destroy
+      parameters:
+      - $ref: '#/components/parameters/EnvironmentIdPath'
+      - in: path
+        name: session_recording_id
+        schema:
+          type: string
+        required: true
+      - in: path
+        name: short_id
+        schema:
+          type: string
+        required: true
+      tags:
+      - replay
+      responses:
+        '204':
+          description: No response body
+      deprecated: true
+      x-explicit-tags:
+      - replay
+  /api/environments/{environment_id}/session_recordings/:
+    get:
+      operationId: environments_session_recordings_list
+      parameters:
+      - $ref: '#/components/parameters/EnvironmentIdPath'
+      - name: limit
+        required: false
+        in: query
+        description: Number of results to return per page.
+        schema:
+          type: integer
+      - name: offset
+        required: false
+        in: query
+        description: The initial index from which to return the results.
+        schema:
+          type: integer
+      tags:
+      - replay
+      security:
+      - PersonalAPIKeyAuth:
+        - session_recording:read
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedSessionRecordingList'
+          description: ''
+      deprecated: true
+      x-explicit-tags:
+      - replay
+  /api/environments/{environment_id}/session_recordings/{id}/:
+    get:
+      operationId: environments_session_recordings_retrieve
+      parameters:
+      - $ref: '#/components/parameters/EnvironmentIdPath'
+      - in: path
+        name: id
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this session recording.
+        required: true
+      tags:
+      - replay
+      security:
+      - PersonalAPIKeyAuth:
+        - session_recording:read
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SessionRecording'
+          description: ''
+      deprecated: true
+      x-explicit-tags:
+      - replay
+    put:
+      operationId: environments_session_recordings_update
+      parameters:
+      - $ref: '#/components/parameters/EnvironmentIdPath'
+      - in: path
+        name: id
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this session recording.
+        required: true
+      tags:
+      - replay
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SessionRecording'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/SessionRecording'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/SessionRecording'
+      security:
+      - PersonalAPIKeyAuth:
+        - session_recording:write
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SessionRecording'
+          description: ''
+      deprecated: true
+      x-explicit-tags:
+      - replay
+    patch:
+      operationId: environments_session_recordings_partial_update
+      parameters:
+      - $ref: '#/components/parameters/EnvironmentIdPath'
+      - in: path
+        name: id
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this session recording.
+        required: true
+      tags:
+      - replay
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchedSessionRecording'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/PatchedSessionRecording'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/PatchedSessionRecording'
+      security:
+      - PersonalAPIKeyAuth:
+        - session_recording:write
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SessionRecording'
+          description: ''
+      deprecated: true
+      x-explicit-tags:
+      - replay
+    delete:
+      operationId: environments_session_recordings_destroy
+      parameters:
+      - $ref: '#/components/parameters/EnvironmentIdPath'
+      - in: path
+        name: id
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this session recording.
+        required: true
+      tags:
+      - replay
+      security:
+      - PersonalAPIKeyAuth:
+        - session_recording:write
+      responses:
+        '204':
+          description: No response body
+      deprecated: true
+      x-explicit-tags:
+      - replay
+  /api/environments/{project_id}/session_summaries/create_session_summaries_individually/:
+    post:
+      operationId: create_session_summaries_individually
+      description: Generate AI individual summary for each session, without grouping.
+      parameters:
+      - $ref: '#/components/parameters/ProjectIdPath'
+      tags:
+      - replay
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SessionSummaries'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/SessionSummaries'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/SessionSummaries'
+        required: true
+      security:
+      - PersonalAPIKeyAuth:
+        - session_recording:read
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SessionSummaries'
+          description: ''
+      x-explicit-tags:
+      - replay
+  /api/projects/{project_id}/session_recording_playlists/:
+    get:
+      operationId: session_recording_playlists_list
+      description: Override list to include synthetic playlists
+      parameters:
+      - in: query
+        name: created_by
+        schema:
+          type: integer
+      - name: limit
+        required: false
+        in: query
+        description: Number of results to return per page.
+        schema:
+          type: integer
+      - name: offset
+        required: false
+        in: query
+        description: The initial index from which to return the results.
+        schema:
+          type: integer
+      - $ref: '#/components/parameters/ProjectIdPath'
+      - in: query
+        name: short_id
+        schema:
+          type: string
+      tags:
+      - replay
+      security:
+      - PersonalAPIKeyAuth:
+        - session_recording_playlist:read
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedSessionRecordingPlaylistList'
+          description: ''
+      x-explicit-tags:
+      - replay
+    post:
+      operationId: session_recording_playlists_create
+      parameters:
+      - $ref: '#/components/parameters/ProjectIdPath'
+      tags:
+      - replay
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SessionRecordingPlaylist'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/SessionRecordingPlaylist'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/SessionRecordingPlaylist'
+      security:
+      - PersonalAPIKeyAuth:
+        - session_recording_playlist:write
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SessionRecordingPlaylist'
+          description: ''
+      x-explicit-tags:
+      - replay
+  /api/projects/{project_id}/session_recording_playlists/{short_id}/:
+    get:
+      operationId: session_recording_playlists_retrieve
+      parameters:
+      - $ref: '#/components/parameters/ProjectIdPath'
+      - in: path
+        name: short_id
+        schema:
+          type: string
+        required: true
+      tags:
+      - replay
+      security:
+      - PersonalAPIKeyAuth:
+        - session_recording_playlist:read
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SessionRecordingPlaylist'
+          description: ''
+      x-explicit-tags:
+      - replay
+    put:
+      operationId: session_recording_playlists_update
+      parameters:
+      - $ref: '#/components/parameters/ProjectIdPath'
+      - in: path
+        name: short_id
+        schema:
+          type: string
+        required: true
+      tags:
+      - replay
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SessionRecordingPlaylist'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/SessionRecordingPlaylist'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/SessionRecordingPlaylist'
+      security:
+      - PersonalAPIKeyAuth:
+        - session_recording_playlist:write
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SessionRecordingPlaylist'
+          description: ''
+      x-explicit-tags:
+      - replay
+    patch:
+      operationId: session_recording_playlists_partial_update
+      parameters:
+      - $ref: '#/components/parameters/ProjectIdPath'
+      - in: path
+        name: short_id
+        schema:
+          type: string
+        required: true
+      tags:
+      - replay
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchedSessionRecordingPlaylist'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/PatchedSessionRecordingPlaylist'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/PatchedSessionRecordingPlaylist'
+      security:
+      - PersonalAPIKeyAuth:
+        - session_recording_playlist:write
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SessionRecordingPlaylist'
+          description: ''
+      x-explicit-tags:
+      - replay
+    delete:
+      operationId: session_recording_playlists_destroy
+      description: Hard delete of this model is not allowed. Use a patch API call to set "deleted" to true
+      parameters:
+      - $ref: '#/components/parameters/ProjectIdPath'
+      - in: path
+        name: short_id
+        schema:
+          type: string
+        required: true
+      tags:
+      - replay
+      security:
+      - PersonalAPIKeyAuth:
+        - session_recording_playlist:write
+      responses:
+        '405':
+          description: No response body
+      x-explicit-tags:
+      - replay
+  /api/projects/{project_id}/session_recording_playlists/{short_id}/recordings/:
+    get:
+      operationId: session_recording_playlists_recordings_retrieve
+      parameters:
+      - $ref: '#/components/parameters/ProjectIdPath'
+      - in: path
+        name: short_id
+        schema:
+          type: string
+        required: true
+      tags:
+      - replay
+      security:
+      - PersonalAPIKeyAuth:
+        - session_recording_playlist:read
+      responses:
+        '200':
+          description: No response body
+      x-explicit-tags:
+      - replay
+  /api/projects/{project_id}/session_recording_playlists/{short_id}/recordings/{session_recording_id}/:
+    post:
+      operationId: session_recording_playlists_recordings_create
+      parameters:
+      - $ref: '#/components/parameters/ProjectIdPath'
+      - in: path
+        name: session_recording_id
+        schema:
+          type: string
+        required: true
+      - in: path
+        name: short_id
+        schema:
+          type: string
+        required: true
+      tags:
+      - replay
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SessionRecordingPlaylist'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/SessionRecordingPlaylist'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/SessionRecordingPlaylist'
+      responses:
+        '200':
+          description: No response body
+      x-explicit-tags:
+      - replay
+    delete:
+      operationId: session_recording_playlists_recordings_destroy
+      parameters:
+      - $ref: '#/components/parameters/ProjectIdPath'
+      - in: path
+        name: session_recording_id
+        schema:
+          type: string
+        required: true
+      - in: path
+        name: short_id
+        schema:
+          type: string
+        required: true
+      tags:
+      - replay
+      responses:
+        '204':
+          description: No response body
+      x-explicit-tags:
+      - replay
+  /api/projects/{project_id}/session_recordings/:
+    get:
+      operationId: session_recordings_list
+      parameters:
+      - name: limit
+        required: false
+        in: query
+        description: Number of results to return per page.
+        schema:
+          type: integer
+      - name: offset
+        required: false
+        in: query
+        description: The initial index from which to return the results.
+        schema:
+          type: integer
+      - $ref: '#/components/parameters/ProjectIdPath'
+      tags:
+      - replay
+      security:
+      - PersonalAPIKeyAuth:
+        - session_recording:read
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedSessionRecordingList'
+          description: ''
+      x-explicit-tags:
+      - replay
+  /api/projects/{project_id}/session_recordings/{id}/:
+    get:
+      operationId: session_recordings_retrieve
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this session recording.
+        required: true
+      - $ref: '#/components/parameters/ProjectIdPath'
+      tags:
+      - replay
+      security:
+      - PersonalAPIKeyAuth:
+        - session_recording:read
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SessionRecording'
+          description: ''
+      x-explicit-tags:
+      - replay
+    put:
+      operationId: session_recordings_update
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this session recording.
+        required: true
+      - $ref: '#/components/parameters/ProjectIdPath'
+      tags:
+      - replay
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SessionRecording'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/SessionRecording'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/SessionRecording'
+      security:
+      - PersonalAPIKeyAuth:
+        - session_recording:write
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SessionRecording'
+          description: ''
+      x-explicit-tags:
+      - replay
+    patch:
+      operationId: session_recordings_partial_update
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this session recording.
+        required: true
+      - $ref: '#/components/parameters/ProjectIdPath'
+      tags:
+      - replay
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchedSessionRecording'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/PatchedSessionRecording'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/PatchedSessionRecording'
+      security:
+      - PersonalAPIKeyAuth:
+        - session_recording:write
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SessionRecording'
+          description: ''
+      x-explicit-tags:
+      - replay
+    delete:
+      operationId: session_recordings_destroy
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this session recording.
+        required: true
+      - $ref: '#/components/parameters/ProjectIdPath'
+      tags:
+      - replay
+      security:
+      - PersonalAPIKeyAuth:
+        - session_recording:write
+      responses:
+        '204':
+          description: No response body
+      x-explicit-tags:
+      - replay
+components:
+  schemas:
+    SessionSummaries:
+      type: object
+      properties:
+        session_ids:
+          type: array
+          items:
+            type: string
+          description: List of session IDs to summarize (max 300)
+          maxItems: 300
+          minItems: 1
+        focus_area:
+          type: string
+          description: Optional focus area for the summarization
+          maxLength: 500
+      required:
+      - session_ids
+    SessionRecordingPlaylistTypeEnum:
+      enum:
+      - collection
+      - filters
+      type: string
+      description: '* `collection` - Collection
+
+        * `filters` - Filters'
+    BlankEnum:
+      enum:
+      - ''
+    PaginatedSessionRecordingPlaylistList:
+      type: object
+      required:
+      - count
+      - results
+      properties:
+        count:
+          type: integer
+          example: 123
+        next:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?offset=400&limit=100
+        previous:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?offset=200&limit=100
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/SessionRecordingPlaylist'
+    PatchedSessionRecording:
+      type: object
+      properties:
+        id:
+          type: string
+          readOnly: true
+        distinct_id:
+          type: string
+          readOnly: true
+          nullable: true
+        viewed:
+          type: boolean
+          readOnly: true
+        viewers:
+          type: array
+          items:
+            type: string
+          readOnly: true
+        recording_duration:
+          type: integer
+          readOnly: true
+        active_seconds:
+          type: integer
+          readOnly: true
+          nullable: true
+        inactive_seconds:
+          type: integer
+          readOnly: true
+          nullable: true
+        start_time:
+          type: string
+          format: date-time
+          readOnly: true
+          nullable: true
+        end_time:
+          type: string
+          format: date-time
+          readOnly: true
+          nullable: true
+        click_count:
+          type: integer
+          readOnly: true
+          nullable: true
+        keypress_count:
+          type: integer
+          readOnly: true
+          nullable: true
+        mouse_activity_count:
+          type: integer
+          readOnly: true
+          nullable: true
+        console_log_count:
+          type: integer
+          readOnly: true
+          nullable: true
+        console_warn_count:
+          type: integer
+          readOnly: true
+          nullable: true
+        console_error_count:
+          type: integer
+          readOnly: true
+          nullable: true
+        start_url:
+          type: string
+          readOnly: true
+          nullable: true
+        person:
+          $ref: '#/components/schemas/MinimalPerson'
+        retention_period_days:
+          type: integer
+          readOnly: true
+          nullable: true
+        expiry_time:
+          type: string
+          format: date-time
+          readOnly: true
+          nullable: true
+        recording_ttl:
+          type: integer
+          readOnly: true
+          nullable: true
+        snapshot_source:
+          type: string
+          nullable: true
+          readOnly: true
+        snapshot_library:
+          type: string
+          nullable: true
+          readOnly: true
+        ongoing:
+          type: boolean
+          readOnly: true
+        activity_score:
+          type: number
+          format: double
+          nullable: true
+          readOnly: true
+        has_summary:
+          type: boolean
+          readOnly: true
+        summary_outcome:
+          allOf:
+          - $ref: '#/components/schemas/Outcome'
+          nullable: true
+          readOnly: true
+        external_references:
+          type: array
+          items:
+            type: object
+            additionalProperties: true
+          description: Load external references (linked issues) for this recording
+          readOnly: true
+    NullEnum:
+      enum:
+      - null
+    UserBasic:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        uuid:
+          type: string
+          format: uuid
+          readOnly: true
+        distinct_id:
+          type: string
+          nullable: true
+          maxLength: 200
+        first_name:
+          type: string
+          maxLength: 150
+        last_name:
+          type: string
+          maxLength: 150
+        email:
+          type: string
+          format: email
+          title: Email address
+          maxLength: 254
+        is_email_verified:
+          type: boolean
+          nullable: true
+        hedgehog_config:
+          type: object
+          additionalProperties: true
+          nullable: true
+          readOnly: true
+        role_at_organization:
+          nullable: true
+          oneOf:
+          - $ref: '#/components/schemas/RoleAtOrganizationEnum'
+          - $ref: '#/components/schemas/BlankEnum'
+          - $ref: '#/components/schemas/NullEnum'
+      required:
+      - email
+      - hedgehog_config
+      - id
+      - uuid
+    MinimalPerson:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+          description: Numeric person ID.
+        name:
+          type: string
+          readOnly: true
+          description: Display name derived from person properties (email, name, or username).
+        distinct_ids:
+          type: array
+          items:
+            type: string
+          readOnly: true
+        properties:
+          description: Key-value map of person properties set via $set and $set_once operations.
+        created_at:
+          type: string
+          format: date-time
+          readOnly: true
+          description: When this person was first seen (ISO 8601).
+        uuid:
+          type: string
+          format: uuid
+          readOnly: true
+          description: Unique identifier (UUID) for this person.
+        last_seen_at:
+          type: string
+          format: date-time
+          readOnly: true
+          nullable: true
+          description: Timestamp of the last event from this person, or null.
+      required:
+      - created_at
+      - distinct_ids
+      - id
+      - last_seen_at
+      - name
+      - uuid
+    RoleAtOrganizationEnum:
+      enum:
+      - engineering
+      - data
+      - product
+      - founder
+      - leadership
+      - marketing
+      - sales
+      - other
+      type: string
+      description: '* `engineering` - Engineering
+
+        * `data` - Data
+
+        * `product` - Product Management
+
+        * `founder` - Founder
+
+        * `leadership` - Leadership
+
+        * `marketing` - Marketing
+
+        * `sales` - Sales / Success
+
+        * `other` - Other'
+    PatchedSessionRecordingPlaylist:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        short_id:
+          type: string
+          readOnly: true
+        name:
+          type: string
+          nullable: true
+          description: Human-readable name for the playlist.
+          maxLength: 400
+        derived_name:
+          type: string
+          nullable: true
+          maxLength: 400
+        description:
+          type: string
+          description: Optional description of the playlist's purpose or contents.
+        pinned:
+          type: boolean
+          description: Whether this playlist is pinned to the top of the list.
+        created_at:
+          type: string
+          format: date-time
+          readOnly: true
+        created_by:
+          allOf:
+          - $ref: '#/components/schemas/UserBasic'
+          readOnly: true
+        deleted:
+          type: boolean
+          description: Set to true to soft-delete the playlist.
+        filters:
+          description: JSON object with recording filter criteria. Only used when type is 'filters'. Defines which recordings match this saved filter view. When updating a filters-type playlist, you must include the existing filters alongside any other changes — omitting filters will be treated as removing them.
+        last_modified_at:
+          type: string
+          format: date-time
+          readOnly: true
+        last_modified_by:
+          allOf:
+          - $ref: '#/components/schemas/UserBasic'
+          readOnly: true
+        recordings_counts:
+          type: object
+          additionalProperties:
+            type: object
+            additionalProperties:
+              oneOf:
+              - type: integer
+              - type: boolean
+              nullable: true
+          readOnly: true
+        type:
+          nullable: true
+          description: 'Playlist type: ''collection'' for manually curated recordings, ''filters'' for saved filter views. Required on create, cannot be changed after.
+
+
+            * `collection` - Collection
+
+            * `filters` - Filters'
+          oneOf:
+          - $ref: '#/components/schemas/SessionRecordingPlaylistTypeEnum'
+          - $ref: '#/components/schemas/NullEnum'
+        is_synthetic:
+          type: boolean
+          description: Return whether this is a synthetic playlist
+          readOnly: true
+        _create_in_folder:
+          type: string
+          writeOnly: true
+          title: ' create in folder'
+    SessionRecording:
+      type: object
+      properties:
+        id:
+          type: string
+          readOnly: true
+        distinct_id:
+          type: string
+          readOnly: true
+          nullable: true
+        viewed:
+          type: boolean
+          readOnly: true
+        viewers:
+          type: array
+          items:
+            type: string
+          readOnly: true
+        recording_duration:
+          type: integer
+          readOnly: true
+        active_seconds:
+          type: integer
+          readOnly: true
+          nullable: true
+        inactive_seconds:
+          type: integer
+          readOnly: true
+          nullable: true
+        start_time:
+          type: string
+          format: date-time
+          readOnly: true
+          nullable: true
+        end_time:
+          type: string
+          format: date-time
+          readOnly: true
+          nullable: true
+        click_count:
+          type: integer
+          readOnly: true
+          nullable: true
+        keypress_count:
+          type: integer
+          readOnly: true
+          nullable: true
+        mouse_activity_count:
+          type: integer
+          readOnly: true
+          nullable: true
+        console_log_count:
+          type: integer
+          readOnly: true
+          nullable: true
+        console_warn_count:
+          type: integer
+          readOnly: true
+          nullable: true
+        console_error_count:
+          type: integer
+          readOnly: true
+          nullable: true
+        start_url:
+          type: string
+          readOnly: true
+          nullable: true
+        person:
+          $ref: '#/components/schemas/MinimalPerson'
+        retention_period_days:
+          type: integer
+          readOnly: true
+          nullable: true
+        expiry_time:
+          type: string
+          format: date-time
+          readOnly: true
+          nullable: true
+        recording_ttl:
+          type: integer
+          readOnly: true
+          nullable: true
+        snapshot_source:
+          type: string
+          nullable: true
+          readOnly: true
+        snapshot_library:
+          type: string
+          nullable: true
+          readOnly: true
+        ongoing:
+          type: boolean
+          readOnly: true
+        activity_score:
+          type: number
+          format: double
+          nullable: true
+          readOnly: true
+        has_summary:
+          type: boolean
+          readOnly: true
+        summary_outcome:
+          allOf:
+          - $ref: '#/components/schemas/Outcome'
+          nullable: true
+          readOnly: true
+        external_references:
+          type: array
+          items:
+            type: object
+            additionalProperties: true
+          description: Load external references (linked issues) for this recording
+          readOnly: true
+      required:
+      - active_seconds
+      - activity_score
+      - click_count
+      - console_error_count
+      - console_log_count
+      - console_warn_count
+      - distinct_id
+      - end_time
+      - expiry_time
+      - external_references
+      - has_summary
+      - id
+      - inactive_seconds
+      - keypress_count
+      - mouse_activity_count
+      - ongoing
+      - recording_duration
+      - recording_ttl
+      - retention_period_days
+      - snapshot_library
+      - snapshot_source
+      - start_time
+      - start_url
+      - summary_outcome
+      - viewed
+      - viewers
+    SessionRecordingPlaylist:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        short_id:
+          type: string
+          readOnly: true
+        name:
+          type: string
+          nullable: true
+          description: Human-readable name for the playlist.
+          maxLength: 400
+        derived_name:
+          type: string
+          nullable: true
+          maxLength: 400
+        description:
+          type: string
+          description: Optional description of the playlist's purpose or contents.
+        pinned:
+          type: boolean
+          description: Whether this playlist is pinned to the top of the list.
+        created_at:
+          type: string
+          format: date-time
+          readOnly: true
+        created_by:
+          allOf:
+          - $ref: '#/components/schemas/UserBasic'
+          readOnly: true
+        deleted:
+          type: boolean
+          description: Set to true to soft-delete the playlist.
+        filters:
+          description: JSON object with recording filter criteria. Only used when type is 'filters'. Defines which recordings match this saved filter view. When updating a filters-type playlist, you must include the existing filters alongside any other changes — omitting filters will be treated as removing them.
+        last_modified_at:
+          type: string
+          format: date-time
+          readOnly: true
+        last_modified_by:
+          allOf:
+          - $ref: '#/components/schemas/UserBasic'
+          readOnly: true
+        recordings_counts:
+          type: object
+          additionalProperties:
+            type: object
+            additionalProperties:
+              oneOf:
+              - type: integer
+              - type: boolean
+              nullable: true
+          readOnly: true
+        type:
+          nullable: true
+          description: 'Playlist type: ''collection'' for manually curated recordings, ''filters'' for saved filter views. Required on create, cannot be changed after.
+
+
+            * `collection` - Collection
+
+            * `filters` - Filters'
+          oneOf:
+          - $ref: '#/components/schemas/SessionRecordingPlaylistTypeEnum'
+          - $ref: '#/components/schemas/NullEnum'
+        is_synthetic:
+          type: boolean
+          description: Return whether this is a synthetic playlist
+          readOnly: true
+        _create_in_folder:
+          type: string
+          writeOnly: true
+          title: ' create in folder'
+      required:
+      - created_at
+      - created_by
+      - id
+      - is_synthetic
+      - last_modified_at
+      - last_modified_by
+      - recordings_counts
+      - short_id
+    Outcome:
+      type: object
+      description: Initial goal and session outcome coming from LLM.
+      properties:
+        description:
+          type: string
+          nullable: true
+          maxLength: 10000
+          minLength: 1
+        success:
+          type: boolean
+          nullable: true
+    PaginatedSessionRecordingList:
+      type: object
+      required:
+      - count
+      - results
+      properties:
+        count:
+          type: integer
+          example: 123
+        next:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?offset=400&limit=100
+        previous:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?offset=200&limit=100
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/SessionRecording'
+  parameters:
+    ProjectIdPath:
+      in: path
+      name: project_id
+      required: true
+      schema:
+        type: string
+      description: Project ID of the project you're trying to access. To find the ID of the project, make a call to /api/projects/.
+    EnvironmentIdPath:
+      in: path
+      name: environment_id
+      required: true
+      schema:
+        type: string
+      description: Deprecated. Use /api/projects/{project_id}/ instead.
+  securitySchemes:
+    PersonalAPIKeyAuth:
+      type: http
+      scheme: bearer
+x-tagGroups:
+- name: All endpoints
+  tags:
+  - LLM Analytics
+  - actions
+  - activity_log
+  - activity_logs
+  - advanced_activity_logs
+  - alerts
+  - annotations
+  - approval_policies
+  - batch_exports
+  - cdp
+  - change_requests
+  - code
+  - code-invites
+  - cohorts
+  - comments
+  - conversations
+  - core
+  - customer_analytics
+  - customer_journeys
+  - customer_profile_configs
+  - dashboard_templates
+  - dashboards
+  - data_color_themes
+  - data_modeling_jobs
+  - data_warehouse
+  - dataset_items
+  - datasets
+  - desktop_recordings
+  - domains
+  - early_access_feature
+  - early_access_features
+  - elements
+  - endpoints
+  - environments
+  - error_tracking
+  - evaluation_runs
+  - evaluations
+  - event_definitions
+  - event_filter
+  - event_schemas
+  - events
+  - experiment_holdouts
+  - experiment_saved_metrics
+  - experiments
+  - exports
+  - external_data_schemas
+  - external_data_sources
+  - feature_flags
+  - file_system
+  - file_system_shortcut
+  - flag_value
+  - groups
+  - groups_types
+  - health_issues
+  - heatmap_screenshots
+  - heatmaps
+  - hog_flows
+  - hog_function_templates
+  - hog_functions
+  - insight_variables
+  - insights
+  - integrations
+  - invites
+  - js-snippet
+  - legal_documents
+  - lineage
+  - live_debugger_breakpoints
+  - llm_analytics
+  - llm_prompts
+  - llm_skills
+  - logs
+  - managed_viewsets
+  - max
+  - max_tools
+  - mcp_server_installations
+  - mcp_servers
+  - mcp_store
+  - mcp_tools
+  - members
+  - notebooks
+  - oauth_applications
+  - object_media_previews
+  - organizations
+  - persisted_folder
+  - persons
+  - platform_features
+  - plugin_configs
+  - product_analytics
+  - product_tours
+  - project_secret_api_keys
+  - projects
+  - property_definitions
+  - proxy_records
+  - public_hog_function_templates
+  - query
+  - replay
+  - reverse_proxy
+  - role_external_references
+  - roles
+  - sandbox-environments
+  - sandbox_environments
+  - saved
+  - schema_property_groups
+  - sdk_doctor
+  - session_group_summaries
+  - session_recording_playlists
+  - session_recordings
+  - session_summaries
+  - sessions
+  - signals
+  - subscriptions
+  - surveys
+  - taggers
+  - task-automations
+  - task-runs
+  - task_automations
+  - tasks
+  - uploaded_media
+  - user_home_settings
+  - user_interviews
+  - users
+  - visual_review
+  - warehouse_dag
+  - warehouse_model_paths
+  - warehouse_saved_queries
+  - warehouse_saved_query_folders
+  - warehouse_tables
+  - warehouse_view_link
+  - warehouse_view_links
+  - web_analytics
+  - web_experiments
+  - web_vitals
+  - welcome
+  - workflows
