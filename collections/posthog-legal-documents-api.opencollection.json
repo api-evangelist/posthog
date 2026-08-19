@@ -1,0 +1,129 @@
+{
+  "opencollection": "1.0.0",
+  "info": {
+    "name": "PostHog actions legal_documents API",
+    "version": "1.0.0"
+  },
+  "items": [
+    {
+      "info": {
+        "name": "legal_documents",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "legal_documents_list",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "{{baseUrl}}/api/organizations/:organization_id/legal_documents/",
+            "params": [
+              {
+                "name": "limit",
+                "value": "",
+                "type": "query",
+                "description": "Number of results to return per page."
+              },
+              {
+                "name": "offset",
+                "value": "",
+                "type": "query",
+                "description": "The initial index from which to return the results."
+              },
+              {
+                "name": "organization_id",
+                "value": "",
+                "type": "path",
+                "description": "ID of the organization you're trying to access. To find the ID of the organization, make a call to /api/organizations/."
+              }
+            ],
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          }
+        },
+        {
+          "info": {
+            "name": "legal_documents_create",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "{{baseUrl}}/api/organizations/:organization_id/legal_documents/",
+            "params": [
+              {
+                "name": "organization_id",
+                "value": "",
+                "type": "path",
+                "description": "ID of the organization you're trying to access. To find the ID of the organization, make a call to /api/organizations/."
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            },
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          }
+        },
+        {
+          "info": {
+            "name": "legal_documents_retrieve",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "{{baseUrl}}/api/organizations/:organization_id/legal_documents/:id/",
+            "params": [
+              {
+                "name": "id",
+                "value": "",
+                "type": "path"
+              },
+              {
+                "name": "organization_id",
+                "value": "",
+                "type": "path",
+                "description": "ID of the organization you're trying to access. To find the ID of the organization, make a call to /api/organizations/."
+              }
+            ],
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          }
+        },
+        {
+          "info": {
+            "name": "legal_documents_download_retrieve",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "{{baseUrl}}/api/organizations/:organization_id/legal_documents/:id/download/",
+            "params": [
+              {
+                "name": "id",
+                "value": "",
+                "type": "path"
+              },
+              {
+                "name": "organization_id",
+                "value": "",
+                "type": "path",
+                "description": "ID of the organization you're trying to access. To find the ID of the organization, make a call to /api/organizations/."
+              }
+            ]
+          },
+          "docs": "Short-lived redirect to the signed PDF in object storage. 404 while the\nenvelope is still out for signature (or if the upload hasn't completed\nyet). The underlying presigned URL expires in ~60s; clients should hit\nthis endpoint each time they want to view the PDF rather than caching."
+        }
+      ]
+    }
+  ],
+  "bundled": true
+}

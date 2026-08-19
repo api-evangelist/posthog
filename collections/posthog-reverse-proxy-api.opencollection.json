@@ -1,0 +1,151 @@
+{
+  "opencollection": "1.0.0",
+  "info": {
+    "name": "PostHog actions reverse_proxy API",
+    "version": "1.0.0"
+  },
+  "items": [
+    {
+      "info": {
+        "name": "reverse_proxy",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "proxy_records_list",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "{{baseUrl}}/api/organizations/:organization_id/proxy_records/",
+            "params": [
+              {
+                "name": "organization_id",
+                "value": "",
+                "type": "path",
+                "description": "ID of the organization you're trying to access. To find the ID of the organization, make a call to /api/organizations/."
+              }
+            ],
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          },
+          "docs": "List all reverse proxies configured for the organization. Returns proxy records along with the maximum number allowed by the current plan."
+        },
+        {
+          "info": {
+            "name": "proxy_records_create",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "{{baseUrl}}/api/organizations/:organization_id/proxy_records/",
+            "params": [
+              {
+                "name": "organization_id",
+                "value": "",
+                "type": "path",
+                "description": "ID of the organization you're trying to access. To find the ID of the organization, make a call to /api/organizations/."
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            },
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          },
+          "docs": "Create a new managed reverse proxy. Provide the domain you want to proxy through. The response includes the CNAME target you need to add as a DNS record. Once the CNAME is configured, the proxy will be automatically verified and provisioned."
+        },
+        {
+          "info": {
+            "name": "proxy_records_retrieve",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "{{baseUrl}}/api/organizations/:organization_id/proxy_records/:id/",
+            "params": [
+              {
+                "name": "id",
+                "value": "",
+                "type": "path",
+                "description": "A UUID string identifying this proxy record."
+              },
+              {
+                "name": "organization_id",
+                "value": "",
+                "type": "path",
+                "description": "ID of the organization you're trying to access. To find the ID of the organization, make a call to /api/organizations/."
+              }
+            ],
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          },
+          "docs": "Get details of a specific reverse proxy by ID. Returns the full configuration including domain, CNAME target, and current provisioning status."
+        },
+        {
+          "info": {
+            "name": "proxy_records_destroy",
+            "type": "http"
+          },
+          "http": {
+            "method": "DELETE",
+            "url": "{{baseUrl}}/api/organizations/:organization_id/proxy_records/:id/",
+            "params": [
+              {
+                "name": "id",
+                "value": "",
+                "type": "path",
+                "description": "A UUID string identifying this proxy record."
+              },
+              {
+                "name": "organization_id",
+                "value": "",
+                "type": "path",
+                "description": "ID of the organization you're trying to access. To find the ID of the organization, make a call to /api/organizations/."
+              }
+            ],
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          },
+          "docs": "Delete a reverse proxy. For proxies in 'waiting', 'erroring', or 'timed_out' status, the record is deleted immediately. For active proxies, a deletion workflow is started to clean up the provisioned infrastructure."
+        },
+        {
+          "info": {
+            "name": "proxy_records_retry_create",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "{{baseUrl}}/api/organizations/:organization_id/proxy_records/:id/retry/",
+            "params": [
+              {
+                "name": "id",
+                "value": "",
+                "type": "path",
+                "description": "A UUID string identifying this proxy record."
+              },
+              {
+                "name": "organization_id",
+                "value": "",
+                "type": "path",
+                "description": "ID of the organization you're trying to access. To find the ID of the organization, make a call to /api/organizations/."
+              }
+            ]
+          },
+          "docs": "Retry provisioning a failed reverse proxy. Only available for proxies in 'erroring' or 'timed_out' status. Resets the proxy to 'waiting' status and restarts the provisioning workflow."
+        }
+      ]
+    }
+  ],
+  "bundled": true
+}

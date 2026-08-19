@@ -1,0 +1,155 @@
+{
+  "item": [
+    {
+      "id": "bab6754a-c8bc-4519-86fe-227268b75bd9",
+      "name": "sdk_doctor",
+      "description": {
+        "content": "",
+        "type": "text/plain"
+      },
+      "item": [
+        {
+          "id": "fa086b13-371c-4ce0-bb54-86ad4f3b20d6",
+          "name": "Get SDK health report for a project",
+          "request": {
+            "name": "Get SDK health report for a project",
+            "description": {
+              "content": "Returns a pre-digested health assessment of the PostHog SDKs the project is using. Covers which SDKs are current vs outdated (smart-semver rules with grace periods and traffic-percentage thresholds), per-version breakdown, and a human-readable reason for each assessment. Use this to diagnose SDK version issues, surface upgrade recommendations, or check overall SDK health.",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "api",
+                "projects",
+                ":project_id",
+                "sdk_doctor",
+                "report",
+                ""
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [
+                {
+                  "disabled": false,
+                  "key": "force_refresh",
+                  "value": "<boolean>",
+                  "description": "When true, bypasses the Redis cache and re-queries ClickHouse for SDK usage. Use sparingly — data is refreshed every 12 hours by a background job."
+                }
+              ],
+              "variable": [
+                {
+                  "disabled": false,
+                  "type": "any",
+                  "value": "<string>",
+                  "key": "project_id",
+                  "description": "(Required) Project ID of the project you're trying to access. To find the ID of the project, make a call to /api/projects/."
+                }
+              ]
+            },
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "GET",
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{bearerToken}}"
+                }
+              ]
+            }
+          },
+          "response": [
+            {
+              "id": "213299ac-653c-4aec-ad27-b8e68aca7ee3",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "api",
+                    "projects",
+                    ":project_id",
+                    "sdk_doctor",
+                    "report",
+                    ""
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "force_refresh",
+                      "value": "<boolean>"
+                    }
+                  ],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "project_id",
+                      "description": "(Required) Project ID of the project you're trying to access. To find the ID of the project, make a call to /api/projects/."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"health\": \"success\",\n  \"needs_updating_count\": 5134,\n  \"overall_health\": \"healthy\",\n  \"sdks\": [\n    {\n      \"banners\": [\n        \"string\",\n        \"string\"\n      ],\n      \"is_old\": false,\n      \"is_outdated\": true,\n      \"latest_version\": \"string\",\n      \"lib\": \"string\",\n      \"needs_updating\": false,\n      \"outdated_traffic_alerts\": [\n        {\n          \"threshold_percent\": 8539.57590103556,\n          \"version\": \"string\"\n        },\n        {\n          \"threshold_percent\": 4084.4343999295775,\n          \"version\": \"string\"\n        }\n      ],\n      \"readable_name\": \"string\",\n      \"reason\": \"string\",\n      \"releases\": [\n        {\n          \"activity_page_url\": \"string\",\n          \"count\": 330,\n          \"days_since_release\": 1145,\n          \"is_current_or_newer\": true,\n          \"is_old\": false,\n          \"is_outdated\": false,\n          \"max_timestamp\": \"string\",\n          \"needs_updating\": true,\n          \"release_date\": \"string\",\n          \"released_ago\": \"string\",\n          \"sql_query\": \"string\",\n          \"status_reason\": \"string\",\n          \"version\": \"string\"\n        },\n        {\n          \"activity_page_url\": \"string\",\n          \"count\": 6747,\n          \"days_since_release\": 1036,\n          \"is_current_or_newer\": true,\n          \"is_old\": true,\n          \"is_outdated\": false,\n          \"max_timestamp\": \"string\",\n          \"needs_updating\": false,\n          \"release_date\": \"string\",\n          \"released_ago\": \"string\",\n          \"sql_query\": \"string\",\n          \"status_reason\": \"string\",\n          \"version\": \"string\"\n        }\n      ],\n      \"severity\": \"none\"\n    },\n    {\n      \"banners\": [\n        \"string\",\n        \"string\"\n      ],\n      \"is_old\": true,\n      \"is_outdated\": true,\n      \"latest_version\": \"string\",\n      \"lib\": \"string\",\n      \"needs_updating\": true,\n      \"outdated_traffic_alerts\": [\n        {\n          \"threshold_percent\": 6538.564286840956,\n          \"version\": \"string\"\n        },\n        {\n          \"threshold_percent\": 7027.966934536435,\n          \"version\": \"string\"\n        }\n      ],\n      \"readable_name\": \"string\",\n      \"reason\": \"string\",\n      \"releases\": [\n        {\n          \"activity_page_url\": \"string\",\n          \"count\": 581,\n          \"days_since_release\": 7024,\n          \"is_current_or_newer\": false,\n          \"is_old\": true,\n          \"is_outdated\": true,\n          \"max_timestamp\": \"string\",\n          \"needs_updating\": true,\n          \"release_date\": \"string\",\n          \"released_ago\": \"string\",\n          \"sql_query\": \"string\",\n          \"status_reason\": \"string\",\n          \"version\": \"string\"\n        },\n        {\n          \"activity_page_url\": \"string\",\n          \"count\": 82,\n          \"days_since_release\": 8552,\n          \"is_current_or_newer\": true,\n          \"is_old\": true,\n          \"is_outdated\": true,\n          \"max_timestamp\": \"string\",\n          \"needs_updating\": true,\n          \"release_date\": \"string\",\n          \"released_ago\": \"string\",\n          \"sql_query\": \"string\",\n          \"status_reason\": \"string\",\n          \"version\": \"string\"\n        }\n      ],\n      \"severity\": \"none\"\n    }\n  ],\n  \"team_sdk_count\": 3691\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        }
+      ],
+      "event": []
+    }
+  ],
+  "event": [],
+  "variable": [
+    {
+      "type": "string",
+      "value": "/",
+      "key": "baseUrl"
+    }
+  ],
+  "info": {
+    "_postman_id": "75a8cde3-9779-4586-ba42-b59a23e9c5d0",
+    "name": "PostHog actions sdk_doctor API",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "description": {
+      "content": "",
+      "type": "text/plain"
+    }
+  }
+}

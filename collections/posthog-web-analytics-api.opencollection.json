@@ -1,0 +1,53 @@
+{
+  "opencollection": "1.0.0",
+  "info": {
+    "name": "PostHog actions web_analytics API",
+    "version": "1.0.0"
+  },
+  "items": [
+    {
+      "info": {
+        "name": "web_analytics",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "Summarize web analytics",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "{{baseUrl}}/api/environments/:project_id/web_analytics/weekly_digest/",
+            "params": [
+              {
+                "name": "compare",
+                "value": "",
+                "type": "query",
+                "description": "When true (default), include period-over-period change for each metric comparing against the prior equal-length period. Set to false to skip the comparison query (faster)."
+              },
+              {
+                "name": "days",
+                "value": "",
+                "type": "query",
+                "description": "Lookback window in days (1–90). Defaults to 7."
+              },
+              {
+                "name": "project_id",
+                "value": "",
+                "type": "path",
+                "description": "Project ID of the project you're trying to access. To find the ID of the project, make a call to /api/projects/."
+              }
+            ],
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          },
+          "docs": "Summarizes a project's web analytics over a lookback window (default 7 days): unique visitors, pageviews, sessions, bounce rate, and average session duration with period-over-period comparisons, plus the top 5 pages, top 5 traffic sources, and goal conversions."
+        }
+      ]
+    }
+  ],
+  "bundled": true
+}

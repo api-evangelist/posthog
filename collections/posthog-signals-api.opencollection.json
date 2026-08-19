@@ -1,0 +1,375 @@
+{
+  "opencollection": "1.0.0",
+  "info": {
+    "name": "PostHog actions signals API",
+    "version": "1.0.0"
+  },
+  "items": [
+    {
+      "info": {
+        "name": "signals",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "signals_processing_list",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "{{baseUrl}}/api/projects/:project_id/signals/processing/",
+            "params": [
+              {
+                "name": "limit",
+                "value": "",
+                "type": "query",
+                "description": "Number of results to return per page."
+              },
+              {
+                "name": "offset",
+                "value": "",
+                "type": "query",
+                "description": "The initial index from which to return the results."
+              },
+              {
+                "name": "project_id",
+                "value": "",
+                "type": "path",
+                "description": "Project ID of the project you're trying to access. To find the ID of the project, make a call to /api/projects/."
+              }
+            ],
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          },
+          "docs": "Return current processing state including pause status."
+        },
+        {
+          "info": {
+            "name": "signals_processing_pause_update",
+            "type": "http"
+          },
+          "http": {
+            "method": "PUT",
+            "url": "{{baseUrl}}/api/projects/:project_id/signals/processing/pause/",
+            "params": [
+              {
+                "name": "project_id",
+                "value": "",
+                "type": "path",
+                "description": "Project ID of the project you're trying to access. To find the ID of the project, make a call to /api/projects/."
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            },
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          },
+          "docs": "View and control signal processing pipeline state for a team."
+        },
+        {
+          "info": {
+            "name": "signals_processing_pause_destroy",
+            "type": "http"
+          },
+          "http": {
+            "method": "DELETE",
+            "url": "{{baseUrl}}/api/projects/:project_id/signals/processing/pause/",
+            "params": [
+              {
+                "name": "project_id",
+                "value": "",
+                "type": "path",
+                "description": "Project ID of the project you're trying to access. To find the ID of the project, make a call to /api/projects/."
+              }
+            ],
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          },
+          "docs": "View and control signal processing pipeline state for a team."
+        },
+        {
+          "info": {
+            "name": "signals_reports_list",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "{{baseUrl}}/api/projects/:project_id/signals/reports/",
+            "params": [
+              {
+                "name": "limit",
+                "value": "",
+                "type": "query",
+                "description": "Number of results to return per page."
+              },
+              {
+                "name": "offset",
+                "value": "",
+                "type": "query",
+                "description": "The initial index from which to return the results."
+              },
+              {
+                "name": "ordering",
+                "value": "",
+                "type": "query",
+                "description": "Comma-separated ordering clauses. Each clause is a field name optionally prefixed with '-' for descending. Allowed fields: status, is_suggested_reviewer, signal_count, total_weight, priority, created_at, updated_at, id. Defaults to '-is_suggested_reviewer,status,-updated_at'."
+              },
+              {
+                "name": "project_id",
+                "value": "",
+                "type": "path",
+                "description": "Project ID of the project you're trying to access. To find the ID of the project, make a call to /api/projects/."
+              },
+              {
+                "name": "search",
+                "value": "",
+                "type": "query",
+                "description": "Case-insensitive substring match against report title and summary."
+              },
+              {
+                "name": "source_product",
+                "value": "",
+                "type": "query",
+                "description": "Comma-separated list of source products to include. Reports are kept if at least one of their contributing signals comes from one of these products (e.g. error_tracking, session_replay)."
+              },
+              {
+                "name": "status",
+                "value": "",
+                "type": "query",
+                "description": "Comma-separated list of statuses to include. Valid values: potential, candidate, in_progress, pending_input, ready, failed, suppressed. Defaults to all statuses except suppressed."
+              },
+              {
+                "name": "suggested_reviewers",
+                "value": "",
+                "type": "query",
+                "description": "Comma-separated list of PostHog user UUIDs. Reports are kept if their suggested reviewers include any of the given users."
+              }
+            ],
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          }
+        },
+        {
+          "info": {
+            "name": "signals_reports_retrieve",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "{{baseUrl}}/api/projects/:project_id/signals/reports/:id/",
+            "params": [
+              {
+                "name": "id",
+                "value": "",
+                "type": "path",
+                "description": "A UUID string identifying this signal report."
+              },
+              {
+                "name": "project_id",
+                "value": "",
+                "type": "path",
+                "description": "Project ID of the project you're trying to access. To find the ID of the project, make a call to /api/projects/."
+              }
+            ],
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          }
+        },
+        {
+          "info": {
+            "name": "signals_source_configs_list",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "{{baseUrl}}/api/projects/:project_id/signals/source_configs/",
+            "params": [
+              {
+                "name": "limit",
+                "value": "",
+                "type": "query",
+                "description": "Number of results to return per page."
+              },
+              {
+                "name": "offset",
+                "value": "",
+                "type": "query",
+                "description": "The initial index from which to return the results."
+              },
+              {
+                "name": "project_id",
+                "value": "",
+                "type": "path",
+                "description": "Project ID of the project you're trying to access. To find the ID of the project, make a call to /api/projects/."
+              }
+            ],
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          }
+        },
+        {
+          "info": {
+            "name": "signals_source_configs_create",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "{{baseUrl}}/api/projects/:project_id/signals/source_configs/",
+            "params": [
+              {
+                "name": "project_id",
+                "value": "",
+                "type": "path",
+                "description": "Project ID of the project you're trying to access. To find the ID of the project, make a call to /api/projects/."
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            },
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          }
+        },
+        {
+          "info": {
+            "name": "signals_source_configs_retrieve",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "{{baseUrl}}/api/projects/:project_id/signals/source_configs/:id/",
+            "params": [
+              {
+                "name": "id",
+                "value": "",
+                "type": "path",
+                "description": "A UUID string identifying this signal source config."
+              },
+              {
+                "name": "project_id",
+                "value": "",
+                "type": "path",
+                "description": "Project ID of the project you're trying to access. To find the ID of the project, make a call to /api/projects/."
+              }
+            ],
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          }
+        },
+        {
+          "info": {
+            "name": "signals_source_configs_update",
+            "type": "http"
+          },
+          "http": {
+            "method": "PUT",
+            "url": "{{baseUrl}}/api/projects/:project_id/signals/source_configs/:id/",
+            "params": [
+              {
+                "name": "id",
+                "value": "",
+                "type": "path",
+                "description": "A UUID string identifying this signal source config."
+              },
+              {
+                "name": "project_id",
+                "value": "",
+                "type": "path",
+                "description": "Project ID of the project you're trying to access. To find the ID of the project, make a call to /api/projects/."
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            },
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          }
+        },
+        {
+          "info": {
+            "name": "signals_source_configs_partial_update",
+            "type": "http"
+          },
+          "http": {
+            "method": "PATCH",
+            "url": "{{baseUrl}}/api/projects/:project_id/signals/source_configs/:id/",
+            "params": [
+              {
+                "name": "id",
+                "value": "",
+                "type": "path",
+                "description": "A UUID string identifying this signal source config."
+              },
+              {
+                "name": "project_id",
+                "value": "",
+                "type": "path",
+                "description": "Project ID of the project you're trying to access. To find the ID of the project, make a call to /api/projects/."
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            },
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          }
+        },
+        {
+          "info": {
+            "name": "signals_source_configs_destroy",
+            "type": "http"
+          },
+          "http": {
+            "method": "DELETE",
+            "url": "{{baseUrl}}/api/projects/:project_id/signals/source_configs/:id/",
+            "params": [
+              {
+                "name": "id",
+                "value": "",
+                "type": "path",
+                "description": "A UUID string identifying this signal source config."
+              },
+              {
+                "name": "project_id",
+                "value": "",
+                "type": "path",
+                "description": "Project ID of the project you're trying to access. To find the ID of the project, make a call to /api/projects/."
+              }
+            ],
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          }
+        }
+      ]
+    }
+  ],
+  "bundled": true
+}

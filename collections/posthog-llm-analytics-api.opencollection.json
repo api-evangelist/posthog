@@ -1,0 +1,3438 @@
+{
+  "opencollection": "1.0.0",
+  "info": {
+    "name": "PostHog actions LLM Analytics API",
+    "version": "1.0.0"
+  },
+  "items": [
+    {
+      "info": {
+        "name": "LLM Analytics",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "llm_analytics_evaluation_summary_create",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "{{baseUrl}}/api/environments/:project_id/llm_analytics/evaluation_summary/",
+            "params": [
+              {
+                "name": "project_id",
+                "value": "",
+                "type": "path",
+                "description": "Project ID of the project you're trying to access. To find the ID of the project, make a call to /api/projects/."
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            },
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          },
+          "docs": "\nGenerate an AI-powered summary of evaluation results.\n\nThis endpoint analyzes evaluation runs and identifies patterns in passing\nand failing evaluations, providing actionable recommendations.\n\nData is fetched server-side by evaluation ID to ensure data integrity.\n\n**Use Cases:**\n- Understand why evaluations are passing or failing\n- Identify systematic issues in LLM responses\n- Get recommendations for improving response quality\n- Review patterns across many evaluation runs at once\n        "
+        },
+        {
+          "info": {
+            "name": "llm_analytics_sentiment_create",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "{{baseUrl}}/api/environments/:project_id/llm_analytics/sentiment/",
+            "params": [
+              {
+                "name": "project_id",
+                "value": "",
+                "type": "path",
+                "description": "Project ID of the project you're trying to access. To find the ID of the project, make a call to /api/projects/."
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            },
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          }
+        },
+        {
+          "info": {
+            "name": "llm_analytics_summarization_create",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "{{baseUrl}}/api/environments/:project_id/llm_analytics/summarization/",
+            "params": [
+              {
+                "name": "project_id",
+                "value": "",
+                "type": "path",
+                "description": "Project ID of the project you're trying to access. To find the ID of the project, make a call to /api/projects/."
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            },
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          },
+          "docs": "\nGenerate an AI-powered summary of an LLM trace or event.\n\nThis endpoint analyzes the provided trace/event, generates a line-numbered text\nrepresentation, and uses an LLM to create a concise summary with line references.\n\n**Two ways to use this endpoint:**\n\n1. **By ID (recommended):** Pass `trace_id` or `generation_id` with an optional `date_from`/`date_to`.\n   The backend fetches the data automatically. `summarize_type` is inferred.\n2. **By data:** Pass the full trace/event data blob in `data` "
+        },
+        {
+          "info": {
+            "name": "llm_analytics_summarization_batch_check_create",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "{{baseUrl}}/api/environments/:project_id/llm_analytics/summarization/batch_check/",
+            "params": [
+              {
+                "name": "project_id",
+                "value": "",
+                "type": "path",
+                "description": "Project ID of the project you're trying to access. To find the ID of the project, make a call to /api/projects/."
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "\nCheck which traces have cached summaries available.\n\nThis endpoint allows batch checking of multiple trace IDs to see which ones\nhave cached summaries. Returns only the traces that have cached summaries\nwith their titles.\n\n**Use Cases:**\n- Load cached summaries on session view load\n- Avoid unnecessary LLM calls for already-summarized traces\n- Display summary previews without generating new summaries\n        "
+        },
+        {
+          "info": {
+            "name": "llm_analytics_text_repr_create",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "{{baseUrl}}/api/environments/:project_id/llm_analytics/text_repr/",
+            "params": [
+              {
+                "name": "project_id",
+                "value": "",
+                "type": "path",
+                "description": "Project ID of the project you're trying to access. To find the ID of the project, make a call to /api/projects/."
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            },
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          },
+          "docs": "\nGenerate a human-readable text representation of an LLM trace event.\n\nThis endpoint converts LLM analytics events ($ai_generation, $ai_span, $ai_embedding, or $ai_trace)\ninto formatted text representations suitable for display, logging, or analysis.\n\n**Supported Event Types:**\n- `$ai_generation`: Individual LLM API calls with input/output messages\n- `$ai_span`: Logical spans with state transitions\n- `$ai_embedding`: Embedding generation events (text input → vector)\n- `$ai_trace`: Full traces wi"
+        },
+        {
+          "info": {
+            "name": "environments_dataset_items_list",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "{{baseUrl}}/api/environments/:environment_id/dataset_items/",
+            "params": [
+              {
+                "name": "dataset",
+                "value": "",
+                "type": "query",
+                "description": "Filter by dataset ID"
+              },
+              {
+                "name": "environment_id",
+                "value": "",
+                "type": "path",
+                "description": "Deprecated. Use /api/projects/{project_id}/ instead."
+              },
+              {
+                "name": "limit",
+                "value": "",
+                "type": "query",
+                "description": "Number of results to return per page."
+              },
+              {
+                "name": "offset",
+                "value": "",
+                "type": "query",
+                "description": "The initial index from which to return the results."
+              }
+            ],
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          }
+        },
+        {
+          "info": {
+            "name": "environments_dataset_items_create",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "{{baseUrl}}/api/environments/:environment_id/dataset_items/",
+            "params": [
+              {
+                "name": "environment_id",
+                "value": "",
+                "type": "path",
+                "description": "Deprecated. Use /api/projects/{project_id}/ instead."
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            },
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          }
+        },
+        {
+          "info": {
+            "name": "environments_dataset_items_retrieve",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "{{baseUrl}}/api/environments/:environment_id/dataset_items/:id/",
+            "params": [
+              {
+                "name": "environment_id",
+                "value": "",
+                "type": "path",
+                "description": "Deprecated. Use /api/projects/{project_id}/ instead."
+              },
+              {
+                "name": "id",
+                "value": "",
+                "type": "path",
+                "description": "A UUID string identifying this dataset item."
+              }
+            ],
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          }
+        },
+        {
+          "info": {
+            "name": "environments_dataset_items_update",
+            "type": "http"
+          },
+          "http": {
+            "method": "PUT",
+            "url": "{{baseUrl}}/api/environments/:environment_id/dataset_items/:id/",
+            "params": [
+              {
+                "name": "environment_id",
+                "value": "",
+                "type": "path",
+                "description": "Deprecated. Use /api/projects/{project_id}/ instead."
+              },
+              {
+                "name": "id",
+                "value": "",
+                "type": "path",
+                "description": "A UUID string identifying this dataset item."
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            },
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          }
+        },
+        {
+          "info": {
+            "name": "environments_dataset_items_partial_update",
+            "type": "http"
+          },
+          "http": {
+            "method": "PATCH",
+            "url": "{{baseUrl}}/api/environments/:environment_id/dataset_items/:id/",
+            "params": [
+              {
+                "name": "environment_id",
+                "value": "",
+                "type": "path",
+                "description": "Deprecated. Use /api/projects/{project_id}/ instead."
+              },
+              {
+                "name": "id",
+                "value": "",
+                "type": "path",
+                "description": "A UUID string identifying this dataset item."
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            },
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          }
+        },
+        {
+          "info": {
+            "name": "environments_dataset_items_destroy",
+            "type": "http"
+          },
+          "http": {
+            "method": "DELETE",
+            "url": "{{baseUrl}}/api/environments/:environment_id/dataset_items/:id/",
+            "params": [
+              {
+                "name": "environment_id",
+                "value": "",
+                "type": "path",
+                "description": "Deprecated. Use /api/projects/{project_id}/ instead."
+              },
+              {
+                "name": "id",
+                "value": "",
+                "type": "path",
+                "description": "A UUID string identifying this dataset item."
+              }
+            ],
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          },
+          "docs": "Hard delete of this model is not allowed. Use a patch API call to set \"deleted\" to true"
+        },
+        {
+          "info": {
+            "name": "environments_datasets_list",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "{{baseUrl}}/api/environments/:environment_id/datasets/",
+            "params": [
+              {
+                "name": "environment_id",
+                "value": "",
+                "type": "path",
+                "description": "Deprecated. Use /api/projects/{project_id}/ instead."
+              },
+              {
+                "name": "id__in",
+                "value": "",
+                "type": "query",
+                "description": "Multiple values may be separated by commas."
+              },
+              {
+                "name": "limit",
+                "value": "",
+                "type": "query",
+                "description": "Number of results to return per page."
+              },
+              {
+                "name": "offset",
+                "value": "",
+                "type": "query",
+                "description": "The initial index from which to return the results."
+              },
+              {
+                "name": "order_by",
+                "value": "",
+                "type": "query",
+                "description": "Ordering\n\n* `created_at` - Created At\n* `-created_at` - Created At (descending)\n* `updated_at` - Updated At\n* `-updated_at` - Updated At (descending)"
+              },
+              {
+                "name": "search",
+                "value": "",
+                "type": "query",
+                "description": "Search in name, description, or metadata"
+              }
+            ],
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          }
+        },
+        {
+          "info": {
+            "name": "environments_datasets_create",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "{{baseUrl}}/api/environments/:environment_id/datasets/",
+            "params": [
+              {
+                "name": "environment_id",
+                "value": "",
+                "type": "path",
+                "description": "Deprecated. Use /api/projects/{project_id}/ instead."
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            },
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          }
+        },
+        {
+          "info": {
+            "name": "environments_datasets_retrieve",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "{{baseUrl}}/api/environments/:environment_id/datasets/:id/",
+            "params": [
+              {
+                "name": "environment_id",
+                "value": "",
+                "type": "path",
+                "description": "Deprecated. Use /api/projects/{project_id}/ instead."
+              },
+              {
+                "name": "id",
+                "value": "",
+                "type": "path",
+                "description": "A UUID string identifying this dataset."
+              }
+            ],
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          }
+        },
+        {
+          "info": {
+            "name": "environments_datasets_update",
+            "type": "http"
+          },
+          "http": {
+            "method": "PUT",
+            "url": "{{baseUrl}}/api/environments/:environment_id/datasets/:id/",
+            "params": [
+              {
+                "name": "environment_id",
+                "value": "",
+                "type": "path",
+                "description": "Deprecated. Use /api/projects/{project_id}/ instead."
+              },
+              {
+                "name": "id",
+                "value": "",
+                "type": "path",
+                "description": "A UUID string identifying this dataset."
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            },
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          }
+        },
+        {
+          "info": {
+            "name": "environments_datasets_partial_update",
+            "type": "http"
+          },
+          "http": {
+            "method": "PATCH",
+            "url": "{{baseUrl}}/api/environments/:environment_id/datasets/:id/",
+            "params": [
+              {
+                "name": "environment_id",
+                "value": "",
+                "type": "path",
+                "description": "Deprecated. Use /api/projects/{project_id}/ instead."
+              },
+              {
+                "name": "id",
+                "value": "",
+                "type": "path",
+                "description": "A UUID string identifying this dataset."
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            },
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          }
+        },
+        {
+          "info": {
+            "name": "environments_datasets_destroy",
+            "type": "http"
+          },
+          "http": {
+            "method": "DELETE",
+            "url": "{{baseUrl}}/api/environments/:environment_id/datasets/:id/",
+            "params": [
+              {
+                "name": "environment_id",
+                "value": "",
+                "type": "path",
+                "description": "Deprecated. Use /api/projects/{project_id}/ instead."
+              },
+              {
+                "name": "id",
+                "value": "",
+                "type": "path",
+                "description": "A UUID string identifying this dataset."
+              }
+            ],
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          },
+          "docs": "Hard delete of this model is not allowed. Use a patch API call to set \"deleted\" to true"
+        },
+        {
+          "info": {
+            "name": "evaluation_runs_create",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "{{baseUrl}}/api/environments/:project_id/evaluation_runs/",
+            "params": [
+              {
+                "name": "project_id",
+                "value": "",
+                "type": "path",
+                "description": "Project ID of the project you're trying to access. To find the ID of the project, make a call to /api/projects/."
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            },
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          },
+          "docs": "Create a new evaluation run.\n\nThis endpoint validates the request and enqueues a Temporal workflow\nto asynchronously execute the evaluation."
+        },
+        {
+          "info": {
+            "name": "evaluations_list",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "{{baseUrl}}/api/environments/:project_id/evaluations/",
+            "params": [
+              {
+                "name": "enabled",
+                "value": "",
+                "type": "query",
+                "description": "Filter by enabled status"
+              },
+              {
+                "name": "id__in",
+                "value": "",
+                "type": "query",
+                "description": "Multiple values may be separated by commas."
+              },
+              {
+                "name": "limit",
+                "value": "",
+                "type": "query",
+                "description": "Number of results to return per page."
+              },
+              {
+                "name": "offset",
+                "value": "",
+                "type": "query",
+                "description": "The initial index from which to return the results."
+              },
+              {
+                "name": "order_by",
+                "value": "",
+                "type": "query",
+                "description": "Ordering\n\n* `created_at` - Created At\n* `-created_at` - Created At (descending)\n* `updated_at` - Updated At\n* `-updated_at` - Updated At (descending)\n* `name` - Name\n* `-name` - Name (descending)"
+              },
+              {
+                "name": "project_id",
+                "value": "",
+                "type": "path",
+                "description": "Project ID of the project you're trying to access. To find the ID of the project, make a call to /api/projects/."
+              },
+              {
+                "name": "search",
+                "value": "",
+                "type": "query",
+                "description": "Search in name or description"
+              }
+            ],
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          }
+        },
+        {
+          "info": {
+            "name": "evaluations_create",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "{{baseUrl}}/api/environments/:project_id/evaluations/",
+            "params": [
+              {
+                "name": "project_id",
+                "value": "",
+                "type": "path",
+                "description": "Project ID of the project you're trying to access. To find the ID of the project, make a call to /api/projects/."
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            },
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          }
+        },
+        {
+          "info": {
+            "name": "evaluations_retrieve",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "{{baseUrl}}/api/environments/:project_id/evaluations/:id/",
+            "params": [
+              {
+                "name": "id",
+                "value": "",
+                "type": "path",
+                "description": "A UUID string identifying this evaluation."
+              },
+              {
+                "name": "project_id",
+                "value": "",
+                "type": "path",
+                "description": "Project ID of the project you're trying to access. To find the ID of the project, make a call to /api/projects/."
+              }
+            ],
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          }
+        },
+        {
+          "info": {
+            "name": "evaluations_update",
+            "type": "http"
+          },
+          "http": {
+            "method": "PUT",
+            "url": "{{baseUrl}}/api/environments/:project_id/evaluations/:id/",
+            "params": [
+              {
+                "name": "id",
+                "value": "",
+                "type": "path",
+                "description": "A UUID string identifying this evaluation."
+              },
+              {
+                "name": "project_id",
+                "value": "",
+                "type": "path",
+                "description": "Project ID of the project you're trying to access. To find the ID of the project, make a call to /api/projects/."
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            },
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          }
+        },
+        {
+          "info": {
+            "name": "evaluations_partial_update",
+            "type": "http"
+          },
+          "http": {
+            "method": "PATCH",
+            "url": "{{baseUrl}}/api/environments/:project_id/evaluations/:id/",
+            "params": [
+              {
+                "name": "id",
+                "value": "",
+                "type": "path",
+                "description": "A UUID string identifying this evaluation."
+              },
+              {
+                "name": "project_id",
+                "value": "",
+                "type": "path",
+                "description": "Project ID of the project you're trying to access. To find the ID of the project, make a call to /api/projects/."
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            },
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          }
+        },
+        {
+          "info": {
+            "name": "evaluations_destroy",
+            "type": "http"
+          },
+          "http": {
+            "method": "DELETE",
+            "url": "{{baseUrl}}/api/environments/:project_id/evaluations/:id/",
+            "params": [
+              {
+                "name": "id",
+                "value": "",
+                "type": "path",
+                "description": "A UUID string identifying this evaluation."
+              },
+              {
+                "name": "project_id",
+                "value": "",
+                "type": "path",
+                "description": "Project ID of the project you're trying to access. To find the ID of the project, make a call to /api/projects/."
+              }
+            ],
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          },
+          "docs": "Hard delete of this model is not allowed. Use a patch API call to set \"deleted\" to true"
+        },
+        {
+          "info": {
+            "name": "evaluations_test_hog_create",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "{{baseUrl}}/api/environments/:project_id/evaluations/test_hog/",
+            "params": [
+              {
+                "name": "project_id",
+                "value": "",
+                "type": "path",
+                "description": "Project ID of the project you're trying to access. To find the ID of the project, make a call to /api/projects/."
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            },
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          },
+          "docs": "Test Hog evaluation code against sample events without saving."
+        },
+        {
+          "info": {
+            "name": "llm_analytics_clustering_config_retrieve",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "{{baseUrl}}/api/environments/:project_id/llm_analytics/clustering_config/",
+            "params": [
+              {
+                "name": "project_id",
+                "value": "",
+                "type": "path",
+                "description": "Project ID of the project you're trying to access. To find the ID of the project, make a call to /api/projects/."
+              }
+            ],
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          },
+          "docs": "Team-level clustering configuration (event filters for automated pipelines)."
+        },
+        {
+          "info": {
+            "name": "llm_analytics_clustering_config_set_event_filters_create",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "{{baseUrl}}/api/environments/:project_id/llm_analytics/clustering_config/set_event_filters/",
+            "params": [
+              {
+                "name": "project_id",
+                "value": "",
+                "type": "path",
+                "description": "Project ID of the project you're trying to access. To find the ID of the project, make a call to /api/projects/."
+              }
+            ],
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          },
+          "docs": "Team-level clustering configuration (event filters for automated pipelines)."
+        },
+        {
+          "info": {
+            "name": "llm_analytics_clustering_jobs_list",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "{{baseUrl}}/api/environments/:project_id/llm_analytics/clustering_jobs/",
+            "params": [
+              {
+                "name": "limit",
+                "value": "",
+                "type": "query",
+                "description": "Number of results to return per page."
+              },
+              {
+                "name": "offset",
+                "value": "",
+                "type": "query",
+                "description": "The initial index from which to return the results."
+              },
+              {
+                "name": "project_id",
+                "value": "",
+                "type": "path",
+                "description": "Project ID of the project you're trying to access. To find the ID of the project, make a call to /api/projects/."
+              }
+            ],
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          },
+          "docs": "CRUD for clustering job configurations (max 5 per team)."
+        },
+        {
+          "info": {
+            "name": "llm_analytics_clustering_jobs_create",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "{{baseUrl}}/api/environments/:project_id/llm_analytics/clustering_jobs/",
+            "params": [
+              {
+                "name": "project_id",
+                "value": "",
+                "type": "path",
+                "description": "Project ID of the project you're trying to access. To find the ID of the project, make a call to /api/projects/."
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            },
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          },
+          "docs": "CRUD for clustering job configurations (max 5 per team)."
+        },
+        {
+          "info": {
+            "name": "llm_analytics_clustering_jobs_retrieve",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "{{baseUrl}}/api/environments/:project_id/llm_analytics/clustering_jobs/:id/",
+            "params": [
+              {
+                "name": "id",
+                "value": "",
+                "type": "path",
+                "description": "A UUID string identifying this clustering job."
+              },
+              {
+                "name": "project_id",
+                "value": "",
+                "type": "path",
+                "description": "Project ID of the project you're trying to access. To find the ID of the project, make a call to /api/projects/."
+              }
+            ],
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          },
+          "docs": "CRUD for clustering job configurations (max 5 per team)."
+        },
+        {
+          "info": {
+            "name": "llm_analytics_clustering_jobs_update",
+            "type": "http"
+          },
+          "http": {
+            "method": "PUT",
+            "url": "{{baseUrl}}/api/environments/:project_id/llm_analytics/clustering_jobs/:id/",
+            "params": [
+              {
+                "name": "id",
+                "value": "",
+                "type": "path",
+                "description": "A UUID string identifying this clustering job."
+              },
+              {
+                "name": "project_id",
+                "value": "",
+                "type": "path",
+                "description": "Project ID of the project you're trying to access. To find the ID of the project, make a call to /api/projects/."
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            },
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          },
+          "docs": "CRUD for clustering job configurations (max 5 per team)."
+        },
+        {
+          "info": {
+            "name": "llm_analytics_clustering_jobs_partial_update",
+            "type": "http"
+          },
+          "http": {
+            "method": "PATCH",
+            "url": "{{baseUrl}}/api/environments/:project_id/llm_analytics/clustering_jobs/:id/",
+            "params": [
+              {
+                "name": "id",
+                "value": "",
+                "type": "path",
+                "description": "A UUID string identifying this clustering job."
+              },
+              {
+                "name": "project_id",
+                "value": "",
+                "type": "path",
+                "description": "Project ID of the project you're trying to access. To find the ID of the project, make a call to /api/projects/."
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            },
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          },
+          "docs": "CRUD for clustering job configurations (max 5 per team)."
+        },
+        {
+          "info": {
+            "name": "llm_analytics_clustering_jobs_destroy",
+            "type": "http"
+          },
+          "http": {
+            "method": "DELETE",
+            "url": "{{baseUrl}}/api/environments/:project_id/llm_analytics/clustering_jobs/:id/",
+            "params": [
+              {
+                "name": "id",
+                "value": "",
+                "type": "path",
+                "description": "A UUID string identifying this clustering job."
+              },
+              {
+                "name": "project_id",
+                "value": "",
+                "type": "path",
+                "description": "Project ID of the project you're trying to access. To find the ID of the project, make a call to /api/projects/."
+              }
+            ],
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          },
+          "docs": "CRUD for clustering job configurations (max 5 per team)."
+        },
+        {
+          "info": {
+            "name": "llm_analytics_evaluation_config_retrieve",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "{{baseUrl}}/api/environments/:project_id/llm_analytics/evaluation_config/",
+            "params": [
+              {
+                "name": "project_id",
+                "value": "",
+                "type": "path",
+                "description": "Project ID of the project you're trying to access. To find the ID of the project, make a call to /api/projects/."
+              }
+            ],
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          },
+          "docs": "Get the evaluation config for this team"
+        },
+        {
+          "info": {
+            "name": "llm_analytics_evaluation_config_set_active_key_create",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "{{baseUrl}}/api/environments/:project_id/llm_analytics/evaluation_config/set_active_key/",
+            "params": [
+              {
+                "name": "project_id",
+                "value": "",
+                "type": "path",
+                "description": "Project ID of the project you're trying to access. To find the ID of the project, make a call to /api/projects/."
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            },
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          },
+          "docs": "Set the active provider key for evaluations"
+        },
+        {
+          "info": {
+            "name": "llm_analytics_evaluation_reports_list",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "{{baseUrl}}/api/environments/:project_id/llm_analytics/evaluation_reports/",
+            "params": [
+              {
+                "name": "limit",
+                "value": "",
+                "type": "query",
+                "description": "Number of results to return per page."
+              },
+              {
+                "name": "offset",
+                "value": "",
+                "type": "query",
+                "description": "The initial index from which to return the results."
+              },
+              {
+                "name": "project_id",
+                "value": "",
+                "type": "path",
+                "description": "Project ID of the project you're trying to access. To find the ID of the project, make a call to /api/projects/."
+              }
+            ],
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          },
+          "docs": "CRUD for evaluation report configurations + report run history."
+        },
+        {
+          "info": {
+            "name": "llm_analytics_evaluation_reports_create",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "{{baseUrl}}/api/environments/:project_id/llm_analytics/evaluation_reports/",
+            "params": [
+              {
+                "name": "project_id",
+                "value": "",
+                "type": "path",
+                "description": "Project ID of the project you're trying to access. To find the ID of the project, make a call to /api/projects/."
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            },
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          },
+          "docs": "CRUD for evaluation report configurations + report run history."
+        },
+        {
+          "info": {
+            "name": "llm_analytics_evaluation_reports_retrieve",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "{{baseUrl}}/api/environments/:project_id/llm_analytics/evaluation_reports/:id/",
+            "params": [
+              {
+                "name": "id",
+                "value": "",
+                "type": "path",
+                "description": "A UUID string identifying this evaluation report."
+              },
+              {
+                "name": "project_id",
+                "value": "",
+                "type": "path",
+                "description": "Project ID of the project you're trying to access. To find the ID of the project, make a call to /api/projects/."
+              }
+            ],
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          },
+          "docs": "CRUD for evaluation report configurations + report run history."
+        },
+        {
+          "info": {
+            "name": "llm_analytics_evaluation_reports_update",
+            "type": "http"
+          },
+          "http": {
+            "method": "PUT",
+            "url": "{{baseUrl}}/api/environments/:project_id/llm_analytics/evaluation_reports/:id/",
+            "params": [
+              {
+                "name": "id",
+                "value": "",
+                "type": "path",
+                "description": "A UUID string identifying this evaluation report."
+              },
+              {
+                "name": "project_id",
+                "value": "",
+                "type": "path",
+                "description": "Project ID of the project you're trying to access. To find the ID of the project, make a call to /api/projects/."
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            },
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          },
+          "docs": "CRUD for evaluation report configurations + report run history."
+        },
+        {
+          "info": {
+            "name": "llm_analytics_evaluation_reports_partial_update",
+            "type": "http"
+          },
+          "http": {
+            "method": "PATCH",
+            "url": "{{baseUrl}}/api/environments/:project_id/llm_analytics/evaluation_reports/:id/",
+            "params": [
+              {
+                "name": "id",
+                "value": "",
+                "type": "path",
+                "description": "A UUID string identifying this evaluation report."
+              },
+              {
+                "name": "project_id",
+                "value": "",
+                "type": "path",
+                "description": "Project ID of the project you're trying to access. To find the ID of the project, make a call to /api/projects/."
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            },
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          },
+          "docs": "CRUD for evaluation report configurations + report run history."
+        },
+        {
+          "info": {
+            "name": "llm_analytics_evaluation_reports_destroy",
+            "type": "http"
+          },
+          "http": {
+            "method": "DELETE",
+            "url": "{{baseUrl}}/api/environments/:project_id/llm_analytics/evaluation_reports/:id/",
+            "params": [
+              {
+                "name": "id",
+                "value": "",
+                "type": "path",
+                "description": "A UUID string identifying this evaluation report."
+              },
+              {
+                "name": "project_id",
+                "value": "",
+                "type": "path",
+                "description": "Project ID of the project you're trying to access. To find the ID of the project, make a call to /api/projects/."
+              }
+            ],
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          },
+          "docs": "Hard delete of this model is not allowed. Use a patch API call to set \"deleted\" to true"
+        },
+        {
+          "info": {
+            "name": "llm_analytics_evaluation_reports_generate_create",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "{{baseUrl}}/api/environments/:project_id/llm_analytics/evaluation_reports/:id/generate/",
+            "params": [
+              {
+                "name": "id",
+                "value": "",
+                "type": "path",
+                "description": "A UUID string identifying this evaluation report."
+              },
+              {
+                "name": "project_id",
+                "value": "",
+                "type": "path",
+                "description": "Project ID of the project you're trying to access. To find the ID of the project, make a call to /api/projects/."
+              }
+            ],
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          },
+          "docs": "Trigger immediate report generation."
+        },
+        {
+          "info": {
+            "name": "llm_analytics_evaluation_reports_runs_list",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "{{baseUrl}}/api/environments/:project_id/llm_analytics/evaluation_reports/:id/runs/",
+            "params": [
+              {
+                "name": "id",
+                "value": "",
+                "type": "path",
+                "description": "A UUID string identifying this evaluation report."
+              },
+              {
+                "name": "limit",
+                "value": "",
+                "type": "query",
+                "description": "Number of results to return per page."
+              },
+              {
+                "name": "offset",
+                "value": "",
+                "type": "query",
+                "description": "The initial index from which to return the results."
+              },
+              {
+                "name": "project_id",
+                "value": "",
+                "type": "path",
+                "description": "Project ID of the project you're trying to access. To find the ID of the project, make a call to /api/projects/."
+              }
+            ],
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          },
+          "docs": "List report runs (history) for this report."
+        },
+        {
+          "info": {
+            "name": "llm_analytics_models_retrieve",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "{{baseUrl}}/api/environments/:project_id/llm_analytics/models/",
+            "params": [
+              {
+                "name": "key_id",
+                "value": "",
+                "type": "query",
+                "description": "Optional provider key UUID. When supplied, models reachable with that specific key are returned (useful for Azure OpenAI, where the deployment list depends on the configured endpoint). Must belong to the same provider as the `provider` parameter."
+              },
+              {
+                "name": "project_id",
+                "value": "",
+                "type": "path",
+                "description": "Project ID of the project you're trying to access. To find the ID of the project, make a call to /api/projects/."
+              },
+              {
+                "name": "provider",
+                "value": "",
+                "type": "query",
+                "description": "LLM provider to list models for. Must be one of the supported providers."
+              }
+            ],
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          },
+          "docs": "List available models for a provider."
+        },
+        {
+          "info": {
+            "name": "llm_analytics_provider_key_validations_create",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "{{baseUrl}}/api/environments/:project_id/llm_analytics/provider_key_validations/",
+            "params": [
+              {
+                "name": "project_id",
+                "value": "",
+                "type": "path",
+                "description": "Project ID of the project you're trying to access. To find the ID of the project, make a call to /api/projects/."
+              }
+            ],
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          },
+          "docs": "Validate LLM provider API keys without persisting them"
+        },
+        {
+          "info": {
+            "name": "llm_analytics_provider_keys_list",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "{{baseUrl}}/api/environments/:project_id/llm_analytics/provider_keys/",
+            "params": [
+              {
+                "name": "limit",
+                "value": "",
+                "type": "query",
+                "description": "Number of results to return per page."
+              },
+              {
+                "name": "offset",
+                "value": "",
+                "type": "query",
+                "description": "The initial index from which to return the results."
+              },
+              {
+                "name": "project_id",
+                "value": "",
+                "type": "path",
+                "description": "Project ID of the project you're trying to access. To find the ID of the project, make a call to /api/projects/."
+              }
+            ],
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          }
+        },
+        {
+          "info": {
+            "name": "llm_analytics_provider_keys_create",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "{{baseUrl}}/api/environments/:project_id/llm_analytics/provider_keys/",
+            "params": [
+              {
+                "name": "project_id",
+                "value": "",
+                "type": "path",
+                "description": "Project ID of the project you're trying to access. To find the ID of the project, make a call to /api/projects/."
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            },
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          }
+        },
+        {
+          "info": {
+            "name": "llm_analytics_provider_keys_retrieve",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "{{baseUrl}}/api/environments/:project_id/llm_analytics/provider_keys/:id/",
+            "params": [
+              {
+                "name": "id",
+                "value": "",
+                "type": "path",
+                "description": "A UUID string identifying this llm provider key."
+              },
+              {
+                "name": "project_id",
+                "value": "",
+                "type": "path",
+                "description": "Project ID of the project you're trying to access. To find the ID of the project, make a call to /api/projects/."
+              }
+            ],
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          }
+        },
+        {
+          "info": {
+            "name": "llm_analytics_provider_keys_update",
+            "type": "http"
+          },
+          "http": {
+            "method": "PUT",
+            "url": "{{baseUrl}}/api/environments/:project_id/llm_analytics/provider_keys/:id/",
+            "params": [
+              {
+                "name": "id",
+                "value": "",
+                "type": "path",
+                "description": "A UUID string identifying this llm provider key."
+              },
+              {
+                "name": "project_id",
+                "value": "",
+                "type": "path",
+                "description": "Project ID of the project you're trying to access. To find the ID of the project, make a call to /api/projects/."
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            },
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          }
+        },
+        {
+          "info": {
+            "name": "llm_analytics_provider_keys_partial_update",
+            "type": "http"
+          },
+          "http": {
+            "method": "PATCH",
+            "url": "{{baseUrl}}/api/environments/:project_id/llm_analytics/provider_keys/:id/",
+            "params": [
+              {
+                "name": "id",
+                "value": "",
+                "type": "path",
+                "description": "A UUID string identifying this llm provider key."
+              },
+              {
+                "name": "project_id",
+                "value": "",
+                "type": "path",
+                "description": "Project ID of the project you're trying to access. To find the ID of the project, make a call to /api/projects/."
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            },
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          }
+        },
+        {
+          "info": {
+            "name": "llm_analytics_provider_keys_destroy",
+            "type": "http"
+          },
+          "http": {
+            "method": "DELETE",
+            "url": "{{baseUrl}}/api/environments/:project_id/llm_analytics/provider_keys/:id/",
+            "params": [
+              {
+                "name": "id",
+                "value": "",
+                "type": "path",
+                "description": "A UUID string identifying this llm provider key."
+              },
+              {
+                "name": "project_id",
+                "value": "",
+                "type": "path",
+                "description": "Project ID of the project you're trying to access. To find the ID of the project, make a call to /api/projects/."
+              }
+            ],
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          }
+        },
+        {
+          "info": {
+            "name": "llm_analytics_provider_keys_assign_create",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "{{baseUrl}}/api/environments/:project_id/llm_analytics/provider_keys/:id/assign/",
+            "params": [
+              {
+                "name": "id",
+                "value": "",
+                "type": "path",
+                "description": "A UUID string identifying this llm provider key."
+              },
+              {
+                "name": "project_id",
+                "value": "",
+                "type": "path",
+                "description": "Project ID of the project you're trying to access. To find the ID of the project, make a call to /api/projects/."
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Assign this key to evaluations and optionally re-enable them."
+        },
+        {
+          "info": {
+            "name": "llm_analytics_provider_keys_dependent_configs_retrieve",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "{{baseUrl}}/api/environments/:project_id/llm_analytics/provider_keys/:id/dependent_configs/",
+            "params": [
+              {
+                "name": "id",
+                "value": "",
+                "type": "path",
+                "description": "A UUID string identifying this llm provider key."
+              },
+              {
+                "name": "project_id",
+                "value": "",
+                "type": "path",
+                "description": "Project ID of the project you're trying to access. To find the ID of the project, make a call to /api/projects/."
+              }
+            ]
+          },
+          "docs": "Get evaluations using this key and alternative keys for replacement."
+        },
+        {
+          "info": {
+            "name": "llm_analytics_provider_keys_validate_create",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "{{baseUrl}}/api/environments/:project_id/llm_analytics/provider_keys/:id/validate/",
+            "params": [
+              {
+                "name": "id",
+                "value": "",
+                "type": "path",
+                "description": "A UUID string identifying this llm provider key."
+              },
+              {
+                "name": "project_id",
+                "value": "",
+                "type": "path",
+                "description": "Project ID of the project you're trying to access. To find the ID of the project, make a call to /api/projects/."
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          }
+        },
+        {
+          "info": {
+            "name": "llm_analytics_provider_keys_trial_evaluations_retrieve",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "{{baseUrl}}/api/environments/:project_id/llm_analytics/provider_keys/trial_evaluations/",
+            "params": [
+              {
+                "name": "project_id",
+                "value": "",
+                "type": "path",
+                "description": "Project ID of the project you're trying to access. To find the ID of the project, make a call to /api/projects/."
+              }
+            ]
+          },
+          "docs": "List enabled evaluations currently using trial credits for a given provider."
+        },
+        {
+          "info": {
+            "name": "llm_analytics_review_queue_items_list",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "{{baseUrl}}/api/environments/:project_id/llm_analytics/review_queue_items/",
+            "params": [
+              {
+                "name": "limit",
+                "value": "",
+                "type": "query",
+                "description": "Number of results to return per page."
+              },
+              {
+                "name": "offset",
+                "value": "",
+                "type": "query",
+                "description": "The initial index from which to return the results."
+              },
+              {
+                "name": "order_by",
+                "value": "",
+                "type": "query",
+                "description": "Order by `created_at` or `updated_at`."
+              },
+              {
+                "name": "project_id",
+                "value": "",
+                "type": "path",
+                "description": "Project ID of the project you're trying to access. To find the ID of the project, make a call to /api/projects/."
+              },
+              {
+                "name": "queue_id",
+                "value": "",
+                "type": "query",
+                "description": "Filter by a specific review queue ID."
+              },
+              {
+                "name": "search",
+                "value": "",
+                "type": "query",
+                "description": "Search pending trace IDs."
+              },
+              {
+                "name": "trace_id",
+                "value": "",
+                "type": "query",
+                "description": "Filter by an exact trace ID."
+              },
+              {
+                "name": "trace_id__in",
+                "value": "",
+                "type": "query",
+                "description": "Filter by multiple trace IDs separated by commas."
+              }
+            ],
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          }
+        },
+        {
+          "info": {
+            "name": "llm_analytics_review_queue_items_create",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "{{baseUrl}}/api/environments/:project_id/llm_analytics/review_queue_items/",
+            "params": [
+              {
+                "name": "project_id",
+                "value": "",
+                "type": "path",
+                "description": "Project ID of the project you're trying to access. To find the ID of the project, make a call to /api/projects/."
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            },
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          }
+        },
+        {
+          "info": {
+            "name": "llm_analytics_review_queue_items_retrieve",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "{{baseUrl}}/api/environments/:project_id/llm_analytics/review_queue_items/:id/",
+            "params": [
+              {
+                "name": "id",
+                "value": "",
+                "type": "path",
+                "description": "A UUID string identifying this review queue item."
+              },
+              {
+                "name": "project_id",
+                "value": "",
+                "type": "path",
+                "description": "Project ID of the project you're trying to access. To find the ID of the project, make a call to /api/projects/."
+              }
+            ],
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          }
+        },
+        {
+          "info": {
+            "name": "llm_analytics_review_queue_items_partial_update",
+            "type": "http"
+          },
+          "http": {
+            "method": "PATCH",
+            "url": "{{baseUrl}}/api/environments/:project_id/llm_analytics/review_queue_items/:id/",
+            "params": [
+              {
+                "name": "id",
+                "value": "",
+                "type": "path",
+                "description": "A UUID string identifying this review queue item."
+              },
+              {
+                "name": "project_id",
+                "value": "",
+                "type": "path",
+                "description": "Project ID of the project you're trying to access. To find the ID of the project, make a call to /api/projects/."
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            },
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          }
+        },
+        {
+          "info": {
+            "name": "llm_analytics_review_queue_items_destroy",
+            "type": "http"
+          },
+          "http": {
+            "method": "DELETE",
+            "url": "{{baseUrl}}/api/environments/:project_id/llm_analytics/review_queue_items/:id/",
+            "params": [
+              {
+                "name": "id",
+                "value": "",
+                "type": "path",
+                "description": "A UUID string identifying this review queue item."
+              },
+              {
+                "name": "project_id",
+                "value": "",
+                "type": "path",
+                "description": "Project ID of the project you're trying to access. To find the ID of the project, make a call to /api/projects/."
+              }
+            ],
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          }
+        },
+        {
+          "info": {
+            "name": "llm_analytics_review_queues_list",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "{{baseUrl}}/api/environments/:project_id/llm_analytics/review_queues/",
+            "params": [
+              {
+                "name": "limit",
+                "value": "",
+                "type": "query",
+                "description": "Number of results to return per page."
+              },
+              {
+                "name": "name",
+                "value": "",
+                "type": "query"
+              },
+              {
+                "name": "offset",
+                "value": "",
+                "type": "query",
+                "description": "The initial index from which to return the results."
+              },
+              {
+                "name": "order_by",
+                "value": "",
+                "type": "query",
+                "description": "Order by `name`, `updated_at`, or `created_at`."
+              },
+              {
+                "name": "project_id",
+                "value": "",
+                "type": "path",
+                "description": "Project ID of the project you're trying to access. To find the ID of the project, make a call to /api/projects/."
+              },
+              {
+                "name": "search",
+                "value": "",
+                "type": "query",
+                "description": "Search review queue names."
+              }
+            ],
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          }
+        },
+        {
+          "info": {
+            "name": "llm_analytics_review_queues_create",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "{{baseUrl}}/api/environments/:project_id/llm_analytics/review_queues/",
+            "params": [
+              {
+                "name": "project_id",
+                "value": "",
+                "type": "path",
+                "description": "Project ID of the project you're trying to access. To find the ID of the project, make a call to /api/projects/."
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            },
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          }
+        },
+        {
+          "info": {
+            "name": "llm_analytics_review_queues_retrieve",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "{{baseUrl}}/api/environments/:project_id/llm_analytics/review_queues/:id/",
+            "params": [
+              {
+                "name": "id",
+                "value": "",
+                "type": "path",
+                "description": "A UUID string identifying this review queue."
+              },
+              {
+                "name": "project_id",
+                "value": "",
+                "type": "path",
+                "description": "Project ID of the project you're trying to access. To find the ID of the project, make a call to /api/projects/."
+              }
+            ],
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          }
+        },
+        {
+          "info": {
+            "name": "llm_analytics_review_queues_partial_update",
+            "type": "http"
+          },
+          "http": {
+            "method": "PATCH",
+            "url": "{{baseUrl}}/api/environments/:project_id/llm_analytics/review_queues/:id/",
+            "params": [
+              {
+                "name": "id",
+                "value": "",
+                "type": "path",
+                "description": "A UUID string identifying this review queue."
+              },
+              {
+                "name": "project_id",
+                "value": "",
+                "type": "path",
+                "description": "Project ID of the project you're trying to access. To find the ID of the project, make a call to /api/projects/."
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            },
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          }
+        },
+        {
+          "info": {
+            "name": "llm_analytics_review_queues_destroy",
+            "type": "http"
+          },
+          "http": {
+            "method": "DELETE",
+            "url": "{{baseUrl}}/api/environments/:project_id/llm_analytics/review_queues/:id/",
+            "params": [
+              {
+                "name": "id",
+                "value": "",
+                "type": "path",
+                "description": "A UUID string identifying this review queue."
+              },
+              {
+                "name": "project_id",
+                "value": "",
+                "type": "path",
+                "description": "Project ID of the project you're trying to access. To find the ID of the project, make a call to /api/projects/."
+              }
+            ],
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          }
+        },
+        {
+          "info": {
+            "name": "llm_analytics_score_definitions_list",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "{{baseUrl}}/api/environments/:project_id/llm_analytics/score_definitions/",
+            "params": [
+              {
+                "name": "archived",
+                "value": "",
+                "type": "query",
+                "description": "Filter by archived state."
+              },
+              {
+                "name": "kind",
+                "value": "",
+                "type": "query",
+                "description": "Filter by scorer kind."
+              },
+              {
+                "name": "limit",
+                "value": "",
+                "type": "query",
+                "description": "Number of results to return per page."
+              },
+              {
+                "name": "offset",
+                "value": "",
+                "type": "query",
+                "description": "The initial index from which to return the results."
+              },
+              {
+                "name": "order_by",
+                "value": "",
+                "type": "query",
+                "description": "Sort by name, kind, created_at, updated_at, or current_version."
+              },
+              {
+                "name": "project_id",
+                "value": "",
+                "type": "path",
+                "description": "Project ID of the project you're trying to access. To find the ID of the project, make a call to /api/projects/."
+              },
+              {
+                "name": "search",
+                "value": "",
+                "type": "query",
+                "description": "Search scorers by name or description."
+              }
+            ],
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          }
+        },
+        {
+          "info": {
+            "name": "llm_analytics_score_definitions_create",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "{{baseUrl}}/api/environments/:project_id/llm_analytics/score_definitions/",
+            "params": [
+              {
+                "name": "project_id",
+                "value": "",
+                "type": "path",
+                "description": "Project ID of the project you're trying to access. To find the ID of the project, make a call to /api/projects/."
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            },
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          }
+        },
+        {
+          "info": {
+            "name": "llm_analytics_score_definitions_retrieve",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "{{baseUrl}}/api/environments/:project_id/llm_analytics/score_definitions/:id/",
+            "params": [
+              {
+                "name": "id",
+                "value": "",
+                "type": "path",
+                "description": "A UUID string identifying this score definition."
+              },
+              {
+                "name": "project_id",
+                "value": "",
+                "type": "path",
+                "description": "Project ID of the project you're trying to access. To find the ID of the project, make a call to /api/projects/."
+              }
+            ],
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          }
+        },
+        {
+          "info": {
+            "name": "llm_analytics_score_definitions_partial_update",
+            "type": "http"
+          },
+          "http": {
+            "method": "PATCH",
+            "url": "{{baseUrl}}/api/environments/:project_id/llm_analytics/score_definitions/:id/",
+            "params": [
+              {
+                "name": "id",
+                "value": "",
+                "type": "path",
+                "description": "A UUID string identifying this score definition."
+              },
+              {
+                "name": "project_id",
+                "value": "",
+                "type": "path",
+                "description": "Project ID of the project you're trying to access. To find the ID of the project, make a call to /api/projects/."
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            },
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          }
+        },
+        {
+          "info": {
+            "name": "llm_analytics_score_definitions_new_version_create",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "{{baseUrl}}/api/environments/:project_id/llm_analytics/score_definitions/:id/new_version/",
+            "params": [
+              {
+                "name": "id",
+                "value": "",
+                "type": "path",
+                "description": "A UUID string identifying this score definition."
+              },
+              {
+                "name": "project_id",
+                "value": "",
+                "type": "path",
+                "description": "Project ID of the project you're trying to access. To find the ID of the project, make a call to /api/projects/."
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          }
+        },
+        {
+          "info": {
+            "name": "llm_analytics_trace_reviews_list",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "{{baseUrl}}/api/environments/:project_id/llm_analytics/trace_reviews/",
+            "params": [
+              {
+                "name": "definition_id",
+                "value": "",
+                "type": "query",
+                "description": "Filter by a stable scorer definition ID."
+              },
+              {
+                "name": "definition_id__in",
+                "value": "",
+                "type": "query",
+                "description": "Filter by multiple scorer definition IDs separated by commas."
+              },
+              {
+                "name": "limit",
+                "value": "",
+                "type": "query",
+                "description": "Number of results to return per page."
+              },
+              {
+                "name": "offset",
+                "value": "",
+                "type": "query",
+                "description": "The initial index from which to return the results."
+              },
+              {
+                "name": "order_by",
+                "value": "",
+                "type": "query",
+                "description": "Order by `updated_at` or `created_at`."
+              },
+              {
+                "name": "project_id",
+                "value": "",
+                "type": "path",
+                "description": "Project ID of the project you're trying to access. To find the ID of the project, make a call to /api/projects/."
+              },
+              {
+                "name": "search",
+                "value": "",
+                "type": "query",
+                "description": "Search trace IDs and comments."
+              },
+              {
+                "name": "trace_id",
+                "value": "",
+                "type": "query",
+                "description": "Filter by an exact trace ID."
+              },
+              {
+                "name": "trace_id__in",
+                "value": "",
+                "type": "query",
+                "description": "Filter by multiple trace IDs separated by commas."
+              }
+            ],
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          }
+        },
+        {
+          "info": {
+            "name": "llm_analytics_trace_reviews_create",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "{{baseUrl}}/api/environments/:project_id/llm_analytics/trace_reviews/",
+            "params": [
+              {
+                "name": "project_id",
+                "value": "",
+                "type": "path",
+                "description": "Project ID of the project you're trying to access. To find the ID of the project, make a call to /api/projects/."
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            },
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          }
+        },
+        {
+          "info": {
+            "name": "llm_analytics_trace_reviews_retrieve",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "{{baseUrl}}/api/environments/:project_id/llm_analytics/trace_reviews/:id/",
+            "params": [
+              {
+                "name": "id",
+                "value": "",
+                "type": "path",
+                "description": "A UUID string identifying this trace review."
+              },
+              {
+                "name": "project_id",
+                "value": "",
+                "type": "path",
+                "description": "Project ID of the project you're trying to access. To find the ID of the project, make a call to /api/projects/."
+              }
+            ],
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          }
+        },
+        {
+          "info": {
+            "name": "llm_analytics_trace_reviews_partial_update",
+            "type": "http"
+          },
+          "http": {
+            "method": "PATCH",
+            "url": "{{baseUrl}}/api/environments/:project_id/llm_analytics/trace_reviews/:id/",
+            "params": [
+              {
+                "name": "id",
+                "value": "",
+                "type": "path",
+                "description": "A UUID string identifying this trace review."
+              },
+              {
+                "name": "project_id",
+                "value": "",
+                "type": "path",
+                "description": "Project ID of the project you're trying to access. To find the ID of the project, make a call to /api/projects/."
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            },
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          }
+        },
+        {
+          "info": {
+            "name": "llm_analytics_trace_reviews_destroy",
+            "type": "http"
+          },
+          "http": {
+            "method": "DELETE",
+            "url": "{{baseUrl}}/api/environments/:project_id/llm_analytics/trace_reviews/:id/",
+            "params": [
+              {
+                "name": "id",
+                "value": "",
+                "type": "path",
+                "description": "A UUID string identifying this trace review."
+              },
+              {
+                "name": "project_id",
+                "value": "",
+                "type": "path",
+                "description": "Project ID of the project you're trying to access. To find the ID of the project, make a call to /api/projects/."
+              }
+            ],
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          }
+        },
+        {
+          "info": {
+            "name": "llm_analytics_translate_create",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "{{baseUrl}}/api/environments/:project_id/llm_analytics/translate/",
+            "params": [
+              {
+                "name": "project_id",
+                "value": "",
+                "type": "path",
+                "description": "Project ID of the project you're trying to access. To find the ID of the project, make a call to /api/projects/."
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            },
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          },
+          "docs": "Translate text to target language."
+        },
+        {
+          "info": {
+            "name": "llm_prompts_list",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "{{baseUrl}}/api/environments/:project_id/llm_prompts/",
+            "params": [
+              {
+                "name": "content",
+                "value": "",
+                "type": "query",
+                "description": "Controls how much prompt content is included in the response. 'full' includes the full prompt, 'preview' includes a short prompt_preview, and 'none' omits prompt content entirely. The outline field is always included.\n\n* `full` - full\n* `preview` - preview\n* `none` - none"
+              },
+              {
+                "name": "created_by_id",
+                "value": "",
+                "type": "query",
+                "description": "Filter prompts by the ID of the user who created them."
+              },
+              {
+                "name": "limit",
+                "value": "",
+                "type": "query",
+                "description": "Number of results to return per page."
+              },
+              {
+                "name": "offset",
+                "value": "",
+                "type": "query",
+                "description": "The initial index from which to return the results."
+              },
+              {
+                "name": "project_id",
+                "value": "",
+                "type": "path",
+                "description": "Project ID of the project you're trying to access. To find the ID of the project, make a call to /api/projects/."
+              },
+              {
+                "name": "search",
+                "value": "",
+                "type": "query",
+                "description": "Optional substring filter applied to prompt names and prompt content."
+              }
+            ],
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          }
+        },
+        {
+          "info": {
+            "name": "llm_prompts_create",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "{{baseUrl}}/api/environments/:project_id/llm_prompts/",
+            "params": [
+              {
+                "name": "project_id",
+                "value": "",
+                "type": "path",
+                "description": "Project ID of the project you're trying to access. To find the ID of the project, make a call to /api/projects/."
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            },
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          }
+        },
+        {
+          "info": {
+            "name": "llm_prompts_name_retrieve",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "{{baseUrl}}/api/environments/:project_id/llm_prompts/name/:prompt_name/",
+            "params": [
+              {
+                "name": "content",
+                "value": "",
+                "type": "query",
+                "description": "Controls how much prompt content is included in the response. 'full' includes the full prompt, 'preview' includes a short prompt_preview, and 'none' omits prompt content entirely. The outline field is always included.\n\n* `full` - full\n* `preview` - preview\n* `none` - none"
+              },
+              {
+                "name": "project_id",
+                "value": "",
+                "type": "path",
+                "description": "Project ID of the project you're trying to access. To find the ID of the project, make a call to /api/projects/."
+              },
+              {
+                "name": "prompt_name",
+                "value": "",
+                "type": "path"
+              },
+              {
+                "name": "version",
+                "value": "",
+                "type": "query",
+                "description": "Specific prompt version to fetch. If omitted, the latest version is returned."
+              }
+            ],
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          }
+        },
+        {
+          "info": {
+            "name": "llm_prompts_name_partial_update",
+            "type": "http"
+          },
+          "http": {
+            "method": "PATCH",
+            "url": "{{baseUrl}}/api/environments/:project_id/llm_prompts/name/:prompt_name/",
+            "params": [
+              {
+                "name": "project_id",
+                "value": "",
+                "type": "path",
+                "description": "Project ID of the project you're trying to access. To find the ID of the project, make a call to /api/projects/."
+              },
+              {
+                "name": "prompt_name",
+                "value": "",
+                "type": "path"
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            },
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          }
+        },
+        {
+          "info": {
+            "name": "llm_prompts_name_archive_create",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "{{baseUrl}}/api/environments/:project_id/llm_prompts/name/:prompt_name/archive/",
+            "params": [
+              {
+                "name": "project_id",
+                "value": "",
+                "type": "path",
+                "description": "Project ID of the project you're trying to access. To find the ID of the project, make a call to /api/projects/."
+              },
+              {
+                "name": "prompt_name",
+                "value": "",
+                "type": "path"
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            },
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          }
+        },
+        {
+          "info": {
+            "name": "llm_prompts_name_duplicate_create",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "{{baseUrl}}/api/environments/:project_id/llm_prompts/name/:prompt_name/duplicate/",
+            "params": [
+              {
+                "name": "project_id",
+                "value": "",
+                "type": "path",
+                "description": "Project ID of the project you're trying to access. To find the ID of the project, make a call to /api/projects/."
+              },
+              {
+                "name": "prompt_name",
+                "value": "",
+                "type": "path"
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            },
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          }
+        },
+        {
+          "info": {
+            "name": "llm_prompts_resolve_name_retrieve",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "{{baseUrl}}/api/environments/:project_id/llm_prompts/resolve/name/:prompt_name/",
+            "params": [
+              {
+                "name": "before_version",
+                "value": "",
+                "type": "query",
+                "description": "Return versions older than this version number. Mutually exclusive with offset."
+              },
+              {
+                "name": "limit",
+                "value": "",
+                "type": "query",
+                "description": "Maximum number of versions to return per page (1-100)."
+              },
+              {
+                "name": "offset",
+                "value": "",
+                "type": "query",
+                "description": "Zero-based offset into version history for pagination. Mutually exclusive with before_version."
+              },
+              {
+                "name": "project_id",
+                "value": "",
+                "type": "path",
+                "description": "Project ID of the project you're trying to access. To find the ID of the project, make a call to /api/projects/."
+              },
+              {
+                "name": "prompt_name",
+                "value": "",
+                "type": "path"
+              },
+              {
+                "name": "version",
+                "value": "",
+                "type": "query",
+                "description": "Specific prompt version to fetch. If omitted, the latest version is returned."
+              },
+              {
+                "name": "version_id",
+                "value": "",
+                "type": "query",
+                "description": "Exact prompt version UUID to resolve. Can be used together with version for extra safety."
+              }
+            ],
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          }
+        },
+        {
+          "info": {
+            "name": "llm_skills_list",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "{{baseUrl}}/api/environments/:project_id/llm_skills/",
+            "params": [
+              {
+                "name": "created_by_id",
+                "value": "",
+                "type": "query",
+                "description": "Filter skills by the ID of the user who created them."
+              },
+              {
+                "name": "limit",
+                "value": "",
+                "type": "query",
+                "description": "Number of results to return per page."
+              },
+              {
+                "name": "offset",
+                "value": "",
+                "type": "query",
+                "description": "The initial index from which to return the results."
+              },
+              {
+                "name": "project_id",
+                "value": "",
+                "type": "path",
+                "description": "Project ID of the project you're trying to access. To find the ID of the project, make a call to /api/projects/."
+              },
+              {
+                "name": "search",
+                "value": "",
+                "type": "query",
+                "description": "Optional substring filter applied to skill names and descriptions."
+              }
+            ],
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          }
+        },
+        {
+          "info": {
+            "name": "llm_skills_create",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "{{baseUrl}}/api/environments/:project_id/llm_skills/",
+            "params": [
+              {
+                "name": "project_id",
+                "value": "",
+                "type": "path",
+                "description": "Project ID of the project you're trying to access. To find the ID of the project, make a call to /api/projects/."
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            },
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          }
+        },
+        {
+          "info": {
+            "name": "llm_skills_name_retrieve",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "{{baseUrl}}/api/environments/:project_id/llm_skills/name/:skill_name/",
+            "params": [
+              {
+                "name": "project_id",
+                "value": "",
+                "type": "path",
+                "description": "Project ID of the project you're trying to access. To find the ID of the project, make a call to /api/projects/."
+              },
+              {
+                "name": "skill_name",
+                "value": "",
+                "type": "path"
+              },
+              {
+                "name": "version",
+                "value": "",
+                "type": "query",
+                "description": "Specific skill version to fetch. If omitted, the latest version is returned."
+              }
+            ],
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          }
+        },
+        {
+          "info": {
+            "name": "llm_skills_name_partial_update",
+            "type": "http"
+          },
+          "http": {
+            "method": "PATCH",
+            "url": "{{baseUrl}}/api/environments/:project_id/llm_skills/name/:skill_name/",
+            "params": [
+              {
+                "name": "project_id",
+                "value": "",
+                "type": "path",
+                "description": "Project ID of the project you're trying to access. To find the ID of the project, make a call to /api/projects/."
+              },
+              {
+                "name": "skill_name",
+                "value": "",
+                "type": "path"
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            },
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          }
+        },
+        {
+          "info": {
+            "name": "llm_skills_name_archive_create",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "{{baseUrl}}/api/environments/:project_id/llm_skills/name/:skill_name/archive/",
+            "params": [
+              {
+                "name": "project_id",
+                "value": "",
+                "type": "path",
+                "description": "Project ID of the project you're trying to access. To find the ID of the project, make a call to /api/projects/."
+              },
+              {
+                "name": "skill_name",
+                "value": "",
+                "type": "path"
+              }
+            ],
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          }
+        },
+        {
+          "info": {
+            "name": "llm_skills_name_duplicate_create",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "{{baseUrl}}/api/environments/:project_id/llm_skills/name/:skill_name/duplicate/",
+            "params": [
+              {
+                "name": "project_id",
+                "value": "",
+                "type": "path",
+                "description": "Project ID of the project you're trying to access. To find the ID of the project, make a call to /api/projects/."
+              },
+              {
+                "name": "skill_name",
+                "value": "",
+                "type": "path"
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            },
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          }
+        },
+        {
+          "info": {
+            "name": "llm_skills_name_files_create",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "{{baseUrl}}/api/environments/:project_id/llm_skills/name/:skill_name/files/",
+            "params": [
+              {
+                "name": "project_id",
+                "value": "",
+                "type": "path",
+                "description": "Project ID of the project you're trying to access. To find the ID of the project, make a call to /api/projects/."
+              },
+              {
+                "name": "skill_name",
+                "value": "",
+                "type": "path"
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            },
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          }
+        },
+        {
+          "info": {
+            "name": "llm_skills_name_files_rename_create",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "{{baseUrl}}/api/environments/:project_id/llm_skills/name/:skill_name/files-rename/",
+            "params": [
+              {
+                "name": "project_id",
+                "value": "",
+                "type": "path",
+                "description": "Project ID of the project you're trying to access. To find the ID of the project, make a call to /api/projects/."
+              },
+              {
+                "name": "skill_name",
+                "value": "",
+                "type": "path"
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            },
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          }
+        },
+        {
+          "info": {
+            "name": "llm_skills_name_files_retrieve",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "{{baseUrl}}/api/environments/:project_id/llm_skills/name/:skill_name/files/:file_path/",
+            "params": [
+              {
+                "name": "file_path",
+                "value": "",
+                "type": "path"
+              },
+              {
+                "name": "project_id",
+                "value": "",
+                "type": "path",
+                "description": "Project ID of the project you're trying to access. To find the ID of the project, make a call to /api/projects/."
+              },
+              {
+                "name": "skill_name",
+                "value": "",
+                "type": "path"
+              },
+              {
+                "name": "version",
+                "value": "",
+                "type": "query",
+                "description": "Specific skill version to fetch. If omitted, the latest version is returned."
+              }
+            ],
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          }
+        },
+        {
+          "info": {
+            "name": "llm_skills_name_files_destroy",
+            "type": "http"
+          },
+          "http": {
+            "method": "DELETE",
+            "url": "{{baseUrl}}/api/environments/:project_id/llm_skills/name/:skill_name/files/:file_path/",
+            "params": [
+              {
+                "name": "base_version",
+                "value": "",
+                "type": "query",
+                "description": "Latest version you are editing from. If provided, the request fails with 409 when another write has landed in the meantime."
+              },
+              {
+                "name": "file_path",
+                "value": "",
+                "type": "path"
+              },
+              {
+                "name": "project_id",
+                "value": "",
+                "type": "path",
+                "description": "Project ID of the project you're trying to access. To find the ID of the project, make a call to /api/projects/."
+              },
+              {
+                "name": "skill_name",
+                "value": "",
+                "type": "path"
+              }
+            ],
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          }
+        },
+        {
+          "info": {
+            "name": "llm_skills_resolve_name_retrieve",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "{{baseUrl}}/api/environments/:project_id/llm_skills/resolve/name/:skill_name/",
+            "params": [
+              {
+                "name": "before_version",
+                "value": "",
+                "type": "query",
+                "description": "Return versions older than this version number. Mutually exclusive with offset."
+              },
+              {
+                "name": "limit",
+                "value": "",
+                "type": "query",
+                "description": "Maximum number of versions to return per page (1-100)."
+              },
+              {
+                "name": "offset",
+                "value": "",
+                "type": "query",
+                "description": "Zero-based offset into version history for pagination. Mutually exclusive with before_version."
+              },
+              {
+                "name": "project_id",
+                "value": "",
+                "type": "path",
+                "description": "Project ID of the project you're trying to access. To find the ID of the project, make a call to /api/projects/."
+              },
+              {
+                "name": "skill_name",
+                "value": "",
+                "type": "path"
+              },
+              {
+                "name": "version",
+                "value": "",
+                "type": "query",
+                "description": "Specific skill version to fetch. If omitted, the latest version is returned."
+              },
+              {
+                "name": "version_id",
+                "value": "",
+                "type": "query",
+                "description": "Exact skill version UUID to resolve."
+              }
+            ],
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          }
+        },
+        {
+          "info": {
+            "name": "dataset_items_list",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "{{baseUrl}}/api/projects/:project_id/dataset_items/",
+            "params": [
+              {
+                "name": "dataset",
+                "value": "",
+                "type": "query",
+                "description": "Filter by dataset ID"
+              },
+              {
+                "name": "limit",
+                "value": "",
+                "type": "query",
+                "description": "Number of results to return per page."
+              },
+              {
+                "name": "offset",
+                "value": "",
+                "type": "query",
+                "description": "The initial index from which to return the results."
+              },
+              {
+                "name": "project_id",
+                "value": "",
+                "type": "path",
+                "description": "Project ID of the project you're trying to access. To find the ID of the project, make a call to /api/projects/."
+              }
+            ],
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          }
+        },
+        {
+          "info": {
+            "name": "dataset_items_create",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "{{baseUrl}}/api/projects/:project_id/dataset_items/",
+            "params": [
+              {
+                "name": "project_id",
+                "value": "",
+                "type": "path",
+                "description": "Project ID of the project you're trying to access. To find the ID of the project, make a call to /api/projects/."
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            },
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          }
+        },
+        {
+          "info": {
+            "name": "dataset_items_retrieve",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "{{baseUrl}}/api/projects/:project_id/dataset_items/:id/",
+            "params": [
+              {
+                "name": "id",
+                "value": "",
+                "type": "path",
+                "description": "A UUID string identifying this dataset item."
+              },
+              {
+                "name": "project_id",
+                "value": "",
+                "type": "path",
+                "description": "Project ID of the project you're trying to access. To find the ID of the project, make a call to /api/projects/."
+              }
+            ],
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          }
+        },
+        {
+          "info": {
+            "name": "dataset_items_update",
+            "type": "http"
+          },
+          "http": {
+            "method": "PUT",
+            "url": "{{baseUrl}}/api/projects/:project_id/dataset_items/:id/",
+            "params": [
+              {
+                "name": "id",
+                "value": "",
+                "type": "path",
+                "description": "A UUID string identifying this dataset item."
+              },
+              {
+                "name": "project_id",
+                "value": "",
+                "type": "path",
+                "description": "Project ID of the project you're trying to access. To find the ID of the project, make a call to /api/projects/."
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            },
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          }
+        },
+        {
+          "info": {
+            "name": "dataset_items_partial_update",
+            "type": "http"
+          },
+          "http": {
+            "method": "PATCH",
+            "url": "{{baseUrl}}/api/projects/:project_id/dataset_items/:id/",
+            "params": [
+              {
+                "name": "id",
+                "value": "",
+                "type": "path",
+                "description": "A UUID string identifying this dataset item."
+              },
+              {
+                "name": "project_id",
+                "value": "",
+                "type": "path",
+                "description": "Project ID of the project you're trying to access. To find the ID of the project, make a call to /api/projects/."
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            },
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          }
+        },
+        {
+          "info": {
+            "name": "dataset_items_destroy",
+            "type": "http"
+          },
+          "http": {
+            "method": "DELETE",
+            "url": "{{baseUrl}}/api/projects/:project_id/dataset_items/:id/",
+            "params": [
+              {
+                "name": "id",
+                "value": "",
+                "type": "path",
+                "description": "A UUID string identifying this dataset item."
+              },
+              {
+                "name": "project_id",
+                "value": "",
+                "type": "path",
+                "description": "Project ID of the project you're trying to access. To find the ID of the project, make a call to /api/projects/."
+              }
+            ],
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          },
+          "docs": "Hard delete of this model is not allowed. Use a patch API call to set \"deleted\" to true"
+        },
+        {
+          "info": {
+            "name": "datasets_list",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "{{baseUrl}}/api/projects/:project_id/datasets/",
+            "params": [
+              {
+                "name": "id__in",
+                "value": "",
+                "type": "query",
+                "description": "Multiple values may be separated by commas."
+              },
+              {
+                "name": "limit",
+                "value": "",
+                "type": "query",
+                "description": "Number of results to return per page."
+              },
+              {
+                "name": "offset",
+                "value": "",
+                "type": "query",
+                "description": "The initial index from which to return the results."
+              },
+              {
+                "name": "order_by",
+                "value": "",
+                "type": "query",
+                "description": "Ordering\n\n* `created_at` - Created At\n* `-created_at` - Created At (descending)\n* `updated_at` - Updated At\n* `-updated_at` - Updated At (descending)"
+              },
+              {
+                "name": "project_id",
+                "value": "",
+                "type": "path",
+                "description": "Project ID of the project you're trying to access. To find the ID of the project, make a call to /api/projects/."
+              },
+              {
+                "name": "search",
+                "value": "",
+                "type": "query",
+                "description": "Search in name, description, or metadata"
+              }
+            ],
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          }
+        },
+        {
+          "info": {
+            "name": "datasets_create",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "{{baseUrl}}/api/projects/:project_id/datasets/",
+            "params": [
+              {
+                "name": "project_id",
+                "value": "",
+                "type": "path",
+                "description": "Project ID of the project you're trying to access. To find the ID of the project, make a call to /api/projects/."
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            },
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          }
+        },
+        {
+          "info": {
+            "name": "datasets_retrieve",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "{{baseUrl}}/api/projects/:project_id/datasets/:id/",
+            "params": [
+              {
+                "name": "id",
+                "value": "",
+                "type": "path",
+                "description": "A UUID string identifying this dataset."
+              },
+              {
+                "name": "project_id",
+                "value": "",
+                "type": "path",
+                "description": "Project ID of the project you're trying to access. To find the ID of the project, make a call to /api/projects/."
+              }
+            ],
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          }
+        },
+        {
+          "info": {
+            "name": "datasets_update",
+            "type": "http"
+          },
+          "http": {
+            "method": "PUT",
+            "url": "{{baseUrl}}/api/projects/:project_id/datasets/:id/",
+            "params": [
+              {
+                "name": "id",
+                "value": "",
+                "type": "path",
+                "description": "A UUID string identifying this dataset."
+              },
+              {
+                "name": "project_id",
+                "value": "",
+                "type": "path",
+                "description": "Project ID of the project you're trying to access. To find the ID of the project, make a call to /api/projects/."
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            },
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          }
+        },
+        {
+          "info": {
+            "name": "datasets_partial_update",
+            "type": "http"
+          },
+          "http": {
+            "method": "PATCH",
+            "url": "{{baseUrl}}/api/projects/:project_id/datasets/:id/",
+            "params": [
+              {
+                "name": "id",
+                "value": "",
+                "type": "path",
+                "description": "A UUID string identifying this dataset."
+              },
+              {
+                "name": "project_id",
+                "value": "",
+                "type": "path",
+                "description": "Project ID of the project you're trying to access. To find the ID of the project, make a call to /api/projects/."
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            },
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          }
+        },
+        {
+          "info": {
+            "name": "datasets_destroy",
+            "type": "http"
+          },
+          "http": {
+            "method": "DELETE",
+            "url": "{{baseUrl}}/api/projects/:project_id/datasets/:id/",
+            "params": [
+              {
+                "name": "id",
+                "value": "",
+                "type": "path",
+                "description": "A UUID string identifying this dataset."
+              },
+              {
+                "name": "project_id",
+                "value": "",
+                "type": "path",
+                "description": "Project ID of the project you're trying to access. To find the ID of the project, make a call to /api/projects/."
+              }
+            ],
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          },
+          "docs": "Hard delete of this model is not allowed. Use a patch API call to set \"deleted\" to true"
+        }
+      ]
+    }
+  ],
+  "bundled": true
+}

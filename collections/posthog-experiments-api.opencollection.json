@@ -1,0 +1,722 @@
+{
+  "opencollection": "1.0.0",
+  "info": {
+    "name": "PostHog actions experiments API",
+    "version": "1.0.0"
+  },
+  "items": [
+    {
+      "info": {
+        "name": "experiments",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "experiments_list",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "{{baseUrl}}/api/projects/:project_id/experiments/",
+            "params": [
+              {
+                "name": "archived",
+                "value": "",
+                "type": "query",
+                "description": "Filter by archived state. Defaults to non-archived experiments only."
+              },
+              {
+                "name": "created_by_id",
+                "value": "",
+                "type": "query",
+                "description": "Filter to experiments created by the given user ID."
+              },
+              {
+                "name": "feature_flag_id",
+                "value": "",
+                "type": "query",
+                "description": "Filter to experiments linked to the given feature flag ID."
+              },
+              {
+                "name": "limit",
+                "value": "",
+                "type": "query",
+                "description": "Number of results to return per page."
+              },
+              {
+                "name": "offset",
+                "value": "",
+                "type": "query",
+                "description": "The initial index from which to return the results."
+              },
+              {
+                "name": "order",
+                "value": "",
+                "type": "query",
+                "description": "Field to order by. Prefix with '-' for descending. Allowlisted fields include name, created_at, updated_at, start_date, end_date, duration, and status."
+              },
+              {
+                "name": "project_id",
+                "value": "",
+                "type": "path",
+                "description": "Project ID of the project you're trying to access. To find the ID of the project, make a call to /api/projects/."
+              },
+              {
+                "name": "search",
+                "value": "",
+                "type": "query",
+                "description": "Free-text search applied to the experiment name (case-insensitive)."
+              },
+              {
+                "name": "status",
+                "value": "",
+                "type": "query",
+                "description": "Filter by experiment status. \"running\" and \"paused\" are mutually exclusive: \"running\" returns launched experiments with an active feature flag, \"paused\" returns launched experiments whose feature flag is deactivated. \"complete\" is an alias for \"stopped\". \"all\" disables status filtering."
+              }
+            ],
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          },
+          "docs": "List experiments for the current project. Supports filtering by status and archival state."
+        },
+        {
+          "info": {
+            "name": "experiments_create",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "{{baseUrl}}/api/projects/:project_id/experiments/",
+            "params": [
+              {
+                "name": "project_id",
+                "value": "",
+                "type": "path",
+                "description": "Project ID of the project you're trying to access. To find the ID of the project, make a call to /api/projects/."
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            },
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          },
+          "docs": "Create a new experiment in draft status with optional metrics."
+        },
+        {
+          "info": {
+            "name": "experiments_retrieve",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "{{baseUrl}}/api/projects/:project_id/experiments/:id/",
+            "params": [
+              {
+                "name": "id",
+                "value": "",
+                "type": "path",
+                "description": "A unique integer value identifying this experiment."
+              },
+              {
+                "name": "project_id",
+                "value": "",
+                "type": "path",
+                "description": "Project ID of the project you're trying to access. To find the ID of the project, make a call to /api/projects/."
+              }
+            ],
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          },
+          "docs": "Retrieve a single experiment by ID, including its current status, metrics, feature flag, and results metadata."
+        },
+        {
+          "info": {
+            "name": "experiments_update",
+            "type": "http"
+          },
+          "http": {
+            "method": "PUT",
+            "url": "{{baseUrl}}/api/projects/:project_id/experiments/:id/",
+            "params": [
+              {
+                "name": "id",
+                "value": "",
+                "type": "path",
+                "description": "A unique integer value identifying this experiment."
+              },
+              {
+                "name": "project_id",
+                "value": "",
+                "type": "path",
+                "description": "Project ID of the project you're trying to access. To find the ID of the project, make a call to /api/projects/."
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            },
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          },
+          "docs": "Mixin for ViewSets to handle ApprovalRequired exceptions from decorated serializers.\n\nThis mixin intercepts ApprovalRequired exceptions raised by the @approval_gate decorator\non serializer methods and converts them into proper HTTP 409 Conflict responses with\nchange request details."
+        },
+        {
+          "info": {
+            "name": "experiments_partial_update",
+            "type": "http"
+          },
+          "http": {
+            "method": "PATCH",
+            "url": "{{baseUrl}}/api/projects/:project_id/experiments/:id/",
+            "params": [
+              {
+                "name": "id",
+                "value": "",
+                "type": "path",
+                "description": "A unique integer value identifying this experiment."
+              },
+              {
+                "name": "project_id",
+                "value": "",
+                "type": "path",
+                "description": "Project ID of the project you're trying to access. To find the ID of the project, make a call to /api/projects/."
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            },
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          },
+          "docs": "Update an experiment. Use this to modify experiment properties such as name, description, metrics, variants, and configuration. Metrics can be added, changed and removed at any time."
+        },
+        {
+          "info": {
+            "name": "experiments_destroy",
+            "type": "http"
+          },
+          "http": {
+            "method": "DELETE",
+            "url": "{{baseUrl}}/api/projects/:project_id/experiments/:id/",
+            "params": [
+              {
+                "name": "id",
+                "value": "",
+                "type": "path",
+                "description": "A unique integer value identifying this experiment."
+              },
+              {
+                "name": "project_id",
+                "value": "",
+                "type": "path",
+                "description": "Project ID of the project you're trying to access. To find the ID of the project, make a call to /api/projects/."
+              }
+            ],
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          },
+          "docs": "Hard delete of this model is not allowed. Use a patch API call to set \"deleted\" to true"
+        },
+        {
+          "info": {
+            "name": "experiments_archive_create",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "{{baseUrl}}/api/projects/:project_id/experiments/:id/archive/",
+            "params": [
+              {
+                "name": "id",
+                "value": "",
+                "type": "path",
+                "description": "A unique integer value identifying this experiment."
+              },
+              {
+                "name": "project_id",
+                "value": "",
+                "type": "path",
+                "description": "Project ID of the project you're trying to access. To find the ID of the project, make a call to /api/projects/."
+              }
+            ],
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          },
+          "docs": "Archive an ended experiment.\n\nHides the experiment from the default list view. The experiment can be\nrestored at any time by updating archived=false. Returns 400 if the\nexperiment is already archived or has not ended yet."
+        },
+        {
+          "info": {
+            "name": "experiments_copy_to_project_create",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "{{baseUrl}}/api/projects/:project_id/experiments/:id/copy_to_project/",
+            "params": [
+              {
+                "name": "id",
+                "value": "",
+                "type": "path",
+                "description": "A unique integer value identifying this experiment."
+              },
+              {
+                "name": "project_id",
+                "value": "",
+                "type": "path",
+                "description": "Project ID of the project you're trying to access. To find the ID of the project, make a call to /api/projects/."
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            },
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          },
+          "docs": "Mixin for ViewSets to handle ApprovalRequired exceptions from decorated serializers.\n\nThis mixin intercepts ApprovalRequired exceptions raised by the @approval_gate decorator\non serializer methods and converts them into proper HTTP 409 Conflict responses with\nchange request details."
+        },
+        {
+          "info": {
+            "name": "experiments_create_exposure_cohort_for_experiment_create",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "{{baseUrl}}/api/projects/:project_id/experiments/:id/create_exposure_cohort_for_experiment/",
+            "params": [
+              {
+                "name": "id",
+                "value": "",
+                "type": "path",
+                "description": "A unique integer value identifying this experiment."
+              },
+              {
+                "name": "project_id",
+                "value": "",
+                "type": "path",
+                "description": "Project ID of the project you're trying to access. To find the ID of the project, make a call to /api/projects/."
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            },
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          },
+          "docs": "Mixin for ViewSets to handle ApprovalRequired exceptions from decorated serializers.\n\nThis mixin intercepts ApprovalRequired exceptions raised by the @approval_gate decorator\non serializer methods and converts them into proper HTTP 409 Conflict responses with\nchange request details."
+        },
+        {
+          "info": {
+            "name": "experiments_duplicate_create",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "{{baseUrl}}/api/projects/:project_id/experiments/:id/duplicate/",
+            "params": [
+              {
+                "name": "id",
+                "value": "",
+                "type": "path",
+                "description": "A unique integer value identifying this experiment."
+              },
+              {
+                "name": "project_id",
+                "value": "",
+                "type": "path",
+                "description": "Project ID of the project you're trying to access. To find the ID of the project, make a call to /api/projects/."
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            },
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          },
+          "docs": "Mixin for ViewSets to handle ApprovalRequired exceptions from decorated serializers.\n\nThis mixin intercepts ApprovalRequired exceptions raised by the @approval_gate decorator\non serializer methods and converts them into proper HTTP 409 Conflict responses with\nchange request details."
+        },
+        {
+          "info": {
+            "name": "experiments_end_create",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "{{baseUrl}}/api/projects/:project_id/experiments/:id/end/",
+            "params": [
+              {
+                "name": "id",
+                "value": "",
+                "type": "path",
+                "description": "A unique integer value identifying this experiment."
+              },
+              {
+                "name": "project_id",
+                "value": "",
+                "type": "path",
+                "description": "Project ID of the project you're trying to access. To find the ID of the project, make a call to /api/projects/."
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            },
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          },
+          "docs": "End a running experiment without shipping a variant.\n\nSets end_date to now and marks the experiment as stopped. The feature\nflag is NOT modified — users continue to see their assigned variants\nand exposure events ($feature_flag_called) continue to be recorded.\nHowever, only data up to end_date is included in experiment results.\n\nUse this when:\n\n- You want to freeze the results window without changing which variant\n  users see.\n- A variant was already shipped manually via the feature flag UI and\n"
+        },
+        {
+          "info": {
+            "name": "experiments_launch_create",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "{{baseUrl}}/api/projects/:project_id/experiments/:id/launch/",
+            "params": [
+              {
+                "name": "id",
+                "value": "",
+                "type": "path",
+                "description": "A unique integer value identifying this experiment."
+              },
+              {
+                "name": "project_id",
+                "value": "",
+                "type": "path",
+                "description": "Project ID of the project you're trying to access. To find the ID of the project, make a call to /api/projects/."
+              }
+            ],
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          },
+          "docs": "Launch a draft experiment.\n\nValidates the experiment is in draft state, activates its linked feature flag,\nsets start_date to the current server time, and transitions the experiment to running.\nReturns 400 if the experiment has already been launched or if the feature flag\nconfiguration is invalid (e.g. missing \"control\" variant or fewer than 2 variants)."
+        },
+        {
+          "info": {
+            "name": "experiments_pause_create",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "{{baseUrl}}/api/projects/:project_id/experiments/:id/pause/",
+            "params": [
+              {
+                "name": "id",
+                "value": "",
+                "type": "path",
+                "description": "A unique integer value identifying this experiment."
+              },
+              {
+                "name": "project_id",
+                "value": "",
+                "type": "path",
+                "description": "Project ID of the project you're trying to access. To find the ID of the project, make a call to /api/projects/."
+              }
+            ],
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          },
+          "docs": "Pause a running experiment.\n\nDeactivates the linked feature flag so it is no longer returned by the\n/decide endpoint. Users fall back to the application default (typically\nthe control experience), and no new exposure events are recorded (i.e.\n$feature_flag_called is not fired).\nReturns 400 if the experiment is not running or is already paused."
+        },
+        {
+          "info": {
+            "name": "experiments_recalculate_timeseries_create",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "{{baseUrl}}/api/projects/:project_id/experiments/:id/recalculate_timeseries/",
+            "params": [
+              {
+                "name": "id",
+                "value": "",
+                "type": "path",
+                "description": "A unique integer value identifying this experiment."
+              },
+              {
+                "name": "project_id",
+                "value": "",
+                "type": "path",
+                "description": "Project ID of the project you're trying to access. To find the ID of the project, make a call to /api/projects/."
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            },
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          },
+          "docs": "Mixin for ViewSets to handle ApprovalRequired exceptions from decorated serializers.\n\nThis mixin intercepts ApprovalRequired exceptions raised by the @approval_gate decorator\non serializer methods and converts them into proper HTTP 409 Conflict responses with\nchange request details."
+        },
+        {
+          "info": {
+            "name": "experiments_reset_create",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "{{baseUrl}}/api/projects/:project_id/experiments/:id/reset/",
+            "params": [
+              {
+                "name": "id",
+                "value": "",
+                "type": "path",
+                "description": "A unique integer value identifying this experiment."
+              },
+              {
+                "name": "project_id",
+                "value": "",
+                "type": "path",
+                "description": "Project ID of the project you're trying to access. To find the ID of the project, make a call to /api/projects/."
+              }
+            ],
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          },
+          "docs": "Reset an experiment back to draft state.\n\nClears start/end dates, conclusion, and archived flag. The feature\nflag is left unchanged — users continue to see their assigned variants.\n\nPreviously collected events still exist but won't be included in\nresults unless the start date is manually adjusted after re-launch.\n\nReturns 400 if the experiment is already in draft state."
+        },
+        {
+          "info": {
+            "name": "experiments_resume_create",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "{{baseUrl}}/api/projects/:project_id/experiments/:id/resume/",
+            "params": [
+              {
+                "name": "id",
+                "value": "",
+                "type": "path",
+                "description": "A unique integer value identifying this experiment."
+              },
+              {
+                "name": "project_id",
+                "value": "",
+                "type": "path",
+                "description": "Project ID of the project you're trying to access. To find the ID of the project, make a call to /api/projects/."
+              }
+            ],
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          },
+          "docs": "Resume a paused experiment.\n\nReactivates the linked feature flag so it is returned by /decide again.\nUsers are re-bucketed deterministically into the same variants they had\nbefore the pause, and exposure tracking resumes.\nReturns 400 if the experiment is not running or is not paused."
+        },
+        {
+          "info": {
+            "name": "experiments_ship_variant_create",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "{{baseUrl}}/api/projects/:project_id/experiments/:id/ship_variant/",
+            "params": [
+              {
+                "name": "id",
+                "value": "",
+                "type": "path",
+                "description": "A unique integer value identifying this experiment."
+              },
+              {
+                "name": "project_id",
+                "value": "",
+                "type": "path",
+                "description": "Project ID of the project you're trying to access. To find the ID of the project, make a call to /api/projects/."
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            },
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          },
+          "docs": "Ship a variant to 100% of users and (optionally) end the experiment.\n\nRewrites the feature flag so that the selected variant is served to everyone.\nExisting release conditions (flag groups) are preserved so the change can be\nrolled back by deleting the auto-added release condition in the feature flag UI.\n\nCan be called on both running and stopped experiments. If the experiment is\nstill running, it will also be ended (end_date set and status marked as stopped).\nIf the experiment has already ended"
+        },
+        {
+          "info": {
+            "name": "experiments_timeseries_results_retrieve",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "{{baseUrl}}/api/projects/:project_id/experiments/:id/timeseries_results/",
+            "params": [
+              {
+                "name": "fingerprint",
+                "value": "",
+                "type": "query",
+                "description": "Fingerprint of the metric configuration. Available alongside metric_uuid on each metric in the experiment's metrics array."
+              },
+              {
+                "name": "id",
+                "value": "",
+                "type": "path",
+                "description": "A unique integer value identifying this experiment."
+              },
+              {
+                "name": "metric_uuid",
+                "value": "",
+                "type": "query",
+                "description": "UUID of the metric to fetch timeseries for. Available on each metric in the experiment's metrics array."
+              },
+              {
+                "name": "project_id",
+                "value": "",
+                "type": "path",
+                "description": "Project ID of the project you're trying to access. To find the ID of the project, make a call to /api/projects/."
+              }
+            ],
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          },
+          "docs": "Mixin for ViewSets to handle ApprovalRequired exceptions from decorated serializers.\n\nThis mixin intercepts ApprovalRequired exceptions raised by the @approval_gate decorator\non serializer methods and converts them into proper HTTP 409 Conflict responses with\nchange request details."
+        },
+        {
+          "info": {
+            "name": "experiments_unarchive_create",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "{{baseUrl}}/api/projects/:project_id/experiments/:id/unarchive/",
+            "params": [
+              {
+                "name": "id",
+                "value": "",
+                "type": "path",
+                "description": "A unique integer value identifying this experiment."
+              },
+              {
+                "name": "project_id",
+                "value": "",
+                "type": "path",
+                "description": "Project ID of the project you're trying to access. To find the ID of the project, make a call to /api/projects/."
+              }
+            ],
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          },
+          "docs": "Unarchive an archived experiment.\n\nRestores the experiment to the default list view. Returns 400 if the\nexperiment is not currently archived."
+        },
+        {
+          "info": {
+            "name": "experiments_eligible_feature_flags_retrieve",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "{{baseUrl}}/api/projects/:project_id/experiments/eligible_feature_flags/",
+            "params": [
+              {
+                "name": "project_id",
+                "value": "",
+                "type": "path",
+                "description": "Project ID of the project you're trying to access. To find the ID of the project, make a call to /api/projects/."
+              }
+            ],
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          },
+          "docs": "Returns a paginated list of feature flags eligible for use in experiments.\n\nEligible flags must:\n- Be multivariate with at least 2 variants\n- Have \"control\" as the first variant key\n\nQuery parameters:\n- search: Filter by flag key or name (case insensitive)\n- limit: Number of results per page (default: 20)\n- offset: Pagination offset (default: 0)\n- active: Filter by active status (\"true\" or \"false\")\n- created_by_id: Filter by creator user ID\n- order: Sort order field\n- evaluation_runtime: Filter "
+        },
+        {
+          "info": {
+            "name": "experiments_requires_flag_implementation_retrieve",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "{{baseUrl}}/api/projects/:project_id/experiments/requires_flag_implementation/",
+            "params": [
+              {
+                "name": "project_id",
+                "value": "",
+                "type": "path",
+                "description": "Project ID of the project you're trying to access. To find the ID of the project, make a call to /api/projects/."
+              }
+            ],
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          },
+          "docs": "Mixin for ViewSets to handle ApprovalRequired exceptions from decorated serializers.\n\nThis mixin intercepts ApprovalRequired exceptions raised by the @approval_gate decorator\non serializer methods and converts them into proper HTTP 409 Conflict responses with\nchange request details."
+        },
+        {
+          "info": {
+            "name": "experiments_stats_retrieve",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "{{baseUrl}}/api/projects/:project_id/experiments/stats/",
+            "params": [
+              {
+                "name": "project_id",
+                "value": "",
+                "type": "path",
+                "description": "Project ID of the project you're trying to access. To find the ID of the project, make a call to /api/projects/."
+              }
+            ],
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          },
+          "docs": "Mixin for ViewSets to handle ApprovalRequired exceptions from decorated serializers.\n\nThis mixin intercepts ApprovalRequired exceptions raised by the @approval_gate decorator\non serializer methods and converts them into proper HTTP 409 Conflict responses with\nchange request details."
+        }
+      ]
+    }
+  ],
+  "bundled": true
+}
