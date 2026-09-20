@@ -1,0 +1,251 @@
+slug: posthog
+provider: PostHog
+generated_by: planning/capability-mapping/scripts/classify_capabilities.py
+model: claude-opus-5
+frame:
+- Software & Technology
+min_confidence: 0.7
+capability_model:
+  source: https://github.com/vincentmakes/turbo-ea-capabilities
+  license: CC-BY-4.0
+  attribution: Turbo EA Capabilities by Vincent Verdet — Turbo EA, https://github.com/vincentmakes/turbo-ea-capabilities,
+    CC BY 4.0
+  notice: NOTICE
+edge_count: 24
+edges:
+- tag: feature_flags
+  spec_file: posthog-feature-flags-api-openapi.yml
+  capability_id: BC-4210.50
+  capability_id_l1: BC-4210
+  capability_name: Feature Flag Management
+  confidence: 0.95
+  evidence: feature_flags_create; schemas FeatureFlagFiltersSchema, FeatureFlagConditionGroupSchema, feature_flags_remote_config_retrieve
+  reason: Full lifecycle and targeting control of feature flags.
+- tag: experiments
+  spec_file: posthog-experiments-api-openapi.yml
+  capability_id: BC-4280.50
+  capability_id_l1: BC-4280
+  capability_name: A/B Test Execution
+  confidence: 0.9
+  evidence: experiments_launch_create, experiments_end_create, schemas ExperimentVariant, ExperimentApiExposureCriteria
+  reason: Configuration, launch, targeting and conclusion of feature experiments — A/B test execution.
+- tag: experiment_holdouts
+  spec_file: posthog-experiment-holdouts-api-openapi.yml
+  capability_id: BC-4280.50
+  capability_id_l1: BC-4280
+  capability_name: A/B Test Execution
+  confidence: 0.85
+  evidence: experiment_holdouts_create; schema ExperimentHoldout
+  reason: Holdout groups are targeting configuration for running experiments/A-B tests.
+- tag: logs
+  spec_file: posthog-logs-api-openapi.yml
+  capability_id: BC-4220.20
+  capability_id_l1: BC-4220
+  capability_name: Observability Management
+  confidence: 0.85
+  evidence: GET /api/environments/{environment_id}/logs/attributes/ ; schemas '_LogsQueryResponse, SeverityLevelsEnum,
+    PatchedLogsSamplingRule, LogsAlertConfiguration'
+  reason: Log ingestion querying, severity levels, sampling rules, saved log views and log-threshold alerting
+    are log-based observability of the running service. The 'alerts' here are monitoring alerts on log
+    conditions, not business alerts.
+- tag: product_analytics
+  spec_file: posthog-product-analytics-api-openapi.yml
+  capability_id: BC-4280.30
+  capability_id_l1: BC-4280
+  capability_name: Product Usage Analytics
+  confidence: 0.85
+  evidence: environments_insights_list, environments_elements_stats_retrieve, schemas FunnelCorrelationQuery,
+    RETENTION, TrendsFilter
+  reason: Operations create and query insights over product event data with funnel, trend and retention
+    query schemas — plainly analytical views of product usage. Maps to Product Usage Analytics; slight
+    residual ambiguity with general Analytics & BI.
+- tag: web_experiments
+  spec_file: posthog-web-experiments-api-openapi.yml
+  capability_id: BC-4280.50
+  capability_id_l1: BC-4280
+  capability_name: A/B Test Execution
+  confidence: 0.85
+  evidence: POST /api/projects/{project_id}/web_experiments/, schemas 'WebExperimentsAPI', 'PatchedWebExperimentsAPI'
+  reason: CRUD over web experiments on a platform whose stated scope includes 'feature flags, A/B testing'
+    — configuration and lifecycle of running A/B tests. Clear fit to A/B Test Execution.
+- tag: event_schemas
+  spec_file: posthog-event-schemas-api-openapi.yml
+  capability_id: BC-4280.20
+  capability_id_l1: BC-4280
+  capability_name: Telemetry Quality & Governance
+  confidence: 0.8
+  evidence: 'event_schemas_create; schemas: EventSchema, SchemaPropertyGroup, EventDefinitionBasic'
+  reason: Defines and maintains schemas for product analytics events — schema governance of product telemetry.
+- tag: events
+  spec_file: posthog-events-api-openapi.yml
+  capability_id: BC-4280.10
+  capability_id_l1: BC-4280
+  capability_name: Product Telemetry Instrumentation
+  confidence: 0.8
+  evidence: GET /api/projects/{project_id}/events/  events_list; schema ClickhouseEvent
+  reason: Read access to captured product usage events in an analytics platform; telemetry instrumentation/capture
+    surface (could also be usage analytics).
+- tag: experiment_saved_metrics
+  spec_file: posthog-experiment-saved-metrics-api-openapi.yml
+  capability_id: BC-4280.40
+  capability_id_l1: BC-4280
+  capability_name: Experimentation Programme Management
+  confidence: 0.8
+  evidence: experiment_saved_metrics_create; schema ExperimentSavedMetric
+  reason: Reusable experiment metric definitions — methodology/design assets of the experimentation programme.
+- tag: insights
+  spec_file: posthog-insights-api-openapi.yml
+  capability_id: BC-4280.30
+  capability_id_l1: BC-4280
+  capability_name: Product Usage Analytics
+  confidence: 0.8
+  evidence: 'environments_insights_create; schemas: FunnelCorrelationQuery, RETENTION, TrendsFilter, RevenueAnalyticsTopCustomersQuery,
+    RetentionType'
+  reason: Insights are the saved analytical queries (funnels, trends, retention) over product usage events,
+    matching 'funnels, retention cohorts, and feature engagement'. Some ambiguity with generic Analytics
+    & BI, but the vendor is a product analytics platform.
+- tag: visual_review
+  spec_file: posthog-visual-review-api-openapi.yml
+  capability_id: BC-4200.50
+  capability_id_l1: BC-4200
+  capability_name: Software Quality Engineering
+  confidence: 0.8
+  evidence: visual_review_repos_baselines_retrieve; visual_review_repos_quarantine_create; schemas Snapshot,
+    ApproveRunRequestInput, ToleratedHashEntry, CreateRunResult
+  reason: Baselines, snapshots, run approval and flaky-test quarantine per repository are visual regression
+    testing mechanics — automated test suite stewardship within software quality engineering.
+- tag: domains
+  spec_file: posthog-domains-api-openapi.yml
+  capability_id: BC-4230.50
+  capability_id_l1: BC-4230
+  capability_name: Tenant Identity Federation
+  confidence: 0.75
+  evidence: GET /api/organizations/{organization_id}/domains/{id}/scim/logs/, POST .../scim/token/, POST
+    .../verify/ with schema OrganizationDomain
+  reason: Organisation-level domain verification plus SCIM token issuance and SCIM provisioning logs is
+    exactly the SSO/SCIM federation surface for a customer organisation, i.e. tenant identity federation
+    rather than generic domain/DNS plumbing.
+- tag: heatmaps
+  spec_file: posthog-heatmaps-api-openapi.yml
+  capability_id: BC-4280.30
+  capability_id_l1: BC-4280
+  capability_name: Product Usage Analytics
+  confidence: 0.75
+  evidence: 'GET /api/projects/{project_id}/heatmaps/ heatmaps_list; GET .../heatmaps/events/ heatmaps_events_retrieve;
+    schemas: HeatmapsResponse, HeatmapResponseItem'
+  reason: Heatmaps aggregate captured product interaction events into views of where users click/engage
+    — an analytical view of product usage and feature engagement.
+- tag: surveys
+  spec_file: posthog-surveys-api-openapi.yml
+  capability_id: BC-430.50
+  capability_id_l1: BC-430
+  capability_name: Customer Feedback Management
+  confidence: 0.75
+  evidence: 'schemas: Survey, SurveyMultipleChoiceQuestionSchema, SurveyRatingQuestionSchema, SurveyOpenQuestionSchema;
+    POST .../surveys/{id}/responses/{response_uuid}/archive/'
+  reason: Creates and manages in-product surveys with rating/multiple-choice/open questions and collects/archives
+    responses — voice-of-customer/feedback collection. Some overlap with product insight synthesis, hence
+    0.75.
+- tag: web_analytics
+  spec_file: posthog-web-analytics-api-openapi.yml
+  capability_id: BC-4280.30
+  capability_id_l1: BC-4280
+  capability_name: Product Usage Analytics
+  confidence: 0.75
+  evidence: GET /web_analytics/weekly_digest/ — 'Summarize web analytics'; schemas 'TopSource', 'TopPage',
+    'WoWChange', 'WeeklyDigestResponse'
+  reason: Returns aggregated usage analytics (top pages, top sources, week-over-week change) for a project
+    — analytical views of product/site usage. Fits Product Usage Analytics; some chance a reader would
+    call this digital marketing web analytics, hence 0.75.
+- tag: conversations
+  spec_file: posthog-conversations-api-openapi.yml
+  capability_id: BC-430.10
+  capability_id_l1: BC-430
+  capability_name: Customer Inquiry Management
+  confidence: 0.7
+  evidence: 'schemas: Ticket, TicketAssignment, TicketStatusEnum, SuggestReplyError, TicketPerson; POST
+    .../conversations/{conversation}/append_message/'
+  reason: Operations manage conversations with messages, plus schemas for Tickets, ticket status and assignment
+    and reply suggestion — a support inbox/ticketing surface, i.e. inbound customer contact handling and
+    resolution, not analytics.
+- tag: error_tracking
+  spec_file: posthog-error-tracking-api-openapi.yml
+  capability_id: BC-4220.20
+  capability_id_l1: BC-4220
+  capability_name: Observability Management
+  confidence: 0.7
+  evidence: GET /api/environments/{environment_id}/error_tracking/symbol_sets/, schemas ErrorTrackingIssueFullStatusEnum,
+    ErrorTrackingSuppressionRule, ErrorTrackingAssignmentRule, PaginatedErrorTrackingSpikeEventList
+  reason: Exception/crash monitoring in production with releases, symbol sets for stack-trace symbolication,
+    issue status, spike events and suppression/assignment rules — production observability of the running
+    service. A defect-management reading (BC-4200.50) is secondary.
+- tag: evaluations
+  spec_file: posthog-evaluations-api-openapi.yml
+  capability_id: BC-610.60
+  capability_id_l1: BC-610
+  capability_name: Artificial Intelligence Management
+  confidence: 0.7
+  evidence: 'schemas: Evaluation, EvaluationTypeEnum, ModelConfiguration, LLMProviderEnum, TestHogRequest'
+  reason: CRUD over evaluations configured with an LLM provider and model configuration — LLM/AI output
+    evaluation, which is part of the AI/ML model lifecycle (evaluation, quality of model outputs) rather
+    than any business-domain assessment.
+- tag: event_definitions
+  spec_file: posthog-event-definitions-api-openapi.yml
+  capability_id: BC-4280.20
+  capability_id_l1: BC-4280
+  capability_name: Telemetry Quality & Governance
+  confidence: 0.7
+  evidence: POST /api/projects/{project_id}/event_definitions/bulk_update_tags/, schemas EnterpriseEventDefinition,
+    EventDefinitionRecord, EnforcementModeEnum, PromotedPropertiesResponse
+  reason: Curation of the product event taxonomy — defining, describing, tagging and enforcing event definitions
+    — which is schema governance over product telemetry.
+- tag: llm_prompts
+  spec_file: posthog-llm-prompts-api-openapi.yml
+  capability_id: BC-610.60
+  capability_id_l1: BC-610
+  capability_name: Artificial Intelligence Management
+  confidence: 0.7
+  evidence: POST /api/environments/{project_id}/llm_prompts/name/{prompt_name}/archive/ ; schemas 'LLMPrompt,
+    LLMPromptVersionSummary, PatchedLLMPromptPublish, LLMPromptResolveResponse'
+  reason: Versioning, publishing, archiving and runtime resolution of LLM prompts is lifecycle management
+    of AI artefacts, mapping to Artificial Intelligence Management rather than any analytics or product
+    capability.
+- tag: llm_skills
+  spec_file: posthog-llm-skills-api-openapi.yml
+  capability_id: BC-610.60
+  capability_id_l1: BC-610
+  capability_name: Artificial Intelligence Management
+  confidence: 0.7
+  evidence: POST .../llm_skills/name/{skill_name}/archive/ ; schemas 'LLMSkill, LLMSkillVersionSummary,
+    PatchedLLMSkillPublish, LLMSkillFileManifest'
+  reason: Create/publish/version/archive of LLM skills and their backing files is AI asset lifecycle management
+    (MLOps-style stewardship of AI components).
+- tag: query
+  spec_file: posthog-query-api-openapi.yml
+  capability_id: BC-4280.30
+  capability_id_l1: BC-4280
+  capability_name: Product Usage Analytics
+  confidence: 0.7
+  evidence: FunnelCorrelationQuery, RETENTION, TrendsFilter, RevenueAnalyticsTopCustomersQuery
+  reason: The query endpoint executes analytical queries over product event data with funnel, trend and
+    retention query kinds, which is product usage analytics. Some chance it should instead be treated
+    as generic analytics/BI delivery, hence 0.7.
+- tag: roles
+  spec_file: posthog-roles-api-openapi.yml
+  capability_id: BC-620.20
+  capability_id_l1: BC-620
+  capability_name: Identity & Access Management
+  confidence: 0.7
+  evidence: roles_role_memberships_create, Role, RoleMembership, OrganizationMembershipLevelEnum
+  reason: Creating roles and managing role memberships within an organisation is role-based access administration,
+    mapping to Identity & Access Management. Some risk that this is judged pure platform admin plumbing.
+- tag: session_recordings
+  spec_file: posthog-session-recordings-api-openapi.yml
+  capability_id: BC-4280.30
+  capability_id_l1: BC-4280
+  capability_name: Product Usage Analytics
+  confidence: 0.7
+  evidence: GET /api/projects/{project_id}/session_recordings/ ; schemas SessionRecording, MinimalPerson,
+    SharingConfiguration
+  reason: Listing, retrieving and sharing captured user session replays for behavioural analysis of the
+    product — squarely product usage analytics on a product analytics platform.
