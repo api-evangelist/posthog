@@ -1,10 +1,10 @@
-openapi: 3.0.3
+openapi: 3.2.0
 info:
-  title: PostHog actions experiments API
+  title: PostHog Experiments API
   version: 1.0.0
   description: ''
 tags:
-- name: experiments
+- name: Experiments
 paths:
   /api/projects/{project_id}/experiments/:
     get:
@@ -62,7 +62,7 @@ paths:
           - stopped
         description: 'Filter by experiment status. "running" and "paused" are mutually exclusive: "running" returns launched experiments with an active feature flag, "paused" returns launched experiments whose feature flag is deactivated. "complete" is an alias for "stopped". "all" disables status filtering.'
       tags:
-      - experiments
+      - Experiments
       security:
       - PersonalAPIKeyAuth:
         - experiment:read
@@ -75,13 +75,15 @@ paths:
           description: ''
       x-explicit-tags:
       - experiments
+      summary: Experiments list
+      x-summary-source: derived
     post:
       operationId: experiments_create
       description: Create a new experiment in draft status with optional metrics.
       parameters:
       - $ref: '#/components/parameters/ProjectIdPath'
       tags:
-      - experiments
+      - Experiments
       requestBody:
         content:
           application/json:
@@ -106,6 +108,8 @@ paths:
           description: ''
       x-explicit-tags:
       - experiments
+      summary: Experiments create
+      x-summary-source: derived
   /api/projects/{project_id}/experiments/{id}/:
     get:
       operationId: experiments_retrieve
@@ -119,7 +123,7 @@ paths:
         required: true
       - $ref: '#/components/parameters/ProjectIdPath'
       tags:
-      - experiments
+      - Experiments
       security:
       - PersonalAPIKeyAuth:
         - experiment:read
@@ -132,6 +136,8 @@ paths:
           description: ''
       x-explicit-tags:
       - experiments
+      summary: Experiments retrieve
+      x-summary-source: derived
     put:
       operationId: experiments_update
       description: 'Mixin for ViewSets to handle ApprovalRequired exceptions from decorated serializers.
@@ -151,7 +157,7 @@ paths:
         required: true
       - $ref: '#/components/parameters/ProjectIdPath'
       tags:
-      - experiments
+      - Experiments
       requestBody:
         content:
           application/json:
@@ -176,6 +182,8 @@ paths:
           description: ''
       x-explicit-tags:
       - experiments
+      summary: Experiments update
+      x-summary-source: derived
     patch:
       operationId: experiments_partial_update
       description: Update an experiment. Use this to modify experiment properties such as name, description, metrics, variants, and configuration. Metrics can be added, changed and removed at any time.
@@ -188,7 +196,7 @@ paths:
         required: true
       - $ref: '#/components/parameters/ProjectIdPath'
       tags:
-      - experiments
+      - Experiments
       requestBody:
         content:
           application/json:
@@ -212,6 +220,8 @@ paths:
           description: ''
       x-explicit-tags:
       - experiments
+      summary: Experiments partial update
+      x-summary-source: derived
     delete:
       operationId: experiments_destroy
       description: Hard delete of this model is not allowed. Use a patch API call to set "deleted" to true
@@ -224,7 +234,7 @@ paths:
         required: true
       - $ref: '#/components/parameters/ProjectIdPath'
       tags:
-      - experiments
+      - Experiments
       security:
       - PersonalAPIKeyAuth:
         - experiment:write
@@ -233,6 +243,8 @@ paths:
           description: No response body
       x-explicit-tags:
       - experiments
+      summary: Experiments destroy
+      x-summary-source: derived
   /api/projects/{project_id}/experiments/{id}/archive/:
     post:
       operationId: experiments_archive_create
@@ -253,7 +265,7 @@ paths:
         required: true
       - $ref: '#/components/parameters/ProjectIdPath'
       tags:
-      - experiments
+      - Experiments
       security:
       - PersonalAPIKeyAuth:
         - experiment:write
@@ -266,6 +278,8 @@ paths:
           description: ''
       x-explicit-tags:
       - experiments
+      summary: Experiments archive create
+      x-summary-source: derived
   /api/projects/{project_id}/experiments/{id}/copy_to_project/:
     post:
       operationId: experiments_copy_to_project_create
@@ -286,7 +300,7 @@ paths:
         required: true
       - $ref: '#/components/parameters/ProjectIdPath'
       tags:
-      - experiments
+      - Experiments
       requestBody:
         content:
           application/json:
@@ -311,6 +325,8 @@ paths:
           description: ''
       x-explicit-tags:
       - experiments
+      summary: Experiments copy to project create
+      x-summary-source: derived
   /api/projects/{project_id}/experiments/{id}/create_exposure_cohort_for_experiment/:
     post:
       operationId: experiments_create_exposure_cohort_for_experiment_create
@@ -331,7 +347,7 @@ paths:
         required: true
       - $ref: '#/components/parameters/ProjectIdPath'
       tags:
-      - experiments
+      - Experiments
       requestBody:
         content:
           application/json:
@@ -352,6 +368,8 @@ paths:
           description: No response body
       x-explicit-tags:
       - experiments
+      summary: Experiments create exposure cohort for experiment create
+      x-summary-source: derived
   /api/projects/{project_id}/experiments/{id}/duplicate/:
     post:
       operationId: experiments_duplicate_create
@@ -372,7 +390,7 @@ paths:
         required: true
       - $ref: '#/components/parameters/ProjectIdPath'
       tags:
-      - experiments
+      - Experiments
       requestBody:
         content:
           application/json:
@@ -393,10 +411,48 @@ paths:
           description: No response body
       x-explicit-tags:
       - experiments
+      summary: Experiments duplicate create
+      x-summary-source: derived
   /api/projects/{project_id}/experiments/{id}/end/:
     post:
       operationId: experiments_end_create
-      description: "End a running experiment without shipping a variant.\n\nSets end_date to now and marks the experiment as stopped. The feature\nflag is NOT modified — users continue to see their assigned variants\nand exposure events ($feature_flag_called) continue to be recorded.\nHowever, only data up to end_date is included in experiment results.\n\nUse this when:\n\n- You want to freeze the results window without changing which variant\n  users see.\n- A variant was already shipped manually via the feature flag UI and\n  the experiment just needs to be marked complete.\n\nThe end_date can be adjusted after ending via PATCH if it needs to be\nbackdated (e.g. to match when the flag was actually paused).\n\nOther options:\n- Use ship_variant to end the experiment AND roll out a single variant to 100%% of users.\n- Use pause to deactivate the flag without ending the experiment (stops variant assignment but does not freeze results).\n\nReturns 400 if the experiment is not running."
+      description: 'End a running experiment without shipping a variant.
+
+
+        Sets end_date to now and marks the experiment as stopped. The feature
+
+        flag is NOT modified — users continue to see their assigned variants
+
+        and exposure events ($feature_flag_called) continue to be recorded.
+
+        However, only data up to end_date is included in experiment results.
+
+
+        Use this when:
+
+
+        - You want to freeze the results window without changing which variant
+
+        users see.
+
+        - A variant was already shipped manually via the feature flag UI and
+
+        the experiment just needs to be marked complete.
+
+
+        The end_date can be adjusted after ending via PATCH if it needs to be
+
+        backdated (e.g. to match when the flag was actually paused).
+
+
+        Other options:
+
+        - Use ship_variant to end the experiment AND roll out a single variant to 100%% of users.
+
+        - Use pause to deactivate the flag without ending the experiment (stops variant assignment but does not freeze results).
+
+
+        Returns 400 if the experiment is not running.'
       parameters:
       - in: path
         name: id
@@ -406,7 +462,7 @@ paths:
         required: true
       - $ref: '#/components/parameters/ProjectIdPath'
       tags:
-      - experiments
+      - Experiments
       requestBody:
         content:
           application/json:
@@ -430,6 +486,8 @@ paths:
           description: ''
       x-explicit-tags:
       - experiments
+      summary: Experiments end create
+      x-summary-source: derived
   /api/projects/{project_id}/experiments/{id}/launch/:
     post:
       operationId: experiments_launch_create
@@ -452,7 +510,7 @@ paths:
         required: true
       - $ref: '#/components/parameters/ProjectIdPath'
       tags:
-      - experiments
+      - Experiments
       security:
       - PersonalAPIKeyAuth:
         - experiment:write
@@ -465,6 +523,8 @@ paths:
           description: ''
       x-explicit-tags:
       - experiments
+      summary: Experiments launch create
+      x-summary-source: derived
   /api/projects/{project_id}/experiments/{id}/pause/:
     post:
       operationId: experiments_pause_create
@@ -489,7 +549,7 @@ paths:
         required: true
       - $ref: '#/components/parameters/ProjectIdPath'
       tags:
-      - experiments
+      - Experiments
       security:
       - PersonalAPIKeyAuth:
         - experiment:write
@@ -502,6 +562,8 @@ paths:
           description: ''
       x-explicit-tags:
       - experiments
+      summary: Experiments pause create
+      x-summary-source: derived
   /api/projects/{project_id}/experiments/{id}/recalculate_timeseries/:
     post:
       operationId: experiments_recalculate_timeseries_create
@@ -522,7 +584,7 @@ paths:
         required: true
       - $ref: '#/components/parameters/ProjectIdPath'
       tags:
-      - experiments
+      - Experiments
       requestBody:
         content:
           application/json:
@@ -543,6 +605,8 @@ paths:
           description: No response body
       x-explicit-tags:
       - experiments
+      summary: Experiments recalculate timeseries create
+      x-summary-source: derived
   /api/projects/{project_id}/experiments/{id}/reset/:
     post:
       operationId: experiments_reset_create
@@ -569,7 +633,7 @@ paths:
         required: true
       - $ref: '#/components/parameters/ProjectIdPath'
       tags:
-      - experiments
+      - Experiments
       security:
       - PersonalAPIKeyAuth:
         - experiment:write
@@ -582,6 +646,8 @@ paths:
           description: ''
       x-explicit-tags:
       - experiments
+      summary: Experiments reset create
+      x-summary-source: derived
   /api/projects/{project_id}/experiments/{id}/resume/:
     post:
       operationId: experiments_resume_create
@@ -604,7 +670,7 @@ paths:
         required: true
       - $ref: '#/components/parameters/ProjectIdPath'
       tags:
-      - experiments
+      - Experiments
       security:
       - PersonalAPIKeyAuth:
         - experiment:write
@@ -617,6 +683,8 @@ paths:
           description: ''
       x-explicit-tags:
       - experiments
+      summary: Experiments resume create
+      x-summary-source: derived
   /api/projects/{project_id}/experiments/{id}/ship_variant/:
     post:
       operationId: experiments_ship_variant_create
@@ -658,7 +726,7 @@ paths:
         required: true
       - $ref: '#/components/parameters/ProjectIdPath'
       tags:
-      - experiments
+      - Experiments
       requestBody:
         content:
           application/json:
@@ -683,6 +751,8 @@ paths:
           description: ''
       x-explicit-tags:
       - experiments
+      summary: Experiments ship variant create
+      x-summary-source: derived
   /api/projects/{project_id}/experiments/{id}/timeseries_results/:
     get:
       operationId: experiments_timeseries_results_retrieve
@@ -715,7 +785,7 @@ paths:
         required: true
       - $ref: '#/components/parameters/ProjectIdPath'
       tags:
-      - experiments
+      - Experiments
       security:
       - PersonalAPIKeyAuth:
         - experiment:read
@@ -724,6 +794,8 @@ paths:
           description: No response body
       x-explicit-tags:
       - experiments
+      summary: Experiments timeseries results retrieve
+      x-summary-source: derived
   /api/projects/{project_id}/experiments/{id}/unarchive/:
     post:
       operationId: experiments_unarchive_create
@@ -742,7 +814,7 @@ paths:
         required: true
       - $ref: '#/components/parameters/ProjectIdPath'
       tags:
-      - experiments
+      - Experiments
       security:
       - PersonalAPIKeyAuth:
         - experiment:write
@@ -755,6 +827,8 @@ paths:
           description: ''
       x-explicit-tags:
       - experiments
+      summary: Experiments unarchive create
+      x-summary-source: derived
   /api/projects/{project_id}/experiments/eligible_feature_flags/:
     get:
       operationId: experiments_eligible_feature_flags_retrieve
@@ -788,7 +862,7 @@ paths:
       parameters:
       - $ref: '#/components/parameters/ProjectIdPath'
       tags:
-      - experiments
+      - Experiments
       security:
       - PersonalAPIKeyAuth:
         - feature_flag:read
@@ -797,6 +871,8 @@ paths:
           description: No response body
       x-explicit-tags:
       - experiments
+      summary: Experiments eligible feature flags retrieve
+      x-summary-source: derived
   /api/projects/{project_id}/experiments/requires_flag_implementation/:
     get:
       operationId: experiments_requires_flag_implementation_retrieve
@@ -811,7 +887,7 @@ paths:
       parameters:
       - $ref: '#/components/parameters/ProjectIdPath'
       tags:
-      - experiments
+      - Experiments
       security:
       - PersonalAPIKeyAuth:
         - experiment:read
@@ -820,6 +896,8 @@ paths:
           description: No response body
       x-explicit-tags:
       - experiments
+      summary: Experiments requires flag implementation retrieve
+      x-summary-source: derived
   /api/projects/{project_id}/experiments/stats/:
     get:
       operationId: experiments_stats_retrieve
@@ -834,7 +912,7 @@ paths:
       parameters:
       - $ref: '#/components/parameters/ProjectIdPath'
       tags:
-      - experiments
+      - Experiments
       security:
       - PersonalAPIKeyAuth:
         - experiment:read
@@ -843,76 +921,25 @@ paths:
           description: No response body
       x-explicit-tags:
       - experiments
+      summary: Experiments stats retrieve
+      x-summary-source: derived
 components:
   schemas:
-    PatchedExperiment:
+    ExperimentHoldout:
       type: object
-      description: Mixin for serializers to add user access control fields
       properties:
         id:
           type: integer
           readOnly: true
         name:
           type: string
-          description: Name of the experiment.
           maxLength: 400
         description:
-          type: string
-          nullable: true
-          description: Description of the experiment hypothesis and expected outcomes.
-          maxLength: 3000
-        start_date:
-          type: string
-          format: date-time
-          nullable: true
-        end_date:
-          type: string
-          format: date-time
-          nullable: true
-        feature_flag_key:
-          type: string
-          description: Unique key for the experiment's feature flag. Letters, numbers, hyphens, and underscores only. Search existing flags with the feature-flags-get-all tool first — reuse an existing flag when possible.
-        feature_flag:
-          type: object
-          additionalProperties: true
-          readOnly: true
-        holdout:
-          allOf:
-          - $ref: '#/components/schemas/ExperimentHoldout'
-          readOnly: true
-        holdout_id:
-          type: integer
-          nullable: true
-          description: ID of a holdout group to exclude from the experiment.
-        exposure_cohort:
-          type: integer
-          readOnly: true
-          nullable: true
-        parameters:
-          allOf:
-          - $ref: '#/components/schemas/ExperimentParameters'
-          nullable: true
-          description: 'Variant definitions and rollout configuration. Set feature_flag_variants to customize the split (default: 50/50 control/test). Each variant needs a key and split_percent (the variant''s share of traffic); percentages must sum to 100. Set rollout_percentage (0-100, default 100) to limit what fraction of users enter the experiment. Set minimum_detectable_effect (percentage, suggest 20-30) to control statistical power.'
-        secondary_metrics:
-          nullable: true
-        saved_metrics:
-          type: array
-          items:
-            $ref: '#/components/schemas/ExperimentToSavedMetric'
-          readOnly: true
-        saved_metrics_ids:
-          type: array
-          items: {}
-          nullable: true
-          description: IDs of shared saved metrics to attach to this experiment. Each item has 'id' (saved metric ID) and 'metadata' with 'type' (primary or secondary).
+          type:
+          - string
+          - 'null'
+          maxLength: 400
         filters: {}
-        archived:
-          type: boolean
-          default: false
-          description: Whether the experiment is archived.
-        deleted:
-          type: boolean
-          nullable: true
         created_by:
           allOf:
           - $ref: '#/components/schemas/UserBasic'
@@ -925,273 +952,234 @@ components:
           type: string
           format: date-time
           readOnly: true
-        type:
-          nullable: true
-          description: 'Experiment type: web for frontend UI changes, product for backend/API changes.
-
-
-            * `web` - web
-
-            * `product` - product'
-          oneOf:
-          - $ref: '#/components/schemas/ExperimentTypeEnum'
-          - $ref: '#/components/schemas/NullEnum'
-        exposure_criteria:
-          allOf:
-          - $ref: '#/components/schemas/ExperimentApiExposureCriteria'
-          nullable: true
-          description: Exposure configuration including filter test accounts and custom exposure events.
-        metrics:
-          allOf:
-          - $ref: '#/components/schemas/_ExperimentApiMetricsList'
-          nullable: true
-          description: 'Primary experiment metrics. Each metric must have kind=''ExperimentMetric'' and a metric_type: ''mean'' (set source to an EventsNode with an event name), ''funnel'' (set series to an array of EventsNode steps), ''ratio'' (set numerator and denominator EventsNode entries), or ''retention'' (set start_event and completion_event). Use the event-definitions-list tool to find available events in the project.'
-        metrics_secondary:
-          allOf:
-          - $ref: '#/components/schemas/_ExperimentApiMetricsList'
-          nullable: true
-          description: Secondary metrics for additional measurements. Same format as primary metrics.
-        stats_config:
-          nullable: true
-        scheduling_config:
-          nullable: true
-        allow_unknown_events:
-          type: boolean
-          writeOnly: true
-          default: false
-        _create_in_folder:
-          type: string
-          writeOnly: true
-          title: ' create in folder'
-        conclusion:
-          nullable: true
-          description: 'Experiment conclusion: won, lost, inconclusive, stopped_early, or invalid.
-
-
-            * `won` - won
-
-            * `lost` - lost
-
-            * `inconclusive` - inconclusive
-
-            * `stopped_early` - stopped_early
-
-            * `invalid` - invalid'
-          oneOf:
-          - $ref: '#/components/schemas/ConclusionEnum'
-          - $ref: '#/components/schemas/NullEnum'
-        conclusion_comment:
-          type: string
-          nullable: true
-          description: Comment about the experiment conclusion.
-        primary_metrics_ordered_uuids:
-          nullable: true
-        secondary_metrics_ordered_uuids:
-          nullable: true
-        only_count_matured_users:
-          type: boolean
-        update_feature_flag_params:
-          type: boolean
-          writeOnly: true
-          default: false
-          description: When true, sync feature flag configuration from parameters to the linked feature flag. Draft experiments always sync regardless of update_feature_flag_params, so only required for non-drafts.
-        status:
-          allOf:
-          - $ref: '#/components/schemas/ExperimentStatusEnum'
-          readOnly: true
-          description: 'Experiment lifecycle state: ''draft'' (not yet launched), ''running'' (launched with active feature flag), ''paused'' (running with feature flag deactivated — virtual state derived from feature_flag.active, not stored), ''stopped'' (ended).'
-        user_access_level:
-          type: string
-          nullable: true
-          readOnly: true
-          description: The effective access level the user has for this object
-    Experiment:
-      type: object
-      description: Mixin for serializers to add user access control fields
-      properties:
-        id:
-          type: integer
-          readOnly: true
-        name:
-          type: string
-          description: Name of the experiment.
-          maxLength: 400
-        description:
-          type: string
-          nullable: true
-          description: Description of the experiment hypothesis and expected outcomes.
-          maxLength: 3000
-        start_date:
-          type: string
-          format: date-time
-          nullable: true
-        end_date:
-          type: string
-          format: date-time
-          nullable: true
-        feature_flag_key:
-          type: string
-          description: Unique key for the experiment's feature flag. Letters, numbers, hyphens, and underscores only. Search existing flags with the feature-flags-get-all tool first — reuse an existing flag when possible.
-        feature_flag:
-          type: object
-          additionalProperties: true
-          readOnly: true
-        holdout:
-          allOf:
-          - $ref: '#/components/schemas/ExperimentHoldout'
-          readOnly: true
-        holdout_id:
-          type: integer
-          nullable: true
-          description: ID of a holdout group to exclude from the experiment.
-        exposure_cohort:
-          type: integer
-          readOnly: true
-          nullable: true
-        parameters:
-          allOf:
-          - $ref: '#/components/schemas/ExperimentParameters'
-          nullable: true
-          description: 'Variant definitions and rollout configuration. Set feature_flag_variants to customize the split (default: 50/50 control/test). Each variant needs a key and split_percent (the variant''s share of traffic); percentages must sum to 100. Set rollout_percentage (0-100, default 100) to limit what fraction of users enter the experiment. Set minimum_detectable_effect (percentage, suggest 20-30) to control statistical power.'
-        secondary_metrics:
-          nullable: true
-        saved_metrics:
-          type: array
-          items:
-            $ref: '#/components/schemas/ExperimentToSavedMetric'
-          readOnly: true
-        saved_metrics_ids:
-          type: array
-          items: {}
-          nullable: true
-          description: IDs of shared saved metrics to attach to this experiment. Each item has 'id' (saved metric ID) and 'metadata' with 'type' (primary or secondary).
-        filters: {}
-        archived:
-          type: boolean
-          default: false
-          description: Whether the experiment is archived.
-        deleted:
-          type: boolean
-          nullable: true
-        created_by:
-          allOf:
-          - $ref: '#/components/schemas/UserBasic'
-          readOnly: true
-        created_at:
-          type: string
-          format: date-time
-          readOnly: true
-        updated_at:
-          type: string
-          format: date-time
-          readOnly: true
-        type:
-          nullable: true
-          description: 'Experiment type: web for frontend UI changes, product for backend/API changes.
-
-
-            * `web` - web
-
-            * `product` - product'
-          oneOf:
-          - $ref: '#/components/schemas/ExperimentTypeEnum'
-          - $ref: '#/components/schemas/NullEnum'
-        exposure_criteria:
-          allOf:
-          - $ref: '#/components/schemas/ExperimentApiExposureCriteria'
-          nullable: true
-          description: Exposure configuration including filter test accounts and custom exposure events.
-        metrics:
-          allOf:
-          - $ref: '#/components/schemas/_ExperimentApiMetricsList'
-          nullable: true
-          description: 'Primary experiment metrics. Each metric must have kind=''ExperimentMetric'' and a metric_type: ''mean'' (set source to an EventsNode with an event name), ''funnel'' (set series to an array of EventsNode steps), ''ratio'' (set numerator and denominator EventsNode entries), or ''retention'' (set start_event and completion_event). Use the event-definitions-list tool to find available events in the project.'
-        metrics_secondary:
-          allOf:
-          - $ref: '#/components/schemas/_ExperimentApiMetricsList'
-          nullable: true
-          description: Secondary metrics for additional measurements. Same format as primary metrics.
-        stats_config:
-          nullable: true
-        scheduling_config:
-          nullable: true
-        allow_unknown_events:
-          type: boolean
-          writeOnly: true
-          default: false
-        _create_in_folder:
-          type: string
-          writeOnly: true
-          title: ' create in folder'
-        conclusion:
-          nullable: true
-          description: 'Experiment conclusion: won, lost, inconclusive, stopped_early, or invalid.
-
-
-            * `won` - won
-
-            * `lost` - lost
-
-            * `inconclusive` - inconclusive
-
-            * `stopped_early` - stopped_early
-
-            * `invalid` - invalid'
-          oneOf:
-          - $ref: '#/components/schemas/ConclusionEnum'
-          - $ref: '#/components/schemas/NullEnum'
-        conclusion_comment:
-          type: string
-          nullable: true
-          description: Comment about the experiment conclusion.
-        primary_metrics_ordered_uuids:
-          nullable: true
-        secondary_metrics_ordered_uuids:
-          nullable: true
-        only_count_matured_users:
-          type: boolean
-        update_feature_flag_params:
-          type: boolean
-          writeOnly: true
-          default: false
-          description: When true, sync feature flag configuration from parameters to the linked feature flag. Draft experiments always sync regardless of update_feature_flag_params, so only required for non-drafts.
-        status:
-          allOf:
-          - $ref: '#/components/schemas/ExperimentStatusEnum'
-          readOnly: true
-          description: 'Experiment lifecycle state: ''draft'' (not yet launched), ''running'' (launched with active feature flag), ''paused'' (running with feature flag deactivated — virtual state derived from feature_flag.active, not stored), ''stopped'' (ended).'
-        user_access_level:
-          type: string
-          nullable: true
-          readOnly: true
-          description: The effective access level the user has for this object
       required:
       - created_at
       - created_by
-      - exposure_cohort
-      - feature_flag
-      - feature_flag_key
-      - holdout
       - id
       - name
-      - saved_metrics
-      - status
       - updated_at
-      - user_access_level
-    StartHandling:
+    CopyExperimentToProject:
+      type: object
+      properties:
+        target_team_id:
+          type: integer
+          description: The team ID to copy the experiment to.
+        feature_flag_key:
+          type: string
+          description: Optional feature flag key to use in the destination team.
+        name:
+          type: string
+          description: Optional name for the copied experiment.
+      required:
+      - target_team_id
+    ExperimentApiEventSource:
+      additionalProperties: false
+      properties:
+        event:
+          default: null
+          description: Event name, e.g. '$pageview'. Required for EventsNode.
+          title: Event
+          type:
+          - string
+          - 'null'
+        id:
+          default: null
+          description: Action ID. Required for ActionsNode.
+          title: Id
+          type:
+          - integer
+          - 'null'
+        kind:
+          $ref: '#/components/schemas/Kind'
+        properties:
+          default: null
+          description: Event property filters to narrow which events are counted.
+          title: Properties
+          items:
+            $ref: '#/components/schemas/EventPropertyFilter'
+          type:
+          - array
+          - 'null'
+      required:
+      - kind
+      title: ExperimentApiEventSource
+      type: object
+    UserBasic:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        uuid:
+          type: string
+          format: uuid
+          readOnly: true
+        distinct_id:
+          type:
+          - string
+          - 'null'
+          maxLength: 200
+        first_name:
+          type: string
+          maxLength: 150
+        last_name:
+          type: string
+          maxLength: 150
+        email:
+          type: string
+          format: email
+          title: Email address
+          maxLength: 254
+        is_email_verified:
+          type:
+          - boolean
+          - 'null'
+        hedgehog_config:
+          type:
+          - object
+          - 'null'
+          additionalProperties: true
+          readOnly: true
+        role_at_organization:
+          oneOf:
+          - $ref: '#/components/schemas/RoleAtOrganizationEnum'
+          - $ref: '#/components/schemas/BlankEnum'
+          - $ref: '#/components/schemas/NullEnum'
+      required:
+      - email
+      - hedgehog_config
+      - id
+      - uuid
+    ExperimentToSavedMetric:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        experiment:
+          type: integer
+        saved_metric:
+          type: integer
+        metadata: {}
+        created_at:
+          type: string
+          format: date-time
+          readOnly: true
+        query:
+          readOnly: true
+        name:
+          type: string
+          readOnly: true
+      required:
+      - created_at
+      - experiment
+      - id
+      - name
+      - query
+      - saved_metric
+    ExperimentMetricType:
       enum:
-      - first_seen
-      - last_seen
-      title: StartHandling
+      - funnel
+      - mean
+      - ratio
+      - retention
+      title: ExperimentMetricType
       type: string
-    ExperimentTypeEnum:
-      enum:
-      - web
-      - product
-      type: string
-      description: '* `web` - web
-
-        * `product` - product'
+    ExperimentApiMetric:
+      additionalProperties: false
+      properties:
+        completion_event:
+          default: null
+          description: 'For retention metrics: completion event.'
+          allOf:
+          - $ref: '#/components/schemas/ExperimentApiEventSource'
+        conversion_window:
+          default: null
+          description: Conversion window duration.
+          title: Conversion Window
+          type:
+          - integer
+          - 'null'
+        denominator:
+          default: null
+          description: 'For ratio metrics: denominator source.'
+          allOf:
+          - $ref: '#/components/schemas/ExperimentApiEventSource'
+        goal:
+          default: null
+          description: Whether higher or lower values indicate success.
+          allOf:
+          - $ref: '#/components/schemas/ExperimentMetricGoal'
+        kind:
+          default: ExperimentMetric
+          title: Kind
+          type: string
+          enum:
+          - ExperimentMetric
+        metric_type:
+          $ref: '#/components/schemas/ExperimentMetricType'
+        name:
+          default: null
+          description: Human-readable metric name.
+          title: Name
+          type:
+          - string
+          - 'null'
+        numerator:
+          default: null
+          description: 'For ratio metrics: numerator source.'
+          allOf:
+          - $ref: '#/components/schemas/ExperimentApiEventSource'
+        retention_window_end:
+          default: null
+          title: Retention Window End
+          type:
+          - integer
+          - 'null'
+        retention_window_start:
+          default: null
+          title: Retention Window Start
+          type:
+          - integer
+          - 'null'
+        retention_window_unit:
+          default: null
+          allOf:
+          - $ref: '#/components/schemas/FunnelConversionWindowTimeUnit'
+        series:
+          default: null
+          description: 'For funnel metrics: array of EventsNode/ActionsNode steps.'
+          title: Series
+          items:
+            $ref: '#/components/schemas/ExperimentApiEventSource'
+          type:
+          - array
+          - 'null'
+        source:
+          default: null
+          description: 'For mean metrics: event source.'
+          allOf:
+          - $ref: '#/components/schemas/ExperimentApiEventSource'
+        start_event:
+          default: null
+          description: 'For retention metrics: start event.'
+          allOf:
+          - $ref: '#/components/schemas/ExperimentApiEventSource'
+        start_handling:
+          default: null
+          allOf:
+          - $ref: '#/components/schemas/StartHandling'
+        uuid:
+          default: null
+          description: Unique identifier. Auto-generated if omitted.
+          title: Uuid
+          type:
+          - string
+          - 'null'
+      required:
+      - metric_type
+      title: ExperimentApiMetric
+      type: object
     RoleAtOrganizationEnum:
       enum:
       - engineering
@@ -1218,205 +1206,30 @@ components:
         * `sales` - Sales / Success
 
         * `other` - Other'
-    ExperimentApiMetric:
-      additionalProperties: false
-      properties:
-        completion_event:
-          default: null
-          description: 'For retention metrics: completion event.'
-          allOf:
-          - $ref: '#/components/schemas/ExperimentApiEventSource'
-          nullable: true
-        conversion_window:
-          default: null
-          description: Conversion window duration.
-          title: Conversion Window
-          type: integer
-          nullable: true
-        denominator:
-          default: null
-          description: 'For ratio metrics: denominator source.'
-          allOf:
-          - $ref: '#/components/schemas/ExperimentApiEventSource'
-          nullable: true
-        goal:
-          default: null
-          description: Whether higher or lower values indicate success.
-          allOf:
-          - $ref: '#/components/schemas/ExperimentMetricGoal'
-          nullable: true
-        kind:
-          default: ExperimentMetric
-          title: Kind
-          type: string
-          enum:
-          - ExperimentMetric
-        metric_type:
-          $ref: '#/components/schemas/ExperimentMetricType'
-        name:
-          default: null
-          description: Human-readable metric name.
-          title: Name
-          type: string
-          nullable: true
-        numerator:
-          default: null
-          description: 'For ratio metrics: numerator source.'
-          allOf:
-          - $ref: '#/components/schemas/ExperimentApiEventSource'
-          nullable: true
-        retention_window_end:
-          default: null
-          title: Retention Window End
-          type: integer
-          nullable: true
-        retention_window_start:
-          default: null
-          title: Retention Window Start
-          type: integer
-          nullable: true
-        retention_window_unit:
-          default: null
-          allOf:
-          - $ref: '#/components/schemas/FunnelConversionWindowTimeUnit'
-          nullable: true
-        series:
-          default: null
-          description: 'For funnel metrics: array of EventsNode/ActionsNode steps.'
-          title: Series
-          items:
-            $ref: '#/components/schemas/ExperimentApiEventSource'
-          type: array
-          nullable: true
-        source:
-          default: null
-          description: 'For mean metrics: event source.'
-          allOf:
-          - $ref: '#/components/schemas/ExperimentApiEventSource'
-          nullable: true
-        start_event:
-          default: null
-          description: 'For retention metrics: start event.'
-          allOf:
-          - $ref: '#/components/schemas/ExperimentApiEventSource'
-          nullable: true
-        start_handling:
-          default: null
-          allOf:
-          - $ref: '#/components/schemas/StartHandling'
-          nullable: true
-        uuid:
-          default: null
-          description: Unique identifier. Auto-generated if omitted.
-          title: Uuid
-          type: string
-          nullable: true
-      required:
-      - metric_type
-      title: ExperimentApiMetric
-      type: object
-    ExperimentMetricType:
-      enum:
-      - funnel
-      - mean
-      - ratio
-      - retention
-      title: ExperimentMetricType
-      type: string
-    NullEnum:
-      enum:
-      - null
-    UserBasic:
+    EndExperiment:
       type: object
       properties:
-        id:
-          type: integer
-          readOnly: true
-        uuid:
-          type: string
-          format: uuid
-          readOnly: true
-        distinct_id:
-          type: string
-          nullable: true
-          maxLength: 200
-        first_name:
-          type: string
-          maxLength: 150
-        last_name:
-          type: string
-          maxLength: 150
-        email:
-          type: string
-          format: email
-          title: Email address
-          maxLength: 254
-        is_email_verified:
-          type: boolean
-          nullable: true
-        hedgehog_config:
-          type: object
-          additionalProperties: true
-          nullable: true
-          readOnly: true
-        role_at_organization:
-          nullable: true
+        conclusion:
+          description: 'The conclusion of the experiment.
+
+
+            * `won` - won
+
+            * `lost` - lost
+
+            * `inconclusive` - inconclusive
+
+            * `stopped_early` - stopped_early
+
+            * `invalid` - invalid'
           oneOf:
-          - $ref: '#/components/schemas/RoleAtOrganizationEnum'
-          - $ref: '#/components/schemas/BlankEnum'
+          - $ref: '#/components/schemas/ConclusionEnum'
           - $ref: '#/components/schemas/NullEnum'
-      required:
-      - email
-      - hedgehog_config
-      - id
-      - uuid
-    ExperimentMetricGoal:
-      enum:
-      - increase
-      - decrease
-      title: ExperimentMetricGoal
-      type: string
-    EventPropertyFilter:
-      additionalProperties: false
-      properties:
-        key:
-          title: Key
-          type: string
-        label:
-          default: null
-          title: Label
-          type: string
-          nullable: true
-        operator:
-          default: exact
-          allOf:
-          - $ref: '#/components/schemas/PropertyOperator'
-          nullable: true
-        type:
-          default: event
-          description: Event properties
-          title: Type
-          type: string
-          enum:
-          - event
-        value:
-          default: null
-          title: Value
-          anyOf:
-          - items:
-              anyOf:
-              - type: string
-              - type: number
-              - type: boolean
-            type: array
-          - type: string
-          - type: number
-          - type: boolean
-          nullable: true
-      required:
-      - key
-      title: EventPropertyFilter
-      type: object
+        conclusion_comment:
+          type:
+          - string
+          - 'null'
+          description: Optional comment about the experiment conclusion.
     Kind:
       enum:
       - EventsNode
@@ -1430,48 +1243,164 @@ components:
       - running
       - paused
       - stopped
-    FunnelConversionWindowTimeUnit:
-      enum:
-      - second
-      - minute
-      - hour
-      - day
-      - week
-      - month
-      title: FunnelConversionWindowTimeUnit
-      type: string
-    ConclusionEnum:
-      enum:
-      - won
-      - lost
-      - inconclusive
-      - stopped_early
-      - invalid
-      type: string
-      description: '* `won` - won
-
-        * `lost` - lost
-
-        * `inconclusive` - inconclusive
-
-        * `stopped_early` - stopped_early
-
-        * `invalid` - invalid'
-    ExperimentApiExposureCriteria:
-      additionalProperties: false
-      properties:
-        exposure_config:
-          default: null
-          allOf:
-          - $ref: '#/components/schemas/ExperimentApiExposureConfig'
-          nullable: true
-        filterTestAccounts:
-          default: null
-          title: Filtertestaccounts
-          type: boolean
-          nullable: true
-      title: ExperimentApiExposureCriteria
+    PatchedExperiment:
       type: object
+      description: Mixin for serializers to add user access control fields
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        name:
+          type: string
+          description: Name of the experiment.
+          maxLength: 400
+        description:
+          type:
+          - string
+          - 'null'
+          description: Description of the experiment hypothesis and expected outcomes.
+          maxLength: 3000
+        start_date:
+          type:
+          - string
+          - 'null'
+          format: date-time
+        end_date:
+          type:
+          - string
+          - 'null'
+          format: date-time
+        feature_flag_key:
+          type: string
+          description: Unique key for the experiment's feature flag. Letters, numbers, hyphens, and underscores only. Search existing flags with the feature-flags-get-all tool first — reuse an existing flag when possible.
+        feature_flag:
+          type: object
+          additionalProperties: true
+          readOnly: true
+        holdout:
+          allOf:
+          - $ref: '#/components/schemas/ExperimentHoldout'
+          readOnly: true
+        holdout_id:
+          type:
+          - integer
+          - 'null'
+          description: ID of a holdout group to exclude from the experiment.
+        exposure_cohort:
+          type:
+          - integer
+          - 'null'
+          readOnly: true
+        parameters:
+          allOf:
+          - $ref: '#/components/schemas/ExperimentParameters'
+          description: 'Variant definitions and rollout configuration. Set feature_flag_variants to customize the split (default: 50/50 control/test). Each variant needs a key and split_percent (the variant''s share of traffic); percentages must sum to 100. Set rollout_percentage (0-100, default 100) to limit what fraction of users enter the experiment. Set minimum_detectable_effect (percentage, suggest 20-30) to control statistical power.'
+        secondary_metrics: {}
+        saved_metrics:
+          type: array
+          items:
+            $ref: '#/components/schemas/ExperimentToSavedMetric'
+          readOnly: true
+        saved_metrics_ids:
+          type:
+          - array
+          - 'null'
+          items: {}
+          description: IDs of shared saved metrics to attach to this experiment. Each item has 'id' (saved metric ID) and 'metadata' with 'type' (primary or secondary).
+        filters: {}
+        archived:
+          type: boolean
+          default: false
+          description: Whether the experiment is archived.
+        deleted:
+          type:
+          - boolean
+          - 'null'
+        created_by:
+          allOf:
+          - $ref: '#/components/schemas/UserBasic'
+          readOnly: true
+        created_at:
+          type: string
+          format: date-time
+          readOnly: true
+        updated_at:
+          type: string
+          format: date-time
+          readOnly: true
+        type:
+          description: 'Experiment type: web for frontend UI changes, product for backend/API changes.
+
+
+            * `web` - web
+
+            * `product` - product'
+          oneOf:
+          - $ref: '#/components/schemas/ExperimentTypeEnum'
+          - $ref: '#/components/schemas/NullEnum'
+        exposure_criteria:
+          allOf:
+          - $ref: '#/components/schemas/ExperimentApiExposureCriteria'
+          description: Exposure configuration including filter test accounts and custom exposure events.
+        metrics:
+          allOf:
+          - $ref: '#/components/schemas/_ExperimentApiMetricsList'
+          description: 'Primary experiment metrics. Each metric must have kind=''ExperimentMetric'' and a metric_type: ''mean'' (set source to an EventsNode with an event name), ''funnel'' (set series to an array of EventsNode steps), ''ratio'' (set numerator and denominator EventsNode entries), or ''retention'' (set start_event and completion_event). Use the event-definitions-list tool to find available events in the project.'
+        metrics_secondary:
+          allOf:
+          - $ref: '#/components/schemas/_ExperimentApiMetricsList'
+          description: Secondary metrics for additional measurements. Same format as primary metrics.
+        stats_config: {}
+        scheduling_config: {}
+        allow_unknown_events:
+          type: boolean
+          writeOnly: true
+          default: false
+        _create_in_folder:
+          type: string
+          writeOnly: true
+          title: ' create in folder'
+        conclusion:
+          description: 'Experiment conclusion: won, lost, inconclusive, stopped_early, or invalid.
+
+
+            * `won` - won
+
+            * `lost` - lost
+
+            * `inconclusive` - inconclusive
+
+            * `stopped_early` - stopped_early
+
+            * `invalid` - invalid'
+          oneOf:
+          - $ref: '#/components/schemas/ConclusionEnum'
+          - $ref: '#/components/schemas/NullEnum'
+        conclusion_comment:
+          type:
+          - string
+          - 'null'
+          description: Comment about the experiment conclusion.
+        primary_metrics_ordered_uuids: {}
+        secondary_metrics_ordered_uuids: {}
+        only_count_matured_users:
+          type: boolean
+        update_feature_flag_params:
+          type: boolean
+          writeOnly: true
+          default: false
+          description: When true, sync feature flag configuration from parameters to the linked feature flag. Draft experiments always sync regardless of update_feature_flag_params, so only required for non-drafts.
+        status:
+          allOf:
+          - $ref: '#/components/schemas/ExperimentStatusEnum'
+          readOnly: true
+          description: 'Experiment lifecycle state: ''draft'' (not yet launched), ''running'' (launched with active feature flag), ''paused'' (running with feature flag deactivated — virtual state derived from feature_flag.active, not stored), ''stopped'' (ended).'
+        user_access_level:
+          type:
+          - string
+          - 'null'
+          readOnly: true
+          description: The effective access level the user has for this object
     PaginatedExperimentList:
       type: object
       required:
@@ -1482,201 +1411,27 @@ components:
           type: integer
           example: 123
         next:
-          type: string
-          nullable: true
+          type:
+          - string
+          - 'null'
           format: uri
           example: http://api.example.org/accounts/?offset=400&limit=100
         previous:
-          type: string
-          nullable: true
+          type:
+          - string
+          - 'null'
           format: uri
           example: http://api.example.org/accounts/?offset=200&limit=100
         results:
           type: array
           items:
             $ref: '#/components/schemas/Experiment'
-    ExperimentApiEventSource:
-      additionalProperties: false
-      properties:
-        event:
-          default: null
-          description: Event name, e.g. '$pageview'. Required for EventsNode.
-          title: Event
-          type: string
-          nullable: true
-        id:
-          default: null
-          description: Action ID. Required for ActionsNode.
-          title: Id
-          type: integer
-          nullable: true
-        kind:
-          $ref: '#/components/schemas/Kind'
-        properties:
-          default: null
-          description: Event property filters to narrow which events are counted.
-          title: Properties
-          items:
-            $ref: '#/components/schemas/EventPropertyFilter'
-          type: array
-          nullable: true
-      required:
-      - kind
-      title: ExperimentApiEventSource
-      type: object
-    CopyExperimentToProject:
-      type: object
-      properties:
-        target_team_id:
-          type: integer
-          description: The team ID to copy the experiment to.
-        feature_flag_key:
-          type: string
-          description: Optional feature flag key to use in the destination team.
-        name:
-          type: string
-          description: Optional name for the copied experiment.
-      required:
-      - target_team_id
-    ExperimentParameters:
-      additionalProperties: false
-      properties:
-        feature_flag_variants:
-          default: null
-          description: Experiment variants. If not specified, defaults to a 50/50 control/test split.
-          title: Feature Flag Variants
-          items:
-            $ref: '#/components/schemas/ExperimentVariant'
-          type: array
-          nullable: true
-        minimum_detectable_effect:
-          default: null
-          description: Minimum detectable effect as a percentage. Lower values need more users but catch smaller changes. Suggest 20–30% for most experiments.
-          title: Minimum Detectable Effect
-          type: number
-          nullable: true
-        rollout_percentage:
-          default: null
-          description: 'Overall rollout percentage (0-100). Controls what fraction of all users enter the experiment. Users outside the rollout never see any variant and are excluded from analysis. Default: 100.'
-          title: Rollout Percentage
-          type: number
-          nullable: true
-      title: ExperimentParameters
-      type: object
-    ExperimentApiExposureConfig:
-      additionalProperties: false
-      properties:
-        event:
-          description: Custom exposure event name.
-          title: Event
-          type: string
-        kind:
-          default: ExperimentEventExposureConfig
-          title: Kind
-          type: string
-          enum:
-          - ExperimentEventExposureConfig
-        properties:
-          type: array
-          items:
-            $ref: '#/components/schemas/EventPropertyFilter'
-          description: Event property filters. Pass an empty array if no filters needed.
-          title: Properties
-      required:
-      - event
-      - properties
-      title: ExperimentApiExposureConfig
-      type: object
-    BlankEnum:
-      enum:
-      - ''
     _ExperimentApiMetricsList:
       description: List wrapper for OpenAPI schema generation — the field stores an array of metrics.
       items:
         $ref: '#/components/schemas/ExperimentApiMetric'
       title: _ExperimentApiMetricsList
       type: array
-    ExperimentVariant:
-      additionalProperties: false
-      properties:
-        key:
-          description: Variant key, e.g. 'control', 'test', 'variant_a'.
-          title: Key
-          type: string
-        name:
-          default: null
-          description: Human-readable variant name.
-          title: Name
-          type: string
-          nullable: true
-        rollout_percentage:
-          default: null
-          title: Rollout Percentage
-          type: number
-          nullable: true
-        split_percent:
-          default: null
-          description: Percentage of users assigned to this variant (0–100). All variants must sum to 100. One of split_percent (recommended) or rollout_percentage must be provided.
-          title: Split Percent
-          type: number
-          nullable: true
-      required:
-      - key
-      title: ExperimentVariant
-      type: object
-    ShipVariant:
-      type: object
-      properties:
-        conclusion:
-          nullable: true
-          description: 'The conclusion of the experiment.
-
-
-            * `won` - won
-
-            * `lost` - lost
-
-            * `inconclusive` - inconclusive
-
-            * `stopped_early` - stopped_early
-
-            * `invalid` - invalid'
-          oneOf:
-          - $ref: '#/components/schemas/ConclusionEnum'
-          - $ref: '#/components/schemas/NullEnum'
-        conclusion_comment:
-          type: string
-          nullable: true
-          description: Optional comment about the experiment conclusion.
-        variant_key:
-          type: string
-          description: The key of the variant to ship to 100% of users.
-      required:
-      - variant_key
-    EndExperiment:
-      type: object
-      properties:
-        conclusion:
-          nullable: true
-          description: 'The conclusion of the experiment.
-
-
-            * `won` - won
-
-            * `lost` - lost
-
-            * `inconclusive` - inconclusive
-
-            * `stopped_early` - stopped_early
-
-            * `invalid` - invalid'
-          oneOf:
-          - $ref: '#/components/schemas/ConclusionEnum'
-          - $ref: '#/components/schemas/NullEnum'
-        conclusion_comment:
-          type: string
-          nullable: true
-          description: Optional comment about the experiment conclusion.
     PropertyOperator:
       enum:
       - exact
@@ -1715,20 +1470,172 @@ components:
       - not_icontains_multi
       title: PropertyOperator
       type: string
-    ExperimentHoldout:
+    ExperimentApiExposureConfig:
+      additionalProperties: false
+      properties:
+        event:
+          description: Custom exposure event name.
+          title: Event
+          type: string
+        kind:
+          default: ExperimentEventExposureConfig
+          title: Kind
+          type: string
+          enum:
+          - ExperimentEventExposureConfig
+        properties:
+          type: array
+          items:
+            $ref: '#/components/schemas/EventPropertyFilter'
+          description: Event property filters. Pass an empty array if no filters needed.
+          title: Properties
+      required:
+      - event
+      - properties
+      title: ExperimentApiExposureConfig
       type: object
+    NullEnum:
+      enum:
+      - null
+    ConclusionEnum:
+      enum:
+      - won
+      - lost
+      - inconclusive
+      - stopped_early
+      - invalid
+      type: string
+      description: '* `won` - won
+
+        * `lost` - lost
+
+        * `inconclusive` - inconclusive
+
+        * `stopped_early` - stopped_early
+
+        * `invalid` - invalid'
+    FunnelConversionWindowTimeUnit:
+      enum:
+      - second
+      - minute
+      - hour
+      - day
+      - week
+      - month
+      title: FunnelConversionWindowTimeUnit
+      type: string
+    BlankEnum:
+      enum:
+      - ''
+    ExperimentTypeEnum:
+      enum:
+      - web
+      - product
+      type: string
+      description: '* `web` - web
+
+        * `product` - product'
+    ExperimentParameters:
+      additionalProperties: false
+      properties:
+        feature_flag_variants:
+          default: null
+          description: Experiment variants. If not specified, defaults to a 50/50 control/test split.
+          title: Feature Flag Variants
+          items:
+            $ref: '#/components/schemas/ExperimentVariant'
+          type:
+          - array
+          - 'null'
+        minimum_detectable_effect:
+          default: null
+          description: Minimum detectable effect as a percentage. Lower values need more users but catch smaller changes. Suggest 20–30% for most experiments.
+          title: Minimum Detectable Effect
+          type:
+          - number
+          - 'null'
+        rollout_percentage:
+          default: null
+          description: 'Overall rollout percentage (0-100). Controls what fraction of all users enter the experiment. Users outside the rollout never see any variant and are excluded from analysis. Default: 100.'
+          title: Rollout Percentage
+          type:
+          - number
+          - 'null'
+      title: ExperimentParameters
+      type: object
+    Experiment:
+      type: object
+      description: Mixin for serializers to add user access control fields
       properties:
         id:
           type: integer
           readOnly: true
         name:
           type: string
+          description: Name of the experiment.
           maxLength: 400
         description:
+          type:
+          - string
+          - 'null'
+          description: Description of the experiment hypothesis and expected outcomes.
+          maxLength: 3000
+        start_date:
+          type:
+          - string
+          - 'null'
+          format: date-time
+        end_date:
+          type:
+          - string
+          - 'null'
+          format: date-time
+        feature_flag_key:
           type: string
-          nullable: true
-          maxLength: 400
+          description: Unique key for the experiment's feature flag. Letters, numbers, hyphens, and underscores only. Search existing flags with the feature-flags-get-all tool first — reuse an existing flag when possible.
+        feature_flag:
+          type: object
+          additionalProperties: true
+          readOnly: true
+        holdout:
+          allOf:
+          - $ref: '#/components/schemas/ExperimentHoldout'
+          readOnly: true
+        holdout_id:
+          type:
+          - integer
+          - 'null'
+          description: ID of a holdout group to exclude from the experiment.
+        exposure_cohort:
+          type:
+          - integer
+          - 'null'
+          readOnly: true
+        parameters:
+          allOf:
+          - $ref: '#/components/schemas/ExperimentParameters'
+          description: 'Variant definitions and rollout configuration. Set feature_flag_variants to customize the split (default: 50/50 control/test). Each variant needs a key and split_percent (the variant''s share of traffic); percentages must sum to 100. Set rollout_percentage (0-100, default 100) to limit what fraction of users enter the experiment. Set minimum_detectable_effect (percentage, suggest 20-30) to control statistical power.'
+        secondary_metrics: {}
+        saved_metrics:
+          type: array
+          items:
+            $ref: '#/components/schemas/ExperimentToSavedMetric'
+          readOnly: true
+        saved_metrics_ids:
+          type:
+          - array
+          - 'null'
+          items: {}
+          description: IDs of shared saved metrics to attach to this experiment. Each item has 'id' (saved metric ID) and 'metadata' with 'type' (primary or secondary).
         filters: {}
+        archived:
+          type: boolean
+          default: false
+          description: Whether the experiment is archived.
+        deleted:
+          type:
+          - boolean
+          - 'null'
         created_by:
           allOf:
           - $ref: '#/components/schemas/UserBasic'
@@ -1741,39 +1648,219 @@ components:
           type: string
           format: date-time
           readOnly: true
+        type:
+          description: 'Experiment type: web for frontend UI changes, product for backend/API changes.
+
+
+            * `web` - web
+
+            * `product` - product'
+          oneOf:
+          - $ref: '#/components/schemas/ExperimentTypeEnum'
+          - $ref: '#/components/schemas/NullEnum'
+        exposure_criteria:
+          allOf:
+          - $ref: '#/components/schemas/ExperimentApiExposureCriteria'
+          description: Exposure configuration including filter test accounts and custom exposure events.
+        metrics:
+          allOf:
+          - $ref: '#/components/schemas/_ExperimentApiMetricsList'
+          description: 'Primary experiment metrics. Each metric must have kind=''ExperimentMetric'' and a metric_type: ''mean'' (set source to an EventsNode with an event name), ''funnel'' (set series to an array of EventsNode steps), ''ratio'' (set numerator and denominator EventsNode entries), or ''retention'' (set start_event and completion_event). Use the event-definitions-list tool to find available events in the project.'
+        metrics_secondary:
+          allOf:
+          - $ref: '#/components/schemas/_ExperimentApiMetricsList'
+          description: Secondary metrics for additional measurements. Same format as primary metrics.
+        stats_config: {}
+        scheduling_config: {}
+        allow_unknown_events:
+          type: boolean
+          writeOnly: true
+          default: false
+        _create_in_folder:
+          type: string
+          writeOnly: true
+          title: ' create in folder'
+        conclusion:
+          description: 'Experiment conclusion: won, lost, inconclusive, stopped_early, or invalid.
+
+
+            * `won` - won
+
+            * `lost` - lost
+
+            * `inconclusive` - inconclusive
+
+            * `stopped_early` - stopped_early
+
+            * `invalid` - invalid'
+          oneOf:
+          - $ref: '#/components/schemas/ConclusionEnum'
+          - $ref: '#/components/schemas/NullEnum'
+        conclusion_comment:
+          type:
+          - string
+          - 'null'
+          description: Comment about the experiment conclusion.
+        primary_metrics_ordered_uuids: {}
+        secondary_metrics_ordered_uuids: {}
+        only_count_matured_users:
+          type: boolean
+        update_feature_flag_params:
+          type: boolean
+          writeOnly: true
+          default: false
+          description: When true, sync feature flag configuration from parameters to the linked feature flag. Draft experiments always sync regardless of update_feature_flag_params, so only required for non-drafts.
+        status:
+          allOf:
+          - $ref: '#/components/schemas/ExperimentStatusEnum'
+          readOnly: true
+          description: 'Experiment lifecycle state: ''draft'' (not yet launched), ''running'' (launched with active feature flag), ''paused'' (running with feature flag deactivated — virtual state derived from feature_flag.active, not stored), ''stopped'' (ended).'
+        user_access_level:
+          type:
+          - string
+          - 'null'
+          readOnly: true
+          description: The effective access level the user has for this object
       required:
       - created_at
       - created_by
+      - exposure_cohort
+      - feature_flag
+      - feature_flag_key
+      - holdout
       - id
       - name
+      - saved_metrics
+      - status
       - updated_at
-    ExperimentToSavedMetric:
+      - user_access_level
+    ShipVariant:
       type: object
       properties:
-        id:
-          type: integer
-          readOnly: true
-        experiment:
-          type: integer
-        saved_metric:
-          type: integer
-        metadata: {}
-        created_at:
+        conclusion:
+          description: 'The conclusion of the experiment.
+
+
+            * `won` - won
+
+            * `lost` - lost
+
+            * `inconclusive` - inconclusive
+
+            * `stopped_early` - stopped_early
+
+            * `invalid` - invalid'
+          oneOf:
+          - $ref: '#/components/schemas/ConclusionEnum'
+          - $ref: '#/components/schemas/NullEnum'
+        conclusion_comment:
+          type:
+          - string
+          - 'null'
+          description: Optional comment about the experiment conclusion.
+        variant_key:
           type: string
-          format: date-time
-          readOnly: true
-        query:
-          readOnly: true
-        name:
-          type: string
-          readOnly: true
+          description: The key of the variant to ship to 100% of users.
       required:
-      - created_at
-      - experiment
-      - id
-      - name
-      - query
-      - saved_metric
+      - variant_key
+    ExperimentApiExposureCriteria:
+      additionalProperties: false
+      properties:
+        exposure_config:
+          default: null
+          allOf:
+          - $ref: '#/components/schemas/ExperimentApiExposureConfig'
+        filterTestAccounts:
+          default: null
+          title: Filtertestaccounts
+          type:
+          - boolean
+          - 'null'
+      title: ExperimentApiExposureCriteria
+      type: object
+    EventPropertyFilter:
+      additionalProperties: false
+      properties:
+        key:
+          title: Key
+          type: string
+        label:
+          default: null
+          title: Label
+          type:
+          - string
+          - 'null'
+        operator:
+          default: exact
+          allOf:
+          - $ref: '#/components/schemas/PropertyOperator'
+        type:
+          default: event
+          description: Event properties
+          title: Type
+          type: string
+          enum:
+          - event
+        value:
+          default: null
+          title: Value
+          anyOf:
+          - items:
+              anyOf:
+              - type: string
+              - type: number
+              - type: boolean
+            type: array
+          - type: string
+          - type: number
+          - type: boolean
+      required:
+      - key
+      title: EventPropertyFilter
+      type: object
+    ExperimentVariant:
+      additionalProperties: false
+      properties:
+        key:
+          description: Variant key, e.g. 'control', 'test', 'variant_a'.
+          title: Key
+          type: string
+        name:
+          default: null
+          description: Human-readable variant name.
+          title: Name
+          type:
+          - string
+          - 'null'
+        rollout_percentage:
+          default: null
+          title: Rollout Percentage
+          type:
+          - number
+          - 'null'
+        split_percent:
+          default: null
+          description: Percentage of users assigned to this variant (0–100). All variants must sum to 100. One of split_percent (recommended) or rollout_percentage must be provided.
+          title: Split Percent
+          type:
+          - number
+          - 'null'
+      required:
+      - key
+      title: ExperimentVariant
+      type: object
+    StartHandling:
+      enum:
+      - first_seen
+      - last_seen
+      title: StartHandling
+      type: string
+    ExperimentMetricGoal:
+      enum:
+      - increase
+      - decrease
+      title: ExperimentMetricGoal
+      type: string
   parameters:
     ProjectIdPath:
       in: path

@@ -1,10 +1,10 @@
-openapi: 3.0.3
+openapi: 3.2.0
 info:
-  title: PostHog actions session_summaries API
+  title: PostHog Session Summaries API
   version: 1.0.0
   description: ''
 tags:
-- name: session_summaries
+- name: Session Summaries
 paths:
   /api/environments/{project_id}/session_summaries/config/:
     get:
@@ -13,7 +13,7 @@ paths:
       parameters:
       - $ref: '#/components/parameters/ProjectIdPath'
       tags:
-      - session_summaries
+      - Session Summaries
       responses:
         '200':
           content:
@@ -22,13 +22,15 @@ paths:
                 $ref: '#/components/schemas/SessionSummariesConfig'
           description: ''
       x-explicit-tags: []
+      summary: Retrieve session summaries config
+      x-summary-source: derived
     patch:
       operationId: update_session_summaries_config
       description: Update the team's session summaries configuration (product context used to tailor single-session replay summaries).
       parameters:
       - $ref: '#/components/parameters/ProjectIdPath'
       tags:
-      - session_summaries
+      - Session Summaries
       requestBody:
         content:
           application/json:
@@ -48,6 +50,8 @@ paths:
                 $ref: '#/components/schemas/SessionSummariesConfig'
           description: ''
       x-explicit-tags: []
+      summary: Update session summaries config
+      x-summary-source: derived
   /api/environments/{project_id}/session_summaries/create_session_summaries/:
     post:
       operationId: create_session_summaries
@@ -55,7 +59,7 @@ paths:
       parameters:
       - $ref: '#/components/parameters/ProjectIdPath'
       tags:
-      - session_summaries
+      - Session Summaries
       requestBody:
         content:
           application/json:
@@ -79,47 +83,10 @@ paths:
                 $ref: '#/components/schemas/SessionSummaries'
           description: ''
       x-explicit-tags: []
-  /api/environments/{project_id}/session_summaries/create_session_summaries_individually/:
-    post:
-      operationId: create_session_summaries_individually
-      description: Generate AI individual summary for each session, without grouping.
-      parameters:
-      - $ref: '#/components/parameters/ProjectIdPath'
-      tags:
-      - session_summaries
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/SessionSummaries'
-          application/x-www-form-urlencoded:
-            schema:
-              $ref: '#/components/schemas/SessionSummaries'
-          multipart/form-data:
-            schema:
-              $ref: '#/components/schemas/SessionSummaries'
-        required: true
-      security:
-      - PersonalAPIKeyAuth:
-        - session_recording:read
-      responses:
-        '200':
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/SessionSummaries'
-          description: ''
-      x-explicit-tags:
-      - replay
+      summary: Create session summaries
+      x-summary-source: derived
 components:
   schemas:
-    PatchedSessionSummariesConfig:
-      type: object
-      properties:
-        product_context:
-          type: string
-          description: Free-form description of the team's product, used to tailor AI-generated single-session replay summaries. Injected into the system prompt of every summary generated for this team via the replay page.
-          maxLength: 10000
     SessionSummaries:
       type: object
       properties:
@@ -137,6 +104,13 @@ components:
       required:
       - session_ids
     SessionSummariesConfig:
+      type: object
+      properties:
+        product_context:
+          type: string
+          description: Free-form description of the team's product, used to tailor AI-generated single-session replay summaries. Injected into the system prompt of every summary generated for this team via the replay page.
+          maxLength: 10000
+    PatchedSessionSummariesConfig:
       type: object
       properties:
         product_context:

@@ -1,6 +1,6 @@
-openapi: 3.0.3
+openapi: 3.2.0
 info:
-  title: PostHog actions task-automations API
+  title: PostHog Task Automations API
   version: 1.0.0
   description: ''
 tags:
@@ -40,6 +40,8 @@ paths:
       x-explicit-tags:
       - task-automations
       - tasks
+      summary: Task automations list
+      x-summary-source: derived
     post:
       operationId: task_automations_create
       parameters:
@@ -73,6 +75,8 @@ paths:
       x-explicit-tags:
       - task-automations
       - tasks
+      summary: Task automations create
+      x-summary-source: derived
   /api/projects/{project_id}/task_automations/{id}/:
     get:
       operationId: task_automations_retrieve
@@ -101,6 +105,8 @@ paths:
           description: ''
       x-explicit-tags:
       - task-automations
+      summary: Task automations retrieve
+      x-summary-source: derived
     put:
       operationId: task_automations_update
       parameters:
@@ -140,6 +146,8 @@ paths:
           description: ''
       x-explicit-tags:
       - task-automations
+      summary: Task automations update
+      x-summary-source: derived
     patch:
       operationId: task_automations_partial_update
       parameters:
@@ -178,6 +186,8 @@ paths:
           description: ''
       x-explicit-tags:
       - task-automations
+      summary: Task automations partial update
+      x-summary-source: derived
     delete:
       operationId: task_automations_destroy
       parameters:
@@ -201,6 +211,8 @@ paths:
           description: No response body
       x-explicit-tags:
       - task-automations
+      summary: Task automations destroy
+      x-summary-source: derived
   /api/projects/{project_id}/task_automations/{id}/run/:
     post:
       operationId: task_automations_run_create
@@ -241,8 +253,101 @@ paths:
           description: ''
       x-explicit-tags:
       - task-automations
+      summary: Task automations run create
+      x-summary-source: derived
 components:
   schemas:
+    PatchedTaskAutomation:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+          readOnly: true
+        name:
+          type: string
+          maxLength: 255
+        prompt:
+          type: string
+        repository:
+          type: string
+          maxLength: 255
+        github_integration:
+          type:
+          - integer
+          - 'null'
+        cron_expression:
+          type: string
+          maxLength: 100
+        timezone:
+          type: string
+          maxLength: 128
+        template_id:
+          type:
+          - string
+          - 'null'
+          maxLength: 255
+        enabled:
+          type: boolean
+        last_run_at:
+          type:
+          - string
+          - 'null'
+          format: date-time
+          readOnly: true
+        last_run_status:
+          type:
+          - string
+          - 'null'
+          readOnly: true
+        last_task_id:
+          type:
+          - string
+          - 'null'
+          readOnly: true
+        last_task_run_id:
+          type:
+          - string
+          - 'null'
+          readOnly: true
+        last_error:
+          type:
+          - string
+          - 'null'
+          readOnly: true
+        created_at:
+          type: string
+          format: date-time
+          readOnly: true
+        updated_at:
+          type: string
+          format: date-time
+          readOnly: true
+    PaginatedTaskAutomationList:
+      type: object
+      required:
+      - count
+      - results
+      properties:
+        count:
+          type: integer
+          example: 123
+        next:
+          type:
+          - string
+          - 'null'
+          format: uri
+          example: http://api.example.org/accounts/?offset=400&limit=100
+        previous:
+          type:
+          - string
+          - 'null'
+          format: uri
+          example: http://api.example.org/accounts/?offset=200&limit=100
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/TaskAutomation'
     TaskAutomation:
       type: object
       properties:
@@ -259,8 +364,9 @@ components:
           type: string
           maxLength: 255
         github_integration:
-          type: integer
-          nullable: true
+          type:
+          - integer
+          - 'null'
         cron_expression:
           type: string
           maxLength: 100
@@ -268,32 +374,38 @@ components:
           type: string
           maxLength: 128
         template_id:
-          type: string
-          nullable: true
+          type:
+          - string
+          - 'null'
           maxLength: 255
         enabled:
           type: boolean
         last_run_at:
-          type: string
+          type:
+          - string
+          - 'null'
           format: date-time
-          nullable: true
           readOnly: true
         last_run_status:
-          type: string
-          nullable: true
+          type:
+          - string
+          - 'null'
           readOnly: true
         last_task_id:
-          type: string
-          nullable: true
+          type:
+          - string
+          - 'null'
           readOnly: true
         last_task_run_id:
-          type: string
-          nullable: true
+          type:
+          - string
+          - 'null'
           readOnly: true
         last_error:
-          type: string
+          type:
+          - string
+          - 'null'
           readOnly: true
-          nullable: true
         created_at:
           type: string
           format: date-time
@@ -315,88 +427,6 @@ components:
       - prompt
       - repository
       - updated_at
-    PatchedTaskAutomation:
-      type: object
-      properties:
-        id:
-          type: string
-          format: uuid
-          readOnly: true
-        name:
-          type: string
-          maxLength: 255
-        prompt:
-          type: string
-        repository:
-          type: string
-          maxLength: 255
-        github_integration:
-          type: integer
-          nullable: true
-        cron_expression:
-          type: string
-          maxLength: 100
-        timezone:
-          type: string
-          maxLength: 128
-        template_id:
-          type: string
-          nullable: true
-          maxLength: 255
-        enabled:
-          type: boolean
-        last_run_at:
-          type: string
-          format: date-time
-          nullable: true
-          readOnly: true
-        last_run_status:
-          type: string
-          nullable: true
-          readOnly: true
-        last_task_id:
-          type: string
-          nullable: true
-          readOnly: true
-        last_task_run_id:
-          type: string
-          nullable: true
-          readOnly: true
-        last_error:
-          type: string
-          readOnly: true
-          nullable: true
-        created_at:
-          type: string
-          format: date-time
-          readOnly: true
-        updated_at:
-          type: string
-          format: date-time
-          readOnly: true
-    PaginatedTaskAutomationList:
-      type: object
-      required:
-      - count
-      - results
-      properties:
-        count:
-          type: integer
-          example: 123
-        next:
-          type: string
-          nullable: true
-          format: uri
-          example: http://api.example.org/accounts/?offset=400&limit=100
-        previous:
-          type: string
-          nullable: true
-          format: uri
-          example: http://api.example.org/accounts/?offset=200&limit=100
-        results:
-          type: array
-          items:
-            $ref: '#/components/schemas/TaskAutomation'
   parameters:
     ProjectIdPath:
       in: path

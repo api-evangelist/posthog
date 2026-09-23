@@ -1,10 +1,10 @@
-openapi: 3.0.3
+openapi: 3.2.0
 info:
-  title: PostHog actions web_analytics API
+  title: PostHog Web Analytics API
   version: 1.0.0
   description: ''
 tags:
-- name: web_analytics
+- name: Web Analytics
 paths:
   /api/environments/{project_id}/web_analytics/weekly_digest/:
     get:
@@ -26,7 +26,7 @@ paths:
         description: Lookback window in days (1–90). Defaults to 7.
       - $ref: '#/components/parameters/ProjectIdPath'
       tags:
-      - web_analytics
+      - Web Analytics
       security:
       - PersonalAPIKeyAuth:
         - web_analytics:read
@@ -41,6 +41,59 @@ paths:
       - web_analytics
 components:
   schemas:
+    TopSource:
+      type: object
+      properties:
+        name:
+          type: string
+          description: Initial referring domain.
+        visitors:
+          type: integer
+          description: Unique visitors from this source.
+        change:
+          allOf:
+          - $ref: '#/components/schemas/WoWChange'
+          description: Period-over-period change in visitors, null when not meaningful.
+      required:
+      - change
+      - name
+      - visitors
+    Goal:
+      type: object
+      properties:
+        name:
+          type: string
+          description: Goal name (action name).
+        conversions:
+          type: integer
+          description: Total conversions in the period.
+        change:
+          allOf:
+          - $ref: '#/components/schemas/WoWChange'
+          description: Period-over-period change in conversions, null when not meaningful.
+      required:
+      - change
+      - conversions
+      - name
+    DurationMetric:
+      type: object
+      properties:
+        current:
+          type: string
+          description: Human-readable duration, e.g. '2m 34s'.
+        previous:
+          type:
+          - string
+          - 'null'
+          description: Prior-period duration, e.g. '2m 10s'.
+        change:
+          allOf:
+          - $ref: '#/components/schemas/WoWChange'
+          description: Period-over-period change, null when not meaningful.
+      required:
+      - change
+      - current
+      - previous
     WeeklyDigestResponse:
       type: object
       properties:
@@ -93,82 +146,6 @@ components:
       - top_pages
       - top_sources
       - visitors
-    NumericMetric:
-      type: object
-      properties:
-        current:
-          type: number
-          format: double
-          description: Value for the most recent period.
-        previous:
-          type: number
-          format: double
-          nullable: true
-          description: Value for the prior period, if available.
-        change:
-          allOf:
-          - $ref: '#/components/schemas/WoWChange'
-          nullable: true
-          description: Period-over-period change, null when not meaningful.
-      required:
-      - change
-      - current
-      - previous
-    DurationMetric:
-      type: object
-      properties:
-        current:
-          type: string
-          description: Human-readable duration, e.g. '2m 34s'.
-        previous:
-          type: string
-          nullable: true
-          description: Prior-period duration, e.g. '2m 10s'.
-        change:
-          allOf:
-          - $ref: '#/components/schemas/WoWChange'
-          nullable: true
-          description: Period-over-period change, null when not meaningful.
-      required:
-      - change
-      - current
-      - previous
-    Goal:
-      type: object
-      properties:
-        name:
-          type: string
-          description: Goal name (action name).
-        conversions:
-          type: integer
-          description: Total conversions in the period.
-        change:
-          allOf:
-          - $ref: '#/components/schemas/WoWChange'
-          nullable: true
-          description: Period-over-period change in conversions, null when not meaningful.
-      required:
-      - change
-      - conversions
-      - name
-    TopSource:
-      type: object
-      properties:
-        name:
-          type: string
-          description: Initial referring domain.
-        visitors:
-          type: integer
-          description: Unique visitors from this source.
-        change:
-          allOf:
-          - $ref: '#/components/schemas/WoWChange'
-          nullable: true
-          description: Period-over-period change in visitors, null when not meaningful.
-      required:
-      - change
-      - name
-      - visitors
     TopPage:
       type: object
       properties:
@@ -184,13 +161,33 @@ components:
         change:
           allOf:
           - $ref: '#/components/schemas/WoWChange'
-          nullable: true
           description: Period-over-period change in visitors, null when not meaningful.
       required:
       - change
       - host
       - path
       - visitors
+    NumericMetric:
+      type: object
+      properties:
+        current:
+          type: number
+          format: double
+          description: Value for the most recent period.
+        previous:
+          type:
+          - number
+          - 'null'
+          format: double
+          description: Value for the prior period, if available.
+        change:
+          allOf:
+          - $ref: '#/components/schemas/WoWChange'
+          description: Period-over-period change, null when not meaningful.
+      required:
+      - change
+      - current
+      - previous
     WoWChange:
       type: object
       properties:

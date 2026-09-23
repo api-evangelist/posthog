@@ -1,6 +1,6 @@
-openapi: 3.0.3
+openapi: 3.2.0
 info:
-  title: PostHog actions sdk_doctor API
+  title: PostHog SDK Doctor API
   version: 1.0.0
   description: ''
 tags:
@@ -34,78 +34,6 @@ paths:
       - sdk_doctor
 components:
   schemas:
-    SdkHealthReport:
-      type: object
-      properties:
-        overall_health:
-          allOf:
-          - $ref: '#/components/schemas/OverallHealthEnum'
-          description: '''healthy'' when no SDKs need updating, ''needs_attention'' otherwise.
-
-
-            * `healthy` - healthy
-
-            * `needs_attention` - needs_attention'
-        health:
-          allOf:
-          - $ref: '#/components/schemas/HealthEnum'
-          description: 'UI-level status — ''success'' when healthy, ''warning'' when some SDKs are outdated, ''danger'' when the majority are outdated.
-
-
-            * `success` - success
-
-            * `warning` - warning
-
-            * `danger` - danger'
-        needs_updating_count:
-          type: integer
-          description: Number of SDKs that need updating.
-        team_sdk_count:
-          type: integer
-          description: Number of distinct PostHog SDKs the project is actively using.
-        sdks:
-          type: array
-          items:
-            $ref: '#/components/schemas/SdkAssessment'
-          description: Per-SDK health assessments.
-      required:
-      - health
-      - needs_updating_count
-      - overall_health
-      - sdks
-      - team_sdk_count
-    OverallHealthEnum:
-      enum:
-      - healthy
-      - needs_attention
-      type: string
-      description: '* `healthy` - healthy
-
-        * `needs_attention` - needs_attention'
-    SdkAssessmentSeverityEnum:
-      enum:
-      - none
-      - warning
-      - danger
-      type: string
-      description: '* `none` - none
-
-        * `warning` - warning
-
-        * `danger` - danger'
-    OutdatedTrafficAlert:
-      type: object
-      properties:
-        version:
-          type: string
-          description: Outdated version handling significant traffic.
-        threshold_percent:
-          type: number
-          format: double
-          description: Traffic-percentage threshold that triggered the alert (10% for most SDKs, 20% for web).
-      required:
-      - threshold_percent
-      - version
     SdkAssessment:
       type: object
       properties:
@@ -168,17 +96,6 @@ components:
       - reason
       - releases
       - severity
-    HealthEnum:
-      enum:
-      - success
-      - warning
-      - danger
-      type: string
-      description: '* `success` - success
-
-        * `warning` - warning
-
-        * `danger` - danger'
     SdkReleaseAssessment:
       type: object
       properties:
@@ -192,16 +109,19 @@ components:
           type: string
           description: Timestamp of the most recent event seen for this version (ISO 8601).
         release_date:
-          type: string
-          nullable: true
+          type:
+          - string
+          - 'null'
           description: When this version was published on GitHub (ISO 8601), or null if unknown.
         days_since_release:
-          type: integer
-          nullable: true
+          type:
+          - integer
+          - 'null'
           description: Days since this version was released, or null if unknown.
         released_ago:
-          type: string
-          nullable: true
+          type:
+          - string
+          - 'null'
           description: Human-readable relative release age matching the UI (e.g. '5 months ago'). Null when release_date is unknown.
         is_outdated:
           type: boolean
@@ -238,6 +158,89 @@ components:
       - sql_query
       - status_reason
       - version
+    SdkAssessmentSeverityEnum:
+      enum:
+      - none
+      - warning
+      - danger
+      type: string
+      description: '* `none` - none
+
+        * `warning` - warning
+
+        * `danger` - danger'
+    OutdatedTrafficAlert:
+      type: object
+      properties:
+        version:
+          type: string
+          description: Outdated version handling significant traffic.
+        threshold_percent:
+          type: number
+          format: double
+          description: Traffic-percentage threshold that triggered the alert (10% for most SDKs, 20% for web).
+      required:
+      - threshold_percent
+      - version
+    HealthEnum:
+      enum:
+      - success
+      - warning
+      - danger
+      type: string
+      description: '* `success` - success
+
+        * `warning` - warning
+
+        * `danger` - danger'
+    OverallHealthEnum:
+      enum:
+      - healthy
+      - needs_attention
+      type: string
+      description: '* `healthy` - healthy
+
+        * `needs_attention` - needs_attention'
+    SdkHealthReport:
+      type: object
+      properties:
+        overall_health:
+          allOf:
+          - $ref: '#/components/schemas/OverallHealthEnum'
+          description: '''healthy'' when no SDKs need updating, ''needs_attention'' otherwise.
+
+
+            * `healthy` - healthy
+
+            * `needs_attention` - needs_attention'
+        health:
+          allOf:
+          - $ref: '#/components/schemas/HealthEnum'
+          description: 'UI-level status — ''success'' when healthy, ''warning'' when some SDKs are outdated, ''danger'' when the majority are outdated.
+
+
+            * `success` - success
+
+            * `warning` - warning
+
+            * `danger` - danger'
+        needs_updating_count:
+          type: integer
+          description: Number of SDKs that need updating.
+        team_sdk_count:
+          type: integer
+          description: Number of distinct PostHog SDKs the project is actively using.
+        sdks:
+          type: array
+          items:
+            $ref: '#/components/schemas/SdkAssessment'
+          description: Per-SDK health assessments.
+      required:
+      - health
+      - needs_updating_count
+      - overall_health
+      - sdks
+      - team_sdk_count
   parameters:
     ProjectIdPath:
       in: path

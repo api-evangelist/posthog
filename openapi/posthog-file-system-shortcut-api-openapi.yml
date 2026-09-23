@@ -1,6 +1,6 @@
-openapi: 3.0.3
+openapi: 3.2.0
 info:
-  title: PostHog actions file_system_shortcut API
+  title: PostHog File System Shortcut API
   version: 1.0.0
   description: ''
 tags:
@@ -37,6 +37,8 @@ paths:
           description: ''
       deprecated: true
       x-explicit-tags: []
+      summary: Environments file system shortcut list
+      x-summary-source: derived
     post:
       operationId: environments_file_system_shortcut_create
       parameters:
@@ -67,6 +69,8 @@ paths:
           description: ''
       deprecated: true
       x-explicit-tags: []
+      summary: Environments file system shortcut create
+      x-summary-source: derived
   /api/environments/{environment_id}/file_system_shortcut/{id}/:
     get:
       operationId: environments_file_system_shortcut_retrieve
@@ -93,6 +97,8 @@ paths:
           description: ''
       deprecated: true
       x-explicit-tags: []
+      summary: Environments file system shortcut retrieve
+      x-summary-source: derived
     put:
       operationId: environments_file_system_shortcut_update
       parameters:
@@ -130,6 +136,8 @@ paths:
           description: ''
       deprecated: true
       x-explicit-tags: []
+      summary: Environments file system shortcut update
+      x-summary-source: derived
     patch:
       operationId: environments_file_system_shortcut_partial_update
       parameters:
@@ -166,6 +174,8 @@ paths:
           description: ''
       deprecated: true
       x-explicit-tags: []
+      summary: Environments file system shortcut partial update
+      x-summary-source: derived
     delete:
       operationId: environments_file_system_shortcut_destroy
       parameters:
@@ -187,6 +197,8 @@ paths:
           description: No response body
       deprecated: true
       x-explicit-tags: []
+      summary: Environments file system shortcut destroy
+      x-summary-source: derived
   /api/environments/{environment_id}/file_system_shortcut/reorder/:
     post:
       operationId: environments_file_system_shortcut_reorder_create
@@ -216,6 +228,8 @@ paths:
           description: ''
       deprecated: true
       x-explicit-tags: []
+      summary: Environments file system shortcut reorder create
+      x-summary-source: derived
   /api/projects/{project_id}/file_system_shortcut/:
     get:
       operationId: file_system_shortcut_list
@@ -246,6 +260,8 @@ paths:
                 $ref: '#/components/schemas/PaginatedFileSystemShortcutList'
           description: ''
       x-explicit-tags: []
+      summary: File system shortcut list
+      x-summary-source: derived
     post:
       operationId: file_system_shortcut_create
       parameters:
@@ -275,6 +291,8 @@ paths:
                 $ref: '#/components/schemas/FileSystemShortcut'
           description: ''
       x-explicit-tags: []
+      summary: File system shortcut create
+      x-summary-source: derived
   /api/projects/{project_id}/file_system_shortcut/{id}/:
     get:
       operationId: file_system_shortcut_retrieve
@@ -300,6 +318,8 @@ paths:
                 $ref: '#/components/schemas/FileSystemShortcut'
           description: ''
       x-explicit-tags: []
+      summary: File system shortcut retrieve
+      x-summary-source: derived
     put:
       operationId: file_system_shortcut_update
       parameters:
@@ -336,6 +356,8 @@ paths:
                 $ref: '#/components/schemas/FileSystemShortcut'
           description: ''
       x-explicit-tags: []
+      summary: File system shortcut update
+      x-summary-source: derived
     patch:
       operationId: file_system_shortcut_partial_update
       parameters:
@@ -371,6 +393,8 @@ paths:
                 $ref: '#/components/schemas/FileSystemShortcut'
           description: ''
       x-explicit-tags: []
+      summary: File system shortcut partial update
+      x-summary-source: derived
     delete:
       operationId: file_system_shortcut_destroy
       parameters:
@@ -391,6 +415,8 @@ paths:
         '204':
           description: No response body
       x-explicit-tags: []
+      summary: File system shortcut destroy
+      x-summary-source: derived
   /api/projects/{project_id}/file_system_shortcut/reorder/:
     post:
       operationId: file_system_shortcut_reorder_create
@@ -419,35 +445,25 @@ paths:
                 $ref: '#/components/schemas/PaginatedFileSystemShortcutList'
           description: ''
       x-explicit-tags: []
+      summary: File system shortcut reorder create
+      x-summary-source: derived
 components:
+  parameters:
+    EnvironmentIdPath:
+      in: path
+      name: environment_id
+      required: true
+      schema:
+        type: string
+      description: Deprecated. Use /api/projects/{project_id}/ instead.
+    ProjectIdPath:
+      in: path
+      name: project_id
+      required: true
+      schema:
+        type: string
+      description: Project ID of the project you're trying to access. To find the ID of the project, make a call to /api/projects/.
   schemas:
-    PatchedFileSystemShortcut:
-      type: object
-      properties:
-        id:
-          type: string
-          format: uuid
-          readOnly: true
-        path:
-          type: string
-        type:
-          type: string
-          maxLength: 100
-        ref:
-          type: string
-          nullable: true
-          maxLength: 100
-        href:
-          type: string
-          nullable: true
-        order:
-          type: integer
-          maximum: 2147483647
-          minimum: -2147483648
-        created_at:
-          type: string
-          format: date-time
-          readOnly: true
     FileSystemShortcut:
       type: object
       properties:
@@ -461,12 +477,14 @@ components:
           type: string
           maxLength: 100
         ref:
-          type: string
-          nullable: true
+          type:
+          - string
+          - 'null'
           maxLength: 100
         href:
-          type: string
-          nullable: true
+          type:
+          - string
+          - 'null'
         order:
           type: integer
           maximum: 2147483647
@@ -479,6 +497,60 @@ components:
       - created_at
       - id
       - path
+    PaginatedFileSystemShortcutList:
+      type: object
+      required:
+      - count
+      - results
+      properties:
+        count:
+          type: integer
+          example: 123
+        next:
+          type:
+          - string
+          - 'null'
+          format: uri
+          example: http://api.example.org/accounts/?offset=400&limit=100
+        previous:
+          type:
+          - string
+          - 'null'
+          format: uri
+          example: http://api.example.org/accounts/?offset=200&limit=100
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/FileSystemShortcut'
+    PatchedFileSystemShortcut:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+          readOnly: true
+        path:
+          type: string
+        type:
+          type: string
+          maxLength: 100
+        ref:
+          type:
+          - string
+          - 'null'
+          maxLength: 100
+        href:
+          type:
+          - string
+          - 'null'
+        order:
+          type: integer
+          maximum: 2147483647
+          minimum: -2147483648
+        created_at:
+          type: string
+          format: date-time
+          readOnly: true
     FileSystemShortcutReorder:
       type: object
       properties:
@@ -490,44 +562,6 @@ components:
           description: IDs of the current user's shortcuts in the desired display order.
       required:
       - ordered_ids
-    PaginatedFileSystemShortcutList:
-      type: object
-      required:
-      - count
-      - results
-      properties:
-        count:
-          type: integer
-          example: 123
-        next:
-          type: string
-          nullable: true
-          format: uri
-          example: http://api.example.org/accounts/?offset=400&limit=100
-        previous:
-          type: string
-          nullable: true
-          format: uri
-          example: http://api.example.org/accounts/?offset=200&limit=100
-        results:
-          type: array
-          items:
-            $ref: '#/components/schemas/FileSystemShortcut'
-  parameters:
-    ProjectIdPath:
-      in: path
-      name: project_id
-      required: true
-      schema:
-        type: string
-      description: Project ID of the project you're trying to access. To find the ID of the project, make a call to /api/projects/.
-    EnvironmentIdPath:
-      in: path
-      name: environment_id
-      required: true
-      schema:
-        type: string
-      description: Deprecated. Use /api/projects/{project_id}/ instead.
   securitySchemes:
     PersonalAPIKeyAuth:
       type: http

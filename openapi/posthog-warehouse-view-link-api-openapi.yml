@@ -1,6 +1,6 @@
-openapi: 3.0.3
+openapi: 3.2.0
 info:
-  title: PostHog actions warehouse_view_link API
+  title: PostHog Warehouse View Link API
   version: 1.0.0
   description: ''
 tags:
@@ -45,6 +45,8 @@ paths:
       deprecated: true
       x-explicit-tags:
       - data_warehouse
+      summary: Environments warehouse view link list
+      x-summary-source: derived
     post:
       operationId: environments_warehouse_view_link_create
       description: Create, Read, Update and Delete View Columns.
@@ -77,6 +79,8 @@ paths:
       deprecated: true
       x-explicit-tags:
       - data_warehouse
+      summary: Environments warehouse view link create
+      x-summary-source: derived
   /api/environments/{environment_id}/warehouse_view_link/{id}/:
     get:
       operationId: environments_warehouse_view_link_retrieve
@@ -104,6 +108,8 @@ paths:
           description: ''
       deprecated: true
       x-explicit-tags: []
+      summary: Environments warehouse view link retrieve
+      x-summary-source: derived
     put:
       operationId: environments_warehouse_view_link_update
       description: Create, Read, Update and Delete View Columns.
@@ -142,6 +148,8 @@ paths:
           description: ''
       deprecated: true
       x-explicit-tags: []
+      summary: Environments warehouse view link update
+      x-summary-source: derived
     patch:
       operationId: environments_warehouse_view_link_partial_update
       description: Create, Read, Update and Delete View Columns.
@@ -179,6 +187,8 @@ paths:
           description: ''
       deprecated: true
       x-explicit-tags: []
+      summary: Environments warehouse view link partial update
+      x-summary-source: derived
     delete:
       operationId: environments_warehouse_view_link_destroy
       description: Create, Read, Update and Delete View Columns.
@@ -201,6 +211,8 @@ paths:
           description: No response body
       deprecated: true
       x-explicit-tags: []
+      summary: Environments warehouse view link destroy
+      x-summary-source: derived
   /api/environments/{environment_id}/warehouse_view_link/validate/:
     post:
       operationId: environments_warehouse_view_link_validate_create
@@ -227,6 +239,8 @@ paths:
       deprecated: true
       x-explicit-tags:
       - data_warehouse
+      summary: Environments warehouse view link validate create
+      x-summary-source: derived
   /api/projects/{project_id}/warehouse_view_link/:
     get:
       operationId: warehouse_view_link_list
@@ -265,6 +279,8 @@ paths:
           description: ''
       x-explicit-tags:
       - data_warehouse
+      summary: Warehouse view link list
+      x-summary-source: derived
     post:
       operationId: warehouse_view_link_create
       description: Create, Read, Update and Delete View Columns.
@@ -296,6 +312,8 @@ paths:
           description: ''
       x-explicit-tags:
       - data_warehouse
+      summary: Warehouse view link create
+      x-summary-source: derived
   /api/projects/{project_id}/warehouse_view_link/{id}/:
     get:
       operationId: warehouse_view_link_retrieve
@@ -322,6 +340,8 @@ paths:
                 $ref: '#/components/schemas/ViewLink'
           description: ''
       x-explicit-tags: []
+      summary: Warehouse view link retrieve
+      x-summary-source: derived
     put:
       operationId: warehouse_view_link_update
       description: Create, Read, Update and Delete View Columns.
@@ -359,6 +379,8 @@ paths:
                 $ref: '#/components/schemas/ViewLink'
           description: ''
       x-explicit-tags: []
+      summary: Warehouse view link update
+      x-summary-source: derived
     patch:
       operationId: warehouse_view_link_partial_update
       description: Create, Read, Update and Delete View Columns.
@@ -395,6 +417,8 @@ paths:
                 $ref: '#/components/schemas/ViewLink'
           description: ''
       x-explicit-tags: []
+      summary: Warehouse view link partial update
+      x-summary-source: derived
     delete:
       operationId: warehouse_view_link_destroy
       description: Create, Read, Update and Delete View Columns.
@@ -416,6 +440,8 @@ paths:
         '204':
           description: No response body
       x-explicit-tags: []
+      summary: Warehouse view link destroy
+      x-summary-source: derived
   /api/projects/{project_id}/warehouse_view_link/validate/:
     post:
       operationId: warehouse_view_link_validate_create
@@ -441,9 +467,14 @@ paths:
           description: No response body
       x-explicit-tags:
       - data_warehouse
+      summary: Warehouse view link validate create
+      x-summary-source: derived
 components:
   schemas:
-    ViewLink:
+    NullEnum:
+      enum:
+      - null
+    PatchedViewLink:
       type: object
       properties:
         id:
@@ -451,8 +482,9 @@ components:
           format: uuid
           readOnly: true
         deleted:
-          type: boolean
-          nullable: true
+          type:
+          - boolean
+          - 'null'
         created_by:
           allOf:
           - $ref: '#/components/schemas/UserBasic'
@@ -476,20 +508,32 @@ components:
         field_name:
           type: string
           maxLength: 400
-        configuration:
-          nullable: true
+        configuration: {}
+    PaginatedViewLinkList:
+      type: object
       required:
-      - created_at
-      - created_by
-      - field_name
-      - id
-      - joining_table_key
-      - joining_table_name
-      - source_table_key
-      - source_table_name
-    BlankEnum:
-      enum:
-      - ''
+      - count
+      - results
+      properties:
+        count:
+          type: integer
+          example: 123
+        next:
+          type:
+          - string
+          - 'null'
+          format: uri
+          example: http://api.example.org/accounts/?offset=400&limit=100
+        previous:
+          type:
+          - string
+          - 'null'
+          format: uri
+          example: http://api.example.org/accounts/?offset=200&limit=100
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/ViewLink'
     UserBasic:
       type: object
       properties:
@@ -501,8 +545,9 @@ components:
           format: uuid
           readOnly: true
         distinct_id:
-          type: string
-          nullable: true
+          type:
+          - string
+          - 'null'
           maxLength: 200
         first_name:
           type: string
@@ -516,15 +561,16 @@ components:
           title: Email address
           maxLength: 254
         is_email_verified:
-          type: boolean
-          nullable: true
+          type:
+          - boolean
+          - 'null'
         hedgehog_config:
-          type: object
+          type:
+          - object
+          - 'null'
           additionalProperties: true
-          nullable: true
           readOnly: true
         role_at_organization:
-          nullable: true
           oneOf:
           - $ref: '#/components/schemas/RoleAtOrganizationEnum'
           - $ref: '#/components/schemas/BlankEnum'
@@ -534,6 +580,53 @@ components:
       - hedgehog_config
       - id
       - uuid
+    ViewLink:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+          readOnly: true
+        deleted:
+          type:
+          - boolean
+          - 'null'
+        created_by:
+          allOf:
+          - $ref: '#/components/schemas/UserBasic'
+          readOnly: true
+        created_at:
+          type: string
+          format: date-time
+          readOnly: true
+        source_table_name:
+          type: string
+          maxLength: 400
+        source_table_key:
+          type: string
+          maxLength: 400
+        joining_table_name:
+          type: string
+          maxLength: 400
+        joining_table_key:
+          type: string
+          maxLength: 400
+        field_name:
+          type: string
+          maxLength: 400
+        configuration: {}
+      required:
+      - created_at
+      - created_by
+      - field_name
+      - id
+      - joining_table_key
+      - joining_table_name
+      - source_table_key
+      - source_table_name
+    BlankEnum:
+      enum:
+      - ''
     ViewLinkValidation:
       type: object
       properties:
@@ -580,75 +673,7 @@ components:
         * `sales` - Sales / Success
 
         * `other` - Other'
-    PaginatedViewLinkList:
-      type: object
-      required:
-      - count
-      - results
-      properties:
-        count:
-          type: integer
-          example: 123
-        next:
-          type: string
-          nullable: true
-          format: uri
-          example: http://api.example.org/accounts/?offset=400&limit=100
-        previous:
-          type: string
-          nullable: true
-          format: uri
-          example: http://api.example.org/accounts/?offset=200&limit=100
-        results:
-          type: array
-          items:
-            $ref: '#/components/schemas/ViewLink'
-    PatchedViewLink:
-      type: object
-      properties:
-        id:
-          type: string
-          format: uuid
-          readOnly: true
-        deleted:
-          type: boolean
-          nullable: true
-        created_by:
-          allOf:
-          - $ref: '#/components/schemas/UserBasic'
-          readOnly: true
-        created_at:
-          type: string
-          format: date-time
-          readOnly: true
-        source_table_name:
-          type: string
-          maxLength: 400
-        source_table_key:
-          type: string
-          maxLength: 400
-        joining_table_name:
-          type: string
-          maxLength: 400
-        joining_table_key:
-          type: string
-          maxLength: 400
-        field_name:
-          type: string
-          maxLength: 400
-        configuration:
-          nullable: true
-    NullEnum:
-      enum:
-      - null
   parameters:
-    ProjectIdPath:
-      in: path
-      name: project_id
-      required: true
-      schema:
-        type: string
-      description: Project ID of the project you're trying to access. To find the ID of the project, make a call to /api/projects/.
     EnvironmentIdPath:
       in: path
       name: environment_id
@@ -656,6 +681,13 @@ components:
       schema:
         type: string
       description: Deprecated. Use /api/projects/{project_id}/ instead.
+    ProjectIdPath:
+      in: path
+      name: project_id
+      required: true
+      schema:
+        type: string
+      description: Project ID of the project you're trying to access. To find the ID of the project, make a call to /api/projects/.
   securitySchemes:
     PersonalAPIKeyAuth:
       type: http

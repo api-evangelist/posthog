@@ -1,10 +1,10 @@
-openapi: 3.0.3
+openapi: 3.2.0
 info:
-  title: PostHog actions customer_journeys API
+  title: PostHog Customer Journeys API
   version: 1.0.0
   description: ''
 tags:
-- name: customer_journeys
+- name: customer Journeys
 paths:
   /api/environments/{project_id}/customer_journeys/:
     get:
@@ -24,7 +24,7 @@ paths:
           type: integer
       - $ref: '#/components/parameters/ProjectIdPath'
       tags:
-      - customer_journeys
+      - customer Journeys
       security:
       - PersonalAPIKeyAuth:
         - customer_journey:read
@@ -37,12 +37,14 @@ paths:
           description: ''
       x-explicit-tags:
       - customer_analytics
+      summary: Customer journeys list
+      x-summary-source: derived
     post:
       operationId: customer_journeys_create
       parameters:
       - $ref: '#/components/parameters/ProjectIdPath'
       tags:
-      - customer_journeys
+      - customer Journeys
       requestBody:
         content:
           application/json:
@@ -67,6 +69,8 @@ paths:
           description: ''
       x-explicit-tags:
       - customer_analytics
+      summary: Customer journeys create
+      x-summary-source: derived
   /api/environments/{project_id}/customer_journeys/{id}/:
     get:
       operationId: customer_journeys_retrieve
@@ -80,7 +84,7 @@ paths:
         required: true
       - $ref: '#/components/parameters/ProjectIdPath'
       tags:
-      - customer_journeys
+      - customer Journeys
       security:
       - PersonalAPIKeyAuth:
         - customer_journey:read
@@ -92,6 +96,8 @@ paths:
                 $ref: '#/components/schemas/CustomerJourney'
           description: ''
       x-explicit-tags: []
+      summary: Customer journeys retrieve
+      x-summary-source: derived
     put:
       operationId: customer_journeys_update
       parameters:
@@ -104,7 +110,7 @@ paths:
         required: true
       - $ref: '#/components/parameters/ProjectIdPath'
       tags:
-      - customer_journeys
+      - customer Journeys
       requestBody:
         content:
           application/json:
@@ -128,6 +134,8 @@ paths:
                 $ref: '#/components/schemas/CustomerJourney'
           description: ''
       x-explicit-tags: []
+      summary: Customer journeys update
+      x-summary-source: derived
     patch:
       operationId: customer_journeys_partial_update
       parameters:
@@ -140,7 +148,7 @@ paths:
         required: true
       - $ref: '#/components/parameters/ProjectIdPath'
       tags:
-      - customer_journeys
+      - customer Journeys
       requestBody:
         content:
           application/json:
@@ -163,6 +171,8 @@ paths:
                 $ref: '#/components/schemas/CustomerJourney'
           description: ''
       x-explicit-tags: []
+      summary: Customer journeys partial update
+      x-summary-source: derived
     delete:
       operationId: customer_journeys_destroy
       parameters:
@@ -175,7 +185,7 @@ paths:
         required: true
       - $ref: '#/components/parameters/ProjectIdPath'
       tags:
-      - customer_journeys
+      - customer Journeys
       security:
       - PersonalAPIKeyAuth:
         - customer_journey:write
@@ -183,6 +193,8 @@ paths:
         '204':
           description: No response body
       x-explicit-tags: []
+      summary: Customer journeys destroy
+      x-summary-source: derived
 components:
   schemas:
     CustomerJourney:
@@ -198,21 +210,24 @@ components:
           type: string
           maxLength: 400
         description:
-          type: string
-          nullable: true
+          type:
+          - string
+          - 'null'
         created_at:
           type: string
           format: date-time
           readOnly: true
         created_by:
-          type: integer
+          type:
+          - integer
+          - 'null'
           readOnly: true
-          nullable: true
         updated_at:
-          type: string
+          type:
+          - string
+          - 'null'
           format: date-time
           readOnly: true
-          nullable: true
       required:
       - created_at
       - created_by
@@ -233,21 +248,24 @@ components:
           type: string
           maxLength: 400
         description:
-          type: string
-          nullable: true
+          type:
+          - string
+          - 'null'
         created_at:
           type: string
           format: date-time
           readOnly: true
         created_by:
-          type: integer
+          type:
+          - integer
+          - 'null'
           readOnly: true
-          nullable: true
         updated_at:
-          type: string
+          type:
+          - string
+          - 'null'
           format: date-time
           readOnly: true
-          nullable: true
     PaginatedCustomerJourneyList:
       type: object
       required:
@@ -258,13 +276,15 @@ components:
           type: integer
           example: 123
         next:
-          type: string
-          nullable: true
+          type:
+          - string
+          - 'null'
           format: uri
           example: http://api.example.org/accounts/?offset=400&limit=100
         previous:
-          type: string
-          nullable: true
+          type:
+          - string
+          - 'null'
           format: uri
           example: http://api.example.org/accounts/?offset=200&limit=100
         results:

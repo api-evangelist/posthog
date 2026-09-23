@@ -1,6 +1,6 @@
-openapi: 3.0.3
+openapi: 3.2.0
 info:
-  title: PostHog actions live_debugger_breakpoints API
+  title: PostHog Live Debugger Breakpoints API
   version: 1.0.0
   description: ''
 tags:
@@ -46,6 +46,8 @@ paths:
           description: ''
       x-explicit-tags:
       - live_debugger
+      summary: Live debugger breakpoints list
+      x-summary-source: derived
     post:
       operationId: live_debugger_breakpoints_create
       description: Create, Read, Update and Delete breakpoints for live debugging.
@@ -77,6 +79,8 @@ paths:
           description: ''
       x-explicit-tags:
       - live_debugger
+      summary: Live debugger breakpoints create
+      x-summary-source: derived
   /api/projects/{project_id}/live_debugger_breakpoints/{id}/:
     get:
       operationId: live_debugger_breakpoints_retrieve
@@ -103,6 +107,8 @@ paths:
                 $ref: '#/components/schemas/LiveDebuggerBreakpoint'
           description: ''
       x-explicit-tags: []
+      summary: Live debugger breakpoints retrieve
+      x-summary-source: derived
     put:
       operationId: live_debugger_breakpoints_update
       description: Create, Read, Update and Delete breakpoints for live debugging.
@@ -140,6 +146,8 @@ paths:
                 $ref: '#/components/schemas/LiveDebuggerBreakpoint'
           description: ''
       x-explicit-tags: []
+      summary: Live debugger breakpoints update
+      x-summary-source: derived
     patch:
       operationId: live_debugger_breakpoints_partial_update
       description: Create, Read, Update and Delete breakpoints for live debugging.
@@ -176,6 +184,8 @@ paths:
                 $ref: '#/components/schemas/LiveDebuggerBreakpoint'
           description: ''
       x-explicit-tags: []
+      summary: Live debugger breakpoints partial update
+      x-summary-source: derived
     delete:
       operationId: live_debugger_breakpoints_destroy
       description: Create, Read, Update and Delete breakpoints for live debugging.
@@ -197,10 +207,15 @@ paths:
         '204':
           description: No response body
       x-explicit-tags: []
+      summary: Live debugger breakpoints destroy
+      x-summary-source: derived
   /api/projects/{project_id}/live_debugger_breakpoints/active/:
     get:
       operationId: live_debugger_breakpoints_active_retrieve
-      description: "External API endpoint for client applications to fetch active breakpoints using Project API key. This endpoint allows external client applications (like Python scripts, Node.js apps, etc.) to fetch the list of active breakpoints so they can instrument their code accordingly. \n\nAuthentication: Requires a Project API Key in the Authorization header: `Authorization: Bearer phs_<your-project-api-key>`. You can find your Project API Key in PostHog at: Settings → Project → Project API Key"
+      description: 'External API endpoint for client applications to fetch active breakpoints using Project API key. This endpoint allows external client applications (like Python scripts, Node.js apps, etc.) to fetch the list of active breakpoints so they can instrument their code accordingly.
+
+
+        Authentication: Requires a Project API Key in the Authorization header: `Authorization: Bearer phs_`. You can find your Project API Key in PostHog at: Settings → Project → Project API Key'
       summary: Get active breakpoints (External API)
       parameters:
       - in: query
@@ -240,7 +255,10 @@ paths:
   /api/projects/{project_id}/live_debugger_breakpoints/breakpoint_hits/:
     get:
       operationId: live_debugger_breakpoints_breakpoint_hits_retrieve
-      description: "Retrieve breakpoint hit events from ClickHouse with optional filtering and pagination. Returns hit events containing stack traces, local variables, and execution context from your application's runtime. \n\nSecurity: Breakpoint IDs are filtered to only include those belonging to the current team."
+      description: 'Retrieve breakpoint hit events from ClickHouse with optional filtering and pagination. Returns hit events containing stack traces, local variables, and execution context from your application''s runtime.
+
+
+        Security: Breakpoint IDs are filtered to only include those belonging to the current team.'
       summary: Get breakpoint hits
       parameters:
       - in: query
@@ -276,14 +294,6 @@ paths:
       x-explicit-tags:
       - live_debugger
 components:
-  parameters:
-    ProjectIdPath:
-      in: path
-      name: project_id
-      required: true
-      schema:
-        type: string
-      description: Project ID of the project you're trying to access. To find the ID of the project, make a call to /api/projects/.
   schemas:
     BreakpointHitsResponse:
       type: object
@@ -315,123 +325,6 @@ components:
           description: List of active breakpoints
       required:
       - breakpoints
-    PaginatedLiveDebuggerBreakpointList:
-      type: object
-      required:
-      - count
-      - results
-      properties:
-        count:
-          type: integer
-          example: 123
-        next:
-          type: string
-          nullable: true
-          format: uri
-          example: http://api.example.org/accounts/?offset=400&limit=100
-        previous:
-          type: string
-          nullable: true
-          format: uri
-          example: http://api.example.org/accounts/?offset=200&limit=100
-        results:
-          type: array
-          items:
-            $ref: '#/components/schemas/LiveDebuggerBreakpoint'
-    PatchedLiveDebuggerBreakpoint:
-      type: object
-      properties:
-        id:
-          type: string
-          format: uuid
-          readOnly: true
-        repository:
-          type: string
-          nullable: true
-        filename:
-          type: string
-        line_number:
-          type: integer
-          maximum: 2147483647
-          minimum: 0
-        enabled:
-          type: boolean
-        condition:
-          type: string
-          nullable: true
-        created_at:
-          type: string
-          format: date-time
-          readOnly: true
-        updated_at:
-          type: string
-          format: date-time
-          readOnly: true
-    LiveDebuggerBreakpoint:
-      type: object
-      properties:
-        id:
-          type: string
-          format: uuid
-          readOnly: true
-        repository:
-          type: string
-          nullable: true
-        filename:
-          type: string
-        line_number:
-          type: integer
-          maximum: 2147483647
-          minimum: 0
-        enabled:
-          type: boolean
-        condition:
-          type: string
-          nullable: true
-        created_at:
-          type: string
-          format: date-time
-          readOnly: true
-        updated_at:
-          type: string
-          format: date-time
-          readOnly: true
-      required:
-      - created_at
-      - filename
-      - id
-      - line_number
-      - updated_at
-    ActiveBreakpoint:
-      type: object
-      description: Schema for a single active breakpoint
-      properties:
-        id:
-          type: string
-          format: uuid
-          description: Unique identifier for the breakpoint
-        repository:
-          type: string
-          nullable: true
-          description: Repository identifier (e.g., 'PostHog/posthog')
-        filename:
-          type: string
-          description: File path where the breakpoint is set
-        line_number:
-          type: integer
-          description: Line number of the breakpoint
-        enabled:
-          type: boolean
-          description: Whether the breakpoint is enabled
-        condition:
-          type: string
-          nullable: true
-          description: Optional condition for the breakpoint
-      required:
-      - enabled
-      - filename
-      - id
-      - line_number
     BreakpointHit:
       type: object
       description: Schema for a single breakpoint hit event
@@ -474,6 +367,139 @@ components:
       - stackTrace
       - timestamp
       - variables
+    ActiveBreakpoint:
+      type: object
+      description: Schema for a single active breakpoint
+      properties:
+        id:
+          type: string
+          format: uuid
+          description: Unique identifier for the breakpoint
+        repository:
+          type:
+          - string
+          - 'null'
+          description: Repository identifier (e.g., 'PostHog/posthog')
+        filename:
+          type: string
+          description: File path where the breakpoint is set
+        line_number:
+          type: integer
+          description: Line number of the breakpoint
+        enabled:
+          type: boolean
+          description: Whether the breakpoint is enabled
+        condition:
+          type:
+          - string
+          - 'null'
+          description: Optional condition for the breakpoint
+      required:
+      - enabled
+      - filename
+      - id
+      - line_number
+    PaginatedLiveDebuggerBreakpointList:
+      type: object
+      required:
+      - count
+      - results
+      properties:
+        count:
+          type: integer
+          example: 123
+        next:
+          type:
+          - string
+          - 'null'
+          format: uri
+          example: http://api.example.org/accounts/?offset=400&limit=100
+        previous:
+          type:
+          - string
+          - 'null'
+          format: uri
+          example: http://api.example.org/accounts/?offset=200&limit=100
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/LiveDebuggerBreakpoint'
+    LiveDebuggerBreakpoint:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+          readOnly: true
+        repository:
+          type:
+          - string
+          - 'null'
+        filename:
+          type: string
+        line_number:
+          type: integer
+          maximum: 2147483647
+          minimum: 0
+        enabled:
+          type: boolean
+        condition:
+          type:
+          - string
+          - 'null'
+        created_at:
+          type: string
+          format: date-time
+          readOnly: true
+        updated_at:
+          type: string
+          format: date-time
+          readOnly: true
+      required:
+      - created_at
+      - filename
+      - id
+      - line_number
+      - updated_at
+    PatchedLiveDebuggerBreakpoint:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+          readOnly: true
+        repository:
+          type:
+          - string
+          - 'null'
+        filename:
+          type: string
+        line_number:
+          type: integer
+          maximum: 2147483647
+          minimum: 0
+        enabled:
+          type: boolean
+        condition:
+          type:
+          - string
+          - 'null'
+        created_at:
+          type: string
+          format: date-time
+          readOnly: true
+        updated_at:
+          type: string
+          format: date-time
+          readOnly: true
+  parameters:
+    ProjectIdPath:
+      in: path
+      name: project_id
+      required: true
+      schema:
+        type: string
+      description: Project ID of the project you're trying to access. To find the ID of the project, make a call to /api/projects/.
   securitySchemes:
     PersonalAPIKeyAuth:
       type: http

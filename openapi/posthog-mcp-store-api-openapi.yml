@@ -1,6 +1,6 @@
-openapi: 3.0.3
+openapi: 3.2.0
 info:
-  title: PostHog actions mcp_store API
+  title: PostHog MCP Store API
   version: 1.0.0
   description: ''
 tags:
@@ -37,6 +37,8 @@ paths:
           description: ''
       x-explicit-tags:
       - mcp_store
+      summary: Mcp server installations list
+      x-summary-source: derived
     post:
       operationId: mcp_server_installations_create
       parameters:
@@ -66,6 +68,8 @@ paths:
           description: ''
       x-explicit-tags:
       - mcp_store
+      summary: Mcp server installations create
+      x-summary-source: derived
   /api/environments/{project_id}/mcp_server_installations/{id}/:
     get:
       operationId: mcp_server_installations_retrieve
@@ -92,6 +96,8 @@ paths:
           description: ''
       x-explicit-tags:
       - mcp_store
+      summary: Mcp server installations retrieve
+      x-summary-source: derived
     put:
       operationId: mcp_server_installations_update
       parameters:
@@ -128,6 +134,8 @@ paths:
           description: ''
       x-explicit-tags:
       - mcp_store
+      summary: Mcp server installations update
+      x-summary-source: derived
     patch:
       operationId: mcp_server_installations_partial_update
       parameters:
@@ -164,6 +172,8 @@ paths:
           description: ''
       x-explicit-tags:
       - mcp_store
+      summary: Mcp server installations partial update
+      x-summary-source: derived
     delete:
       operationId: mcp_server_installations_destroy
       parameters:
@@ -185,6 +195,8 @@ paths:
           description: No response body
       x-explicit-tags:
       - mcp_store
+      summary: Mcp server installations destroy
+      x-summary-source: derived
   /api/environments/{project_id}/mcp_server_installations/{id}/proxy/:
     post:
       operationId: mcp_server_installations_proxy_create
@@ -222,6 +234,8 @@ paths:
           description: ''
       x-explicit-tags:
       - mcp_store
+      summary: Mcp server installations proxy create
+      x-summary-source: derived
   /api/environments/{project_id}/mcp_server_installations/{id}/tools/:
     get:
       operationId: mcp_server_installations_tools_retrieve
@@ -248,6 +262,8 @@ paths:
           description: ''
       x-explicit-tags:
       - mcp_store
+      summary: Mcp server installations tools retrieve
+      x-summary-source: derived
   /api/environments/{project_id}/mcp_server_installations/{id}/tools/{tool_name}/:
     patch:
       operationId: mcp_server_installations_tools_partial_update
@@ -291,6 +307,8 @@ paths:
           description: ''
       x-explicit-tags:
       - mcp_store
+      summary: Mcp server installations tools partial update
+      x-summary-source: derived
   /api/environments/{project_id}/mcp_server_installations/{id}/tools/refresh/:
     post:
       operationId: mcp_server_installations_tools_refresh_create
@@ -328,6 +346,8 @@ paths:
           description: ''
       x-explicit-tags:
       - mcp_store
+      summary: Mcp server installations tools refresh create
+      x-summary-source: derived
   /api/environments/{project_id}/mcp_server_installations/authorize/:
     get:
       operationId: mcp_server_installations_authorize_retrieve
@@ -378,6 +398,8 @@ paths:
           description: No response body
       x-explicit-tags:
       - mcp_store
+      summary: Mcp server installations authorize retrieve
+      x-summary-source: derived
   /api/environments/{project_id}/mcp_server_installations/install_custom/:
     post:
       operationId: mcp_server_installations_install_custom_create
@@ -415,6 +437,8 @@ paths:
           description: ''
       x-explicit-tags:
       - mcp_store
+      summary: Mcp server installations install custom create
+      x-summary-source: derived
   /api/environments/{project_id}/mcp_server_installations/install_template/:
     post:
       operationId: mcp_server_installations_install_template_create
@@ -452,6 +476,8 @@ paths:
           description: ''
       x-explicit-tags:
       - mcp_store
+      summary: Mcp server installations install template create
+      x-summary-source: derived
   /api/environments/{project_id}/mcp_servers/:
     get:
       operationId: mcp_servers_list
@@ -489,8 +515,257 @@ paths:
           description: ''
       x-explicit-tags:
       - mcp_store
+      summary: Mcp servers list
+      x-summary-source: derived
 components:
   schemas:
+    InstallCustom:
+      type: object
+      properties:
+        name:
+          type: string
+          maxLength: 200
+        url:
+          type: string
+          format: uri
+          maxLength: 2048
+        auth_type:
+          $ref: '#/components/schemas/InstallCustomAuthTypeEnum'
+        api_key:
+          type: string
+          default: ''
+        description:
+          type: string
+          default: ''
+        client_id:
+          type: string
+          default: ''
+        client_secret:
+          type: string
+          default: ''
+        install_source:
+          allOf:
+          - $ref: '#/components/schemas/InstallSourceEnum'
+          default: posthog
+        posthog_code_callback_url:
+          type: string
+          default: ''
+      required:
+      - auth_type
+      - name
+      - url
+    InstallSourceEnum:
+      enum:
+      - posthog
+      - posthog-code
+      type: string
+      description: '* `posthog` - posthog
+
+        * `posthog-code` - posthog-code'
+    MCPAuthTypeEnum:
+      enum:
+      - api_key
+      - oauth
+      type: string
+      description: '* `api_key` - API Key
+
+        * `oauth` - OAuth'
+    InstallCustomAuthTypeEnum:
+      enum:
+      - api_key
+      - oauth
+      type: string
+      description: '* `api_key` - api_key
+
+        * `oauth` - oauth'
+    CategoryEnum:
+      enum:
+      - business
+      - data
+      - design
+      - dev
+      - infra
+      - productivity
+      type: string
+      description: '* `business` - Business Operations
+
+        * `data` - Data & Analytics
+
+        * `design` - Design & Content
+
+        * `dev` - Developer Tools & APIs
+
+        * `infra` - Infrastructure
+
+        * `productivity` - Productivity & Collaboration'
+    OAuthRedirectResponse:
+      type: object
+      properties:
+        redirect_url:
+          type: string
+          format: uri
+      required:
+      - redirect_url
+    MCPServerTemplate:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+          readOnly: true
+        name:
+          type: string
+          maxLength: 200
+        url:
+          type: string
+          format: uri
+          maxLength: 2048
+        docs_url:
+          type: string
+          format: uri
+          maxLength: 2048
+        description:
+          type: string
+        auth_type:
+          $ref: '#/components/schemas/MCPAuthTypeEnum'
+        icon_key:
+          type: string
+          maxLength: 100
+        category:
+          $ref: '#/components/schemas/CategoryEnum'
+      required:
+      - id
+      - name
+      - url
+    PatchedMCPServerInstallationUpdate:
+      type: object
+      properties:
+        display_name:
+          type: string
+        description:
+          type: string
+        is_enabled:
+          type: boolean
+    PaginatedMCPServerTemplateList:
+      type: object
+      required:
+      - count
+      - results
+      properties:
+        count:
+          type: integer
+          example: 123
+        next:
+          type:
+          - string
+          - 'null'
+          format: uri
+          example: http://api.example.org/accounts/?offset=400&limit=100
+        previous:
+          type:
+          - string
+          - 'null'
+          format: uri
+          example: http://api.example.org/accounts/?offset=200&limit=100
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/MCPServerTemplate'
+    PatchedToolApprovalUpdate:
+      type: object
+      properties:
+        approval_state:
+          $ref: '#/components/schemas/ToolApprovalUpdateApprovalStateEnum'
+    ToolApprovalUpdateApprovalStateEnum:
+      enum:
+      - approved
+      - needs_approval
+      - do_not_use
+      type: string
+      description: '* `approved` - approved
+
+        * `needs_approval` - needs_approval
+
+        * `do_not_use` - do_not_use'
+    InstallTemplate:
+      type: object
+      properties:
+        template_id:
+          type: string
+          format: uuid
+        api_key:
+          type: string
+          default: ''
+        install_source:
+          allOf:
+          - $ref: '#/components/schemas/InstallSourceEnum'
+          default: posthog
+        posthog_code_callback_url:
+          type: string
+          default: ''
+      required:
+      - template_id
+    MCPServerInstallationToolApprovalStateEnum:
+      enum:
+      - approved
+      - needs_approval
+      - do_not_use
+      type: string
+      description: '* `approved` - Approved
+
+        * `needs_approval` - Needs approval
+
+        * `do_not_use` - Do not use'
+    MCPServerInstallationTool:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+          readOnly: true
+        tool_name:
+          type: string
+          readOnly: true
+        display_name:
+          type: string
+          readOnly: true
+        description:
+          type: string
+          readOnly: true
+        input_schema:
+          readOnly: true
+        approval_state:
+          $ref: '#/components/schemas/MCPServerInstallationToolApprovalStateEnum'
+        last_seen_at:
+          type: string
+          format: date-time
+          readOnly: true
+        removed_at:
+          type:
+          - string
+          - 'null'
+          format: date-time
+          readOnly: true
+        created_at:
+          type: string
+          format: date-time
+          readOnly: true
+        updated_at:
+          type:
+          - string
+          - 'null'
+          format: date-time
+          readOnly: true
+      required:
+      - created_at
+      - description
+      - display_name
+      - id
+      - input_schema
+      - last_seen_at
+      - removed_at
+      - tool_name
+      - updated_at
     MCPServerInstallation:
       type: object
       properties:
@@ -499,10 +774,11 @@ components:
           format: uuid
           readOnly: true
         template_id:
-          type: string
+          type:
+          - string
+          - 'null'
           format: uuid
           readOnly: true
-          nullable: true
         name:
           type: string
           readOnly: true
@@ -542,10 +818,11 @@ components:
           format: date-time
           readOnly: true
         updated_at:
-          type: string
+          type:
+          - string
+          - 'null'
           format: date-time
           readOnly: true
-          nullable: true
       required:
       - created_at
       - icon_key
@@ -557,123 +834,6 @@ components:
       - template_id
       - tool_count
       - updated_at
-    InstallTemplate:
-      type: object
-      properties:
-        template_id:
-          type: string
-          format: uuid
-        api_key:
-          type: string
-          default: ''
-        install_source:
-          allOf:
-          - $ref: '#/components/schemas/InstallSourceEnum'
-          default: posthog
-        posthog_code_callback_url:
-          type: string
-          default: ''
-      required:
-      - template_id
-    MCPServerInstallationTool:
-      type: object
-      properties:
-        id:
-          type: string
-          format: uuid
-          readOnly: true
-        tool_name:
-          type: string
-          readOnly: true
-        display_name:
-          type: string
-          readOnly: true
-        description:
-          type: string
-          readOnly: true
-        input_schema:
-          readOnly: true
-        approval_state:
-          $ref: '#/components/schemas/MCPServerInstallationToolApprovalStateEnum'
-        last_seen_at:
-          type: string
-          format: date-time
-          readOnly: true
-        removed_at:
-          type: string
-          format: date-time
-          readOnly: true
-          nullable: true
-        created_at:
-          type: string
-          format: date-time
-          readOnly: true
-        updated_at:
-          type: string
-          format: date-time
-          readOnly: true
-          nullable: true
-      required:
-      - created_at
-      - description
-      - display_name
-      - id
-      - input_schema
-      - last_seen_at
-      - removed_at
-      - tool_name
-      - updated_at
-    OAuthRedirectResponse:
-      type: object
-      properties:
-        redirect_url:
-          type: string
-          format: uri
-      required:
-      - redirect_url
-    PaginatedMCPServerTemplateList:
-      type: object
-      required:
-      - count
-      - results
-      properties:
-        count:
-          type: integer
-          example: 123
-        next:
-          type: string
-          nullable: true
-          format: uri
-          example: http://api.example.org/accounts/?offset=400&limit=100
-        previous:
-          type: string
-          nullable: true
-          format: uri
-          example: http://api.example.org/accounts/?offset=200&limit=100
-        results:
-          type: array
-          items:
-            $ref: '#/components/schemas/MCPServerTemplate'
-    CategoryEnum:
-      enum:
-      - business
-      - data
-      - design
-      - dev
-      - infra
-      - productivity
-      type: string
-      description: '* `business` - Business Operations
-
-        * `data` - Data & Analytics
-
-        * `design` - Design & Content
-
-        * `dev` - Developer Tools & APIs
-
-        * `infra` - Infrastructure
-
-        * `productivity` - Productivity & Collaboration'
     PaginatedMCPServerInstallationList:
       type: object
       required:
@@ -684,95 +844,21 @@ components:
           type: integer
           example: 123
         next:
-          type: string
-          nullable: true
+          type:
+          - string
+          - 'null'
           format: uri
           example: http://api.example.org/accounts/?offset=400&limit=100
         previous:
-          type: string
-          nullable: true
+          type:
+          - string
+          - 'null'
           format: uri
           example: http://api.example.org/accounts/?offset=200&limit=100
         results:
           type: array
           items:
             $ref: '#/components/schemas/MCPServerInstallation'
-    PatchedToolApprovalUpdate:
-      type: object
-      properties:
-        approval_state:
-          $ref: '#/components/schemas/ToolApprovalUpdateApprovalStateEnum'
-    PatchedMCPServerInstallationUpdate:
-      type: object
-      properties:
-        display_name:
-          type: string
-        description:
-          type: string
-        is_enabled:
-          type: boolean
-    InstallCustomAuthTypeEnum:
-      enum:
-      - api_key
-      - oauth
-      type: string
-      description: '* `api_key` - api_key
-
-        * `oauth` - oauth'
-    MCPServerInstallationToolApprovalStateEnum:
-      enum:
-      - approved
-      - needs_approval
-      - do_not_use
-      type: string
-      description: '* `approved` - Approved
-
-        * `needs_approval` - Needs approval
-
-        * `do_not_use` - Do not use'
-    InstallSourceEnum:
-      enum:
-      - posthog
-      - posthog-code
-      type: string
-      description: '* `posthog` - posthog
-
-        * `posthog-code` - posthog-code'
-    InstallCustom:
-      type: object
-      properties:
-        name:
-          type: string
-          maxLength: 200
-        url:
-          type: string
-          format: uri
-          maxLength: 2048
-        auth_type:
-          $ref: '#/components/schemas/InstallCustomAuthTypeEnum'
-        api_key:
-          type: string
-          default: ''
-        description:
-          type: string
-          default: ''
-        client_id:
-          type: string
-          default: ''
-        client_secret:
-          type: string
-          default: ''
-        install_source:
-          allOf:
-          - $ref: '#/components/schemas/InstallSourceEnum'
-          default: posthog
-        posthog_code_callback_url:
-          type: string
-          default: ''
-      required:
-      - auth_type
-      - name
-      - url
     PaginatedMCPServerInstallationToolList:
       type: object
       required:
@@ -783,69 +869,21 @@ components:
           type: integer
           example: 123
         next:
-          type: string
-          nullable: true
+          type:
+          - string
+          - 'null'
           format: uri
           example: http://api.example.org/accounts/?offset=400&limit=100
         previous:
-          type: string
-          nullable: true
+          type:
+          - string
+          - 'null'
           format: uri
           example: http://api.example.org/accounts/?offset=200&limit=100
         results:
           type: array
           items:
             $ref: '#/components/schemas/MCPServerInstallationTool'
-    MCPAuthTypeEnum:
-      enum:
-      - api_key
-      - oauth
-      type: string
-      description: '* `api_key` - API Key
-
-        * `oauth` - OAuth'
-    MCPServerTemplate:
-      type: object
-      properties:
-        id:
-          type: string
-          format: uuid
-          readOnly: true
-        name:
-          type: string
-          maxLength: 200
-        url:
-          type: string
-          format: uri
-          maxLength: 2048
-        docs_url:
-          type: string
-          format: uri
-          maxLength: 2048
-        description:
-          type: string
-        auth_type:
-          $ref: '#/components/schemas/MCPAuthTypeEnum'
-        icon_key:
-          type: string
-          maxLength: 100
-        category:
-          $ref: '#/components/schemas/CategoryEnum'
-      required:
-      - id
-      - name
-      - url
-    ToolApprovalUpdateApprovalStateEnum:
-      enum:
-      - approved
-      - needs_approval
-      - do_not_use
-      type: string
-      description: '* `approved` - approved
-
-        * `needs_approval` - needs_approval
-
-        * `do_not_use` - do_not_use'
   parameters:
     ProjectIdPath:
       in: path

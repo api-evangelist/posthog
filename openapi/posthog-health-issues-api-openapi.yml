@@ -1,6 +1,6 @@
-openapi: 3.0.3
+openapi: 3.2.0
 info:
-  title: PostHog actions health_issues API
+  title: PostHog Health Issues API
   version: 1.0.0
   description: ''
 tags:
@@ -36,6 +36,8 @@ paths:
                 $ref: '#/components/schemas/PaginatedHealthIssueList'
           description: ''
       x-explicit-tags: []
+      summary: Health issues list
+      x-summary-source: derived
   /api/environments/{project_id}/health_issues/{id}/:
     get:
       operationId: health_issues_retrieve
@@ -61,6 +63,8 @@ paths:
                 $ref: '#/components/schemas/HealthIssue'
           description: ''
       x-explicit-tags: []
+      summary: Health issues retrieve
+      x-summary-source: derived
     patch:
       operationId: health_issues_partial_update
       parameters:
@@ -96,6 +100,8 @@ paths:
                 $ref: '#/components/schemas/HealthIssue'
           description: ''
       x-explicit-tags: []
+      summary: Health issues partial update
+      x-summary-source: derived
   /api/environments/{project_id}/health_issues/{id}/resolve/:
     post:
       operationId: health_issues_resolve_create
@@ -129,6 +135,8 @@ paths:
                 $ref: '#/components/schemas/HealthIssue'
           description: ''
       x-explicit-tags: []
+      summary: Health issues resolve create
+      x-summary-source: derived
   /api/environments/{project_id}/health_issues/summary/:
     get:
       operationId: health_issues_summary_retrieve
@@ -147,6 +155,8 @@ paths:
                 $ref: '#/components/schemas/HealthIssue'
           description: ''
       x-explicit-tags: []
+      summary: Health issues summary retrieve
+      x-summary-source: derived
 components:
   schemas:
     HealthIssueStatusEnum:
@@ -188,10 +198,11 @@ components:
           format: date-time
           readOnly: true
         resolved_at:
-          type: string
+          type:
+          - string
+          - 'null'
           format: date-time
           readOnly: true
-          nullable: true
       required:
       - created_at
       - id
@@ -212,6 +223,31 @@ components:
         * `warning` - Warning
 
         * `info` - Info'
+    PaginatedHealthIssueList:
+      type: object
+      required:
+      - count
+      - results
+      properties:
+        count:
+          type: integer
+          example: 123
+        next:
+          type:
+          - string
+          - 'null'
+          format: uri
+          example: http://api.example.org/accounts/?offset=400&limit=100
+        previous:
+          type:
+          - string
+          - 'null'
+          format: uri
+          example: http://api.example.org/accounts/?offset=200&limit=100
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/HealthIssue'
     PatchedHealthIssue:
       type: object
       properties:
@@ -243,33 +279,11 @@ components:
           format: date-time
           readOnly: true
         resolved_at:
-          type: string
+          type:
+          - string
+          - 'null'
           format: date-time
           readOnly: true
-          nullable: true
-    PaginatedHealthIssueList:
-      type: object
-      required:
-      - count
-      - results
-      properties:
-        count:
-          type: integer
-          example: 123
-        next:
-          type: string
-          nullable: true
-          format: uri
-          example: http://api.example.org/accounts/?offset=400&limit=100
-        previous:
-          type: string
-          nullable: true
-          format: uri
-          example: http://api.example.org/accounts/?offset=200&limit=100
-        results:
-          type: array
-          items:
-            $ref: '#/components/schemas/HealthIssue'
   parameters:
     ProjectIdPath:
       in: path

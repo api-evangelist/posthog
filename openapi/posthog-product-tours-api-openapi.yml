@@ -1,6 +1,6 @@
-openapi: 3.0.3
+openapi: 3.2.0
 info:
-  title: PostHog actions product_tours API
+  title: PostHog Product Tours API
   version: 1.0.0
   description: ''
 tags:
@@ -43,6 +43,8 @@ paths:
           description: ''
       x-explicit-tags:
       - product_tours
+      summary: Product tours list
+      x-summary-source: derived
     post:
       operationId: product_tours_create
       parameters:
@@ -73,6 +75,8 @@ paths:
           description: ''
       x-explicit-tags:
       - product_tours
+      summary: Product tours create
+      x-summary-source: derived
   /api/projects/{project_id}/product_tours/{id}/:
     get:
       operationId: product_tours_retrieve
@@ -98,6 +102,8 @@ paths:
                 $ref: '#/components/schemas/ProductTour'
           description: ''
       x-explicit-tags: []
+      summary: Product tours retrieve
+      x-summary-source: derived
     put:
       operationId: product_tours_update
       parameters:
@@ -134,6 +140,8 @@ paths:
                 $ref: '#/components/schemas/ProductTour'
           description: ''
       x-explicit-tags: []
+      summary: Product tours update
+      x-summary-source: derived
     patch:
       operationId: product_tours_partial_update
       parameters:
@@ -169,6 +177,8 @@ paths:
                 $ref: '#/components/schemas/ProductTourSerializerCreateUpdateOnly'
           description: ''
       x-explicit-tags: []
+      summary: Product tours partial update
+      x-summary-source: derived
     delete:
       operationId: product_tours_destroy
       parameters:
@@ -189,6 +199,8 @@ paths:
         '204':
           description: No response body
       x-explicit-tags: []
+      summary: Product tours destroy
+      x-summary-source: derived
   /api/projects/{project_id}/product_tours/{id}/discard_draft/:
     delete:
       operationId: product_tours_discard_draft_destroy
@@ -215,6 +227,8 @@ paths:
                 $ref: '#/components/schemas/ProductTour'
           description: ''
       x-explicit-tags: []
+      summary: Product tours discard draft destroy
+      x-summary-source: derived
   /api/projects/{project_id}/product_tours/{id}/draft/:
     patch:
       operationId: product_tours_draft_partial_update
@@ -252,6 +266,8 @@ paths:
                 $ref: '#/components/schemas/ProductTour'
           description: ''
       x-explicit-tags: []
+      summary: Product tours draft partial update
+      x-summary-source: derived
   /api/projects/{project_id}/product_tours/{id}/draft_status/:
     get:
       operationId: product_tours_draft_status_retrieve
@@ -278,6 +294,8 @@ paths:
                 $ref: '#/components/schemas/DraftStatusResponse'
           description: ''
       x-explicit-tags: []
+      summary: Product tours draft status retrieve
+      x-summary-source: derived
   /api/projects/{project_id}/product_tours/{id}/generate/:
     post:
       operationId: product_tours_generate_create
@@ -315,6 +333,8 @@ paths:
                 $ref: '#/components/schemas/GenerateResponse'
           description: ''
       x-explicit-tags: []
+      summary: Product tours generate create
+      x-summary-source: derived
   /api/projects/{project_id}/product_tours/{id}/publish_draft/:
     post:
       operationId: product_tours_publish_draft_create
@@ -358,6 +378,8 @@ paths:
                 $ref: '#/components/schemas/ProductTour'
           description: ''
       x-explicit-tags: []
+      summary: Product tours publish draft create
+      x-summary-source: derived
 components:
   schemas:
     PaginatedProductTourList:
@@ -370,50 +392,32 @@ components:
           type: integer
           example: 123
         next:
-          type: string
-          nullable: true
+          type:
+          - string
+          - 'null'
           format: uri
           example: http://api.example.org/accounts/?offset=400&limit=100
         previous:
-          type: string
-          nullable: true
+          type:
+          - string
+          - 'null'
           format: uri
           example: http://api.example.org/accounts/?offset=200&limit=100
         results:
           type: array
           items:
             $ref: '#/components/schemas/ProductTour'
-    EvaluationRuntimeEnum:
+    NullEnum:
       enum:
-      - server
-      - client
-      - all
+      - null
+    BucketingIdentifierEnum:
+      enum:
+      - distinct_id
+      - device_id
       type: string
-      description: '* `server` - Server
+      description: '* `distinct_id` - User ID (default)
 
-        * `client` - Client
-
-        * `all` - All'
-    ProductTourSerializerCreateUpdateOnlyCreationContextEnum:
-      enum:
-      - app
-      - toolbar
-      type: string
-      description: '* `app` - app
-
-        * `toolbar` - toolbar'
-    GenerateResponse:
-      type: object
-      properties:
-        steps:
-          type: array
-          items:
-            $ref: '#/components/schemas/GenerateStepResponse'
-      required:
-      - steps
-    BlankEnum:
-      enum:
-      - ''
+        * `device_id` - Device ID'
     PatchedProductTourSerializerCreateUpdateOnly:
       type: object
       description: Serializer for creating and updating ProductTour.
@@ -436,23 +440,25 @@ components:
           - $ref: '#/components/schemas/MinimalFeatureFlag'
           readOnly: true
         linked_flag_id:
-          type: integer
+          type:
+          - integer
+          - 'null'
           writeOnly: true
-          nullable: true
         targeting_flag_filters:
           writeOnly: true
-          nullable: true
         content: {}
         auto_launch:
           type: boolean
         start_date:
-          type: string
+          type:
+          - string
+          - 'null'
           format: date-time
-          nullable: true
         end_date:
-          type: string
+          type:
+          - string
+          - 'null'
           format: date-time
-          nullable: true
         created_at:
           type: string
           format: date-time
@@ -478,22 +484,20 @@ components:
             * `app` - app
 
             * `toolbar` - toolbar'
-    GenerateStepResponse:
+    GenerateRequest:
       type: object
       properties:
-        step_id:
-          type: string
         title:
           type: string
-        description:
+          default: ''
+        goal:
           type: string
-      required:
-      - description
-      - step_id
-      - title
-    NullEnum:
-      enum:
-      - null
+          default: ''
+        steps:
+          type: array
+          items:
+            type: object
+            additionalProperties: true
     MinimalFeatureFlag:
       type: object
       properties:
@@ -516,18 +520,20 @@ components:
         active:
           type: boolean
         ensure_experience_continuity:
-          type: boolean
-          nullable: true
+          type:
+          - boolean
+          - 'null'
         has_encrypted_payloads:
-          type: boolean
-          nullable: true
+          type:
+          - boolean
+          - 'null'
         version:
-          type: integer
+          type:
+          - integer
+          - 'null'
           maximum: 2147483647
           minimum: -2147483648
-          nullable: true
         evaluation_runtime:
-          nullable: true
           description: 'Specifies where this feature flag should be evaluated
 
 
@@ -541,7 +547,6 @@ components:
           - $ref: '#/components/schemas/BlankEnum'
           - $ref: '#/components/schemas/NullEnum'
         bucketing_identifier:
-          nullable: true
           description: 'Identifier used for bucketing users into rollout and variants
 
 
@@ -573,8 +578,9 @@ components:
           format: uuid
           readOnly: true
         distinct_id:
-          type: string
-          nullable: true
+          type:
+          - string
+          - 'null'
           maxLength: 200
         first_name:
           type: string
@@ -588,15 +594,16 @@ components:
           title: Email address
           maxLength: 254
         is_email_verified:
-          type: boolean
-          nullable: true
+          type:
+          - boolean
+          - 'null'
         hedgehog_config:
-          type: object
+          type:
+          - object
+          - 'null'
           additionalProperties: true
-          nullable: true
           readOnly: true
         role_at_organization:
-          nullable: true
           oneOf:
           - $ref: '#/components/schemas/RoleAtOrganizationEnum'
           - $ref: '#/components/schemas/BlankEnum'
@@ -606,120 +613,50 @@ components:
       - hedgehog_config
       - id
       - uuid
-    BucketingIdentifierEnum:
+    ProductTourSerializerCreateUpdateOnlyCreationContextEnum:
       enum:
-      - distinct_id
-      - device_id
+      - app
+      - toolbar
       type: string
-      description: '* `distinct_id` - User ID (default)
+      description: '* `app` - app
 
-        * `device_id` - Device ID'
-    RoleAtOrganizationEnum:
+        * `toolbar` - toolbar'
+    BlankEnum:
       enum:
-      - engineering
-      - data
-      - product
-      - founder
-      - leadership
-      - marketing
-      - sales
-      - other
+      - ''
+    EvaluationRuntimeEnum:
+      enum:
+      - server
+      - client
+      - all
       type: string
-      description: '* `engineering` - Engineering
+      description: '* `server` - Server
 
-        * `data` - Data
+        * `client` - Client
 
-        * `product` - Product Management
-
-        * `founder` - Founder
-
-        * `leadership` - Leadership
-
-        * `marketing` - Marketing
-
-        * `sales` - Sales / Success
-
-        * `other` - Other'
-    DraftStatusResponse:
+        * `all` - All'
+    GenerateResponse:
       type: object
       properties:
-        updated_at:
-          type: string
-          format: date-time
-        has_draft:
-          type: boolean
+        steps:
+          type: array
+          items:
+            $ref: '#/components/schemas/GenerateStepResponse'
       required:
-      - has_draft
-      - updated_at
-    ProductTour:
+      - steps
+    GenerateStepResponse:
       type: object
-      description: Read-only serializer for ProductTour.
       properties:
-        id:
+        step_id:
           type: string
-          format: uuid
-          readOnly: true
-        name:
+        title:
           type: string
-          maxLength: 400
         description:
           type: string
-        internal_targeting_flag:
-          allOf:
-          - $ref: '#/components/schemas/MinimalFeatureFlag'
-          readOnly: true
-        linked_flag:
-          allOf:
-          - $ref: '#/components/schemas/MinimalFeatureFlag'
-          readOnly: true
-        targeting_flag_filters:
-          type: object
-          additionalProperties: true
-          nullable: true
-          description: Return the targeting flag filters, excluding the base exclusion properties.
-          readOnly: true
-        content: {}
-        draft_content:
-          readOnly: true
-          nullable: true
-        has_draft:
-          type: boolean
-          readOnly: true
-        auto_launch:
-          type: boolean
-        start_date:
-          type: string
-          format: date-time
-          nullable: true
-        end_date:
-          type: string
-          format: date-time
-          nullable: true
-        created_at:
-          type: string
-          format: date-time
-          readOnly: true
-        created_by:
-          allOf:
-          - $ref: '#/components/schemas/UserBasic'
-          readOnly: true
-        updated_at:
-          type: string
-          format: date-time
-          readOnly: true
-        archived:
-          type: boolean
       required:
-      - created_at
-      - created_by
-      - draft_content
-      - has_draft
-      - id
-      - internal_targeting_flag
-      - linked_flag
-      - name
-      - targeting_flag_filters
-      - updated_at
+      - description
+      - step_id
+      - title
     ProductTourSerializerCreateUpdateOnly:
       type: object
       description: Serializer for creating and updating ProductTour.
@@ -742,23 +679,25 @@ components:
           - $ref: '#/components/schemas/MinimalFeatureFlag'
           readOnly: true
         linked_flag_id:
-          type: integer
+          type:
+          - integer
+          - 'null'
           writeOnly: true
-          nullable: true
         targeting_flag_filters:
           writeOnly: true
-          nullable: true
         content: {}
         auto_launch:
           type: boolean
         start_date:
-          type: string
+          type:
+          - string
+          - 'null'
           format: date-time
-          nullable: true
         end_date:
-          type: string
+          type:
+          - string
+          - 'null'
           format: date-time
-          nullable: true
         created_at:
           type: string
           format: date-time
@@ -792,20 +731,114 @@ components:
       - linked_flag
       - name
       - updated_at
-    GenerateRequest:
+    DraftStatusResponse:
       type: object
       properties:
-        title:
+        updated_at:
           type: string
-          default: ''
-        goal:
+          format: date-time
+        has_draft:
+          type: boolean
+      required:
+      - has_draft
+      - updated_at
+    RoleAtOrganizationEnum:
+      enum:
+      - engineering
+      - data
+      - product
+      - founder
+      - leadership
+      - marketing
+      - sales
+      - other
+      type: string
+      description: '* `engineering` - Engineering
+
+        * `data` - Data
+
+        * `product` - Product Management
+
+        * `founder` - Founder
+
+        * `leadership` - Leadership
+
+        * `marketing` - Marketing
+
+        * `sales` - Sales / Success
+
+        * `other` - Other'
+    ProductTour:
+      type: object
+      description: Read-only serializer for ProductTour.
+      properties:
+        id:
           type: string
-          default: ''
-        steps:
-          type: array
-          items:
-            type: object
-            additionalProperties: true
+          format: uuid
+          readOnly: true
+        name:
+          type: string
+          maxLength: 400
+        description:
+          type: string
+        internal_targeting_flag:
+          allOf:
+          - $ref: '#/components/schemas/MinimalFeatureFlag'
+          readOnly: true
+        linked_flag:
+          allOf:
+          - $ref: '#/components/schemas/MinimalFeatureFlag'
+          readOnly: true
+        targeting_flag_filters:
+          type:
+          - object
+          - 'null'
+          additionalProperties: true
+          description: Return the targeting flag filters, excluding the base exclusion properties.
+          readOnly: true
+        content: {}
+        draft_content:
+          readOnly: true
+        has_draft:
+          type: boolean
+          readOnly: true
+        auto_launch:
+          type: boolean
+        start_date:
+          type:
+          - string
+          - 'null'
+          format: date-time
+        end_date:
+          type:
+          - string
+          - 'null'
+          format: date-time
+        created_at:
+          type: string
+          format: date-time
+          readOnly: true
+        created_by:
+          allOf:
+          - $ref: '#/components/schemas/UserBasic'
+          readOnly: true
+        updated_at:
+          type: string
+          format: date-time
+          readOnly: true
+        archived:
+          type: boolean
+      required:
+      - created_at
+      - created_by
+      - draft_content
+      - has_draft
+      - id
+      - internal_targeting_flag
+      - linked_flag
+      - name
+      - targeting_flag_filters
+      - updated_at
   parameters:
     ProjectIdPath:
       in: path

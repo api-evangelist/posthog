@@ -1,6 +1,6 @@
-openapi: 3.0.3
+openapi: 3.2.0
 info:
-  title: PostHog actions taggers API
+  title: PostHog Taggers API
   version: 1.0.0
   description: ''
 tags:
@@ -86,6 +86,8 @@ paths:
           description: ''
       x-explicit-tags:
       - llm_analytics
+      summary: Taggers list
+      x-summary-source: derived
     post:
       operationId: taggers_create
       parameters:
@@ -116,6 +118,8 @@ paths:
           description: ''
       x-explicit-tags:
       - llm_analytics
+      summary: Taggers create
+      x-summary-source: derived
   /api/environments/{project_id}/taggers/{id}/:
     get:
       operationId: taggers_retrieve
@@ -141,6 +145,8 @@ paths:
                 $ref: '#/components/schemas/Tagger'
           description: ''
       x-explicit-tags: []
+      summary: Taggers retrieve
+      x-summary-source: derived
     put:
       operationId: taggers_update
       parameters:
@@ -177,6 +183,8 @@ paths:
                 $ref: '#/components/schemas/Tagger'
           description: ''
       x-explicit-tags: []
+      summary: Taggers update
+      x-summary-source: derived
     patch:
       operationId: taggers_partial_update
       parameters:
@@ -212,6 +220,8 @@ paths:
                 $ref: '#/components/schemas/Tagger'
           description: ''
       x-explicit-tags: []
+      summary: Taggers partial update
+      x-summary-source: derived
     delete:
       operationId: taggers_destroy
       description: Hard delete of this model is not allowed. Use a patch API call to set "deleted" to true
@@ -233,6 +243,8 @@ paths:
         '405':
           description: No response body
       x-explicit-tags: []
+      summary: Taggers destroy
+      x-summary-source: derived
   /api/environments/{project_id}/taggers/test_hog/:
     post:
       operationId: taggers_test_hog_create
@@ -262,32 +274,38 @@ paths:
           description: ''
       x-explicit-tags:
       - llm_analytics
+      summary: Taggers test hog create
+      x-summary-source: derived
 components:
   schemas:
-    BlankEnum:
+    NullEnum:
       enum:
-      - ''
-    TaggerModelConfiguration:
+      - null
+    PaginatedTaggerList:
       type: object
-      description: Nested serializer for model configuration.
-      properties:
-        provider:
-          $ref: '#/components/schemas/LLMProviderEnum'
-        model:
-          type: string
-          maxLength: 100
-        provider_key_id:
-          type: string
-          format: uuid
-          nullable: true
-        provider_key_name:
-          type: string
-          nullable: true
-          readOnly: true
       required:
-      - model
-      - provider
-      - provider_key_name
+      - count
+      - results
+      properties:
+        count:
+          type: integer
+          example: 123
+        next:
+          type:
+          - string
+          - 'null'
+          format: uri
+          example: http://api.example.org/accounts/?offset=400&limit=100
+        previous:
+          type:
+          - string
+          - 'null'
+          format: uri
+          example: http://api.example.org/accounts/?offset=200&limit=100
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/Tagger'
     Tagger:
       type: object
       properties:
@@ -316,7 +334,6 @@ components:
         model_configuration:
           allOf:
           - $ref: '#/components/schemas/TaggerModelConfiguration'
-          nullable: true
         created_at:
           type: string
           format: date-time
@@ -338,6 +355,78 @@ components:
       - name
       - tagger_config
       - updated_at
+    UserBasic:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        uuid:
+          type: string
+          format: uuid
+          readOnly: true
+        distinct_id:
+          type:
+          - string
+          - 'null'
+          maxLength: 200
+        first_name:
+          type: string
+          maxLength: 150
+        last_name:
+          type: string
+          maxLength: 150
+        email:
+          type: string
+          format: email
+          title: Email address
+          maxLength: 254
+        is_email_verified:
+          type:
+          - boolean
+          - 'null'
+        hedgehog_config:
+          type:
+          - object
+          - 'null'
+          additionalProperties: true
+          readOnly: true
+        role_at_organization:
+          oneOf:
+          - $ref: '#/components/schemas/RoleAtOrganizationEnum'
+          - $ref: '#/components/schemas/BlankEnum'
+          - $ref: '#/components/schemas/NullEnum'
+      required:
+      - email
+      - hedgehog_config
+      - id
+      - uuid
+    BlankEnum:
+      enum:
+      - ''
+    TaggerModelConfiguration:
+      type: object
+      description: Nested serializer for model configuration.
+      properties:
+        provider:
+          $ref: '#/components/schemas/LLMProviderEnum'
+        model:
+          type: string
+          maxLength: 100
+        provider_key_id:
+          type:
+          - string
+          - 'null'
+          format: uuid
+        provider_key_name:
+          type:
+          - string
+          - 'null'
+          readOnly: true
+      required:
+      - model
+      - provider
+      - provider_key_name
     LLMProviderEnum:
       enum:
       - openai
@@ -361,71 +450,6 @@ components:
         * `azure_openai` - Azure OpenAI
 
         * `together_ai` - Together AI'
-    UserBasic:
-      type: object
-      properties:
-        id:
-          type: integer
-          readOnly: true
-        uuid:
-          type: string
-          format: uuid
-          readOnly: true
-        distinct_id:
-          type: string
-          nullable: true
-          maxLength: 200
-        first_name:
-          type: string
-          maxLength: 150
-        last_name:
-          type: string
-          maxLength: 150
-        email:
-          type: string
-          format: email
-          title: Email address
-          maxLength: 254
-        is_email_verified:
-          type: boolean
-          nullable: true
-        hedgehog_config:
-          type: object
-          additionalProperties: true
-          nullable: true
-          readOnly: true
-        role_at_organization:
-          nullable: true
-          oneOf:
-          - $ref: '#/components/schemas/RoleAtOrganizationEnum'
-          - $ref: '#/components/schemas/BlankEnum'
-          - $ref: '#/components/schemas/NullEnum'
-      required:
-      - email
-      - hedgehog_config
-      - id
-      - uuid
-    TaggerCondition:
-      type: object
-      properties:
-        id:
-          type: string
-          description: Stable identifier for this condition
-          maxLength: 100
-        rollout_percentage:
-          type: integer
-          maximum: 100
-          minimum: 0
-          default: 100
-          description: Percentage of matching events to apply this condition to
-        properties:
-          type: array
-          items:
-            type: object
-            additionalProperties: true
-          description: Property filters that scope when this condition fires
-      required:
-      - id
     PatchedTagger:
       type: object
       properties:
@@ -454,7 +478,6 @@ components:
         model_configuration:
           allOf:
           - $ref: '#/components/schemas/TaggerModelConfiguration'
-          nullable: true
         created_at:
           type: string
           format: date-time
@@ -469,6 +492,14 @@ components:
           readOnly: true
         deleted:
           type: boolean
+    TaggerTypeEnum:
+      enum:
+      - llm
+      - hog
+      type: string
+      description: '* `llm` - LLM
+
+        * `hog` - Hog'
     RoleAtOrganizationEnum:
       enum:
       - engineering
@@ -495,40 +526,27 @@ components:
         * `sales` - Sales / Success
 
         * `other` - Other'
-    TaggerTypeEnum:
-      enum:
-      - llm
-      - hog
-      type: string
-      description: '* `llm` - LLM
-
-        * `hog` - Hog'
-    PaginatedTaggerList:
+    TaggerCondition:
       type: object
-      required:
-      - count
-      - results
       properties:
-        count:
+        id:
+          type: string
+          description: Stable identifier for this condition
+          maxLength: 100
+        rollout_percentage:
           type: integer
-          example: 123
-        next:
-          type: string
-          nullable: true
-          format: uri
-          example: http://api.example.org/accounts/?offset=400&limit=100
-        previous:
-          type: string
-          nullable: true
-          format: uri
-          example: http://api.example.org/accounts/?offset=200&limit=100
-        results:
+          maximum: 100
+          minimum: 0
+          default: 100
+          description: Percentage of matching events to apply this condition to
+        properties:
           type: array
           items:
-            $ref: '#/components/schemas/Tagger'
-    NullEnum:
-      enum:
-      - null
+            type: object
+            additionalProperties: true
+          description: Property filters that scope when this condition fires
+      required:
+      - id
   parameters:
     ProjectIdPath:
       in: path

@@ -1,6 +1,6 @@
-openapi: 3.0.3
+openapi: 3.2.0
 info:
-  title: PostHog actions experiment_saved_metrics API
+  title: PostHog Experiment Saved Metrics API
   version: 1.0.0
   description: ''
 tags:
@@ -37,6 +37,8 @@ paths:
           description: ''
       x-explicit-tags:
       - experiments
+      summary: Experiment saved metrics list
+      x-summary-source: derived
     post:
       operationId: experiment_saved_metrics_create
       parameters:
@@ -67,6 +69,8 @@ paths:
           description: ''
       x-explicit-tags:
       - experiments
+      summary: Experiment saved metrics create
+      x-summary-source: derived
   /api/projects/{project_id}/experiment_saved_metrics/{id}/:
     get:
       operationId: experiment_saved_metrics_retrieve
@@ -92,6 +96,8 @@ paths:
           description: ''
       x-explicit-tags:
       - experiments
+      summary: Experiment saved metrics retrieve
+      x-summary-source: derived
     put:
       operationId: experiment_saved_metrics_update
       parameters:
@@ -128,6 +134,8 @@ paths:
           description: ''
       x-explicit-tags:
       - experiments
+      summary: Experiment saved metrics update
+      x-summary-source: derived
     patch:
       operationId: experiment_saved_metrics_partial_update
       parameters:
@@ -163,6 +171,8 @@ paths:
           description: ''
       x-explicit-tags:
       - experiments
+      summary: Experiment saved metrics partial update
+      x-summary-source: derived
     delete:
       operationId: experiment_saved_metrics_destroy
       parameters:
@@ -183,12 +193,14 @@ paths:
           description: No response body
       x-explicit-tags:
       - experiments
+      summary: Experiment saved metrics destroy
+      x-summary-source: derived
 components:
   schemas:
-    BlankEnum:
+    NullEnum:
       enum:
-      - ''
-    ExperimentSavedMetric:
+      - null
+    PatchedExperimentSavedMetric:
       type: object
       description: Mixin for serializers to add user access control fields
       properties:
@@ -199,8 +211,9 @@ components:
           type: string
           maxLength: 400
         description:
-          type: string
-          nullable: true
+          type:
+          - string
+          - 'null'
           maxLength: 400
         query: {}
         created_by:
@@ -219,8 +232,46 @@ components:
           type: array
           items: {}
         user_access_level:
+          type:
+          - string
+          - 'null'
+          readOnly: true
+          description: The effective access level the user has for this object
+    ExperimentSavedMetric:
+      type: object
+      description: Mixin for serializers to add user access control fields
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        name:
           type: string
-          nullable: true
+          maxLength: 400
+        description:
+          type:
+          - string
+          - 'null'
+          maxLength: 400
+        query: {}
+        created_by:
+          allOf:
+          - $ref: '#/components/schemas/UserBasic'
+          readOnly: true
+        created_at:
+          type: string
+          format: date-time
+          readOnly: true
+        updated_at:
+          type: string
+          format: date-time
+          readOnly: true
+        tags:
+          type: array
+          items: {}
+        user_access_level:
+          type:
+          - string
+          - 'null'
           readOnly: true
           description: The effective access level the user has for this object
       required:
@@ -242,8 +293,9 @@ components:
           format: uuid
           readOnly: true
         distinct_id:
-          type: string
-          nullable: true
+          type:
+          - string
+          - 'null'
           maxLength: 200
         first_name:
           type: string
@@ -257,15 +309,16 @@ components:
           title: Email address
           maxLength: 254
         is_email_verified:
-          type: boolean
-          nullable: true
+          type:
+          - boolean
+          - 'null'
         hedgehog_config:
-          type: object
+          type:
+          - object
+          - 'null'
           additionalProperties: true
-          nullable: true
           readOnly: true
         role_at_organization:
-          nullable: true
           oneOf:
           - $ref: '#/components/schemas/RoleAtOrganizationEnum'
           - $ref: '#/components/schemas/BlankEnum'
@@ -285,19 +338,24 @@ components:
           type: integer
           example: 123
         next:
-          type: string
-          nullable: true
+          type:
+          - string
+          - 'null'
           format: uri
           example: http://api.example.org/accounts/?offset=400&limit=100
         previous:
-          type: string
-          nullable: true
+          type:
+          - string
+          - 'null'
           format: uri
           example: http://api.example.org/accounts/?offset=200&limit=100
         results:
           type: array
           items:
             $ref: '#/components/schemas/ExperimentSavedMetric'
+    BlankEnum:
+      enum:
+      - ''
     RoleAtOrganizationEnum:
       enum:
       - engineering
@@ -324,44 +382,6 @@ components:
         * `sales` - Sales / Success
 
         * `other` - Other'
-    PatchedExperimentSavedMetric:
-      type: object
-      description: Mixin for serializers to add user access control fields
-      properties:
-        id:
-          type: integer
-          readOnly: true
-        name:
-          type: string
-          maxLength: 400
-        description:
-          type: string
-          nullable: true
-          maxLength: 400
-        query: {}
-        created_by:
-          allOf:
-          - $ref: '#/components/schemas/UserBasic'
-          readOnly: true
-        created_at:
-          type: string
-          format: date-time
-          readOnly: true
-        updated_at:
-          type: string
-          format: date-time
-          readOnly: true
-        tags:
-          type: array
-          items: {}
-        user_access_level:
-          type: string
-          nullable: true
-          readOnly: true
-          description: The effective access level the user has for this object
-    NullEnum:
-      enum:
-      - null
   parameters:
     ProjectIdPath:
       in: path

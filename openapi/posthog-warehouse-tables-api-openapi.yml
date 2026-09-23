@@ -1,6 +1,6 @@
-openapi: 3.0.3
+openapi: 3.2.0
 info:
-  title: PostHog actions warehouse_tables API
+  title: PostHog Warehouse Tables API
   version: 1.0.0
   description: ''
 tags:
@@ -45,6 +45,8 @@ paths:
       deprecated: true
       x-explicit-tags:
       - data_warehouse
+      summary: Environments warehouse tables list
+      x-summary-source: derived
     post:
       operationId: environments_warehouse_tables_create
       description: Create, Read, Update and Delete Warehouse Tables.
@@ -77,6 +79,8 @@ paths:
       deprecated: true
       x-explicit-tags:
       - data_warehouse
+      summary: Environments warehouse tables create
+      x-summary-source: derived
   /api/environments/{environment_id}/warehouse_tables/{id}/:
     get:
       operationId: environments_warehouse_tables_retrieve
@@ -104,6 +108,8 @@ paths:
           description: ''
       deprecated: true
       x-explicit-tags: []
+      summary: Environments warehouse tables retrieve
+      x-summary-source: derived
     put:
       operationId: environments_warehouse_tables_update
       description: Create, Read, Update and Delete Warehouse Tables.
@@ -142,6 +148,8 @@ paths:
           description: ''
       deprecated: true
       x-explicit-tags: []
+      summary: Environments warehouse tables update
+      x-summary-source: derived
     patch:
       operationId: environments_warehouse_tables_partial_update
       description: Create, Read, Update and Delete Warehouse Tables.
@@ -179,6 +187,8 @@ paths:
           description: ''
       deprecated: true
       x-explicit-tags: []
+      summary: Environments warehouse tables partial update
+      x-summary-source: derived
     delete:
       operationId: environments_warehouse_tables_destroy
       description: Create, Read, Update and Delete Warehouse Tables.
@@ -201,6 +211,8 @@ paths:
           description: No response body
       deprecated: true
       x-explicit-tags: []
+      summary: Environments warehouse tables destroy
+      x-summary-source: derived
   /api/environments/{environment_id}/warehouse_tables/{id}/refresh_schema/:
     post:
       operationId: environments_warehouse_tables_refresh_schema_create
@@ -233,6 +245,8 @@ paths:
           description: No response body
       deprecated: true
       x-explicit-tags: []
+      summary: Environments warehouse tables refresh schema create
+      x-summary-source: derived
   /api/environments/{environment_id}/warehouse_tables/{id}/update_schema/:
     post:
       operationId: environments_warehouse_tables_update_schema_create
@@ -265,6 +279,8 @@ paths:
           description: No response body
       deprecated: true
       x-explicit-tags: []
+      summary: Environments warehouse tables update schema create
+      x-summary-source: derived
   /api/environments/{environment_id}/warehouse_tables/file/:
     post:
       operationId: environments_warehouse_tables_file_create
@@ -291,6 +307,8 @@ paths:
       deprecated: true
       x-explicit-tags:
       - data_warehouse
+      summary: Environments warehouse tables file create
+      x-summary-source: derived
   /api/projects/{project_id}/warehouse_tables/:
     get:
       operationId: warehouse_tables_list
@@ -329,6 +347,8 @@ paths:
           description: ''
       x-explicit-tags:
       - data_warehouse
+      summary: Warehouse tables list
+      x-summary-source: derived
     post:
       operationId: warehouse_tables_create
       description: Create, Read, Update and Delete Warehouse Tables.
@@ -360,6 +380,8 @@ paths:
           description: ''
       x-explicit-tags:
       - data_warehouse
+      summary: Warehouse tables create
+      x-summary-source: derived
   /api/projects/{project_id}/warehouse_tables/{id}/:
     get:
       operationId: warehouse_tables_retrieve
@@ -386,6 +408,8 @@ paths:
                 $ref: '#/components/schemas/Table'
           description: ''
       x-explicit-tags: []
+      summary: Warehouse tables retrieve
+      x-summary-source: derived
     put:
       operationId: warehouse_tables_update
       description: Create, Read, Update and Delete Warehouse Tables.
@@ -423,6 +447,8 @@ paths:
                 $ref: '#/components/schemas/Table'
           description: ''
       x-explicit-tags: []
+      summary: Warehouse tables update
+      x-summary-source: derived
     patch:
       operationId: warehouse_tables_partial_update
       description: Create, Read, Update and Delete Warehouse Tables.
@@ -459,6 +485,8 @@ paths:
                 $ref: '#/components/schemas/Table'
           description: ''
       x-explicit-tags: []
+      summary: Warehouse tables partial update
+      x-summary-source: derived
     delete:
       operationId: warehouse_tables_destroy
       description: Create, Read, Update and Delete Warehouse Tables.
@@ -480,6 +508,8 @@ paths:
         '204':
           description: No response body
       x-explicit-tags: []
+      summary: Warehouse tables destroy
+      x-summary-source: derived
   /api/projects/{project_id}/warehouse_tables/{id}/refresh_schema/:
     post:
       operationId: warehouse_tables_refresh_schema_create
@@ -511,6 +541,8 @@ paths:
         '200':
           description: No response body
       x-explicit-tags: []
+      summary: Warehouse tables refresh schema create
+      x-summary-source: derived
   /api/projects/{project_id}/warehouse_tables/{id}/update_schema/:
     post:
       operationId: warehouse_tables_update_schema_create
@@ -542,6 +574,8 @@ paths:
         '200':
           description: No response body
       x-explicit-tags: []
+      summary: Warehouse tables update schema create
+      x-summary-source: derived
   /api/projects/{project_id}/warehouse_tables/file/:
     post:
       operationId: warehouse_tables_file_create
@@ -567,15 +601,50 @@ paths:
           description: No response body
       x-explicit-tags:
       - data_warehouse
+      summary: Warehouse tables file create
+      x-summary-source: derived
 components:
   schemas:
-    Credential:
+    TableFormatEnum:
+      enum:
+      - CSV
+      - CSVWithNames
+      - Parquet
+      - JSONEachRow
+      - Delta
+      - DeltaS3Wrapper
+      type: string
+      description: '* `CSV` - CSV
+
+        * `CSVWithNames` - CSVWithNames
+
+        * `Parquet` - Parquet
+
+        * `JSONEachRow` - JSON
+
+        * `Delta` - Delta
+
+        * `DeltaS3Wrapper` - DeltaS3Wrapper'
+    NullEnum:
+      enum:
+      - null
+    PatchedTable:
       type: object
+      description: Mixin for serializers to add user access control fields
       properties:
         id:
           type: string
           format: uuid
           readOnly: true
+        deleted:
+          type:
+          - boolean
+          - 'null'
+        name:
+          type: string
+          maxLength: 128
+        format:
+          $ref: '#/components/schemas/TableFormatEnum'
         created_by:
           allOf:
           - $ref: '#/components/schemas/UserBasic'
@@ -584,20 +653,36 @@ components:
           type: string
           format: date-time
           readOnly: true
-        access_key:
+        url_pattern:
           type: string
-          writeOnly: true
           maxLength: 500
-        access_secret:
-          type: string
-          writeOnly: true
-          maxLength: 500
-      required:
-      - access_key
-      - access_secret
-      - created_at
-      - created_by
-      - id
+        credential:
+          $ref: '#/components/schemas/Credential'
+        columns:
+          type: array
+          items:
+            type: object
+            additionalProperties: true
+          readOnly: true
+        external_data_source:
+          allOf:
+          - $ref: '#/components/schemas/SimpleExternalDataSourceSerializers'
+          readOnly: true
+        external_schema:
+          type:
+          - object
+          - 'null'
+          additionalProperties: true
+          readOnly: true
+        options:
+          type: object
+          additionalProperties: true
+        user_access_level:
+          type:
+          - string
+          - 'null'
+          readOnly: true
+          description: The effective access level the user has for this object
     ExternalDataSourceTypeEnum:
       enum:
       - Ashby
@@ -1032,57 +1117,31 @@ components:
         * `Plain` - Plain
 
         * `Resend` - Resend'
-    SimpleExternalDataSourceSerializers:
+    PaginatedTableList:
       type: object
-      properties:
-        id:
-          type: string
-          format: uuid
-          readOnly: true
-        created_at:
-          type: string
-          format: date-time
-          readOnly: true
-        created_by:
-          type: integer
-          readOnly: true
-          nullable: true
-        status:
-          type: string
-          readOnly: true
-        source_type:
-          allOf:
-          - $ref: '#/components/schemas/ExternalDataSourceTypeEnum'
-          readOnly: true
       required:
-      - created_at
-      - created_by
-      - id
-      - source_type
-      - status
-    BlankEnum:
-      enum:
-      - ''
-    TableFormatEnum:
-      enum:
-      - CSV
-      - CSVWithNames
-      - Parquet
-      - JSONEachRow
-      - Delta
-      - DeltaS3Wrapper
-      type: string
-      description: '* `CSV` - CSV
-
-        * `CSVWithNames` - CSVWithNames
-
-        * `Parquet` - Parquet
-
-        * `JSONEachRow` - JSON
-
-        * `Delta` - Delta
-
-        * `DeltaS3Wrapper` - DeltaS3Wrapper'
+      - count
+      - results
+      properties:
+        count:
+          type: integer
+          example: 123
+        next:
+          type:
+          - string
+          - 'null'
+          format: uri
+          example: http://api.example.org/accounts/?offset=400&limit=100
+        previous:
+          type:
+          - string
+          - 'null'
+          format: uri
+          example: http://api.example.org/accounts/?offset=200&limit=100
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/Table'
     UserBasic:
       type: object
       properties:
@@ -1094,8 +1153,9 @@ components:
           format: uuid
           readOnly: true
         distinct_id:
-          type: string
-          nullable: true
+          type:
+          - string
+          - 'null'
           maxLength: 200
         first_name:
           type: string
@@ -1109,15 +1169,16 @@ components:
           title: Email address
           maxLength: 254
         is_email_verified:
-          type: boolean
-          nullable: true
+          type:
+          - boolean
+          - 'null'
         hedgehog_config:
-          type: object
+          type:
+          - object
+          - 'null'
           additionalProperties: true
-          nullable: true
           readOnly: true
         role_at_organization:
-          nullable: true
           oneOf:
           - $ref: '#/components/schemas/RoleAtOrganizationEnum'
           - $ref: '#/components/schemas/BlankEnum'
@@ -1127,6 +1188,38 @@ components:
       - hedgehog_config
       - id
       - uuid
+    Credential:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+          readOnly: true
+        created_by:
+          allOf:
+          - $ref: '#/components/schemas/UserBasic'
+          readOnly: true
+        created_at:
+          type: string
+          format: date-time
+          readOnly: true
+        access_key:
+          type: string
+          writeOnly: true
+          maxLength: 500
+        access_secret:
+          type: string
+          writeOnly: true
+          maxLength: 500
+      required:
+      - access_key
+      - access_secret
+      - created_at
+      - created_by
+      - id
+    BlankEnum:
+      enum:
+      - ''
     Table:
       type: object
       description: Mixin for serializers to add user access control fields
@@ -1136,8 +1229,9 @@ components:
           format: uuid
           readOnly: true
         deleted:
-          type: boolean
-          nullable: true
+          type:
+          - boolean
+          - 'null'
         name:
           type: string
           maxLength: 128
@@ -1167,16 +1261,18 @@ components:
           - $ref: '#/components/schemas/SimpleExternalDataSourceSerializers'
           readOnly: true
         external_schema:
-          type: object
+          type:
+          - object
+          - 'null'
           additionalProperties: true
-          nullable: true
           readOnly: true
         options:
           type: object
           additionalProperties: true
         user_access_level:
-          type: string
-          nullable: true
+          type:
+          - string
+          - 'null'
           readOnly: true
           description: The effective access level the user has for this object
       required:
@@ -1191,6 +1287,35 @@ components:
       - name
       - url_pattern
       - user_access_level
+    SimpleExternalDataSourceSerializers:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+          readOnly: true
+        created_at:
+          type: string
+          format: date-time
+          readOnly: true
+        created_by:
+          type:
+          - integer
+          - 'null'
+          readOnly: true
+        status:
+          type: string
+          readOnly: true
+        source_type:
+          allOf:
+          - $ref: '#/components/schemas/ExternalDataSourceTypeEnum'
+          readOnly: true
+      required:
+      - created_at
+      - created_by
+      - id
+      - source_type
+      - status
     RoleAtOrganizationEnum:
       enum:
       - engineering
@@ -1217,84 +1342,6 @@ components:
         * `sales` - Sales / Success
 
         * `other` - Other'
-    PaginatedTableList:
-      type: object
-      required:
-      - count
-      - results
-      properties:
-        count:
-          type: integer
-          example: 123
-        next:
-          type: string
-          nullable: true
-          format: uri
-          example: http://api.example.org/accounts/?offset=400&limit=100
-        previous:
-          type: string
-          nullable: true
-          format: uri
-          example: http://api.example.org/accounts/?offset=200&limit=100
-        results:
-          type: array
-          items:
-            $ref: '#/components/schemas/Table'
-    PatchedTable:
-      type: object
-      description: Mixin for serializers to add user access control fields
-      properties:
-        id:
-          type: string
-          format: uuid
-          readOnly: true
-        deleted:
-          type: boolean
-          nullable: true
-        name:
-          type: string
-          maxLength: 128
-        format:
-          $ref: '#/components/schemas/TableFormatEnum'
-        created_by:
-          allOf:
-          - $ref: '#/components/schemas/UserBasic'
-          readOnly: true
-        created_at:
-          type: string
-          format: date-time
-          readOnly: true
-        url_pattern:
-          type: string
-          maxLength: 500
-        credential:
-          $ref: '#/components/schemas/Credential'
-        columns:
-          type: array
-          items:
-            type: object
-            additionalProperties: true
-          readOnly: true
-        external_data_source:
-          allOf:
-          - $ref: '#/components/schemas/SimpleExternalDataSourceSerializers'
-          readOnly: true
-        external_schema:
-          type: object
-          additionalProperties: true
-          nullable: true
-          readOnly: true
-        options:
-          type: object
-          additionalProperties: true
-        user_access_level:
-          type: string
-          nullable: true
-          readOnly: true
-          description: The effective access level the user has for this object
-    NullEnum:
-      enum:
-      - null
   parameters:
     ProjectIdPath:
       in: path

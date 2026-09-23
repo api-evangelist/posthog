@@ -1,6 +1,6 @@
-openapi: 3.0.3
+openapi: 3.2.0
 info:
-  title: PostHog actions customer_profile_configs API
+  title: PostHog Customer Profile Configs API
   version: 1.0.0
   description: ''
 tags:
@@ -37,6 +37,8 @@ paths:
           description: ''
       x-explicit-tags:
       - customer_analytics
+      summary: Customer profile configs list
+      x-summary-source: derived
     post:
       operationId: customer_profile_configs_create
       parameters:
@@ -67,6 +69,8 @@ paths:
           description: ''
       x-explicit-tags:
       - customer_analytics
+      summary: Customer profile configs create
+      x-summary-source: derived
   /api/environments/{project_id}/customer_profile_configs/{id}/:
     get:
       operationId: customer_profile_configs_retrieve
@@ -92,6 +96,8 @@ paths:
                 $ref: '#/components/schemas/CustomerProfileConfig'
           description: ''
       x-explicit-tags: []
+      summary: Customer profile configs retrieve
+      x-summary-source: derived
     put:
       operationId: customer_profile_configs_update
       parameters:
@@ -128,6 +134,8 @@ paths:
                 $ref: '#/components/schemas/CustomerProfileConfig'
           description: ''
       x-explicit-tags: []
+      summary: Customer profile configs update
+      x-summary-source: derived
     patch:
       operationId: customer_profile_configs_partial_update
       parameters:
@@ -163,6 +171,8 @@ paths:
                 $ref: '#/components/schemas/CustomerProfileConfig'
           description: ''
       x-explicit-tags: []
+      summary: Customer profile configs partial update
+      x-summary-source: derived
     delete:
       operationId: customer_profile_configs_destroy
       parameters:
@@ -183,43 +193,10 @@ paths:
         '204':
           description: No response body
       x-explicit-tags: []
+      summary: Customer profile configs destroy
+      x-summary-source: derived
 components:
-  parameters:
-    ProjectIdPath:
-      in: path
-      name: project_id
-      required: true
-      schema:
-        type: string
-      description: Project ID of the project you're trying to access. To find the ID of the project, make a call to /api/projects/.
   schemas:
-    CustomerProfileConfig:
-      type: object
-      properties:
-        id:
-          type: string
-          format: uuid
-          readOnly: true
-        scope:
-          $ref: '#/components/schemas/CustomerProfileConfigScopeEnum'
-        content:
-          nullable: true
-        sidebar:
-          nullable: true
-        created_at:
-          type: string
-          format: date-time
-          readOnly: true
-        updated_at:
-          type: string
-          format: date-time
-          readOnly: true
-          nullable: true
-      required:
-      - created_at
-      - id
-      - scope
-      - updated_at
     PaginatedCustomerProfileConfigList:
       type: object
       required:
@@ -230,19 +207,47 @@ components:
           type: integer
           example: 123
         next:
-          type: string
-          nullable: true
+          type:
+          - string
+          - 'null'
           format: uri
           example: http://api.example.org/accounts/?offset=400&limit=100
         previous:
-          type: string
-          nullable: true
+          type:
+          - string
+          - 'null'
           format: uri
           example: http://api.example.org/accounts/?offset=200&limit=100
         results:
           type: array
           items:
             $ref: '#/components/schemas/CustomerProfileConfig'
+    CustomerProfileConfig:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+          readOnly: true
+        scope:
+          $ref: '#/components/schemas/CustomerProfileConfigScopeEnum'
+        content: {}
+        sidebar: {}
+        created_at:
+          type: string
+          format: date-time
+          readOnly: true
+        updated_at:
+          type:
+          - string
+          - 'null'
+          format: date-time
+          readOnly: true
+      required:
+      - created_at
+      - id
+      - scope
+      - updated_at
     PatchedCustomerProfileConfig:
       type: object
       properties:
@@ -252,19 +257,18 @@ components:
           readOnly: true
         scope:
           $ref: '#/components/schemas/CustomerProfileConfigScopeEnum'
-        content:
-          nullable: true
-        sidebar:
-          nullable: true
+        content: {}
+        sidebar: {}
         created_at:
           type: string
           format: date-time
           readOnly: true
         updated_at:
-          type: string
+          type:
+          - string
+          - 'null'
           format: date-time
           readOnly: true
-          nullable: true
     CustomerProfileConfigScopeEnum:
       enum:
       - person
@@ -285,6 +289,14 @@ components:
         * `group_3` - Group 3
 
         * `group_4` - Group 4'
+  parameters:
+    ProjectIdPath:
+      in: path
+      name: project_id
+      required: true
+      schema:
+        type: string
+      description: Project ID of the project you're trying to access. To find the ID of the project, make a call to /api/projects/.
   securitySchemes:
     PersonalAPIKeyAuth:
       type: http

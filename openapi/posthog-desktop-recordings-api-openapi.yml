@@ -1,6 +1,6 @@
-openapi: 3.0.3
+openapi: 3.2.0
 info:
-  title: PostHog actions desktop_recordings API
+  title: PostHog Desktop Recordings API
   version: 1.0.0
   description: ''
 tags:
@@ -43,6 +43,8 @@ paths:
           description: ''
       x-explicit-tags:
       - desktop_recordings
+      summary: Desktop recordings list
+      x-summary-source: derived
     post:
       operationId: desktop_recordings_create
       description: Create a new recording and get Recall.ai upload token for the desktop SDK
@@ -75,6 +77,8 @@ paths:
           description: ''
       x-explicit-tags:
       - desktop_recordings
+      summary: Desktop recordings create
+      x-summary-source: derived
   /api/environments/{project_id}/desktop_recordings/{id}/:
     get:
       operationId: desktop_recordings_retrieve
@@ -107,6 +111,8 @@ paths:
           description: ''
       x-explicit-tags:
       - desktop_recordings
+      summary: Desktop recordings retrieve
+      x-summary-source: derived
     put:
       operationId: desktop_recordings_update
       description: 'RESTful API for managing desktop meeting recordings.
@@ -150,6 +156,8 @@ paths:
           description: ''
       x-explicit-tags:
       - desktop_recordings
+      summary: Desktop recordings update
+      x-summary-source: derived
     patch:
       operationId: desktop_recordings_partial_update
       description: 'RESTful API for managing desktop meeting recordings.
@@ -192,6 +200,8 @@ paths:
           description: ''
       x-explicit-tags:
       - desktop_recordings
+      summary: Desktop recordings partial update
+      x-summary-source: derived
     delete:
       operationId: desktop_recordings_destroy
       description: 'RESTful API for managing desktop meeting recordings.
@@ -219,6 +229,8 @@ paths:
           description: No response body
       x-explicit-tags:
       - desktop_recordings
+      summary: Desktop recordings destroy
+      x-summary-source: derived
   /api/environments/{project_id}/desktop_recordings/{id}/append_segments/:
     post:
       operationId: desktop_recordings_append_segments_create
@@ -260,109 +272,52 @@ paths:
           description: ''
       x-explicit-tags:
       - desktop_recordings
+      summary: Desktop recordings append segments create
+      x-summary-source: derived
 components:
   schemas:
-    PatchedDesktopRecording:
+    AppendSegments:
       type: object
+      description: Serializer for appending transcript segments (supports batched real-time uploads)
       properties:
-        id:
-          type: string
-          format: uuid
-          readOnly: true
-        team:
-          type: integer
-          readOnly: true
-        created_by:
-          type: integer
-          readOnly: true
-          nullable: true
-        sdk_upload_id:
-          type: string
-          format: uuid
-          readOnly: true
-        recall_recording_id:
-          type: string
-          format: uuid
-          nullable: true
-        platform:
-          $ref: '#/components/schemas/MeetingPlatformEnum'
-        meeting_title:
-          type: string
-          nullable: true
-          maxLength: 255
-        meeting_url:
-          type: string
-          format: uri
-          nullable: true
-          maxLength: 200
-        duration_seconds:
-          type: integer
-          maximum: 2147483647
-          minimum: -2147483648
-          nullable: true
-        status:
-          $ref: '#/components/schemas/DesktopRecordingStatusEnum'
-        notes:
-          type: string
-          nullable: true
-        error_message:
-          type: string
-          nullable: true
-        video_url:
-          type: string
-          format: uri
-          nullable: true
-          maxLength: 200
-        video_size_bytes:
-          type: integer
-          maximum: 9223372036854775807
-          minimum: -9223372036854775808
-          format: int64
-          nullable: true
-        participants:
-          type: array
-          items:
-            type: string
-          description: List of participant names
-        transcript_text:
-          type: string
-          readOnly: true
-        transcript_segments:
+        segments:
           type: array
           items:
             $ref: '#/components/schemas/TranscriptSegment'
-          description: Transcript segments with timestamps
-        summary:
+          minItems: 1
+      required:
+      - segments
+    DesktopRecordingTask:
+      type: object
+      description: Serializer for extracted tasks
+      properties:
+        title:
           type: string
-          nullable: true
-        extracted_tasks:
-          type: array
-          items:
-            $ref: '#/components/schemas/DesktopRecordingTask'
-          description: AI-extracted tasks from transcript
-        tasks_generated_at:
+        description:
           type: string
-          format: date-time
-          nullable: true
-        summary_generated_at:
-          type: string
-          format: date-time
-          nullable: true
-        started_at:
-          type: string
-          format: date-time
-        completed_at:
-          type: string
-          format: date-time
-          nullable: true
-        created_at:
-          type: string
-          format: date-time
-          readOnly: true
-        updated_at:
-          type: string
-          format: date-time
-          readOnly: true
+        assignee:
+          type:
+          - string
+          - 'null'
+      required:
+      - title
+    CreateRecordingRequestPlatformEnum:
+      enum:
+      - zoom
+      - teams
+      - meet
+      - desktop_audio
+      - slack
+      type: string
+      description: '* `zoom` - zoom
+
+        * `teams` - teams
+
+        * `meet` - meet
+
+        * `desktop_audio` - desktop_audio
+
+        * `slack` - slack'
     CreateRecordingRequest:
       type: object
       description: Request body for creating a new recording
@@ -383,19 +338,35 @@ components:
             * `desktop_audio` - desktop_audio
 
             * `slack` - slack'
-    DesktopRecordingTask:
+    TranscriptSegment:
       type: object
-      description: Serializer for extracted tasks
+      description: Serializer for individual transcript segments from AssemblyAI
       properties:
-        title:
+        timestamp:
+          type:
+          - number
+          - 'null'
+          format: double
+          description: Milliseconds from recording start
+        speaker:
+          type:
+          - string
+          - 'null'
+        text:
           type: string
-        description:
-          type: string
-        assignee:
-          type: string
-          nullable: true
+        confidence:
+          type:
+          - number
+          - 'null'
+          format: double
+          description: Transcription confidence score
+        is_final:
+          type:
+          - boolean
+          - 'null'
+          description: Whether this is the final version
       required:
-      - title
+      - text
     PaginatedDesktopRecordingList:
       type: object
       required:
@@ -406,75 +377,40 @@ components:
           type: integer
           example: 123
         next:
-          type: string
-          nullable: true
+          type:
+          - string
+          - 'null'
           format: uri
           example: http://api.example.org/accounts/?offset=400&limit=100
         previous:
-          type: string
-          nullable: true
+          type:
+          - string
+          - 'null'
           format: uri
           example: http://api.example.org/accounts/?offset=200&limit=100
         results:
           type: array
           items:
             $ref: '#/components/schemas/DesktopRecording'
-    TranscriptSegment:
-      type: object
-      description: Serializer for individual transcript segments from AssemblyAI
-      properties:
-        timestamp:
-          type: number
-          format: double
-          nullable: true
-          description: Milliseconds from recording start
-        speaker:
-          type: string
-          nullable: true
-        text:
-          type: string
-        confidence:
-          type: number
-          format: double
-          nullable: true
-          description: Transcription confidence score
-        is_final:
-          type: boolean
-          nullable: true
-          description: Whether this is the final version
-      required:
-      - text
-    AppendSegments:
-      type: object
-      description: Serializer for appending transcript segments (supports batched real-time uploads)
-      properties:
-        segments:
-          type: array
-          items:
-            $ref: '#/components/schemas/TranscriptSegment'
-          minItems: 1
-      required:
-      - segments
-    CreateRecordingRequestPlatformEnum:
+    DesktopRecordingStatusEnum:
       enum:
-      - zoom
-      - teams
-      - meet
-      - desktop_audio
-      - slack
+      - recording
+      - uploading
+      - processing
+      - ready
+      - error
       type: string
-      description: '* `zoom` - zoom
+      description: '* `recording` - Recording
 
-        * `teams` - teams
+        * `uploading` - Uploading
 
-        * `meet` - meet
+        * `processing` - Processing
 
-        * `desktop_audio` - desktop_audio
+        * `ready` - Ready
 
-        * `slack` - slack'
-    CreateRecordingResponse:
+        * `error` - Error'
+    PatchedDesktopRecording:
       type: object
-      description: Response for creating a new recording (includes upload_token)
       properties:
         id:
           type: string
@@ -484,52 +420,61 @@ components:
           type: integer
           readOnly: true
         created_by:
-          type: integer
+          type:
+          - integer
+          - 'null'
           readOnly: true
-          nullable: true
         sdk_upload_id:
           type: string
           format: uuid
           readOnly: true
         recall_recording_id:
-          type: string
+          type:
+          - string
+          - 'null'
           format: uuid
-          nullable: true
         platform:
           $ref: '#/components/schemas/MeetingPlatformEnum'
         meeting_title:
-          type: string
-          nullable: true
+          type:
+          - string
+          - 'null'
           maxLength: 255
         meeting_url:
-          type: string
+          type:
+          - string
+          - 'null'
           format: uri
-          nullable: true
           maxLength: 200
         duration_seconds:
-          type: integer
+          type:
+          - integer
+          - 'null'
           maximum: 2147483647
           minimum: -2147483648
-          nullable: true
         status:
           $ref: '#/components/schemas/DesktopRecordingStatusEnum'
         notes:
-          type: string
-          nullable: true
+          type:
+          - string
+          - 'null'
         error_message:
-          type: string
-          nullable: true
+          type:
+          - string
+          - 'null'
         video_url:
-          type: string
+          type:
+          - string
+          - 'null'
           format: uri
-          nullable: true
           maxLength: 200
         video_size_bytes:
-          type: integer
+          type:
+          - integer
+          - 'null'
           maximum: 9223372036854775807
           minimum: -9223372036854775808
           format: int64
-          nullable: true
         participants:
           type: array
           items:
@@ -544,28 +489,287 @@ components:
             $ref: '#/components/schemas/TranscriptSegment'
           description: Transcript segments with timestamps
         summary:
-          type: string
-          nullable: true
+          type:
+          - string
+          - 'null'
         extracted_tasks:
           type: array
           items:
             $ref: '#/components/schemas/DesktopRecordingTask'
           description: AI-extracted tasks from transcript
         tasks_generated_at:
-          type: string
+          type:
+          - string
+          - 'null'
           format: date-time
-          nullable: true
         summary_generated_at:
-          type: string
+          type:
+          - string
+          - 'null'
           format: date-time
-          nullable: true
         started_at:
           type: string
           format: date-time
         completed_at:
+          type:
+          - string
+          - 'null'
+          format: date-time
+        created_at:
           type: string
           format: date-time
-          nullable: true
+          readOnly: true
+        updated_at:
+          type: string
+          format: date-time
+          readOnly: true
+    DesktopRecording:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+          readOnly: true
+        team:
+          type: integer
+          readOnly: true
+        created_by:
+          type:
+          - integer
+          - 'null'
+          readOnly: true
+        sdk_upload_id:
+          type: string
+          format: uuid
+          readOnly: true
+        recall_recording_id:
+          type:
+          - string
+          - 'null'
+          format: uuid
+        platform:
+          $ref: '#/components/schemas/MeetingPlatformEnum'
+        meeting_title:
+          type:
+          - string
+          - 'null'
+          maxLength: 255
+        meeting_url:
+          type:
+          - string
+          - 'null'
+          format: uri
+          maxLength: 200
+        duration_seconds:
+          type:
+          - integer
+          - 'null'
+          maximum: 2147483647
+          minimum: -2147483648
+        status:
+          $ref: '#/components/schemas/DesktopRecordingStatusEnum'
+        notes:
+          type:
+          - string
+          - 'null'
+        error_message:
+          type:
+          - string
+          - 'null'
+        video_url:
+          type:
+          - string
+          - 'null'
+          format: uri
+          maxLength: 200
+        video_size_bytes:
+          type:
+          - integer
+          - 'null'
+          maximum: 9223372036854775807
+          minimum: -9223372036854775808
+          format: int64
+        participants:
+          type: array
+          items:
+            type: string
+          description: List of participant names
+        transcript_text:
+          type: string
+          readOnly: true
+        transcript_segments:
+          type: array
+          items:
+            $ref: '#/components/schemas/TranscriptSegment'
+          description: Transcript segments with timestamps
+        summary:
+          type:
+          - string
+          - 'null'
+        extracted_tasks:
+          type: array
+          items:
+            $ref: '#/components/schemas/DesktopRecordingTask'
+          description: AI-extracted tasks from transcript
+        tasks_generated_at:
+          type:
+          - string
+          - 'null'
+          format: date-time
+        summary_generated_at:
+          type:
+          - string
+          - 'null'
+          format: date-time
+        started_at:
+          type: string
+          format: date-time
+        completed_at:
+          type:
+          - string
+          - 'null'
+          format: date-time
+        created_at:
+          type: string
+          format: date-time
+          readOnly: true
+        updated_at:
+          type: string
+          format: date-time
+          readOnly: true
+      required:
+      - created_at
+      - created_by
+      - id
+      - platform
+      - sdk_upload_id
+      - team
+      - transcript_text
+      - updated_at
+    MeetingPlatformEnum:
+      enum:
+      - zoom
+      - teams
+      - meet
+      - desktop_audio
+      - slack
+      type: string
+      description: '* `zoom` - Zoom
+
+        * `teams` - Microsoft Teams
+
+        * `meet` - Google Meet
+
+        * `desktop_audio` - Desktop audio
+
+        * `slack` - Slack huddle'
+    CreateRecordingResponse:
+      type: object
+      description: Response for creating a new recording (includes upload_token)
+      properties:
+        id:
+          type: string
+          format: uuid
+          readOnly: true
+        team:
+          type: integer
+          readOnly: true
+        created_by:
+          type:
+          - integer
+          - 'null'
+          readOnly: true
+        sdk_upload_id:
+          type: string
+          format: uuid
+          readOnly: true
+        recall_recording_id:
+          type:
+          - string
+          - 'null'
+          format: uuid
+        platform:
+          $ref: '#/components/schemas/MeetingPlatformEnum'
+        meeting_title:
+          type:
+          - string
+          - 'null'
+          maxLength: 255
+        meeting_url:
+          type:
+          - string
+          - 'null'
+          format: uri
+          maxLength: 200
+        duration_seconds:
+          type:
+          - integer
+          - 'null'
+          maximum: 2147483647
+          minimum: -2147483648
+        status:
+          $ref: '#/components/schemas/DesktopRecordingStatusEnum'
+        notes:
+          type:
+          - string
+          - 'null'
+        error_message:
+          type:
+          - string
+          - 'null'
+        video_url:
+          type:
+          - string
+          - 'null'
+          format: uri
+          maxLength: 200
+        video_size_bytes:
+          type:
+          - integer
+          - 'null'
+          maximum: 9223372036854775807
+          minimum: -9223372036854775808
+          format: int64
+        participants:
+          type: array
+          items:
+            type: string
+          description: List of participant names
+        transcript_text:
+          type: string
+          readOnly: true
+        transcript_segments:
+          type: array
+          items:
+            $ref: '#/components/schemas/TranscriptSegment'
+          description: Transcript segments with timestamps
+        summary:
+          type:
+          - string
+          - 'null'
+        extracted_tasks:
+          type: array
+          items:
+            $ref: '#/components/schemas/DesktopRecordingTask'
+          description: AI-extracted tasks from transcript
+        tasks_generated_at:
+          type:
+          - string
+          - 'null'
+          format: date-time
+        summary_generated_at:
+          type:
+          - string
+          - 'null'
+          format: date-time
+        started_at:
+          type: string
+          format: date-time
+        completed_at:
+          type:
+          - string
+          - 'null'
+          format: date-time
         created_at:
           type: string
           format: date-time
@@ -587,150 +791,6 @@ components:
       - transcript_text
       - updated_at
       - upload_token
-    MeetingPlatformEnum:
-      enum:
-      - zoom
-      - teams
-      - meet
-      - desktop_audio
-      - slack
-      type: string
-      description: '* `zoom` - Zoom
-
-        * `teams` - Microsoft Teams
-
-        * `meet` - Google Meet
-
-        * `desktop_audio` - Desktop audio
-
-        * `slack` - Slack huddle'
-    DesktopRecording:
-      type: object
-      properties:
-        id:
-          type: string
-          format: uuid
-          readOnly: true
-        team:
-          type: integer
-          readOnly: true
-        created_by:
-          type: integer
-          readOnly: true
-          nullable: true
-        sdk_upload_id:
-          type: string
-          format: uuid
-          readOnly: true
-        recall_recording_id:
-          type: string
-          format: uuid
-          nullable: true
-        platform:
-          $ref: '#/components/schemas/MeetingPlatformEnum'
-        meeting_title:
-          type: string
-          nullable: true
-          maxLength: 255
-        meeting_url:
-          type: string
-          format: uri
-          nullable: true
-          maxLength: 200
-        duration_seconds:
-          type: integer
-          maximum: 2147483647
-          minimum: -2147483648
-          nullable: true
-        status:
-          $ref: '#/components/schemas/DesktopRecordingStatusEnum'
-        notes:
-          type: string
-          nullable: true
-        error_message:
-          type: string
-          nullable: true
-        video_url:
-          type: string
-          format: uri
-          nullable: true
-          maxLength: 200
-        video_size_bytes:
-          type: integer
-          maximum: 9223372036854775807
-          minimum: -9223372036854775808
-          format: int64
-          nullable: true
-        participants:
-          type: array
-          items:
-            type: string
-          description: List of participant names
-        transcript_text:
-          type: string
-          readOnly: true
-        transcript_segments:
-          type: array
-          items:
-            $ref: '#/components/schemas/TranscriptSegment'
-          description: Transcript segments with timestamps
-        summary:
-          type: string
-          nullable: true
-        extracted_tasks:
-          type: array
-          items:
-            $ref: '#/components/schemas/DesktopRecordingTask'
-          description: AI-extracted tasks from transcript
-        tasks_generated_at:
-          type: string
-          format: date-time
-          nullable: true
-        summary_generated_at:
-          type: string
-          format: date-time
-          nullable: true
-        started_at:
-          type: string
-          format: date-time
-        completed_at:
-          type: string
-          format: date-time
-          nullable: true
-        created_at:
-          type: string
-          format: date-time
-          readOnly: true
-        updated_at:
-          type: string
-          format: date-time
-          readOnly: true
-      required:
-      - created_at
-      - created_by
-      - id
-      - platform
-      - sdk_upload_id
-      - team
-      - transcript_text
-      - updated_at
-    DesktopRecordingStatusEnum:
-      enum:
-      - recording
-      - uploading
-      - processing
-      - ready
-      - error
-      type: string
-      description: '* `recording` - Recording
-
-        * `uploading` - Uploading
-
-        * `processing` - Processing
-
-        * `ready` - Ready
-
-        * `error` - Error'
   parameters:
     ProjectIdPath:
       in: path

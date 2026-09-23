@@ -1,6 +1,6 @@
-openapi: 3.0.3
+openapi: 3.2.0
 info:
-  title: PostHog actions early_access_features API
+  title: PostHog Early Access Features API
   version: 1.0.0
   description: ''
 tags:
@@ -37,6 +37,8 @@ paths:
           description: ''
       x-explicit-tags:
       - early_access_features
+      summary: Early access feature list
+      x-summary-source: derived
     post:
       operationId: early_access_feature_create
       parameters:
@@ -67,6 +69,8 @@ paths:
           description: ''
       x-explicit-tags:
       - early_access_features
+      summary: Early access feature create
+      x-summary-source: derived
   /api/projects/{project_id}/early_access_feature/{id}/:
     get:
       operationId: early_access_feature_retrieve
@@ -93,6 +97,8 @@ paths:
           description: ''
       x-explicit-tags:
       - early_access_features
+      summary: Early access feature retrieve
+      x-summary-source: derived
     put:
       operationId: early_access_feature_update
       parameters:
@@ -130,6 +136,8 @@ paths:
           description: ''
       x-explicit-tags:
       - early_access_features
+      summary: Early access feature update
+      x-summary-source: derived
     patch:
       operationId: early_access_feature_partial_update
       parameters:
@@ -166,6 +174,8 @@ paths:
           description: ''
       x-explicit-tags:
       - early_access_features
+      summary: Early access feature partial update
+      x-summary-source: derived
     delete:
       operationId: early_access_feature_destroy
       parameters:
@@ -187,190 +197,10 @@ paths:
           description: No response body
       x-explicit-tags:
       - early_access_features
+      summary: Early access feature destroy
+      x-summary-source: derived
 components:
   schemas:
-    EvaluationRuntimeEnum:
-      enum:
-      - server
-      - client
-      - all
-      type: string
-      description: '* `server` - Server
-
-        * `client` - Client
-
-        * `all` - All'
-    BlankEnum:
-      enum:
-      - ''
-    PaginatedEarlyAccessFeatureList:
-      type: object
-      required:
-      - count
-      - results
-      properties:
-        count:
-          type: integer
-          example: 123
-        next:
-          type: string
-          nullable: true
-          format: uri
-          example: http://api.example.org/accounts/?offset=400&limit=100
-        previous:
-          type: string
-          nullable: true
-          format: uri
-          example: http://api.example.org/accounts/?offset=200&limit=100
-        results:
-          type: array
-          items:
-            $ref: '#/components/schemas/EarlyAccessFeature'
-    MinimalFeatureFlag:
-      type: object
-      properties:
-        id:
-          type: integer
-          readOnly: true
-        team_id:
-          type: integer
-          readOnly: true
-        name:
-          type: string
-        key:
-          type: string
-          maxLength: 400
-        filters:
-          type: object
-          additionalProperties: true
-        deleted:
-          type: boolean
-        active:
-          type: boolean
-        ensure_experience_continuity:
-          type: boolean
-          nullable: true
-        has_encrypted_payloads:
-          type: boolean
-          nullable: true
-        version:
-          type: integer
-          maximum: 2147483647
-          minimum: -2147483648
-          nullable: true
-        evaluation_runtime:
-          nullable: true
-          description: 'Specifies where this feature flag should be evaluated
-
-
-            * `server` - Server
-
-            * `client` - Client
-
-            * `all` - All'
-          oneOf:
-          - $ref: '#/components/schemas/EvaluationRuntimeEnum'
-          - $ref: '#/components/schemas/BlankEnum'
-          - $ref: '#/components/schemas/NullEnum'
-        bucketing_identifier:
-          nullable: true
-          description: 'Identifier used for bucketing users into rollout and variants
-
-
-            * `distinct_id` - User ID (default)
-
-            * `device_id` - Device ID'
-          oneOf:
-          - $ref: '#/components/schemas/BucketingIdentifierEnum'
-          - $ref: '#/components/schemas/BlankEnum'
-          - $ref: '#/components/schemas/NullEnum'
-        evaluation_contexts:
-          type: array
-          items:
-            type: string
-          readOnly: true
-      required:
-      - evaluation_contexts
-      - id
-      - key
-      - team_id
-    StageEnum:
-      enum:
-      - draft
-      - concept
-      - alpha
-      - beta
-      - general-availability
-      - archived
-      type: string
-      description: '* `draft` - draft
-
-        * `concept` - concept
-
-        * `alpha` - alpha
-
-        * `beta` - beta
-
-        * `general-availability` - general availability
-
-        * `archived` - archived'
-    BucketingIdentifierEnum:
-      enum:
-      - distinct_id
-      - device_id
-      type: string
-      description: '* `distinct_id` - User ID (default)
-
-        * `device_id` - Device ID'
-    PatchedEarlyAccessFeature:
-      type: object
-      properties:
-        id:
-          type: string
-          format: uuid
-          readOnly: true
-        feature_flag:
-          allOf:
-          - $ref: '#/components/schemas/MinimalFeatureFlag'
-          readOnly: true
-        name:
-          type: string
-          description: The name of the early access feature.
-          maxLength: 200
-        description:
-          type: string
-          description: A longer description of what this early access feature does, shown to users in the opt-in UI.
-        stage:
-          allOf:
-          - $ref: '#/components/schemas/StageEnum'
-          description: 'Lifecycle stage. Valid values: draft, concept, alpha, beta, general-availability, archived. Moving to an active stage (alpha/beta/general-availability) enables the feature flag for opted-in users.
-
-
-            * `draft` - draft
-
-            * `concept` - concept
-
-            * `alpha` - alpha
-
-            * `beta` - beta
-
-            * `general-availability` - general availability
-
-            * `archived` - archived'
-        documentation_url:
-          type: string
-          format: uri
-          description: URL to external documentation for this feature. Shown to users in the opt-in UI.
-          maxLength: 800
-        payload:
-          type: object
-          additionalProperties: true
-          description: Feature flag payload for this early access feature
-          readOnly: true
-        created_at:
-          type: string
-          format: date-time
-          readOnly: true
     EarlyAccessFeature:
       type: object
       properties:
@@ -427,6 +257,42 @@ components:
       - name
       - payload
       - stage
+    NullEnum:
+      enum:
+      - null
+    BucketingIdentifierEnum:
+      enum:
+      - distinct_id
+      - device_id
+      type: string
+      description: '* `distinct_id` - User ID (default)
+
+        * `device_id` - Device ID'
+    PaginatedEarlyAccessFeatureList:
+      type: object
+      required:
+      - count
+      - results
+      properties:
+        count:
+          type: integer
+          example: 123
+        next:
+          type:
+          - string
+          - 'null'
+          format: uri
+          example: http://api.example.org/accounts/?offset=400&limit=100
+        previous:
+          type:
+          - string
+          - 'null'
+          format: uri
+          example: http://api.example.org/accounts/?offset=200&limit=100
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/EarlyAccessFeature'
     EarlyAccessFeatureSerializerCreateOnly:
       type: object
       properties:
@@ -487,9 +353,158 @@ components:
       - id
       - name
       - stage
-    NullEnum:
+    StageEnum:
       enum:
-      - null
+      - draft
+      - concept
+      - alpha
+      - beta
+      - general-availability
+      - archived
+      type: string
+      description: '* `draft` - draft
+
+        * `concept` - concept
+
+        * `alpha` - alpha
+
+        * `beta` - beta
+
+        * `general-availability` - general availability
+
+        * `archived` - archived'
+    MinimalFeatureFlag:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        team_id:
+          type: integer
+          readOnly: true
+        name:
+          type: string
+        key:
+          type: string
+          maxLength: 400
+        filters:
+          type: object
+          additionalProperties: true
+        deleted:
+          type: boolean
+        active:
+          type: boolean
+        ensure_experience_continuity:
+          type:
+          - boolean
+          - 'null'
+        has_encrypted_payloads:
+          type:
+          - boolean
+          - 'null'
+        version:
+          type:
+          - integer
+          - 'null'
+          maximum: 2147483647
+          minimum: -2147483648
+        evaluation_runtime:
+          description: 'Specifies where this feature flag should be evaluated
+
+
+            * `server` - Server
+
+            * `client` - Client
+
+            * `all` - All'
+          oneOf:
+          - $ref: '#/components/schemas/EvaluationRuntimeEnum'
+          - $ref: '#/components/schemas/BlankEnum'
+          - $ref: '#/components/schemas/NullEnum'
+        bucketing_identifier:
+          description: 'Identifier used for bucketing users into rollout and variants
+
+
+            * `distinct_id` - User ID (default)
+
+            * `device_id` - Device ID'
+          oneOf:
+          - $ref: '#/components/schemas/BucketingIdentifierEnum'
+          - $ref: '#/components/schemas/BlankEnum'
+          - $ref: '#/components/schemas/NullEnum'
+        evaluation_contexts:
+          type: array
+          items:
+            type: string
+          readOnly: true
+      required:
+      - evaluation_contexts
+      - id
+      - key
+      - team_id
+    PatchedEarlyAccessFeature:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+          readOnly: true
+        feature_flag:
+          allOf:
+          - $ref: '#/components/schemas/MinimalFeatureFlag'
+          readOnly: true
+        name:
+          type: string
+          description: The name of the early access feature.
+          maxLength: 200
+        description:
+          type: string
+          description: A longer description of what this early access feature does, shown to users in the opt-in UI.
+        stage:
+          allOf:
+          - $ref: '#/components/schemas/StageEnum'
+          description: 'Lifecycle stage. Valid values: draft, concept, alpha, beta, general-availability, archived. Moving to an active stage (alpha/beta/general-availability) enables the feature flag for opted-in users.
+
+
+            * `draft` - draft
+
+            * `concept` - concept
+
+            * `alpha` - alpha
+
+            * `beta` - beta
+
+            * `general-availability` - general availability
+
+            * `archived` - archived'
+        documentation_url:
+          type: string
+          format: uri
+          description: URL to external documentation for this feature. Shown to users in the opt-in UI.
+          maxLength: 800
+        payload:
+          type: object
+          additionalProperties: true
+          description: Feature flag payload for this early access feature
+          readOnly: true
+        created_at:
+          type: string
+          format: date-time
+          readOnly: true
+    BlankEnum:
+      enum:
+      - ''
+    EvaluationRuntimeEnum:
+      enum:
+      - server
+      - client
+      - all
+      type: string
+      description: '* `server` - Server
+
+        * `client` - Client
+
+        * `all` - All'
   parameters:
     ProjectIdPath:
       in: path

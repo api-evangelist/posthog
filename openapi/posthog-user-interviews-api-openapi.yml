@@ -1,6 +1,6 @@
-openapi: 3.0.3
+openapi: 3.2.0
 info:
-  title: PostHog actions user_interviews API
+  title: PostHog User Interviews API
   version: 1.0.0
   description: ''
 tags:
@@ -37,6 +37,8 @@ paths:
           description: ''
       x-explicit-tags:
       - user_interviews
+      summary: User interviews list
+      x-summary-source: derived
     post:
       operationId: user_interviews_create
       parameters:
@@ -64,6 +66,8 @@ paths:
           description: ''
       x-explicit-tags:
       - user_interviews
+      summary: User interviews create
+      x-summary-source: derived
   /api/environments/{project_id}/user_interviews/{id}/:
     get:
       operationId: user_interviews_retrieve
@@ -90,6 +94,8 @@ paths:
           description: ''
       x-explicit-tags:
       - user_interviews
+      summary: User interviews retrieve
+      x-summary-source: derived
     put:
       operationId: user_interviews_update
       parameters:
@@ -124,6 +130,8 @@ paths:
           description: ''
       x-explicit-tags:
       - user_interviews
+      summary: User interviews update
+      x-summary-source: derived
     patch:
       operationId: user_interviews_partial_update
       parameters:
@@ -157,6 +165,8 @@ paths:
           description: ''
       x-explicit-tags:
       - user_interviews
+      summary: User interviews partial update
+      x-summary-source: derived
     delete:
       operationId: user_interviews_destroy
       parameters:
@@ -178,55 +188,10 @@ paths:
           description: No response body
       x-explicit-tags:
       - user_interviews
+      summary: User interviews destroy
+      x-summary-source: derived
 components:
   schemas:
-    BlankEnum:
-      enum:
-      - ''
-    UserBasic:
-      type: object
-      properties:
-        id:
-          type: integer
-          readOnly: true
-        uuid:
-          type: string
-          format: uuid
-          readOnly: true
-        distinct_id:
-          type: string
-          nullable: true
-          maxLength: 200
-        first_name:
-          type: string
-          maxLength: 150
-        last_name:
-          type: string
-          maxLength: 150
-        email:
-          type: string
-          format: email
-          title: Email address
-          maxLength: 254
-        is_email_verified:
-          type: boolean
-          nullable: true
-        hedgehog_config:
-          type: object
-          additionalProperties: true
-          nullable: true
-          readOnly: true
-        role_at_organization:
-          nullable: true
-          oneOf:
-          - $ref: '#/components/schemas/RoleAtOrganizationEnum'
-          - $ref: '#/components/schemas/BlankEnum'
-          - $ref: '#/components/schemas/NullEnum'
-      required:
-      - email
-      - hedgehog_config
-      - id
-      - uuid
     PaginatedUserInterviewList:
       type: object
       required:
@@ -237,19 +202,24 @@ components:
           type: integer
           example: 123
         next:
-          type: string
-          nullable: true
+          type:
+          - string
+          - 'null'
           format: uri
           example: http://api.example.org/accounts/?offset=400&limit=100
         previous:
-          type: string
-          nullable: true
+          type:
+          - string
+          - 'null'
           format: uri
           example: http://api.example.org/accounts/?offset=200&limit=100
         results:
           type: array
           items:
             $ref: '#/components/schemas/UserInterview'
+    NullEnum:
+      enum:
+      - null
     UserInterview:
       type: object
       properties:
@@ -285,6 +255,55 @@ components:
       - created_by
       - id
       - transcript
+    UserBasic:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        uuid:
+          type: string
+          format: uuid
+          readOnly: true
+        distinct_id:
+          type:
+          - string
+          - 'null'
+          maxLength: 200
+        first_name:
+          type: string
+          maxLength: 150
+        last_name:
+          type: string
+          maxLength: 150
+        email:
+          type: string
+          format: email
+          title: Email address
+          maxLength: 254
+        is_email_verified:
+          type:
+          - boolean
+          - 'null'
+        hedgehog_config:
+          type:
+          - object
+          - 'null'
+          additionalProperties: true
+          readOnly: true
+        role_at_organization:
+          oneOf:
+          - $ref: '#/components/schemas/RoleAtOrganizationEnum'
+          - $ref: '#/components/schemas/BlankEnum'
+          - $ref: '#/components/schemas/NullEnum'
+      required:
+      - email
+      - hedgehog_config
+      - id
+      - uuid
+    BlankEnum:
+      enum:
+      - ''
     RoleAtOrganizationEnum:
       enum:
       - engineering
@@ -340,9 +359,6 @@ components:
           type: string
           format: uri
           writeOnly: true
-    NullEnum:
-      enum:
-      - null
   parameters:
     ProjectIdPath:
       in: path

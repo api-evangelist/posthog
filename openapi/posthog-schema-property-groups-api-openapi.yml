@@ -1,6 +1,6 @@
-openapi: 3.0.3
+openapi: 3.2.0
 info:
-  title: PostHog actions schema_property_groups API
+  title: PostHog Schema Property Groups API
   version: 1.0.0
   description: ''
 tags:
@@ -36,6 +36,8 @@ paths:
                 $ref: '#/components/schemas/PaginatedSchemaPropertyGroupList'
           description: ''
       x-explicit-tags: []
+      summary: Schema property groups list
+      x-summary-source: derived
     post:
       operationId: schema_property_groups_create
       parameters:
@@ -65,6 +67,8 @@ paths:
                 $ref: '#/components/schemas/SchemaPropertyGroup'
           description: ''
       x-explicit-tags: []
+      summary: Schema property groups create
+      x-summary-source: derived
   /api/projects/{project_id}/schema_property_groups/{id}/:
     get:
       operationId: schema_property_groups_retrieve
@@ -90,6 +94,8 @@ paths:
                 $ref: '#/components/schemas/SchemaPropertyGroup'
           description: ''
       x-explicit-tags: []
+      summary: Schema property groups retrieve
+      x-summary-source: derived
     put:
       operationId: schema_property_groups_update
       parameters:
@@ -126,6 +132,8 @@ paths:
                 $ref: '#/components/schemas/SchemaPropertyGroup'
           description: ''
       x-explicit-tags: []
+      summary: Schema property groups update
+      x-summary-source: derived
     patch:
       operationId: schema_property_groups_partial_update
       parameters:
@@ -161,6 +169,8 @@ paths:
                 $ref: '#/components/schemas/SchemaPropertyGroup'
           description: ''
       x-explicit-tags: []
+      summary: Schema property groups partial update
+      x-summary-source: derived
     delete:
       operationId: schema_property_groups_destroy
       parameters:
@@ -181,88 +191,55 @@ paths:
         '204':
           description: No response body
       x-explicit-tags: []
+      summary: Schema property groups destroy
+      x-summary-source: derived
 components:
   schemas:
-    PatchedSchemaPropertyGroup:
-      type: object
-      properties:
-        id:
-          type: string
-          format: uuid
-          readOnly: true
-        name:
-          type: string
-          maxLength: 400
-        description:
-          type: string
-        properties:
-          type: array
-          items:
-            $ref: '#/components/schemas/SchemaPropertyGroupProperty'
-        events:
-          type: array
-          items:
-            $ref: '#/components/schemas/EventDefinitionBasic'
-          readOnly: true
-        created_at:
-          type: string
-          format: date-time
-          readOnly: true
-        updated_at:
-          type: string
-          format: date-time
-          readOnly: true
-        created_by:
-          allOf:
-          - $ref: '#/components/schemas/UserBasic'
-          readOnly: true
-    BlankEnum:
+    NullEnum:
       enum:
-      - ''
-    UserBasic:
+      - null
+    SchemaPropertyGroupPropertyPropertyTypeEnum:
+      enum:
+      - DateTime
+      - String
+      - Numeric
+      - Boolean
+      - Object
+      type: string
+      description: '* `DateTime` - DateTime
+
+        * `String` - String
+
+        * `Numeric` - Numeric
+
+        * `Boolean` - Boolean
+
+        * `Object` - Object'
+    PaginatedSchemaPropertyGroupList:
       type: object
-      properties:
-        id:
-          type: integer
-          readOnly: true
-        uuid:
-          type: string
-          format: uuid
-          readOnly: true
-        distinct_id:
-          type: string
-          nullable: true
-          maxLength: 200
-        first_name:
-          type: string
-          maxLength: 150
-        last_name:
-          type: string
-          maxLength: 150
-        email:
-          type: string
-          format: email
-          title: Email address
-          maxLength: 254
-        is_email_verified:
-          type: boolean
-          nullable: true
-        hedgehog_config:
-          type: object
-          additionalProperties: true
-          nullable: true
-          readOnly: true
-        role_at_organization:
-          nullable: true
-          oneOf:
-          - $ref: '#/components/schemas/RoleAtOrganizationEnum'
-          - $ref: '#/components/schemas/BlankEnum'
-          - $ref: '#/components/schemas/NullEnum'
       required:
-      - email
-      - hedgehog_config
-      - id
-      - uuid
+      - count
+      - results
+      properties:
+        count:
+          type: integer
+          example: 123
+        next:
+          type:
+          - string
+          - 'null'
+          format: uri
+          example: http://api.example.org/accounts/?offset=400&limit=100
+        previous:
+          type:
+          - string
+          - 'null'
+          format: uri
+          example: http://api.example.org/accounts/?offset=200&limit=100
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/SchemaPropertyGroup'
     SchemaPropertyGroup:
       type: object
       properties:
@@ -303,72 +280,55 @@ components:
       - id
       - name
       - updated_at
-    PaginatedSchemaPropertyGroupList:
+    UserBasic:
       type: object
-      required:
-      - count
-      - results
       properties:
-        count:
+        id:
           type: integer
-          example: 123
-        next:
+          readOnly: true
+        uuid:
           type: string
-          nullable: true
-          format: uri
-          example: http://api.example.org/accounts/?offset=400&limit=100
-        previous:
+          format: uuid
+          readOnly: true
+        distinct_id:
+          type:
+          - string
+          - 'null'
+          maxLength: 200
+        first_name:
           type: string
-          nullable: true
-          format: uri
-          example: http://api.example.org/accounts/?offset=200&limit=100
-        results:
-          type: array
-          items:
-            $ref: '#/components/schemas/SchemaPropertyGroup'
-    SchemaPropertyGroupPropertyPropertyTypeEnum:
+          maxLength: 150
+        last_name:
+          type: string
+          maxLength: 150
+        email:
+          type: string
+          format: email
+          title: Email address
+          maxLength: 254
+        is_email_verified:
+          type:
+          - boolean
+          - 'null'
+        hedgehog_config:
+          type:
+          - object
+          - 'null'
+          additionalProperties: true
+          readOnly: true
+        role_at_organization:
+          oneOf:
+          - $ref: '#/components/schemas/RoleAtOrganizationEnum'
+          - $ref: '#/components/schemas/BlankEnum'
+          - $ref: '#/components/schemas/NullEnum'
+      required:
+      - email
+      - hedgehog_config
+      - id
+      - uuid
+    BlankEnum:
       enum:
-      - DateTime
-      - String
-      - Numeric
-      - Boolean
-      - Object
-      type: string
-      description: '* `DateTime` - DateTime
-
-        * `String` - String
-
-        * `Numeric` - Numeric
-
-        * `Boolean` - Boolean
-
-        * `Object` - Object'
-    RoleAtOrganizationEnum:
-      enum:
-      - engineering
-      - data
-      - product
-      - founder
-      - leadership
-      - marketing
-      - sales
-      - other
-      type: string
-      description: '* `engineering` - Engineering
-
-        * `data` - Data
-
-        * `product` - Product Management
-
-        * `founder` - Founder
-
-        * `leadership` - Leadership
-
-        * `marketing` - Marketing
-
-        * `sales` - Sales / Success
-
-        * `other` - Other'
+      - ''
     EventDefinitionBasic:
       type: object
       properties:
@@ -412,9 +372,65 @@ components:
       - name
       - property_type
       - updated_at
-    NullEnum:
+    PatchedSchemaPropertyGroup:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+          readOnly: true
+        name:
+          type: string
+          maxLength: 400
+        description:
+          type: string
+        properties:
+          type: array
+          items:
+            $ref: '#/components/schemas/SchemaPropertyGroupProperty'
+        events:
+          type: array
+          items:
+            $ref: '#/components/schemas/EventDefinitionBasic'
+          readOnly: true
+        created_at:
+          type: string
+          format: date-time
+          readOnly: true
+        updated_at:
+          type: string
+          format: date-time
+          readOnly: true
+        created_by:
+          allOf:
+          - $ref: '#/components/schemas/UserBasic'
+          readOnly: true
+    RoleAtOrganizationEnum:
       enum:
-      - null
+      - engineering
+      - data
+      - product
+      - founder
+      - leadership
+      - marketing
+      - sales
+      - other
+      type: string
+      description: '* `engineering` - Engineering
+
+        * `data` - Data
+
+        * `product` - Product Management
+
+        * `founder` - Founder
+
+        * `leadership` - Leadership
+
+        * `marketing` - Marketing
+
+        * `sales` - Sales / Success
+
+        * `other` - Other'
   parameters:
     ProjectIdPath:
       in: path

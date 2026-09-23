@@ -1,6 +1,6 @@
-openapi: 3.0.3
+openapi: 3.2.0
 info:
-  title: PostHog actions web_experiments API
+  title: PostHog Web Experiments API
   version: 1.0.0
   description: ''
 tags:
@@ -36,6 +36,8 @@ paths:
                 $ref: '#/components/schemas/PaginatedWebExperimentsAPIList'
           description: ''
       x-explicit-tags: []
+      summary: Web experiments list
+      x-summary-source: derived
     post:
       operationId: web_experiments_create
       parameters:
@@ -65,6 +67,8 @@ paths:
                 $ref: '#/components/schemas/WebExperimentsAPI'
           description: ''
       x-explicit-tags: []
+      summary: Web experiments create
+      x-summary-source: derived
   /api/projects/{project_id}/web_experiments/{id}/:
     get:
       operationId: web_experiments_retrieve
@@ -89,6 +93,8 @@ paths:
                 $ref: '#/components/schemas/WebExperimentsAPI'
           description: ''
       x-explicit-tags: []
+      summary: Web experiments retrieve
+      x-summary-source: derived
     put:
       operationId: web_experiments_update
       parameters:
@@ -124,6 +130,8 @@ paths:
                 $ref: '#/components/schemas/WebExperimentsAPI'
           description: ''
       x-explicit-tags: []
+      summary: Web experiments update
+      x-summary-source: derived
     patch:
       operationId: web_experiments_partial_update
       parameters:
@@ -158,6 +166,8 @@ paths:
                 $ref: '#/components/schemas/WebExperimentsAPI'
           description: ''
       x-explicit-tags: []
+      summary: Web experiments partial update
+      x-summary-source: derived
     delete:
       operationId: web_experiments_destroy
       parameters:
@@ -177,39 +187,28 @@ paths:
         '204':
           description: No response body
       x-explicit-tags: []
+      summary: Web experiments destroy
+      x-summary-source: derived
 components:
-  parameters:
-    ProjectIdPath:
-      in: path
-      name: project_id
-      required: true
-      schema:
-        type: string
-      description: Project ID of the project you're trying to access. To find the ID of the project, make a call to /api/projects/.
   schemas:
-    PaginatedWebExperimentsAPIList:
+    PatchedWebExperimentsAPI:
       type: object
-      required:
-      - count
-      - results
+      description: Serializer for the exposed /api/web_experiments endpoint, to be used in posthog-js and for headless APIs.
       properties:
-        count:
+        id:
           type: integer
-          example: 123
-        next:
+          readOnly: true
+        name:
           type: string
-          nullable: true
-          format: uri
-          example: http://api.example.org/accounts/?offset=400&limit=100
-        previous:
+          maxLength: 400
+        created_at:
           type: string
-          nullable: true
-          format: uri
-          example: http://api.example.org/accounts/?offset=200&limit=100
-        results:
-          type: array
-          items:
-            $ref: '#/components/schemas/WebExperimentsAPI'
+          format: date-time
+        feature_flag_key:
+          type: string
+          readOnly: true
+        variants:
+          description: "Variants for the web experiment. Example:\n\n        {\n            \"control\": {\n                \"transforms\": [\n                    {\n                        \"text\": \"Here comes Superman!\",\n                        \"html\": \"\",\n                        \"selector\": \"#page > #body > .header h1\"\n                    }\n                ],\n                \"conditions\": \"None\",\n                \"rollout_percentage\": 50\n            },\n        }"
     WebExperimentsAPI:
       type: object
       description: Serializer for the exposed /api/web_experiments endpoint, to be used in posthog-js and for headless APIs.
@@ -233,24 +232,39 @@ components:
       - id
       - name
       - variants
-    PatchedWebExperimentsAPI:
+    PaginatedWebExperimentsAPIList:
       type: object
-      description: Serializer for the exposed /api/web_experiments endpoint, to be used in posthog-js and for headless APIs.
+      required:
+      - count
+      - results
       properties:
-        id:
+        count:
           type: integer
-          readOnly: true
-        name:
-          type: string
-          maxLength: 400
-        created_at:
-          type: string
-          format: date-time
-        feature_flag_key:
-          type: string
-          readOnly: true
-        variants:
-          description: "Variants for the web experiment. Example:\n\n        {\n            \"control\": {\n                \"transforms\": [\n                    {\n                        \"text\": \"Here comes Superman!\",\n                        \"html\": \"\",\n                        \"selector\": \"#page > #body > .header h1\"\n                    }\n                ],\n                \"conditions\": \"None\",\n                \"rollout_percentage\": 50\n            },\n        }"
+          example: 123
+        next:
+          type:
+          - string
+          - 'null'
+          format: uri
+          example: http://api.example.org/accounts/?offset=400&limit=100
+        previous:
+          type:
+          - string
+          - 'null'
+          format: uri
+          example: http://api.example.org/accounts/?offset=200&limit=100
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/WebExperimentsAPI'
+  parameters:
+    ProjectIdPath:
+      in: path
+      name: project_id
+      required: true
+      schema:
+        type: string
+      description: Project ID of the project you're trying to access. To find the ID of the project, make a call to /api/projects/.
   securitySchemes:
     PersonalAPIKeyAuth:
       type: http

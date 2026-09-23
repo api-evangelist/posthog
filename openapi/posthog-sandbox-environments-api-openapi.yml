@@ -1,6 +1,6 @@
-openapi: 3.0.3
+openapi: 3.2.0
 info:
-  title: PostHog actions sandbox-environments API
+  title: PostHog Sandbox Environments API
   version: 1.0.0
   description: ''
 tags:
@@ -41,6 +41,8 @@ paths:
       x-explicit-tags:
       - sandbox-environments
       - tasks
+      summary: Sandbox list
+      x-summary-source: derived
     post:
       operationId: sandbox_create
       description: API for managing sandbox environments that control network access for task runs.
@@ -75,6 +77,8 @@ paths:
       x-explicit-tags:
       - sandbox-environments
       - tasks
+      summary: Sandbox create
+      x-summary-source: derived
   /api/projects/{project_id}/sandbox_environments/{id}/:
     get:
       operationId: sandbox_retrieve
@@ -104,6 +108,8 @@ paths:
           description: ''
       x-explicit-tags:
       - sandbox-environments
+      summary: Sandbox retrieve
+      x-summary-source: derived
     patch:
       operationId: sandbox_partial_update
       description: API for managing sandbox environments that control network access for task runs.
@@ -143,6 +149,8 @@ paths:
           description: ''
       x-explicit-tags:
       - sandbox-environments
+      summary: Sandbox partial update
+      x-summary-source: derived
     delete:
       operationId: sandbox_destroy
       description: API for managing sandbox environments that control network access for task runs.
@@ -167,8 +175,24 @@ paths:
           description: No response body
       x-explicit-tags:
       - sandbox-environments
+      summary: Sandbox destroy
+      x-summary-source: derived
 components:
   schemas:
+    NullEnum:
+      enum:
+      - null
+    NetworkAccessLevelEnum:
+      enum:
+      - trusted
+      - full
+      - custom
+      type: string
+      description: '* `trusted` - Trusted
+
+        * `full` - Full
+
+        * `custom` - Custom'
     PaginatedSandboxEnvironmentListList:
       type: object
       required:
@@ -179,22 +203,21 @@ components:
           type: integer
           example: 123
         next:
-          type: string
-          nullable: true
+          type:
+          - string
+          - 'null'
           format: uri
           example: http://api.example.org/accounts/?offset=400&limit=100
         previous:
-          type: string
-          nullable: true
+          type:
+          - string
+          - 'null'
           format: uri
           example: http://api.example.org/accounts/?offset=200&limit=100
         results:
           type: array
           items:
             $ref: '#/components/schemas/SandboxEnvironmentList'
-    BlankEnum:
-      enum:
-      - ''
     UserBasic:
       type: object
       properties:
@@ -206,8 +229,9 @@ components:
           format: uuid
           readOnly: true
         distinct_id:
-          type: string
-          nullable: true
+          type:
+          - string
+          - 'null'
           maxLength: 200
         first_name:
           type: string
@@ -221,15 +245,16 @@ components:
           title: Email address
           maxLength: 254
         is_email_verified:
-          type: boolean
-          nullable: true
+          type:
+          - boolean
+          - 'null'
         hedgehog_config:
-          type: object
+          type:
+          - object
+          - 'null'
           additionalProperties: true
-          nullable: true
           readOnly: true
         role_at_organization:
-          nullable: true
           oneOf:
           - $ref: '#/components/schemas/RoleAtOrganizationEnum'
           - $ref: '#/components/schemas/BlankEnum'
@@ -239,6 +264,54 @@ components:
       - hedgehog_config
       - id
       - uuid
+    SandboxEnvironmentList:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+          readOnly: true
+        name:
+          type: string
+          maxLength: 255
+        network_access_level:
+          $ref: '#/components/schemas/NetworkAccessLevelEnum'
+        allowed_domains:
+          type: array
+          items:
+            type: string
+            maxLength: 255
+          description: List of allowed domains for custom network access
+        repositories:
+          type: array
+          items:
+            type: string
+            maxLength: 255
+          description: 'List of repositories this environment applies to (format: org/repo)'
+        private:
+          type: boolean
+          description: If true, only the creator can see this environment. Otherwise visible to whole team.
+        internal:
+          type: boolean
+          description: If true, this environment is for internal use (e.g. signals pipeline) and should not be exposed to end users.
+        created_by:
+          allOf:
+          - $ref: '#/components/schemas/UserBasic'
+          readOnly: true
+        created_at:
+          type: string
+          format: date-time
+          readOnly: true
+        updated_at:
+          type: string
+          format: date-time
+          readOnly: true
+      required:
+      - created_at
+      - created_by
+      - id
+      - name
+      - updated_at
     SandboxEnvironment:
       type: object
       properties:
@@ -307,54 +380,9 @@ components:
       - internal
       - name
       - updated_at
-    SandboxEnvironmentList:
-      type: object
-      properties:
-        id:
-          type: string
-          format: uuid
-          readOnly: true
-        name:
-          type: string
-          maxLength: 255
-        network_access_level:
-          $ref: '#/components/schemas/NetworkAccessLevelEnum'
-        allowed_domains:
-          type: array
-          items:
-            type: string
-            maxLength: 255
-          description: List of allowed domains for custom network access
-        repositories:
-          type: array
-          items:
-            type: string
-            maxLength: 255
-          description: 'List of repositories this environment applies to (format: org/repo)'
-        private:
-          type: boolean
-          description: If true, only the creator can see this environment. Otherwise visible to whole team.
-        internal:
-          type: boolean
-          description: If true, this environment is for internal use (e.g. signals pipeline) and should not be exposed to end users.
-        created_by:
-          allOf:
-          - $ref: '#/components/schemas/UserBasic'
-          readOnly: true
-        created_at:
-          type: string
-          format: date-time
-          readOnly: true
-        updated_at:
-          type: string
-          format: date-time
-          readOnly: true
-      required:
-      - created_at
-      - created_by
-      - id
-      - name
-      - updated_at
+    BlankEnum:
+      enum:
+      - ''
     PatchedSandboxEnvironment:
       type: object
       properties:
@@ -440,20 +468,6 @@ components:
         * `sales` - Sales / Success
 
         * `other` - Other'
-    NetworkAccessLevelEnum:
-      enum:
-      - trusted
-      - full
-      - custom
-      type: string
-      description: '* `trusted` - Trusted
-
-        * `full` - Full
-
-        * `custom` - Custom'
-    NullEnum:
-      enum:
-      - null
   parameters:
     ProjectIdPath:
       in: path

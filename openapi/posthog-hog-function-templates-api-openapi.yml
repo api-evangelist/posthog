@@ -1,6 +1,6 @@
-openapi: 3.0.3
+openapi: 3.2.0
 info:
-  title: PostHog actions hog_function_templates API
+  title: PostHog Hog Function Templates API
   version: 1.0.0
   description: ''
 tags:
@@ -52,6 +52,8 @@ paths:
       x-explicit-tags:
       - hog_function_templates
       - cdp
+      summary: Hog function templates list
+      x-summary-source: derived
   /api/projects/{project_id}/hog_function_templates/{template_id}/:
     get:
       operationId: hog_function_templates_retrieve
@@ -76,6 +78,8 @@ paths:
       x-explicit-tags:
       - hog_function_templates
       - cdp
+      summary: Hog function templates retrieve
+      x-summary-source: derived
   /api/public_hog_function_templates/:
     get:
       operationId: public_hog_function_templates_list
@@ -121,8 +125,59 @@ paths:
       x-explicit-tags:
       - hog_function_templates
       - cdp
+      summary: Public hog function templates list
+      x-summary-source: derived
 components:
   schemas:
+    HogFunctionMappingTemplate:
+      type: object
+      properties:
+        name:
+          type: string
+          description: Name of this mapping template.
+        include_by_default:
+          type:
+          - boolean
+          - 'null'
+          description: Whether this mapping is enabled by default.
+        use_all_events_by_default:
+          type:
+          - boolean
+          - 'null'
+          description: Whether this mapping should match all events by default, hiding the event filter UI.
+        filters:
+          description: Event filters specific to this mapping.
+        inputs:
+          description: Input values specific to this mapping.
+        inputs_schema:
+          description: Additional input schema fields specific to this mapping.
+      required:
+      - name
+    PaginatedHogFunctionTemplateList:
+      type: object
+      required:
+      - count
+      - results
+      properties:
+        count:
+          type: integer
+          example: 123
+        next:
+          type:
+          - string
+          - 'null'
+          format: uri
+          example: http://api.example.org/accounts/?offset=400&limit=100
+        previous:
+          type:
+          - string
+          - 'null'
+          format: uri
+          example: http://api.example.org/accounts/?offset=200&limit=100
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/HogFunctionTemplate'
     HogFunctionTemplate:
       type: object
       properties:
@@ -134,8 +189,9 @@ components:
           description: Display name of the template.
           maxLength: 400
         description:
-          type: string
-          nullable: true
+          type:
+          - string
+          - 'null'
           description: What this template does.
         code:
           type: string
@@ -160,20 +216,20 @@ components:
           type: boolean
           description: Whether available on free plans.
         icon_url:
-          type: string
-          nullable: true
+          type:
+          - string
+          - 'null'
           description: URL for the template's icon.
         filters:
-          nullable: true
           description: Default event filters.
         masking:
-          nullable: true
           description: Default PII masking configuration.
         mapping_templates:
-          type: array
+          type:
+          - array
+          - 'null'
           items:
             $ref: '#/components/schemas/HogFunctionMappingTemplate'
-          nullable: true
           description: Pre-defined mapping configurations for destination templates.
       required:
       - code
@@ -181,54 +237,6 @@ components:
       - inputs_schema
       - name
       - type
-    PaginatedHogFunctionTemplateList:
-      type: object
-      required:
-      - count
-      - results
-      properties:
-        count:
-          type: integer
-          example: 123
-        next:
-          type: string
-          nullable: true
-          format: uri
-          example: http://api.example.org/accounts/?offset=400&limit=100
-        previous:
-          type: string
-          nullable: true
-          format: uri
-          example: http://api.example.org/accounts/?offset=200&limit=100
-        results:
-          type: array
-          items:
-            $ref: '#/components/schemas/HogFunctionTemplate'
-    HogFunctionMappingTemplate:
-      type: object
-      properties:
-        name:
-          type: string
-          description: Name of this mapping template.
-        include_by_default:
-          type: boolean
-          nullable: true
-          description: Whether this mapping is enabled by default.
-        use_all_events_by_default:
-          type: boolean
-          nullable: true
-          description: Whether this mapping should match all events by default, hiding the event filter UI.
-        filters:
-          nullable: true
-          description: Event filters specific to this mapping.
-        inputs:
-          nullable: true
-          description: Input values specific to this mapping.
-        inputs_schema:
-          nullable: true
-          description: Additional input schema fields specific to this mapping.
-      required:
-      - name
   parameters:
     ProjectIdPath:
       in: path

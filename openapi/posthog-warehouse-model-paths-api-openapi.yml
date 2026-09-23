@@ -1,6 +1,6 @@
-openapi: 3.0.3
+openapi: 3.2.0
 info:
-  title: PostHog actions warehouse_model_paths API
+  title: PostHog Warehouse Model Paths API
   version: 1.0.0
   description: ''
 tags:
@@ -37,6 +37,8 @@ paths:
           description: ''
       x-explicit-tags:
       - data_warehouse
+      summary: Warehouse model paths list
+      x-summary-source: derived
   /api/projects/{project_id}/warehouse_model_paths/{id}/:
     get:
       operationId: warehouse_model_paths_retrieve
@@ -62,11 +64,59 @@ paths:
                 $ref: '#/components/schemas/DataWarehouseModelPath'
           description: ''
       x-explicit-tags: []
+      summary: Warehouse model paths retrieve
+      x-summary-source: derived
 components:
   schemas:
-    BlankEnum:
+    NullEnum:
       enum:
-      - ''
+      - null
+    UserBasic:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        uuid:
+          type: string
+          format: uuid
+          readOnly: true
+        distinct_id:
+          type:
+          - string
+          - 'null'
+          maxLength: 200
+        first_name:
+          type: string
+          maxLength: 150
+        last_name:
+          type: string
+          maxLength: 150
+        email:
+          type: string
+          format: email
+          title: Email address
+          maxLength: 254
+        is_email_verified:
+          type:
+          - boolean
+          - 'null'
+        hedgehog_config:
+          type:
+          - object
+          - 'null'
+          additionalProperties: true
+          readOnly: true
+        role_at_organization:
+          oneOf:
+          - $ref: '#/components/schemas/RoleAtOrganizationEnum'
+          - $ref: '#/components/schemas/BlankEnum'
+          - $ref: '#/components/schemas/NullEnum'
+      required:
+      - email
+      - hedgehog_config
+      - id
+      - uuid
     DataWarehouseModelPath:
       type: object
       properties:
@@ -82,13 +132,15 @@ components:
         team:
           type: integer
         table:
-          type: string
+          type:
+          - string
+          - 'null'
           format: uuid
-          nullable: true
         saved_query:
-          type: string
+          type:
+          - string
+          - 'null'
           format: uuid
-          nullable: true
         created_at:
           type: string
           format: date-time
@@ -98,10 +150,11 @@ components:
           - $ref: '#/components/schemas/UserBasic'
           readOnly: true
         updated_at:
-          type: string
+          type:
+          - string
+          - 'null'
           format: date-time
           readOnly: true
-          nullable: true
       required:
       - created_at
       - created_by
@@ -109,50 +162,34 @@ components:
       - path
       - team
       - updated_at
-    UserBasic:
+    BlankEnum:
+      enum:
+      - ''
+    PaginatedDataWarehouseModelPathList:
       type: object
-      properties:
-        id:
-          type: integer
-          readOnly: true
-        uuid:
-          type: string
-          format: uuid
-          readOnly: true
-        distinct_id:
-          type: string
-          nullable: true
-          maxLength: 200
-        first_name:
-          type: string
-          maxLength: 150
-        last_name:
-          type: string
-          maxLength: 150
-        email:
-          type: string
-          format: email
-          title: Email address
-          maxLength: 254
-        is_email_verified:
-          type: boolean
-          nullable: true
-        hedgehog_config:
-          type: object
-          additionalProperties: true
-          nullable: true
-          readOnly: true
-        role_at_organization:
-          nullable: true
-          oneOf:
-          - $ref: '#/components/schemas/RoleAtOrganizationEnum'
-          - $ref: '#/components/schemas/BlankEnum'
-          - $ref: '#/components/schemas/NullEnum'
       required:
-      - email
-      - hedgehog_config
-      - id
-      - uuid
+      - count
+      - results
+      properties:
+        count:
+          type: integer
+          example: 123
+        next:
+          type:
+          - string
+          - 'null'
+          format: uri
+          example: http://api.example.org/accounts/?offset=400&limit=100
+        previous:
+          type:
+          - string
+          - 'null'
+          format: uri
+          example: http://api.example.org/accounts/?offset=200&limit=100
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/DataWarehouseModelPath'
     RoleAtOrganizationEnum:
       enum:
       - engineering
@@ -179,32 +216,6 @@ components:
         * `sales` - Sales / Success
 
         * `other` - Other'
-    PaginatedDataWarehouseModelPathList:
-      type: object
-      required:
-      - count
-      - results
-      properties:
-        count:
-          type: integer
-          example: 123
-        next:
-          type: string
-          nullable: true
-          format: uri
-          example: http://api.example.org/accounts/?offset=400&limit=100
-        previous:
-          type: string
-          nullable: true
-          format: uri
-          example: http://api.example.org/accounts/?offset=200&limit=100
-        results:
-          type: array
-          items:
-            $ref: '#/components/schemas/DataWarehouseModelPath'
-    NullEnum:
-      enum:
-      - null
   parameters:
     ProjectIdPath:
       in: path

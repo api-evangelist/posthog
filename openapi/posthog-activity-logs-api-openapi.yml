@@ -1,10 +1,10 @@
-openapi: 3.0.3
+openapi: 3.2.0
 info:
-  title: PostHog actions activity_logs API
+  title: PostHog Activity Logs API
   version: 1.0.0
   description: ''
 tags:
-- name: activity_logs
+- name: Activity Logs
 paths:
   /api/projects/{project_id}/activity_log/:
     get:
@@ -401,7 +401,7 @@ paths:
           format: uuid
         description: Filter by user UUID who performed the action.
       tags:
-      - activity_logs
+      - Activity Logs
       security:
       - PersonalAPIKeyAuth:
         - activity_log:read
@@ -415,11 +415,13 @@ paths:
       x-explicit-tags:
       - activity_logs
       - platform_features
+      summary: Activity log list
+      x-summary-source: derived
 components:
   schemas:
-    BlankEnum:
+    NullEnum:
       enum:
-      - ''
+      - null
     ActivityLog:
       type: object
       properties:
@@ -434,31 +436,35 @@ components:
           description: is the date of this log item newer than the user's bookmark
           readOnly: true
         organization_id:
-          type: string
+          type:
+          - string
+          - 'null'
           format: uuid
-          nullable: true
         was_impersonated:
-          type: boolean
-          nullable: true
+          type:
+          - boolean
+          - 'null'
         is_system:
-          type: boolean
-          nullable: true
+          type:
+          - boolean
+          - 'null'
         client:
-          type: string
-          nullable: true
+          type:
+          - string
+          - 'null'
           maxLength: 32
         activity:
           type: string
           maxLength: 79
         item_id:
-          type: string
-          nullable: true
+          type:
+          - string
+          - 'null'
           maxLength: 72
         scope:
           type: string
           maxLength: 79
-        detail:
-          nullable: true
+        detail: {}
         created_at:
           type: string
           format: date-time
@@ -479,8 +485,9 @@ components:
           format: uuid
           readOnly: true
         distinct_id:
-          type: string
-          nullable: true
+          type:
+          - string
+          - 'null'
           maxLength: 200
         first_name:
           type: string
@@ -494,15 +501,16 @@ components:
           title: Email address
           maxLength: 254
         is_email_verified:
-          type: boolean
-          nullable: true
+          type:
+          - boolean
+          - 'null'
         hedgehog_config:
-          type: object
+          type:
+          - object
+          - 'null'
           additionalProperties: true
-          nullable: true
           readOnly: true
         role_at_organization:
-          nullable: true
           oneOf:
           - $ref: '#/components/schemas/RoleAtOrganizationEnum'
           - $ref: '#/components/schemas/BlankEnum'
@@ -512,6 +520,34 @@ components:
       - hedgehog_config
       - id
       - uuid
+    BlankEnum:
+      enum:
+      - ''
+    PaginatedActivityLogList:
+      type: object
+      required:
+      - count
+      - results
+      properties:
+        count:
+          type: integer
+          example: 123
+        next:
+          type:
+          - string
+          - 'null'
+          format: uri
+          example: http://api.example.org/accounts/?page=4
+        previous:
+          type:
+          - string
+          - 'null'
+          format: uri
+          example: http://api.example.org/accounts/?page=2
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/ActivityLog'
     RoleAtOrganizationEnum:
       enum:
       - engineering
@@ -538,32 +574,6 @@ components:
         * `sales` - Sales / Success
 
         * `other` - Other'
-    PaginatedActivityLogList:
-      type: object
-      required:
-      - count
-      - results
-      properties:
-        count:
-          type: integer
-          example: 123
-        next:
-          type: string
-          nullable: true
-          format: uri
-          example: http://api.example.org/accounts/?page=4
-        previous:
-          type: string
-          nullable: true
-          format: uri
-          example: http://api.example.org/accounts/?page=2
-        results:
-          type: array
-          items:
-            $ref: '#/components/schemas/ActivityLog'
-    NullEnum:
-      enum:
-      - null
   parameters:
     ProjectIdPath:
       in: path

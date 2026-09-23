@@ -1,10 +1,10 @@
-openapi: 3.0.3
+openapi: 3.2.0
 info:
-  title: PostHog actions plugin_configs API
+  title: PostHog Plugin Configs API
   version: 1.0.0
   description: ''
 tags:
-- name: plugin_configs
+- name: Plugin Configs
 paths:
   /api/environments/{environment_id}/plugin_configs/{plugin_config_id}/logs/:
     get:
@@ -29,7 +29,7 @@ paths:
           type: integer
         required: true
       tags:
-      - plugin_configs
+      - Plugin Configs
       security:
       - PersonalAPIKeyAuth:
         - plugin:read
@@ -42,6 +42,8 @@ paths:
           description: ''
       deprecated: true
       x-explicit-tags: []
+      summary: Environments plugin configs logs list
+      x-summary-source: derived
   /api/projects/{project_id}/plugin_configs/{plugin_config_id}/logs/:
     get:
       operationId: plugin_configs_logs_list
@@ -65,7 +67,7 @@ paths:
         required: true
       - $ref: '#/components/parameters/ProjectIdPath'
       tags:
-      - plugin_configs
+      - Plugin Configs
       security:
       - PersonalAPIKeyAuth:
         - plugin:read
@@ -77,7 +79,24 @@ paths:
                 $ref: '#/components/schemas/PaginatedPluginLogEntryList'
           description: ''
       x-explicit-tags: []
+      summary: Plugin configs logs list
+      x-summary-source: derived
 components:
+  parameters:
+    EnvironmentIdPath:
+      in: path
+      name: environment_id
+      required: true
+      schema:
+        type: string
+      description: Deprecated. Use /api/projects/{project_id}/ instead.
+    ProjectIdPath:
+      in: path
+      name: project_id
+      required: true
+      schema:
+        type: string
+      description: Project ID of the project you're trying to access. To find the ID of the project, make a call to /api/projects/.
   schemas:
     PaginatedPluginLogEntryList:
       type: object
@@ -89,36 +108,32 @@ components:
           type: integer
           example: 123
         next:
-          type: string
-          nullable: true
+          type:
+          - string
+          - 'null'
           format: uri
           example: http://api.example.org/accounts/?offset=400&limit=100
         previous:
-          type: string
-          nullable: true
+          type:
+          - string
+          - 'null'
           format: uri
           example: http://api.example.org/accounts/?offset=200&limit=100
         results:
           type: array
           items:
             $ref: '#/components/schemas/PluginLogEntry'
-    PluginLogEntryTypeEnum:
+    PluginLogEntrySourceEnum:
       enum:
-      - DEBUG
-      - LOG
-      - INFO
-      - WARN
-      - ERROR
+      - SYSTEM
+      - PLUGIN
+      - CONSOLE
       type: string
-      description: '* `DEBUG` - DEBUG
+      description: '* `SYSTEM` - SYSTEM
 
-        * `LOG` - LOG
+        * `PLUGIN` - PLUGIN
 
-        * `INFO` - INFO
-
-        * `WARN` - WARN
-
-        * `ERROR` - ERROR'
+        * `CONSOLE` - CONSOLE'
     PluginLogEntry:
       type: object
       properties:
@@ -153,32 +168,23 @@ components:
       - team_id
       - timestamp
       - type
-    PluginLogEntrySourceEnum:
+    PluginLogEntryTypeEnum:
       enum:
-      - SYSTEM
-      - PLUGIN
-      - CONSOLE
+      - DEBUG
+      - LOG
+      - INFO
+      - WARN
+      - ERROR
       type: string
-      description: '* `SYSTEM` - SYSTEM
+      description: '* `DEBUG` - DEBUG
 
-        * `PLUGIN` - PLUGIN
+        * `LOG` - LOG
 
-        * `CONSOLE` - CONSOLE'
-  parameters:
-    ProjectIdPath:
-      in: path
-      name: project_id
-      required: true
-      schema:
-        type: string
-      description: Project ID of the project you're trying to access. To find the ID of the project, make a call to /api/projects/.
-    EnvironmentIdPath:
-      in: path
-      name: environment_id
-      required: true
-      schema:
-        type: string
-      description: Deprecated. Use /api/projects/{project_id}/ instead.
+        * `INFO` - INFO
+
+        * `WARN` - WARN
+
+        * `ERROR` - ERROR'
   securitySchemes:
     PersonalAPIKeyAuth:
       type: http
