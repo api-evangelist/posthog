@@ -1790,75 +1790,94 @@ paths:
       x-summary-source: derived
 components:
   schemas:
-    PropertyGroupOperator:
-      enum:
-      - AND
-      - OR
-      type: string
-    PersonRecord:
+    AsyncDeletionStatus:
       type: object
       properties:
-        id:
-          type: integer
-          readOnly: true
-          description: Numeric person ID.
-        name:
+        person_uuid:
           type: string
-          readOnly: true
-          description: Display name derived from person properties (email, name, or username).
-        distinct_ids:
-          type: array
-          items:
-            type: string
-          readOnly: true
-        properties:
-          description: Key-value map of person properties set via $set and $set_once operations.
+          description: The UUID of the person whose events are queued for deletion.
         created_at:
           type: string
           format: date-time
-          readOnly: true
-          description: When this person was first seen (ISO 8601).
-        uuid:
+          description: When the deletion was requested.
+        status:
           type: string
-          format: uuid
           readOnly: true
-          description: Unique identifier (UUID) for this person.
-        last_seen_at:
+          description: 'Current status: ''pending'' or ''completed''.'
+        delete_verified_at:
           type:
           - string
           - 'null'
           format: date-time
-          readOnly: true
-          description: Timestamp of the last event from this person, or null.
+          description: When the deletion was verified complete. Null if still pending.
       required:
       - created_at
-      - distinct_ids
-      - id
-      - last_seen_at
-      - name
-      - uuid
-    PaginatedPersonRecordList:
+      - delete_verified_at
+      - person_uuid
+      - status
+    PropertyItem:
       type: object
       properties:
-        next:
-          type:
-          - string
-          - 'null'
-          format: uri
-          example: https://app.posthog.com/api/projects/{project_id}/accounts/?offset=400&limit=100
-        previous:
-          type:
-          - string
-          - 'null'
-          format: uri
-          example: https://app.posthog.com/api/projects/{project_id}/accounts/?offset=400&limit=100
-        count:
+        key:
+          type: string
+          description: Key of the property you're filtering on. For example `email` or `$current_url`
+        value:
+          oneOf:
+          - type: string
+          - type: number
+          - type: boolean
+          - type: array
+            items:
+              oneOf:
+              - type: string
+              - type: number
+          description: Value of your filter. For example `test@example.com` or `https://example.com/test/`. Can be an array for an OR query, like `["test@example.com","ok@example.com"]`
+        operator:
+          default: exact
+          oneOf:
+          - $ref: '#/components/schemas/PropertyItemOperatorEnum'
+          - $ref: '#/components/schemas/BlankEnum'
+          - $ref: '#/components/schemas/NullEnum'
+        type:
+          default: event
+          oneOf:
+          - $ref: '#/components/schemas/PropertyFilterTypeEnum'
+          - $ref: '#/components/schemas/BlankEnum'
+      required:
+      - key
+      - value
+    NullEnum:
+      enum:
+      - null
+    BlankEnum:
+      enum:
+      - ''
+    PersonBulkDeleteResponse:
+      type: object
+      properties:
+        persons_found:
           type: integer
-          example: 400
-        results:
+          description: Number of persons matched by the provided IDs or distinct IDs.
+        persons_deleted:
+          type: integer
+          description: Number of person records deleted from the database. 0 if keep_person was true.
+        events_queued_for_deletion:
+          type: boolean
+          description: Whether event deletion was requested for the matched persons. If a deletion was already queued for a person, it will not be duplicated.
+        recordings_queued_for_deletion:
+          type: boolean
+          description: Whether recording deletion was requested for the matched persons. If a deletion was already queued for a person, it will not be duplicated.
+        deletion_errors:
           type: array
           items:
-            $ref: '#/components/schemas/PersonRecord'
+            type: object
+            additionalProperties: true
+          description: Persons that could not be deleted. Each entry contains 'person_uuid'. Contact support if this persists.
+      required:
+      - events_queued_for_deletion
+      - persons_deleted
+      - persons_found
+      - recordings_queued_for_deletion
     PatchedPersonRecord:
       type: object
       properties:
@@ -1894,187 +1913,17 @@ components:
           format: date-time
           readOnly: true
           description: Timestamp of the last event from this person, or null.
-    PropertyItemOperatorEnum:
-      enum:
-      - exact
-      - is_not
-      - icontains
-      - not_icontains
-      - regex
-      - not_regex
-      - gt
-      - lt
-      - gte
-      - lte
-      - is_set
-      - is_not_set
-      - is_date_exact
-      - is_date_after
-      - is_date_before
-      - in
-      - not_in
-      type: string
-      description: '* `exact` - exact
-
-        * `is_not` - is_not
-
-        * `icontains` - icontains
-
-        * `not_icontains` - not_icontains
-
-        * `regex` - regex
-
-        * `not_regex` - not_regex
-
-        * `gt` - gt
-
-        * `lt` - lt
-
-        * `gte` - gte
-
-        * `lte` - lte
-
-        * `is_set` - is_set
-
-        * `is_not_set` - is_not_set
-
-        * `is_date_exact` - is_date_exact
-
-        * `is_date_after` - is_date_after
-
-        * `is_date_before` - is_date_before
-
-        * `in` - in
-
-        * `not_in` - not_in'
-    PaginatedAsyncDeletionStatusList:
+    PersonUpdatePropertyRequest:
       type: object
       properties:
-        next:
-          type:
-          - string
-          - 'null'
-          format: uri
-          example: https://app.posthog.com/api/projects/{project_id}/accounts/?offset=400&limit=100
-        previous:
-          type:
-          - string
-          - 'null'
-          format: uri
-          example: https://app.posthog.com/api/projects/{project_id}/accounts/?offset=400&limit=100
-        count:
-          type: integer
-          example: 400
-        results:
-          type: array
-          items:
-            $ref: '#/components/schemas/AsyncDeletionStatus'
-    PersonDeletePropertyRequest:
-      type: object
-      properties:
-        $unset:
+        key:
           type: string
-          description: The property key to remove from this person.
+          description: The property key to set.
+        value:
+          description: The property value. Can be a string, number, boolean, or object.
       required:
-      - $unset
-    PersonPropertiesAtTimeMetadata:
-      type: object
-      description: Serializer for the point-in-time query metadata.
-      properties:
-        queried_timestamp:
-          type: string
-          description: The timestamp that was queried in ISO format
-        include_set_once:
-          type: boolean
-          description: Whether $set_once operations were included
-        distinct_id_used:
-          type:
-          - string
-          - 'null'
-          description: The distinct_id parameter used in the request
-        person_id_used:
-          type:
-          - string
-          - 'null'
-          description: The person_id parameter used in the request
-        query_mode:
-          type: string
-          description: Whether the query used 'distinct_id' or 'person_id' mode
-        distinct_ids_queried:
-          type: array
-          items:
-            type: string
-          description: All distinct_ids that were queried for this person
-        distinct_ids_count:
-          type: integer
-          description: Number of distinct_ids associated with this person
-      required:
-      - distinct_id_used
-      - distinct_ids_count
-      - distinct_ids_queried
-      - include_set_once
-      - person_id_used
-      - queried_timestamp
-      - query_mode
-    NullEnum:
-      enum:
-      - null
-    BlankEnum:
-      enum:
-      - ''
-    PersonPropertiesAtTimeResponse:
-      type: object
-      description: Serializer for the point-in-time person properties response.
-      properties:
-        id:
-          type: integer
-          description: The person ID
-        name:
-          type: string
-          description: The person's display name
-        distinct_ids:
-          type: array
-          items:
-            type: string
-          description: All distinct IDs associated with this person
-        properties:
-          type: object
-          additionalProperties:
-            type:
-            - string
-            - 'null'
-          description: Person properties as they existed at the specified time
-        created_at:
-          type: string
-          format: date-time
-          description: When the person was first created
-        uuid:
-          type: string
-          format: uuid
-          description: The person's UUID
-        last_seen_at:
-          type:
-          - string
-          - 'null'
-          format: date-time
-          description: When the person was last seen
-        point_in_time_metadata:
-          allOf:
-          - $ref: '#/components/schemas/PersonPropertiesAtTimeMetadata'
-          description: Metadata about the point-in-time query
-        debug:
-          allOf:
-          - $ref: '#/components/schemas/PersonPropertiesAtTimeDebug'
-          description: Debug information (only available when debug=true and DEBUG=True)
-      required:
-      - created_at
-      - distinct_ids
-      - id
-      - last_seen_at
-      - name
-      - point_in_time_metadata
-      - properties
-      - uuid
+      - key
+      - value
     PropertyFilterTypeEnum:
       enum:
       - event
@@ -2186,6 +2035,11 @@ components:
       - events_found
       - params
       - query
+    PropertyGroupOperator:
+      enum:
+      - AND
+      - OR
+      type: string
     Property:
       type: object
       properties:
@@ -2200,99 +2054,120 @@ components:
             $ref: '#/components/schemas/PropertyItem'
       required:
       - values
-    PersonUpdatePropertyRequest:
+    PersonDeletePropertyRequest:
       type: object
       properties:
-        key:
+        $unset:
           type: string
-          description: The property key to set.
-        value:
-          description: The property value. Can be a string, number, boolean, or object.
+          description: The property key to remove from this person.
       required:
-      - key
-      - value
-    PersonBulkDeleteResponse:
+      - $unset
+    PersonPropertiesAtTimeResponse:
       type: object
+      description: Serializer for the point-in-time person properties response.
       properties:
-        persons_found:
+        id:
           type: integer
-          description: Number of persons matched by the provided IDs or distinct IDs.
-        persons_deleted:
-          type: integer
-          description: Number of person records deleted from the database. 0 if keep_person was true.
-        events_queued_for_deletion:
-          type: boolean
-          description: Whether event deletion was requested for the matched persons. If a deletion was already queued for a person, it will not be duplicated.
-        recordings_queued_for_deletion:
-          type: boolean
-          description: Whether recording deletion was requested for the matched persons. If a deletion was already queued for a person, it will not be duplicated.
-        deletion_errors:
+          description: The person ID
+        name:
+          type: string
+          description: The person's display name
+        distinct_ids:
           type: array
           items:
-            type: object
-            additionalProperties: true
-          description: Persons that could not be deleted. Each entry contains 'person_uuid'. Contact support if this persists.
-      required:
-      - events_queued_for_deletion
-      - persons_deleted
-      - persons_found
-      - recordings_queued_for_deletion
-    PropertyItem:
-      type: object
-      properties:
-        key:
-          type: string
-          description: Key of the property you're filtering on. For example `email` or `$current_url`
-        value:
-          oneOf:
-          - type: string
-          - type: number
-          - type: boolean
-          - type: array
-            items:
-              oneOf:
-              - type: string
-              - type: number
-          description: Value of your filter. For example `test@example.com` or `https://example.com/test/`. Can be an array for an OR query, like `["test@example.com","ok@example.com"]`
-        operator:
-          default: exact
-          oneOf:
-          - $ref: '#/components/schemas/PropertyItemOperatorEnum'
-          - $ref: '#/components/schemas/BlankEnum'
-          - $ref: '#/components/schemas/NullEnum'
-        type:
-          default: event
-          oneOf:
-          - $ref: '#/components/schemas/PropertyFilterTypeEnum'
-          - $ref: '#/components/schemas/BlankEnum'
-      required:
-      - key
-      - value
-    AsyncDeletionStatus:
-      type: object
-      properties:
-        person_uuid:
-          type: string
-          description: The UUID of the person whose events are queued for deletion.
+            type: string
+          description: All distinct IDs associated with this person
+        properties:
+          type: object
+          additionalProperties:
+            type:
+            - string
+            - 'null'
+          description: Person properties as they existed at the specified time
         created_at:
           type: string
           format: date-time
-          description: When the deletion was requested.
-        status:
+          description: When the person was first created
+        uuid:
           type: string
-          readOnly: true
-          description: 'Current status: ''pending'' or ''completed''.'
-        delete_verified_at:
+          format: uuid
+          description: The person's UUID
+        last_seen_at:
           type:
           - string
           - 'null'
           format: date-time
-          description: When the deletion was verified complete. Null if still pending.
+          description: When the person was last seen
+        point_in_time_metadata:
+          allOf:
+          - $ref: '#/components/schemas/PersonPropertiesAtTimeMetadata'
+          description: Metadata about the point-in-time query
+        debug:
+          allOf:
+          - $ref: '#/components/schemas/PersonPropertiesAtTimeDebug'
+          description: Debug information (only available when debug=true and DEBUG=True)
       required:
       - created_at
-      - delete_verified_at
-      - person_uuid
-      - status
+      - distinct_ids
+      - id
+      - last_seen_at
+      - name
+      - point_in_time_metadata
+      - properties
+      - uuid
+    PropertyItemOperatorEnum:
+      enum:
+      - exact
+      - is_not
+      - icontains
+      - not_icontains
+      - regex
+      - not_regex
+      - gt
+      - lt
+      - gte
+      - lte
+      - is_set
+      - is_not_set
+      - is_date_exact
+      - is_date_after
+      - is_date_before
+      - in
+      - not_in
+      type: string
+      description: '* `exact` - exact
+
+        * `is_not` - is_not
+
+        * `icontains` - icontains
+
+        * `not_icontains` - not_icontains
+
+        * `regex` - regex
+
+        * `not_regex` - not_regex
+
+        * `gt` - gt
+
+        * `lt` - lt
+
+        * `gte` - gte
+
+        * `lte` - lte
+
+        * `is_set` - is_set
+
+        * `is_not_set` - is_not_set
+
+        * `is_date_exact` - is_date_exact
+
+        * `is_date_after` - is_date_after
+
+        * `is_date_before` - is_date_before
+
+        * `in` - in
+
+        * `not_in` - not_in'
     PersonBulkDeleteRequest:
       type: object
       properties:
@@ -2318,14 +2193,132 @@ components:
           type: boolean
           default: false
           description: If true, keep the person records but delete their events and recordings.
+    PaginatedPersonRecordList:
+      type: object
+      properties:
+        next:
+          type:
+          - string
+          - 'null'
+          format: uri
+          example: https://app.posthog.com/api/projects/{project_id}/accounts/?offset=400&limit=100
+        previous:
+          type:
+          - string
+          - 'null'
+          format: uri
+          example: https://app.posthog.com/api/projects/{project_id}/accounts/?offset=400&limit=100
+        count:
+          type: integer
+          example: 400
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/PersonRecord'
+    PersonPropertiesAtTimeMetadata:
+      type: object
+      description: Serializer for the point-in-time query metadata.
+      properties:
+        queried_timestamp:
+          type: string
+          description: The timestamp that was queried in ISO format
+        include_set_once:
+          type: boolean
+          description: Whether $set_once operations were included
+        distinct_id_used:
+          type:
+          - string
+          - 'null'
+          description: The distinct_id parameter used in the request
+        person_id_used:
+          type:
+          - string
+          - 'null'
+          description: The person_id parameter used in the request
+        query_mode:
+          type: string
+          description: Whether the query used 'distinct_id' or 'person_id' mode
+        distinct_ids_queried:
+          type: array
+          items:
+            type: string
+          description: All distinct_ids that were queried for this person
+        distinct_ids_count:
+          type: integer
+          description: Number of distinct_ids associated with this person
+      required:
+      - distinct_id_used
+      - distinct_ids_count
+      - distinct_ids_queried
+      - include_set_once
+      - person_id_used
+      - queried_timestamp
+      - query_mode
+    PaginatedAsyncDeletionStatusList:
+      type: object
+      properties:
+        next:
+          type:
+          - string
+          - 'null'
+          format: uri
+          example: https://app.posthog.com/api/projects/{project_id}/accounts/?offset=400&limit=100
+        previous:
+          type:
+          - string
+          - 'null'
+          format: uri
+          example: https://app.posthog.com/api/projects/{project_id}/accounts/?offset=400&limit=100
+        count:
+          type: integer
+          example: 400
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/AsyncDeletionStatus'
+    PersonRecord:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+          description: Numeric person ID.
+        name:
+          type: string
+          readOnly: true
+          description: Display name derived from person properties (email, name, or username).
+        distinct_ids:
+          type: array
+          items:
+            type: string
+          readOnly: true
+        properties:
+          description: Key-value map of person properties set via $set and $set_once operations.
+        created_at:
+          type: string
+          format: date-time
+          readOnly: true
+          description: When this person was first seen (ISO 8601).
+        uuid:
+          type: string
+          format: uuid
+          readOnly: true
+          description: Unique identifier (UUID) for this person.
+        last_seen_at:
+          type:
+          - string
+          - 'null'
+          format: date-time
+          readOnly: true
+          description: Timestamp of the last event from this person, or null.
+      required:
+      - created_at
+      - distinct_ids
+      - id
+      - last_seen_at
+      - name
+      - uuid
   parameters:
-    EnvironmentIdPath:
-      in: path
-      name: environment_id
-      required: true
-      schema:
-        type: string
-      description: Deprecated. Use /api/projects/{project_id}/ instead.
     ProjectIdPath:
       in: path
       name: project_id
@@ -2333,6 +2326,13 @@ components:
       schema:
         type: string
       description: Project ID of the project you're trying to access. To find the ID of the project, make a call to /api/projects/.
+    EnvironmentIdPath:
+      in: path
+      name: environment_id
+      required: true
+      schema:
+        type: string
+      description: Deprecated. Use /api/projects/{project_id}/ instead.
   securitySchemes:
     PersonalAPIKeyAuth:
       type: http

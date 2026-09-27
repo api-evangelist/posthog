@@ -214,56 +214,15 @@ paths:
       summary: Object media previews preferred for event retrieve
       x-summary-source: derived
 components:
+  parameters:
+    ProjectIdPath:
+      in: path
+      name: project_id
+      required: true
+      schema:
+        type: string
+      description: Project ID of the project you're trying to access. To find the ID of the project, make a call to /api/projects/.
   schemas:
-    ObjectMediaPreview:
-      type: object
-      properties:
-        id:
-          type: string
-          format: uuid
-          readOnly: true
-        created_at:
-          type: string
-          format: date-time
-          readOnly: true
-        updated_at:
-          type:
-          - string
-          - 'null'
-          format: date-time
-          readOnly: true
-        media_url:
-          type: string
-          readOnly: true
-        media_type:
-          type: string
-          description: Return 'uploaded' or 'exported' based on which media is set
-          readOnly: true
-        metadata: {}
-        uploaded_media_id:
-          type:
-          - string
-          - 'null'
-          format: uuid
-          writeOnly: true
-        exported_asset_id:
-          type:
-          - string
-          - 'null'
-          format: uuid
-          writeOnly: true
-        event_definition_id:
-          type:
-          - string
-          - 'null'
-          format: uuid
-          writeOnly: true
-      required:
-      - created_at
-      - id
-      - media_type
-      - media_url
-      - updated_at
     PatchedObjectMediaPreview:
       type: object
       properties:
@@ -332,14 +291,55 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/ObjectMediaPreview'
-  parameters:
-    ProjectIdPath:
-      in: path
-      name: project_id
-      required: true
-      schema:
-        type: string
-      description: Project ID of the project you're trying to access. To find the ID of the project, make a call to /api/projects/.
+    ObjectMediaPreview:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+          readOnly: true
+        created_at:
+          type: string
+          format: date-time
+          readOnly: true
+        updated_at:
+          type:
+          - string
+          - 'null'
+          format: date-time
+          readOnly: true
+        media_url:
+          type: string
+          readOnly: true
+        media_type:
+          type: string
+          description: Return 'uploaded' or 'exported' based on which media is set
+          readOnly: true
+        metadata: {}
+        uploaded_media_id:
+          type:
+          - string
+          - 'null'
+          format: uuid
+          writeOnly: true
+        exported_asset_id:
+          type:
+          - string
+          - 'null'
+          format: uuid
+          writeOnly: true
+        event_definition_id:
+          type:
+          - string
+          - 'null'
+          format: uuid
+          writeOnly: true
+      required:
+      - created_at
+      - id
+      - media_type
+      - media_url
+      - updated_at
   securitySchemes:
     PersonalAPIKeyAuth:
       type: http

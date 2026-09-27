@@ -2673,359 +2673,8 @@ paths:
       summary: Error tracking symbol sets start upload create
       x-summary-source: derived
 components:
-  parameters:
-    EnvironmentIdPath:
-      in: path
-      name: environment_id
-      required: true
-      schema:
-        type: string
-      description: Deprecated. Use /api/projects/{project_id}/ instead.
-    ProjectIdPath:
-      in: path
-      name: project_id
-      required: true
-      schema:
-        type: string
-      description: Project ID of the project you're trying to access. To find the ID of the project, make a call to /api/projects/.
   schemas:
-    ErrorTrackingIssueSplitRequest:
-      type: object
-      properties:
-        fingerprints:
-          type: array
-          items:
-            $ref: '#/components/schemas/ErrorTrackingIssueSplitFingerprint'
-          description: Fingerprints to split into new issues. Each fingerprint becomes its own new issue.
-    ErrorTrackingIssueSplitFingerprint:
-      type: object
-      properties:
-        fingerprint:
-          type: string
-          description: Fingerprint to split into a new issue.
-        name:
-          type: string
-          description: Optional name for the new issue created from this fingerprint.
-        description:
-          type: string
-          description: Optional description for the new issue created from this fingerprint.
-      required:
-      - fingerprint
-    LogPropertyFilter:
-      additionalProperties: false
-      properties:
-        key:
-          title: Key
-          type: string
-        label:
-          default: null
-          title: Label
-          type:
-          - string
-          - 'null'
-        operator:
-          $ref: '#/components/schemas/PropertyOperator'
-        type:
-          $ref: '#/components/schemas/LogPropertyFilterType'
-        value:
-          default: null
-          title: Value
-          anyOf:
-          - items:
-              anyOf:
-              - type: string
-              - type: number
-              - type: boolean
-            type: array
-          - type: string
-          - type: number
-          - type: boolean
-      required:
-      - key
-      - operator
-      - type
-      title: LogPropertyFilter
-      type: object
-    SpanPropertyFilter:
-      additionalProperties: false
-      properties:
-        key:
-          title: Key
-          type: string
-        label:
-          default: null
-          title: Label
-          type:
-          - string
-          - 'null'
-        operator:
-          $ref: '#/components/schemas/PropertyOperator'
-        type:
-          $ref: '#/components/schemas/SpanPropertyFilterType'
-        value:
-          default: null
-          title: Value
-          anyOf:
-          - items:
-              anyOf:
-              - type: string
-              - type: number
-              - type: boolean
-            type: array
-          - type: string
-          - type: number
-          - type: boolean
-      required:
-      - key
-      - operator
-      - type
-      title: SpanPropertyFilter
-      type: object
-    ErrorTrackingStackFrame:
-      type: object
-      properties:
-        id:
-          type: string
-          format: uuid
-          readOnly: true
-        raw_id:
-          type: string
-          description: Raw frame ID in 'hash/part' format
-          readOnly: true
-        created_at:
-          type: string
-          format: date-time
-          readOnly: true
-        contents: {}
-        resolved:
-          type: boolean
-        context: {}
-        symbol_set_ref:
-          type: string
-        release:
-          allOf:
-          - $ref: '#/components/schemas/ErrorTrackingRelease'
-          readOnly: true
-      required:
-      - contents
-      - created_at
-      - id
-      - raw_id
-      - release
-      - resolved
-    _SymbolSetDownloadResponse:
-      type: object
-      properties:
-        url:
-          type: string
-          format: uri
-          description: Presigned URL to download the source map file
-      required:
-      - url
-    PaginatedErrorTrackingReleaseList:
-      type: object
-      required:
-      - count
-      - results
-      properties:
-        count:
-          type: integer
-          example: 123
-        next:
-          type:
-          - string
-          - 'null'
-          format: uri
-          example: http://api.example.org/accounts/?offset=400&limit=100
-        previous:
-          type:
-          - string
-          - 'null'
-          format: uri
-          example: http://api.example.org/accounts/?offset=200&limit=100
-        results:
-          type: array
-          items:
-            $ref: '#/components/schemas/ErrorTrackingRelease'
-    ErrorTrackingRecommendation:
-      type: object
-      properties:
-        id:
-          type: string
-          format: uuid
-          readOnly: true
-        type:
-          type: string
-          readOnly: true
-        meta:
-          readOnly: true
-        computed_at:
-          type:
-          - string
-          - 'null'
-          format: date-time
-          readOnly: true
-        dismissed_at:
-          type:
-          - string
-          - 'null'
-          format: date-time
-          readOnly: true
-        next_refresh_at:
-          type:
-          - string
-          - 'null'
-          readOnly: true
-        created_at:
-          type: string
-          format: date-time
-          readOnly: true
-        updated_at:
-          type: string
-          format: date-time
-          readOnly: true
-      required:
-      - computed_at
-      - created_at
-      - dismissed_at
-      - id
-      - meta
-      - next_refresh_at
-      - type
-      - updated_at
-    ErrorTrackingAssignmentRule:
-      type: object
-      properties:
-        id:
-          type: string
-          format: uuid
-          readOnly: true
-        filters: {}
-        assignee:
-          type:
-          - object
-          - 'null'
-          properties:
-            type:
-              type: string
-              enum:
-              - user
-              - role
-            id:
-              oneOf:
-              - type: integer
-              - type: string
-                format: uuid
-          readOnly: true
-        order_key:
-          type: integer
-          maximum: 2147483647
-          minimum: -2147483648
-        disabled_data: {}
-        created_at:
-          type: string
-          format: date-time
-          readOnly: true
-        updated_at:
-          type: string
-          format: date-time
-          readOnly: true
-      required:
-      - assignee
-      - created_at
-      - filters
-      - id
-      - order_key
-      - updated_at
-    GroupPropertyFilter:
-      additionalProperties: false
-      properties:
-        group_key_names:
-          default: null
-          title: Group Key Names
-          additionalProperties:
-            type: string
-          type:
-          - object
-          - 'null'
-        group_type_index:
-          default: null
-          title: Group Type Index
-          type:
-          - integer
-          - 'null'
-        key:
-          title: Key
-          type: string
-        label:
-          default: null
-          title: Label
-          type:
-          - string
-          - 'null'
-        operator:
-          $ref: '#/components/schemas/PropertyOperator'
-        type:
-          default: group
-          title: Type
-          type: string
-          enum:
-          - group
-        value:
-          default: null
-          title: Value
-          anyOf:
-          - items:
-              anyOf:
-              - type: string
-              - type: number
-              - type: boolean
-            type: array
-          - type: string
-          - type: number
-          - type: boolean
-      required:
-      - key
-      - operator
-      title: GroupPropertyFilter
-      type: object
-    PaginatedErrorTrackingFingerprintList:
-      type: object
-      required:
-      - count
-      - results
-      properties:
-        count:
-          type: integer
-          example: 123
-        next:
-          type:
-          - string
-          - 'null'
-          format: uri
-          example: http://api.example.org/accounts/?offset=400&limit=100
-        previous:
-          type:
-          - string
-          - 'null'
-          format: uri
-          example: http://api.example.org/accounts/?offset=200&limit=100
-        results:
-          type: array
-          items:
-            $ref: '#/components/schemas/ErrorTrackingFingerprint'
-    EmptyPropertyFilter:
-      additionalProperties: false
-      properties:
-        type:
-          default: empty
-          title: Type
-          type: string
-          enum:
-          - empty
-      title: EmptyPropertyFilter
-      type: object
-    ErrorTrackingRelease:
+    PatchedErrorTrackingRelease:
       type: object
       properties:
         id:
@@ -3046,246 +2695,6 @@ components:
           type: string
         project:
           type: string
-      required:
-      - created_at
-      - hash_id
-      - id
-      - project
-      - team_id
-      - version
-    ErrorTrackingFingerprint:
-      type: object
-      properties:
-        id:
-          type: string
-          format: uuid
-          readOnly: true
-        fingerprint:
-          type: string
-          readOnly: true
-        issue_id:
-          type: string
-          format: uuid
-          readOnly: true
-        created_at:
-          type: string
-          format: date-time
-          readOnly: true
-      required:
-      - created_at
-      - fingerprint
-      - id
-      - issue_id
-    PaginatedErrorTrackingSpikeEventList:
-      type: object
-      required:
-      - count
-      - results
-      properties:
-        count:
-          type: integer
-          example: 123
-        next:
-          type:
-          - string
-          - 'null'
-          format: uri
-          example: http://api.example.org/accounts/?offset=400&limit=100
-        previous:
-          type:
-          - string
-          - 'null'
-          format: uri
-          example: http://api.example.org/accounts/?offset=200&limit=100
-        results:
-          type: array
-          items:
-            $ref: '#/components/schemas/ErrorTrackingSpikeEvent'
-    ErrorTrackingSuppressionRule:
-      type: object
-      properties:
-        id:
-          type: string
-          format: uuid
-          readOnly: true
-        filters: {}
-        order_key:
-          type: integer
-          maximum: 2147483647
-          minimum: -2147483648
-        disabled_data: {}
-        sampling_rate:
-          type: number
-          format: double
-        created_at:
-          type: string
-          format: date-time
-          readOnly: true
-        updated_at:
-          type: string
-          format: date-time
-          readOnly: true
-      required:
-      - created_at
-      - filters
-      - id
-      - order_key
-      - updated_at
-    ErrorTrackingAssignmentRuleAssigneeRequest:
-      type: object
-      properties:
-        type:
-          allOf:
-          - $ref: '#/components/schemas/AssigneeTypeEnum'
-          description: 'Assignee type. Use `user` for a user ID or `role` for a role UUID.
-
-
-            * `user` - user
-
-            * `role` - role'
-        id:
-          oneOf:
-          - type: integer
-          - type: string
-            format: uuid
-          description: User ID when `type` is `user`, or role UUID when `type` is `role`.
-      required:
-      - id
-      - type
-    ErrorTrackingSpikeEvent:
-      type: object
-      properties:
-        id:
-          type: string
-          format: uuid
-          readOnly: true
-        issue:
-          allOf:
-          - $ref: '#/components/schemas/ErrorTrackingSpikeEventIssue'
-          readOnly: true
-        detected_at:
-          type: string
-          format: date-time
-          readOnly: true
-        computed_baseline:
-          type: number
-          format: double
-          readOnly: true
-        current_bucket_value:
-          type: integer
-          readOnly: true
-      required:
-      - computed_baseline
-      - current_bucket_value
-      - detected_at
-      - id
-      - issue
-    DurationType:
-      enum:
-      - duration
-      - active_seconds
-      - inactive_seconds
-      title: DurationType
-      type: string
-    PropertyGroupFilterValue:
-      additionalProperties: false
-      properties:
-        type:
-          $ref: '#/components/schemas/FilterLogicalOperator'
-        values:
-          items:
-            anyOf:
-            - $ref: '#/components/schemas/PropertyGroupFilterValue'
-            - $ref: '#/components/schemas/EventPropertyFilter'
-            - $ref: '#/components/schemas/PersonPropertyFilter'
-            - $ref: '#/components/schemas/ElementPropertyFilter'
-            - $ref: '#/components/schemas/EventMetadataPropertyFilter'
-            - $ref: '#/components/schemas/SessionPropertyFilter'
-            - $ref: '#/components/schemas/CohortPropertyFilter'
-            - $ref: '#/components/schemas/RecordingPropertyFilter'
-            - $ref: '#/components/schemas/LogEntryPropertyFilter'
-            - $ref: '#/components/schemas/GroupPropertyFilter'
-            - $ref: '#/components/schemas/FeaturePropertyFilter'
-            - $ref: '#/components/schemas/FlagPropertyFilter'
-            - $ref: '#/components/schemas/HogQLPropertyFilter'
-            - $ref: '#/components/schemas/EmptyPropertyFilter'
-            - $ref: '#/components/schemas/DataWarehousePropertyFilter'
-            - $ref: '#/components/schemas/DataWarehousePersonPropertyFilter'
-            - $ref: '#/components/schemas/ErrorTrackingIssueFilter'
-            - $ref: '#/components/schemas/LogPropertyFilter'
-            - $ref: '#/components/schemas/SpanPropertyFilter'
-            - $ref: '#/components/schemas/RevenueAnalyticsPropertyFilter'
-            - $ref: '#/components/schemas/WorkflowVariablePropertyFilter'
-          title: Values
-          type: array
-      required:
-      - type
-      - values
-      title: PropertyGroupFilterValue
-      type: object
-    ErrorTrackingGroupingRuleAssigneeRequest:
-      type: object
-      properties:
-        type:
-          allOf:
-          - $ref: '#/components/schemas/AssigneeTypeEnum'
-          description: 'Assignee type. Use `user` for a user ID or `role` for a role UUID.
-
-
-            * `user` - user
-
-            * `role` - role'
-        id:
-          oneOf:
-          - type: integer
-          - type: string
-            format: uuid
-          description: User ID when `type` is `user`, or role UUID when `type` is `role`.
-      required:
-      - id
-      - type
-    ErrorTrackingIssueFull:
-      type: object
-      properties:
-        id:
-          type: string
-          format: uuid
-          readOnly: true
-        status:
-          $ref: '#/components/schemas/ErrorTrackingIssueFullStatusEnum'
-        name:
-          type:
-          - string
-          - 'null'
-        description:
-          type:
-          - string
-          - 'null'
-        first_seen:
-          type: string
-          format: date-time
-        assignee:
-          $ref: '#/components/schemas/ErrorTrackingIssueAssignment'
-        external_issues:
-          type: array
-          items:
-            $ref: '#/components/schemas/ErrorTrackingExternalReferenceResult'
-        cohort:
-          type:
-          - object
-          - 'null'
-          properties:
-            id:
-              type: integer
-            name:
-              type: string
-          readOnly: true
-      required:
-      - assignee
-      - cohort
-      - external_issues
-      - first_seen
-      - id
     ErrorTrackingIssueFilter:
       additionalProperties: false
       properties:
@@ -3323,6 +2732,44 @@ components:
       - key
       - operator
       title: ErrorTrackingIssueFilter
+      type: object
+    EventMetadataPropertyFilter:
+      additionalProperties: false
+      properties:
+        key:
+          title: Key
+          type: string
+        label:
+          default: null
+          title: Label
+          type:
+          - string
+          - 'null'
+        operator:
+          $ref: '#/components/schemas/PropertyOperator'
+        type:
+          default: event_metadata
+          title: Type
+          type: string
+          enum:
+          - event_metadata
+        value:
+          default: null
+          title: Value
+          anyOf:
+          - items:
+              anyOf:
+              - type: string
+              - type: number
+              - type: boolean
+            type: array
+          - type: string
+          - type: number
+          - type: boolean
+      required:
+      - key
+      - operator
+      title: EventMetadataPropertyFilter
       type: object
     LogEntryPropertyFilter:
       additionalProperties: false
@@ -3362,56 +2809,14 @@ components:
       - operator
       title: LogEntryPropertyFilter
       type: object
-    PatchedErrorTrackingGroupingRule:
-      type: object
-      properties:
-        id:
-          type: string
-          format: uuid
-          readOnly: true
-        filters: {}
-        assignee:
-          type:
-          - object
-          - 'null'
-          properties:
-            type:
-              type: string
-              enum:
-              - user
-              - role
-            id:
-              oneOf:
-              - type: integer
-              - type: string
-                format: uuid
-          readOnly: true
-        description:
-          type:
-          - string
-          - 'null'
-        issue:
-          type:
-          - object
-          - 'null'
-          additionalProperties:
-            type: string
-          description: Issue linked to this rule
-          readOnly: true
-        order_key:
-          type: integer
-          maximum: 2147483647
-          minimum: -2147483648
-        disabled_data: {}
-        created_at:
-          type: string
-          format: date-time
-          readOnly: true
-        updated_at:
-          type: string
-          format: date-time
-          readOnly: true
-    PaginatedErrorTrackingSuppressionRuleList:
+    DurationType:
+      enum:
+      - duration
+      - active_seconds
+      - inactive_seconds
+      title: DurationType
+      type: string
+    PaginatedErrorTrackingFingerprintList:
       type: object
       required:
       - count
@@ -3435,8 +2840,39 @@ components:
         results:
           type: array
           items:
-            $ref: '#/components/schemas/ErrorTrackingSuppressionRule'
-    EventPropertyFilter:
+            $ref: '#/components/schemas/ErrorTrackingFingerprint'
+    ErrorTrackingIssueFullStatusEnum:
+      enum:
+      - archived
+      - active
+      - resolved
+      - pending_release
+      - suppressed
+      type: string
+      description: '* `archived` - Archived
+
+        * `active` - Active
+
+        * `resolved` - Resolved
+
+        * `pending_release` - Pending release
+
+        * `suppressed` - Suppressed'
+    ErrorTrackingIssueAssignment:
+      type: object
+      properties:
+        id:
+          oneOf:
+          - type: integer
+          - type: string
+          readOnly: true
+        type:
+          type: string
+          readOnly: true
+      required:
+      - id
+      - type
+    RevenueAnalyticsPropertyFilter:
       additionalProperties: false
       properties:
         key:
@@ -3449,16 +2885,13 @@ components:
           - string
           - 'null'
         operator:
-          default: exact
-          allOf:
-          - $ref: '#/components/schemas/PropertyOperator'
+          $ref: '#/components/schemas/PropertyOperator'
         type:
-          default: event
-          description: Event properties
+          default: revenue_analytics
           title: Type
           type: string
           enum:
-          - event
+          - revenue_analytics
         value:
           default: null
           title: Value
@@ -3474,8 +2907,124 @@ components:
           - type: boolean
       required:
       - key
-      title: EventPropertyFilter
+      - operator
+      title: RevenueAnalyticsPropertyFilter
       type: object
+    PatchedErrorTrackingAssignmentRule:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+          readOnly: true
+        filters: {}
+        assignee:
+          type:
+          - object
+          - 'null'
+          properties:
+            type:
+              type: string
+              enum:
+              - user
+              - role
+            id:
+              oneOf:
+              - type: integer
+              - type: string
+                format: uuid
+          readOnly: true
+        order_key:
+          type: integer
+          maximum: 2147483647
+          minimum: -2147483648
+        disabled_data: {}
+        created_at:
+          type: string
+          format: date-time
+          readOnly: true
+        updated_at:
+          type: string
+          format: date-time
+          readOnly: true
+    PatchedErrorTrackingIssueFull:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+          readOnly: true
+        status:
+          $ref: '#/components/schemas/ErrorTrackingIssueFullStatusEnum'
+        name:
+          type:
+          - string
+          - 'null'
+        description:
+          type:
+          - string
+          - 'null'
+        first_seen:
+          type: string
+          format: date-time
+        assignee:
+          $ref: '#/components/schemas/ErrorTrackingIssueAssignment'
+        external_issues:
+          type: array
+          items:
+            $ref: '#/components/schemas/ErrorTrackingExternalReferenceResult'
+        cohort:
+          type:
+          - object
+          - 'null'
+          properties:
+            id:
+              type: integer
+            name:
+              type: string
+          readOnly: true
+    ErrorTrackingAssignmentRuleAssigneeRequest:
+      type: object
+      properties:
+        type:
+          allOf:
+          - $ref: '#/components/schemas/AssigneeTypeEnum'
+          description: 'Assignee type. Use `user` for a user ID or `role` for a role UUID.
+
+
+            * `user` - user
+
+            * `role` - role'
+        id:
+          oneOf:
+          - type: integer
+          - type: string
+            format: uuid
+          description: User ID when `type` is `user`, or role UUID when `type` is `role`.
+      required:
+      - id
+      - type
+    ErrorTrackingGroupingRuleAssigneeRequest:
+      type: object
+      properties:
+        type:
+          allOf:
+          - $ref: '#/components/schemas/AssigneeTypeEnum'
+          description: 'Assignee type. Use `user` for a user ID or `role` for a role UUID.
+
+
+            * `user` - user
+
+            * `role` - role'
+        id:
+          oneOf:
+          - type: integer
+          - type: string
+            format: uuid
+          description: User ID when `type` is `user`, or role UUID when `type` is `role`.
+      required:
+      - id
+      - type
     ErrorTrackingSymbolSet:
       type: object
       properties:
@@ -3518,18 +3067,264 @@ components:
       - ref
       - release
       - team_id
-    ErrorTrackingAssignmentRuleUpdateRequest:
+    DataWarehousePropertyFilter:
+      additionalProperties: false
+      properties:
+        key:
+          title: Key
+          type: string
+        label:
+          default: null
+          title: Label
+          type:
+          - string
+          - 'null'
+        operator:
+          $ref: '#/components/schemas/PropertyOperator'
+        type:
+          default: data_warehouse
+          title: Type
+          type: string
+          enum:
+          - data_warehouse
+        value:
+          default: null
+          title: Value
+          anyOf:
+          - items:
+              anyOf:
+              - type: string
+              - type: number
+              - type: boolean
+            type: array
+          - type: string
+          - type: number
+          - type: boolean
+      required:
+      - key
+      - operator
+      title: DataWarehousePropertyFilter
+      type: object
+    FeaturePropertyFilter:
+      additionalProperties: false
+      properties:
+        key:
+          title: Key
+          type: string
+        label:
+          default: null
+          title: Label
+          type:
+          - string
+          - 'null'
+        operator:
+          $ref: '#/components/schemas/PropertyOperator'
+        type:
+          default: feature
+          description: Event property with "$feature/" prepended
+          title: Type
+          type: string
+          enum:
+          - feature
+        value:
+          default: null
+          title: Value
+          anyOf:
+          - items:
+              anyOf:
+              - type: string
+              - type: number
+              - type: boolean
+            type: array
+          - type: string
+          - type: number
+          - type: boolean
+      required:
+      - key
+      - operator
+      title: FeaturePropertyFilter
+      type: object
+    ElementPropertyFilter:
+      additionalProperties: false
+      properties:
+        key:
+          $ref: '#/components/schemas/Key10'
+        label:
+          default: null
+          title: Label
+          type:
+          - string
+          - 'null'
+        operator:
+          $ref: '#/components/schemas/PropertyOperator'
+        type:
+          default: element
+          title: Type
+          type: string
+          enum:
+          - element
+        value:
+          default: null
+          title: Value
+          anyOf:
+          - items:
+              anyOf:
+              - type: string
+              - type: number
+              - type: boolean
+            type: array
+          - type: string
+          - type: number
+          - type: boolean
+      required:
+      - key
+      - operator
+      title: ElementPropertyFilter
+      type: object
+    PaginatedErrorTrackingStackFrameList:
+      type: object
+      required:
+      - count
+      - results
+      properties:
+        count:
+          type: integer
+          example: 123
+        next:
+          type:
+          - string
+          - 'null'
+          format: uri
+          example: http://api.example.org/accounts/?offset=400&limit=100
+        previous:
+          type:
+          - string
+          - 'null'
+          format: uri
+          example: http://api.example.org/accounts/?offset=200&limit=100
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/ErrorTrackingStackFrame'
+    ErrorTrackingSuppressionRuleCreateRequest:
       type: object
       properties:
         filters:
           allOf:
           - $ref: '#/components/schemas/PropertyGroupFilterValue'
-          description: Property-group filters that define when this rule matches incoming error events.
-        assignee:
+          description: Optional property-group filters that define which incoming error events should be suppressed. Omit this field or provide an empty `values` array to create a match-all suppression rule.
+        sampling_rate:
+          type: number
+          format: double
+          maximum: 1.0
+          minimum: 0.0
+          default: 1.0
+          description: Fraction of matching events to suppress. Use `1.0` to suppress all matching events.
+    ErrorTrackingSpikeEvent:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+          readOnly: true
+        issue:
           allOf:
-          - $ref: '#/components/schemas/ErrorTrackingAssignmentRuleAssigneeRequest'
-          description: User or role to assign matching issues to.
-    ErrorTrackingSpikeDetectionConfig:
+          - $ref: '#/components/schemas/ErrorTrackingSpikeEventIssue'
+          readOnly: true
+        detected_at:
+          type: string
+          format: date-time
+          readOnly: true
+        computed_baseline:
+          type: number
+          format: double
+          readOnly: true
+        current_bucket_value:
+          type: integer
+          readOnly: true
+      required:
+      - computed_baseline
+      - current_bucket_value
+      - detected_at
+      - id
+      - issue
+    PropertyOperator:
+      enum:
+      - exact
+      - is_not
+      - icontains
+      - not_icontains
+      - regex
+      - not_regex
+      - gt
+      - gte
+      - lt
+      - lte
+      - is_set
+      - is_not_set
+      - is_date_exact
+      - is_date_before
+      - is_date_after
+      - between
+      - not_between
+      - min
+      - max
+      - in
+      - not_in
+      - is_cleaned_path_exact
+      - flag_evaluates_to
+      - semver_eq
+      - semver_neq
+      - semver_gt
+      - semver_gte
+      - semver_lt
+      - semver_lte
+      - semver_tilde
+      - semver_caret
+      - semver_wildcard
+      - icontains_multi
+      - not_icontains_multi
+      title: PropertyOperator
+      type: string
+    CohortPropertyFilter:
+      additionalProperties: false
+      properties:
+        cohort_name:
+          default: null
+          title: Cohort Name
+          type:
+          - string
+          - 'null'
+        key:
+          default: id
+          title: Key
+          type: string
+          enum:
+          - id
+        label:
+          default: null
+          title: Label
+          type:
+          - string
+          - 'null'
+        operator:
+          default: in
+          allOf:
+          - $ref: '#/components/schemas/PropertyOperator'
+        type:
+          default: cohort
+          title: Type
+          type: string
+          enum:
+          - cohort
+        value:
+          title: Value
+          type: integer
+      required:
+      - value
+      title: CohortPropertyFilter
+      type: object
+    PatchedErrorTrackingSpikeDetectionConfig:
       type: object
       properties:
         snooze_duration_minutes:
@@ -3544,10 +3339,190 @@ components:
           type: integer
           minimum: 1
           description: The minimum number of exceptions required in a 5-minute window before a spike can be detected.
+    ErrorTrackingRelease:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+          readOnly: true
+        hash_id:
+          type: string
+        team_id:
+          type: integer
+          readOnly: true
+        created_at:
+          type: string
+          format: date-time
+          readOnly: true
+        metadata: {}
+        version:
+          type: string
+        project:
+          type: string
       required:
-      - multiplier
-      - snooze_duration_minutes
-      - threshold
+      - created_at
+      - hash_id
+      - id
+      - project
+      - team_id
+      - version
+    PaginatedErrorTrackingAssignmentRuleList:
+      type: object
+      required:
+      - count
+      - results
+      properties:
+        count:
+          type: integer
+          example: 123
+        next:
+          type:
+          - string
+          - 'null'
+          format: uri
+          example: http://api.example.org/accounts/?offset=400&limit=100
+        previous:
+          type:
+          - string
+          - 'null'
+          format: uri
+          example: http://api.example.org/accounts/?offset=200&limit=100
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/ErrorTrackingAssignmentRule'
+    DataWarehousePersonPropertyFilter:
+      additionalProperties: false
+      properties:
+        key:
+          title: Key
+          type: string
+        label:
+          default: null
+          title: Label
+          type:
+          - string
+          - 'null'
+        operator:
+          $ref: '#/components/schemas/PropertyOperator'
+        type:
+          default: data_warehouse_person_property
+          title: Type
+          type: string
+          enum:
+          - data_warehouse_person_property
+        value:
+          default: null
+          title: Value
+          anyOf:
+          - items:
+              anyOf:
+              - type: string
+              - type: number
+              - type: boolean
+            type: array
+          - type: string
+          - type: number
+          - type: boolean
+      required:
+      - key
+      - operator
+      title: DataWarehousePersonPropertyFilter
+      type: object
+    FlagPropertyFilter:
+      additionalProperties: false
+      properties:
+        key:
+          description: The key should be the flag ID
+          title: Key
+          type: string
+        label:
+          default: null
+          title: Label
+          type:
+          - string
+          - 'null'
+        operator:
+          default: flag_evaluates_to
+          description: Only flag_evaluates_to operator is allowed for flag dependencies
+          title: Operator
+          type: string
+          enum:
+          - flag_evaluates_to
+        type:
+          default: flag
+          description: Feature flag dependency
+          title: Type
+          type: string
+          enum:
+          - flag
+        value:
+          anyOf:
+          - type: boolean
+          - type: string
+          description: The value can be true, false, or a variant name
+          title: Value
+      required:
+      - key
+      - value
+      title: FlagPropertyFilter
+      type: object
+    GitProviderFileLinkResolveResponse:
+      type: object
+      properties:
+        found:
+          type: boolean
+          description: Whether a matching file URL was found.
+        url:
+          type: string
+          description: Resolved URL for the matching file.
+        error:
+          type: string
+          description: Error message when input parameters are invalid.
+      required:
+      - found
+    ErrorTrackingIssueSplitFingerprint:
+      type: object
+      properties:
+        fingerprint:
+          type: string
+          description: Fingerprint to split into a new issue.
+        name:
+          type: string
+          description: Optional name for the new issue created from this fingerprint.
+        description:
+          type: string
+          description: Optional description for the new issue created from this fingerprint.
+      required:
+      - fingerprint
+    SpanPropertyFilterType:
+      enum:
+      - span
+      - span_attribute
+      - span_resource_attribute
+      title: SpanPropertyFilterType
+      type: string
+    ErrorTrackingAssignmentRuleUpdateRequest:
+      type: object
+      properties:
+        filters:
+          allOf:
+          - $ref: '#/components/schemas/PropertyGroupFilterValue'
+          description: Property-group filters that define when this rule matches incoming error events.
+        assignee:
+          allOf:
+          - $ref: '#/components/schemas/ErrorTrackingAssignmentRuleAssigneeRequest'
+          description: User or role to assign matching issues to.
+    _SymbolSetDownloadResponse:
+      type: object
+      properties:
+        url:
+          type: string
+          format: uri
+          description: Presigned URL to download the source map file
+      required:
+      - url
     ErrorTrackingGroupingRuleCreateRequest:
       type: object
       properties:
@@ -3566,6 +3541,39 @@ components:
           description: Optional human-readable description of what this grouping rule is for.
       required:
       - filters
+    PaginatedErrorTrackingIssueFullList:
+      type: object
+      required:
+      - count
+      - results
+      properties:
+        count:
+          type: integer
+          example: 123
+        next:
+          type:
+          - string
+          - 'null'
+          format: uri
+          example: http://api.example.org/accounts/?offset=400&limit=100
+        previous:
+          type:
+          - string
+          - 'null'
+          format: uri
+          example: http://api.example.org/accounts/?offset=200&limit=100
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/ErrorTrackingIssueFull'
+    AssigneeTypeEnum:
+      enum:
+      - user
+      - role
+      type: string
+      description: '* `user` - user
+
+        * `role` - role'
     ErrorTrackingGroupingRule:
       type: object
       properties:
@@ -3623,235 +3631,86 @@ components:
       - issue
       - order_key
       - updated_at
+    SpanPropertyFilter:
+      additionalProperties: false
+      properties:
+        key:
+          title: Key
+          type: string
+        label:
+          default: null
+          title: Label
+          type:
+          - string
+          - 'null'
+        operator:
+          $ref: '#/components/schemas/PropertyOperator'
+        type:
+          $ref: '#/components/schemas/SpanPropertyFilterType'
+        value:
+          default: null
+          title: Value
+          anyOf:
+          - items:
+              anyOf:
+              - type: string
+              - type: number
+              - type: boolean
+            type: array
+          - type: string
+          - type: number
+          - type: boolean
+      required:
+      - key
+      - operator
+      - type
+      title: SpanPropertyFilter
+      type: object
+    SessionPropertyFilter:
+      additionalProperties: false
+      properties:
+        key:
+          title: Key
+          type: string
+        label:
+          default: null
+          title: Label
+          type:
+          - string
+          - 'null'
+        operator:
+          $ref: '#/components/schemas/PropertyOperator'
+        type:
+          default: session
+          title: Type
+          type: string
+          enum:
+          - session
+        value:
+          default: null
+          title: Value
+          anyOf:
+          - items:
+              anyOf:
+              - type: string
+              - type: number
+              - type: boolean
+            type: array
+          - type: string
+          - type: number
+          - type: boolean
+      required:
+      - key
+      - operator
+      title: SessionPropertyFilter
+      type: object
     FilterLogicalOperator:
       enum:
       - AND
       - OR
       title: FilterLogicalOperator
       type: string
-    PaginatedErrorTrackingAssignmentRuleList:
-      type: object
-      required:
-      - count
-      - results
-      properties:
-        count:
-          type: integer
-          example: 123
-        next:
-          type:
-          - string
-          - 'null'
-          format: uri
-          example: http://api.example.org/accounts/?offset=400&limit=100
-        previous:
-          type:
-          - string
-          - 'null'
-          format: uri
-          example: http://api.example.org/accounts/?offset=200&limit=100
-        results:
-          type: array
-          items:
-            $ref: '#/components/schemas/ErrorTrackingAssignmentRule'
-    ErrorTrackingExternalReferenceIntegrationResult:
-      type: object
-      properties:
-        id:
-          type: integer
-          readOnly: true
-        kind:
-          type: string
-          readOnly: true
-        display_name:
-          type: string
-          readOnly: true
-      required:
-      - display_name
-      - id
-      - kind
-    ElementPropertyFilter:
-      additionalProperties: false
-      properties:
-        key:
-          $ref: '#/components/schemas/Key10'
-        label:
-          default: null
-          title: Label
-          type:
-          - string
-          - 'null'
-        operator:
-          $ref: '#/components/schemas/PropertyOperator'
-        type:
-          default: element
-          title: Type
-          type: string
-          enum:
-          - element
-        value:
-          default: null
-          title: Value
-          anyOf:
-          - items:
-              anyOf:
-              - type: string
-              - type: number
-              - type: boolean
-            type: array
-          - type: string
-          - type: number
-          - type: boolean
-      required:
-      - key
-      - operator
-      title: ElementPropertyFilter
-      type: object
-    PaginatedErrorTrackingRecommendationList:
-      type: object
-      required:
-      - count
-      - results
-      properties:
-        count:
-          type: integer
-          example: 123
-        next:
-          type:
-          - string
-          - 'null'
-          format: uri
-          example: http://api.example.org/accounts/?offset=400&limit=100
-        previous:
-          type:
-          - string
-          - 'null'
-          format: uri
-          example: http://api.example.org/accounts/?offset=200&limit=100
-        results:
-          type: array
-          items:
-            $ref: '#/components/schemas/ErrorTrackingRecommendation'
-    EventMetadataPropertyFilter:
-      additionalProperties: false
-      properties:
-        key:
-          title: Key
-          type: string
-        label:
-          default: null
-          title: Label
-          type:
-          - string
-          - 'null'
-        operator:
-          $ref: '#/components/schemas/PropertyOperator'
-        type:
-          default: event_metadata
-          title: Type
-          type: string
-          enum:
-          - event_metadata
-        value:
-          default: null
-          title: Value
-          anyOf:
-          - items:
-              anyOf:
-              - type: string
-              - type: number
-              - type: boolean
-            type: array
-          - type: string
-          - type: number
-          - type: boolean
-      required:
-      - key
-      - operator
-      title: EventMetadataPropertyFilter
-      type: object
-    PropertyOperator:
-      enum:
-      - exact
-      - is_not
-      - icontains
-      - not_icontains
-      - regex
-      - not_regex
-      - gt
-      - gte
-      - lt
-      - lte
-      - is_set
-      - is_not_set
-      - is_date_exact
-      - is_date_before
-      - is_date_after
-      - between
-      - not_between
-      - min
-      - max
-      - in
-      - not_in
-      - is_cleaned_path_exact
-      - flag_evaluates_to
-      - semver_eq
-      - semver_neq
-      - semver_gt
-      - semver_gte
-      - semver_lt
-      - semver_lte
-      - semver_tilde
-      - semver_caret
-      - semver_wildcard
-      - icontains_multi
-      - not_icontains_multi
-      title: PropertyOperator
-      type: string
-    Key10:
-      enum:
-      - tag_name
-      - text
-      - href
-      - selector
-      title: Key10
-      type: string
-    HogQLPropertyFilter:
-      additionalProperties: false
-      properties:
-        key:
-          title: Key
-          type: string
-        label:
-          default: null
-          title: Label
-          type:
-          - string
-          - 'null'
-        type:
-          default: hogql
-          title: Type
-          type: string
-          enum:
-          - hogql
-        value:
-          default: null
-          title: Value
-          anyOf:
-          - items:
-              anyOf:
-              - type: string
-              - type: number
-              - type: boolean
-            type: array
-          - type: string
-          - type: number
-          - type: boolean
-      required:
-      - key
-      title: HogQLPropertyFilter
-      type: object
-    PatchedErrorTrackingAssignmentRule:
+    ErrorTrackingAssignmentRule:
       type: object
       properties:
         id:
@@ -3888,20 +3747,119 @@ components:
           type: string
           format: date-time
           readOnly: true
-    ErrorTrackingSuppressionRuleCreateRequest:
+      required:
+      - assignee
+      - created_at
+      - filters
+      - id
+      - order_key
+      - updated_at
+    ErrorTrackingSuppressionRule:
       type: object
       properties:
-        filters:
-          allOf:
-          - $ref: '#/components/schemas/PropertyGroupFilterValue'
-          description: Optional property-group filters that define which incoming error events should be suppressed. Omit this field or provide an empty `values` array to create a match-all suppression rule.
+        id:
+          type: string
+          format: uuid
+          readOnly: true
+        filters: {}
+        order_key:
+          type: integer
+          maximum: 2147483647
+          minimum: -2147483648
+        disabled_data: {}
         sampling_rate:
           type: number
           format: double
-          maximum: 1.0
-          minimum: 0.0
-          default: 1.0
-          description: Fraction of matching events to suppress. Use `1.0` to suppress all matching events.
+        created_at:
+          type: string
+          format: date-time
+          readOnly: true
+        updated_at:
+          type: string
+          format: date-time
+          readOnly: true
+      required:
+      - created_at
+      - filters
+      - id
+      - order_key
+      - updated_at
+    ErrorTrackingRecommendation:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+          readOnly: true
+        type:
+          type: string
+          readOnly: true
+        meta:
+          readOnly: true
+        computed_at:
+          type:
+          - string
+          - 'null'
+          format: date-time
+          readOnly: true
+        dismissed_at:
+          type:
+          - string
+          - 'null'
+          format: date-time
+          readOnly: true
+        next_refresh_at:
+          type:
+          - string
+          - 'null'
+          readOnly: true
+        created_at:
+          type: string
+          format: date-time
+          readOnly: true
+        updated_at:
+          type: string
+          format: date-time
+          readOnly: true
+      required:
+      - computed_at
+      - created_at
+      - dismissed_at
+      - id
+      - meta
+      - next_refresh_at
+      - type
+      - updated_at
+    ErrorTrackingSpikeDetectionConfig:
+      type: object
+      properties:
+        snooze_duration_minutes:
+          type: integer
+          minimum: 1
+          description: Time to wait before alerting again for the same issue after a spike is detected.
+        multiplier:
+          type: integer
+          minimum: 1
+          description: The factor by which the current exception count must exceed the baseline to be considered a spike.
+        threshold:
+          type: integer
+          minimum: 1
+          description: The minimum number of exceptions required in a 5-minute window before a spike can be detected.
+      required:
+      - multiplier
+      - snooze_duration_minutes
+      - threshold
+    ErrorTrackingIssueMergeRequest:
+      type: object
+      properties:
+        ids:
+          type: array
+          items:
+            type: string
+            format: uuid
+          description: IDs of the issues to merge into the current issue.
+      required:
+      - ids
     ErrorTrackingSpikeEventIssue:
       type: object
       properties:
@@ -3923,51 +3881,31 @@ components:
       - description
       - id
       - name
-    CohortPropertyFilter:
-      additionalProperties: false
-      properties:
-        cohort_name:
-          default: null
-          title: Cohort Name
-          type:
-          - string
-          - 'null'
-        key:
-          default: id
-          title: Key
-          type: string
-          enum:
-          - id
-        label:
-          default: null
-          title: Label
-          type:
-          - string
-          - 'null'
-        operator:
-          default: in
-          allOf:
-          - $ref: '#/components/schemas/PropertyOperator'
-        type:
-          default: cohort
-          title: Type
-          type: string
-          enum:
-          - cohort
-        value:
-          title: Value
-          type: integer
-      required:
-      - value
-      title: CohortPropertyFilter
+    PaginatedErrorTrackingSuppressionRuleList:
       type: object
-    SpanPropertyFilterType:
-      enum:
-      - span
-      - span_attribute
-      - span_resource_attribute
-      title: SpanPropertyFilterType
-      type: string
+      required:
+      - count
+      - results
+      properties:
+        count:
+          type: integer
+          example: 123
+        next:
+          type:
+          - string
+          - 'null'
+          format: uri
+          example: http://api.example.org/accounts/?offset=400&limit=100
+        previous:
+          type:
+          - string
+          - 'null'
+          format: uri
+          example: http://api.example.org/accounts/?offset=200&limit=100
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/ErrorTrackingSuppressionRule'
     PatchedErrorTrackingSymbolSet:
       type: object
       properties:
@@ -4004,83 +3942,23 @@ components:
           additionalProperties: true
           description: Release associated with this symbol set
           readOnly: true
-    PaginatedErrorTrackingStackFrameList:
+    ErrorTrackingGroupingRuleListResponse:
       type: object
-      required:
-      - count
-      - results
       properties:
-        count:
-          type: integer
-          example: 123
-        next:
-          type:
-          - string
-          - 'null'
-          format: uri
-          example: http://api.example.org/accounts/?offset=400&limit=100
-        previous:
-          type:
-          - string
-          - 'null'
-          format: uri
-          example: http://api.example.org/accounts/?offset=200&limit=100
         results:
           type: array
           items:
-            $ref: '#/components/schemas/ErrorTrackingStackFrame'
-    DataWarehousePersonPropertyFilter:
-      additionalProperties: false
-      properties:
-        key:
-          title: Key
-          type: string
-        label:
-          default: null
-          title: Label
-          type:
-          - string
-          - 'null'
-        operator:
-          $ref: '#/components/schemas/PropertyOperator'
-        type:
-          default: data_warehouse_person_property
-          title: Type
-          type: string
-          enum:
-          - data_warehouse_person_property
-        value:
-          default: null
-          title: Value
-          anyOf:
-          - items:
-              anyOf:
-              - type: string
-              - type: number
-              - type: boolean
-            type: array
-          - type: string
-          - type: number
-          - type: boolean
+            $ref: '#/components/schemas/ErrorTrackingGroupingRule'
       required:
-      - key
-      - operator
-      title: DataWarehousePersonPropertyFilter
-      type: object
-    ErrorTrackingIssueAssignment:
+      - results
+    ErrorTrackingIssueMergeResponse:
       type: object
       properties:
-        id:
-          oneOf:
-          - type: integer
-          - type: string
-          readOnly: true
-        type:
-          type: string
-          readOnly: true
+        success:
+          type: boolean
+          description: Whether the merge completed successfully.
       required:
-      - id
-      - type
+      - success
     RecordingPropertyFilter:
       additionalProperties: false
       properties:
@@ -4121,55 +3999,85 @@ components:
       - operator
       title: RecordingPropertyFilter
       type: object
-    ErrorTrackingIssueMergeRequest:
+    ErrorTrackingExternalReferenceResult:
       type: object
       properties:
-        ids:
-          type: array
-          items:
-            type: string
-            format: uuid
-          description: IDs of the issues to merge into the current issue.
-      required:
-      - ids
-    SessionPropertyFilter:
-      additionalProperties: false
-      properties:
-        key:
-          title: Key
+        id:
           type: string
-        label:
-          default: null
-          title: Label
+          format: uuid
+          readOnly: true
+        integration:
+          allOf:
+          - $ref: '#/components/schemas/ErrorTrackingExternalReferenceIntegrationResult'
+          readOnly: true
+        integration_id:
+          type: integer
+          writeOnly: true
+        config:
+          writeOnly: true
+        issue:
+          type: string
+          format: uuid
+          writeOnly: true
+        external_url:
+          type: string
+          readOnly: true
+      required:
+      - config
+      - external_url
+      - id
+      - integration
+      - integration_id
+      - issue
+    PatchedErrorTrackingGroupingRule:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+          readOnly: true
+        filters: {}
+        assignee:
+          type:
+          - object
+          - 'null'
+          properties:
+            type:
+              type: string
+              enum:
+              - user
+              - role
+            id:
+              oneOf:
+              - type: integer
+              - type: string
+                format: uuid
+          readOnly: true
+        description:
           type:
           - string
           - 'null'
-        operator:
-          $ref: '#/components/schemas/PropertyOperator'
-        type:
-          default: session
-          title: Type
+        issue:
+          type:
+          - object
+          - 'null'
+          additionalProperties:
+            type: string
+          description: Issue linked to this rule
+          readOnly: true
+        order_key:
+          type: integer
+          maximum: 2147483647
+          minimum: -2147483648
+        disabled_data: {}
+        created_at:
           type: string
-          enum:
-          - session
-        value:
-          default: null
-          title: Value
-          anyOf:
-          - items:
-              anyOf:
-              - type: string
-              - type: number
-              - type: boolean
-            type: array
-          - type: string
-          - type: number
-          - type: boolean
-      required:
-      - key
-      - operator
-      title: SessionPropertyFilter
-      type: object
+          format: date-time
+          readOnly: true
+        updated_at:
+          type: string
+          format: date-time
+          readOnly: true
     ErrorTrackingAssignmentRuleCreateRequest:
       type: object
       properties:
@@ -4184,62 +4092,17 @@ components:
       required:
       - assignee
       - filters
-    ErrorTrackingIssueFullStatusEnum:
-      enum:
-      - archived
-      - active
-      - resolved
-      - pending_release
-      - suppressed
-      type: string
-      description: '* `archived` - Archived
-
-        * `active` - Active
-
-        * `resolved` - Resolved
-
-        * `pending_release` - Pending release
-
-        * `suppressed` - Suppressed'
-    PaginatedErrorTrackingIssueFullList:
-      type: object
-      required:
-      - count
-      - results
+    EmptyPropertyFilter:
+      additionalProperties: false
       properties:
-        count:
-          type: integer
-          example: 123
-        next:
-          type:
-          - string
-          - 'null'
-          format: uri
-          example: http://api.example.org/accounts/?offset=400&limit=100
-        previous:
-          type:
-          - string
-          - 'null'
-          format: uri
-          example: http://api.example.org/accounts/?offset=200&limit=100
-        results:
-          type: array
-          items:
-            $ref: '#/components/schemas/ErrorTrackingIssueFull'
-    GitProviderFileLinkResolveResponse:
+        type:
+          default: empty
+          title: Type
+          type: string
+          enum:
+          - empty
+      title: EmptyPropertyFilter
       type: object
-      properties:
-        found:
-          type: boolean
-          description: Whether a matching file URL was found.
-        url:
-          type: string
-          description: Resolved URL for the matching file.
-        error:
-          type: string
-          description: Error message when input parameters are invalid.
-      required:
-      - found
     WorkflowVariablePropertyFilter:
       additionalProperties: false
       properties:
@@ -4278,28 +4141,85 @@ components:
       - operator
       title: WorkflowVariablePropertyFilter
       type: object
-    PatchedErrorTrackingRelease:
+    HogQLPropertyFilter:
+      additionalProperties: false
+      properties:
+        key:
+          title: Key
+          type: string
+        label:
+          default: null
+          title: Label
+          type:
+          - string
+          - 'null'
+        type:
+          default: hogql
+          title: Type
+          type: string
+          enum:
+          - hogql
+        value:
+          default: null
+          title: Value
+          anyOf:
+          - items:
+              anyOf:
+              - type: string
+              - type: number
+              - type: boolean
+            type: array
+          - type: string
+          - type: number
+          - type: boolean
+      required:
+      - key
+      title: HogQLPropertyFilter
+      type: object
+    ErrorTrackingStackFrame:
       type: object
       properties:
         id:
           type: string
           format: uuid
           readOnly: true
-        hash_id:
+        raw_id:
           type: string
-        team_id:
-          type: integer
+          description: Raw frame ID in 'hash/part' format
           readOnly: true
         created_at:
           type: string
           format: date-time
           readOnly: true
-        metadata: {}
-        version:
+        contents: {}
+        resolved:
+          type: boolean
+        context: {}
+        symbol_set_ref:
           type: string
-        project:
-          type: string
-    PaginatedErrorTrackingSymbolSetList:
+        release:
+          allOf:
+          - $ref: '#/components/schemas/ErrorTrackingRelease'
+          readOnly: true
+      required:
+      - contents
+      - created_at
+      - id
+      - raw_id
+      - release
+      - resolved
+    PatchedErrorTrackingAssignmentRuleUpdateRequest:
+      type: object
+      properties:
+        filters:
+          allOf:
+          - $ref: '#/components/schemas/PropertyGroupFilterValue'
+          description: Property-group filters that define when this rule matches incoming error events.
+        assignee:
+          allOf:
+          - $ref: '#/components/schemas/ErrorTrackingAssignmentRuleAssigneeRequest'
+          description: User or role to assign matching issues to.
+    PaginatedErrorTrackingRecommendationList:
       type: object
       required:
       - count
@@ -4323,172 +4243,162 @@ components:
         results:
           type: array
           items:
-            $ref: '#/components/schemas/ErrorTrackingSymbolSet'
-    ErrorTrackingGroupingRuleListResponse:
-      type: object
-      properties:
-        results:
-          type: array
-          items:
-            $ref: '#/components/schemas/ErrorTrackingGroupingRule'
-      required:
-      - results
-    FeaturePropertyFilter:
-      additionalProperties: false
-      properties:
-        key:
-          title: Key
-          type: string
-        label:
-          default: null
-          title: Label
-          type:
-          - string
-          - 'null'
-        operator:
-          $ref: '#/components/schemas/PropertyOperator'
-        type:
-          default: feature
-          description: Event property with "$feature/" prepended
-          title: Type
-          type: string
-          enum:
-          - feature
-        value:
-          default: null
-          title: Value
-          anyOf:
-          - items:
-              anyOf:
-              - type: string
-              - type: number
-              - type: boolean
-            type: array
-          - type: string
-          - type: number
-          - type: boolean
-      required:
-      - key
-      - operator
-      title: FeaturePropertyFilter
-      type: object
-    DataWarehousePropertyFilter:
-      additionalProperties: false
-      properties:
-        key:
-          title: Key
-          type: string
-        label:
-          default: null
-          title: Label
-          type:
-          - string
-          - 'null'
-        operator:
-          $ref: '#/components/schemas/PropertyOperator'
-        type:
-          default: data_warehouse
-          title: Type
-          type: string
-          enum:
-          - data_warehouse
-        value:
-          default: null
-          title: Value
-          anyOf:
-          - items:
-              anyOf:
-              - type: string
-              - type: number
-              - type: boolean
-            type: array
-          - type: string
-          - type: number
-          - type: boolean
-      required:
-      - key
-      - operator
-      title: DataWarehousePropertyFilter
-      type: object
-    AssigneeTypeEnum:
-      enum:
-      - user
-      - role
-      type: string
-      description: '* `user` - user
-
-        * `role` - role'
-    ErrorTrackingIssueSplitResponse:
-      type: object
-      properties:
-        success:
-          type: boolean
-          description: Whether the split completed successfully.
-        new_issue_ids:
-          type: array
-          items:
-            type: string
-            format: uuid
-          description: IDs of the new issues created by the split.
-      required:
-      - new_issue_ids
-      - success
-    ErrorTrackingIssueMergeResponse:
-      type: object
-      properties:
-        success:
-          type: boolean
-          description: Whether the merge completed successfully.
-      required:
-      - success
-    LogPropertyFilterType:
-      enum:
-      - log
-      - log_attribute
-      - log_resource_attribute
-      title: LogPropertyFilterType
-      type: string
-    ErrorTrackingExternalReferenceResult:
+            $ref: '#/components/schemas/ErrorTrackingRecommendation'
+    ErrorTrackingIssueFull:
       type: object
       properties:
         id:
           type: string
           format: uuid
           readOnly: true
-        integration:
-          allOf:
-          - $ref: '#/components/schemas/ErrorTrackingExternalReferenceIntegrationResult'
-          readOnly: true
-        integration_id:
-          type: integer
-          writeOnly: true
-        config:
-          writeOnly: true
-        issue:
+        status:
+          $ref: '#/components/schemas/ErrorTrackingIssueFullStatusEnum'
+        name:
+          type:
+          - string
+          - 'null'
+        description:
+          type:
+          - string
+          - 'null'
+        first_seen:
           type: string
-          format: uuid
-          writeOnly: true
-        external_url:
-          type: string
+          format: date-time
+        assignee:
+          $ref: '#/components/schemas/ErrorTrackingIssueAssignment'
+        external_issues:
+          type: array
+          items:
+            $ref: '#/components/schemas/ErrorTrackingExternalReferenceResult'
+        cohort:
+          type:
+          - object
+          - 'null'
+          properties:
+            id:
+              type: integer
+            name:
+              type: string
           readOnly: true
       required:
-      - config
-      - external_url
+      - assignee
+      - cohort
+      - external_issues
+      - first_seen
       - id
-      - integration
-      - integration_id
-      - issue
-    PatchedErrorTrackingAssignmentRuleUpdateRequest:
+    PaginatedErrorTrackingReleaseList:
+      type: object
+      required:
+      - count
+      - results
+      properties:
+        count:
+          type: integer
+          example: 123
+        next:
+          type:
+          - string
+          - 'null'
+          format: uri
+          example: http://api.example.org/accounts/?offset=400&limit=100
+        previous:
+          type:
+          - string
+          - 'null'
+          format: uri
+          example: http://api.example.org/accounts/?offset=200&limit=100
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/ErrorTrackingRelease'
+    PaginatedErrorTrackingSpikeEventList:
+      type: object
+      required:
+      - count
+      - results
+      properties:
+        count:
+          type: integer
+          example: 123
+        next:
+          type:
+          - string
+          - 'null'
+          format: uri
+          example: http://api.example.org/accounts/?offset=400&limit=100
+        previous:
+          type:
+          - string
+          - 'null'
+          format: uri
+          example: http://api.example.org/accounts/?offset=200&limit=100
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/ErrorTrackingSpikeEvent'
+    ErrorTrackingFingerprint:
       type: object
       properties:
-        filters:
+        id:
+          type: string
+          format: uuid
+          readOnly: true
+        fingerprint:
+          type: string
+          readOnly: true
+        issue_id:
+          type: string
+          format: uuid
+          readOnly: true
+        created_at:
+          type: string
+          format: date-time
+          readOnly: true
+      required:
+      - created_at
+      - fingerprint
+      - id
+      - issue_id
+    EventPropertyFilter:
+      additionalProperties: false
+      properties:
+        key:
+          title: Key
+          type: string
+        label:
+          default: null
+          title: Label
+          type:
+          - string
+          - 'null'
+        operator:
+          default: exact
           allOf:
-          - $ref: '#/components/schemas/PropertyGroupFilterValue'
-          description: Property-group filters that define when this rule matches incoming error events.
-        assignee:
-          allOf:
-          - $ref: '#/components/schemas/ErrorTrackingAssignmentRuleAssigneeRequest'
-          description: User or role to assign matching issues to.
+          - $ref: '#/components/schemas/PropertyOperator'
+        type:
+          default: event
+          description: Event properties
+          title: Type
+          type: string
+          enum:
+          - event
+        value:
+          default: null
+          title: Value
+          anyOf:
+          - items:
+              anyOf:
+              - type: string
+              - type: number
+              - type: boolean
+            type: array
+          - type: string
+          - type: number
+          - type: boolean
+      required:
+      - key
+      title: EventPropertyFilter
+      type: object
     PersonPropertyFilter:
       additionalProperties: false
       properties:
@@ -4528,7 +4438,23 @@ components:
       - operator
       title: PersonPropertyFilter
       type: object
-    RevenueAnalyticsPropertyFilter:
+    ErrorTrackingExternalReferenceIntegrationResult:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        kind:
+          type: string
+          readOnly: true
+        display_name:
+          type: string
+          readOnly: true
+      required:
+      - display_name
+      - id
+      - kind
+    LogPropertyFilter:
       additionalProperties: false
       properties:
         key:
@@ -4543,11 +4469,7 @@ components:
         operator:
           $ref: '#/components/schemas/PropertyOperator'
         type:
-          default: revenue_analytics
-          title: Type
-          type: string
-          enum:
-          - revenue_analytics
+          $ref: '#/components/schemas/LogPropertyFilterType'
         value:
           default: null
           title: Value
@@ -4564,8 +4486,108 @@ components:
       required:
       - key
       - operator
-      title: RevenueAnalyticsPropertyFilter
+      - type
+      title: LogPropertyFilter
       type: object
+    PaginatedErrorTrackingSymbolSetList:
+      type: object
+      required:
+      - count
+      - results
+      properties:
+        count:
+          type: integer
+          example: 123
+        next:
+          type:
+          - string
+          - 'null'
+          format: uri
+          example: http://api.example.org/accounts/?offset=400&limit=100
+        previous:
+          type:
+          - string
+          - 'null'
+          format: uri
+          example: http://api.example.org/accounts/?offset=200&limit=100
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/ErrorTrackingSymbolSet'
+    ErrorTrackingIssueSplitRequest:
+      type: object
+      properties:
+        fingerprints:
+          type: array
+          items:
+            $ref: '#/components/schemas/ErrorTrackingIssueSplitFingerprint'
+          description: Fingerprints to split into new issues. Each fingerprint becomes its own new issue.
+    ErrorTrackingIssueSplitResponse:
+      type: object
+      properties:
+        success:
+          type: boolean
+          description: Whether the split completed successfully.
+        new_issue_ids:
+          type: array
+          items:
+            type: string
+            format: uuid
+          description: IDs of the new issues created by the split.
+      required:
+      - new_issue_ids
+      - success
+    Key10:
+      enum:
+      - tag_name
+      - text
+      - href
+      - selector
+      title: Key10
+      type: string
+    PropertyGroupFilterValue:
+      additionalProperties: false
+      properties:
+        type:
+          $ref: '#/components/schemas/FilterLogicalOperator'
+        values:
+          items:
+            anyOf:
+            - $ref: '#/components/schemas/PropertyGroupFilterValue'
+            - $ref: '#/components/schemas/EventPropertyFilter'
+            - $ref: '#/components/schemas/PersonPropertyFilter'
+            - $ref: '#/components/schemas/ElementPropertyFilter'
+            - $ref: '#/components/schemas/EventMetadataPropertyFilter'
+            - $ref: '#/components/schemas/SessionPropertyFilter'
+            - $ref: '#/components/schemas/CohortPropertyFilter'
+            - $ref: '#/components/schemas/RecordingPropertyFilter'
+            - $ref: '#/components/schemas/LogEntryPropertyFilter'
+            - $ref: '#/components/schemas/GroupPropertyFilter'
+            - $ref: '#/components/schemas/FeaturePropertyFilter'
+            - $ref: '#/components/schemas/FlagPropertyFilter'
+            - $ref: '#/components/schemas/HogQLPropertyFilter'
+            - $ref: '#/components/schemas/EmptyPropertyFilter'
+            - $ref: '#/components/schemas/DataWarehousePropertyFilter'
+            - $ref: '#/components/schemas/DataWarehousePersonPropertyFilter'
+            - $ref: '#/components/schemas/ErrorTrackingIssueFilter'
+            - $ref: '#/components/schemas/LogPropertyFilter'
+            - $ref: '#/components/schemas/SpanPropertyFilter'
+            - $ref: '#/components/schemas/RevenueAnalyticsPropertyFilter'
+            - $ref: '#/components/schemas/WorkflowVariablePropertyFilter'
+          title: Values
+          type: array
+      required:
+      - type
+      - values
+      title: PropertyGroupFilterValue
+      type: object
+    LogPropertyFilterType:
+      enum:
+      - log
+      - log_attribute
+      - log_resource_attribute
+      title: LogPropertyFilterType
+      type: string
     PatchedErrorTrackingSuppressionRule:
       type: object
       properties:
@@ -4590,62 +4612,24 @@ components:
           type: string
           format: date-time
           readOnly: true
-    PatchedErrorTrackingSpikeDetectionConfig:
-      type: object
+    GroupPropertyFilter:
+      additionalProperties: false
       properties:
-        snooze_duration_minutes:
-          type: integer
-          minimum: 1
-          description: Time to wait before alerting again for the same issue after a spike is detected.
-        multiplier:
-          type: integer
-          minimum: 1
-          description: The factor by which the current exception count must exceed the baseline to be considered a spike.
-        threshold:
-          type: integer
-          minimum: 1
-          description: The minimum number of exceptions required in a 5-minute window before a spike can be detected.
-    PatchedErrorTrackingIssueFull:
-      type: object
-      properties:
-        id:
-          type: string
-          format: uuid
-          readOnly: true
-        status:
-          $ref: '#/components/schemas/ErrorTrackingIssueFullStatusEnum'
-        name:
-          type:
-          - string
-          - 'null'
-        description:
-          type:
-          - string
-          - 'null'
-        first_seen:
-          type: string
-          format: date-time
-        assignee:
-          $ref: '#/components/schemas/ErrorTrackingIssueAssignment'
-        external_issues:
-          type: array
-          items:
-            $ref: '#/components/schemas/ErrorTrackingExternalReferenceResult'
-        cohort:
+        group_key_names:
+          default: null
+          title: Group Key Names
+          additionalProperties:
+            type: string
           type:
           - object
           - 'null'
-          properties:
-            id:
-              type: integer
-            name:
-              type: string
-          readOnly: true
-    FlagPropertyFilter:
-      additionalProperties: false
-      properties:
+        group_type_index:
+          default: null
+          title: Group Type Index
+          type:
+          - integer
+          - 'null'
         key:
-          description: The key should be the flag ID
           title: Key
           type: string
         label:
@@ -4655,30 +4639,46 @@ components:
           - string
           - 'null'
         operator:
-          default: flag_evaluates_to
-          description: Only flag_evaluates_to operator is allowed for flag dependencies
-          title: Operator
-          type: string
-          enum:
-          - flag_evaluates_to
+          $ref: '#/components/schemas/PropertyOperator'
         type:
-          default: flag
-          description: Feature flag dependency
+          default: group
           title: Type
           type: string
           enum:
-          - flag
+          - group
         value:
-          anyOf:
-          - type: boolean
-          - type: string
-          description: The value can be true, false, or a variant name
+          default: null
           title: Value
+          anyOf:
+          - items:
+              anyOf:
+              - type: string
+              - type: number
+              - type: boolean
+            type: array
+          - type: string
+          - type: number
+          - type: boolean
       required:
       - key
-      - value
-      title: FlagPropertyFilter
+      - operator
+      title: GroupPropertyFilter
       type: object
+  parameters:
+    ProjectIdPath:
+      in: path
+      name: project_id
+      required: true
+      schema:
+        type: string
+      description: Project ID of the project you're trying to access. To find the ID of the project, make a call to /api/projects/.
+    EnvironmentIdPath:
+      in: path
+      name: environment_id
+      required: true
+      schema:
+        type: string
+      description: Deprecated. Use /api/projects/{project_id}/ instead.
   securitySchemes:
     PersonalAPIKeyAuth:
       type: http

@@ -1843,6 +1843,53 @@ paths:
       x-summary-source: derived
 components:
   schemas:
+    HogFunctionFilters:
+      type: object
+      properties:
+        source:
+          allOf:
+          - $ref: '#/components/schemas/HogFunctionFiltersSourceEnum'
+          default: events
+        actions:
+          type: array
+          items:
+            type: object
+            additionalProperties: true
+        events:
+          type: array
+          items:
+            type: object
+            additionalProperties: true
+        data_warehouse:
+          type: array
+          items:
+            type: object
+            additionalProperties: true
+        properties:
+          type: array
+          items:
+            type: object
+            additionalProperties: true
+        bytecode: {}
+        transpiled: {}
+        filter_test_accounts:
+          type: boolean
+        bytecode_error:
+          type: string
+    OnErrorEnum:
+      enum:
+      - continue
+      - abort
+      - complete
+      - branch
+      type: string
+      description: '* `continue` - continue
+
+        * `abort` - abort
+
+        * `complete` - complete
+
+        * `branch` - branch'
     HogFlowMasking:
       type: object
       properties:
@@ -1861,6 +1908,185 @@ components:
         bytecode: {}
       required:
       - hash
+    PaginatedHogFlowMinimalList:
+      type: object
+      required:
+      - count
+      - results
+      properties:
+        count:
+          type: integer
+          example: 123
+        next:
+          type:
+          - string
+          - 'null'
+          format: uri
+          example: http://api.example.org/accounts/?offset=400&limit=100
+        previous:
+          type:
+          - string
+          - 'null'
+          format: uri
+          example: http://api.example.org/accounts/?offset=200&limit=100
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/HogFlowMinimal'
+    RoleAtOrganizationEnum:
+      enum:
+      - engineering
+      - data
+      - product
+      - founder
+      - leadership
+      - marketing
+      - sales
+      - other
+      type: string
+      description: '* `engineering` - Engineering
+
+        * `data` - Data
+
+        * `product` - Product Management
+
+        * `founder` - Founder
+
+        * `leadership` - Leadership
+
+        * `marketing` - Marketing
+
+        * `sales` - Sales / Success
+
+        * `other` - Other'
+    HogFunctionFiltersSourceEnum:
+      enum:
+      - events
+      - person-updates
+      - data-warehouse-table
+      type: string
+      description: '* `events` - events
+
+        * `person-updates` - person-updates
+
+        * `data-warehouse-table` - data-warehouse-table'
+    BlastRadius:
+      type: object
+      properties:
+        affected:
+          type: integer
+          description: Number of users matching the filters
+        total:
+          type: integer
+          description: Total number of users
+      required:
+      - affected
+      - total
+    NullEnum:
+      enum:
+      - null
+    BlankEnum:
+      enum:
+      - ''
+    PatchedHogFlow:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+          readOnly: true
+        name:
+          type:
+          - string
+          - 'null'
+          maxLength: 400
+        description:
+          type: string
+        version:
+          type: integer
+          readOnly: true
+        status:
+          $ref: '#/components/schemas/HogFlowStatusEnum'
+        created_at:
+          type: string
+          format: date-time
+          readOnly: true
+        created_by:
+          allOf:
+          - $ref: '#/components/schemas/UserBasic'
+          readOnly: true
+        updated_at:
+          type: string
+          format: date-time
+          readOnly: true
+        trigger: {}
+        trigger_masking:
+          allOf:
+          - $ref: '#/components/schemas/HogFlowMasking'
+        conversion: {}
+        exit_condition:
+          $ref: '#/components/schemas/ExitConditionEnum'
+        edges: {}
+        actions:
+          type: array
+          items:
+            $ref: '#/components/schemas/HogFlowAction'
+        abort_action:
+          type:
+          - string
+          - 'null'
+          readOnly: true
+        variables:
+          type: array
+          items:
+            type: object
+            additionalProperties:
+              type: string
+        billable_action_types:
+          readOnly: true
+    HogFlowAction:
+      type: object
+      properties:
+        id:
+          type: string
+        name:
+          type: string
+          maxLength: 400
+        description:
+          type: string
+          default: ''
+        on_error:
+          oneOf:
+          - $ref: '#/components/schemas/OnErrorEnum'
+          - $ref: '#/components/schemas/NullEnum'
+        created_at:
+          type: integer
+        updated_at:
+          type: integer
+        filters:
+          allOf:
+          - $ref: '#/components/schemas/HogFunctionFilters'
+        type:
+          type: string
+          maxLength: 100
+        config: {}
+        output_variable: {}
+      required:
+      - config
+      - id
+      - name
+      - type
+    HogFlowScheduleStatusEnum:
+      enum:
+      - active
+      - paused
+      - completed
+      type: string
+      description: '* `active` - Active
+
+        * `paused` - Paused
+
+        * `completed` - Completed'
     UserBasic:
       type: object
       properties:
@@ -1907,50 +2133,110 @@ components:
       - hedgehog_config
       - id
       - uuid
-    HogFunctionFilters:
+    HogFlow:
       type: object
       properties:
-        source:
+        id:
+          type: string
+          format: uuid
+          readOnly: true
+        name:
+          type:
+          - string
+          - 'null'
+          maxLength: 400
+        description:
+          type: string
+        version:
+          type: integer
+          readOnly: true
+        status:
+          $ref: '#/components/schemas/HogFlowStatusEnum'
+        created_at:
+          type: string
+          format: date-time
+          readOnly: true
+        created_by:
           allOf:
-          - $ref: '#/components/schemas/HogFunctionFiltersSourceEnum'
-          default: events
+          - $ref: '#/components/schemas/UserBasic'
+          readOnly: true
+        updated_at:
+          type: string
+          format: date-time
+          readOnly: true
+        trigger: {}
+        trigger_masking:
+          allOf:
+          - $ref: '#/components/schemas/HogFlowMasking'
+        conversion: {}
+        exit_condition:
+          $ref: '#/components/schemas/ExitConditionEnum'
+        edges: {}
         actions:
           type: array
           items:
-            type: object
-            additionalProperties: true
-        events:
+            $ref: '#/components/schemas/HogFlowAction'
+        abort_action:
+          type:
+          - string
+          - 'null'
+          readOnly: true
+        variables:
           type: array
           items:
             type: object
-            additionalProperties: true
-        data_warehouse:
+            additionalProperties:
+              type: string
+        billable_action_types:
+          readOnly: true
+      required:
+      - abort_action
+      - actions
+      - billable_action_types
+      - created_at
+      - created_by
+      - id
+      - updated_at
+      - version
+    AppMetricsResponse:
+      type: object
+      properties:
+        labels:
           type: array
           items:
-            type: object
-            additionalProperties: true
-        properties:
+            type: string
+        series:
           type: array
           items:
-            type: object
-            additionalProperties: true
-        bytecode: {}
-        transpiled: {}
-        filter_test_accounts:
-          type: boolean
-        bytecode_error:
-          type: string
-    HogFlowScheduleStatusEnum:
+            $ref: '#/components/schemas/AppMetricSeries'
+      required:
+      - labels
+      - series
+    BlastRadiusRequest:
+      type: object
+      properties:
+        filters:
+          type: object
+          additionalProperties: true
+          description: Property filters to apply
+        group_type_index:
+          type:
+          - integer
+          - 'null'
+          description: Group type index for group-based targeting
+      required:
+      - filters
+    HogFlowStatusEnum:
       enum:
+      - draft
       - active
-      - paused
-      - completed
+      - archived
       type: string
-      description: '* `active` - Active
+      description: '* `draft` - Draft
 
-        * `paused` - Paused
+        * `active` - Active
 
-        * `completed` - Completed'
+        * `archived` - Archived'
     HogFlowMinimal:
       type: object
       properties:
@@ -2026,129 +2312,18 @@ components:
       - updated_at
       - variables
       - version
-    HogFlowAction:
+    AppMetricSeries:
       type: object
       properties:
-        id:
-          type: string
         name:
           type: string
-          maxLength: 400
-        description:
-          type: string
-          default: ''
-        on_error:
-          oneOf:
-          - $ref: '#/components/schemas/OnErrorEnum'
-          - $ref: '#/components/schemas/NullEnum'
-        created_at:
-          type: integer
-        updated_at:
-          type: integer
-        filters:
-          allOf:
-          - $ref: '#/components/schemas/HogFunctionFilters'
-        type:
-          type: string
-          maxLength: 100
-        config: {}
-        output_variable: {}
+        values:
+          type: array
+          items:
+            type: integer
       required:
-      - config
-      - id
       - name
-      - type
-    HogFlow:
-      type: object
-      properties:
-        id:
-          type: string
-          format: uuid
-          readOnly: true
-        name:
-          type:
-          - string
-          - 'null'
-          maxLength: 400
-        description:
-          type: string
-        version:
-          type: integer
-          readOnly: true
-        status:
-          $ref: '#/components/schemas/HogFlowStatusEnum'
-        created_at:
-          type: string
-          format: date-time
-          readOnly: true
-        created_by:
-          allOf:
-          - $ref: '#/components/schemas/UserBasic'
-          readOnly: true
-        updated_at:
-          type: string
-          format: date-time
-          readOnly: true
-        trigger: {}
-        trigger_masking:
-          allOf:
-          - $ref: '#/components/schemas/HogFlowMasking'
-        conversion: {}
-        exit_condition:
-          $ref: '#/components/schemas/ExitConditionEnum'
-        edges: {}
-        actions:
-          type: array
-          items:
-            $ref: '#/components/schemas/HogFlowAction'
-        abort_action:
-          type:
-          - string
-          - 'null'
-          readOnly: true
-        variables:
-          type: array
-          items:
-            type: object
-            additionalProperties:
-              type: string
-        billable_action_types:
-          readOnly: true
-      required:
-      - abort_action
-      - actions
-      - billable_action_types
-      - created_at
-      - created_by
-      - id
-      - updated_at
-      - version
-    BlastRadius:
-      type: object
-      properties:
-        affected:
-          type: integer
-          description: Number of users matching the filters
-        total:
-          type: integer
-          description: Total number of users
-      required:
-      - affected
-      - total
-    ExitConditionEnum:
-      enum:
-      - exit_on_conversion
-      - exit_on_trigger_not_matched
-      - exit_on_trigger_not_matched_or_conversion
-      - exit_only_at_end
-      type: string
-      description: '* `exit_on_conversion` - Conversion
-
-        * `exit_on_trigger_not_matched` - Trigger Not Matched
-
-        * `exit_on_trigger_not_matched_or_conversion` - Trigger Not Matched Or Conversion
-
-        * `exit_only_at_end` - Only At End'
+      - values
     PaginatedHogFlowScheduleList:
       type: object
       required:
@@ -2174,47 +2349,6 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/HogFlowSchedule'
-    NullEnum:
-      enum:
-      - null
-    AppMetricsTotalsResponse:
-      type: object
-      properties:
-        totals:
-          type: object
-          additionalProperties:
-            type: integer
-      required:
-      - totals
-    BlankEnum:
-      enum:
-      - ''
-    AppMetricsResponse:
-      type: object
-      properties:
-        labels:
-          type: array
-          items:
-            type: string
-        series:
-          type: array
-          items:
-            $ref: '#/components/schemas/AppMetricSeries'
-      required:
-      - labels
-      - series
-    AppMetricSeries:
-      type: object
-      properties:
-        name:
-          type: string
-        values:
-          type: array
-          items:
-            type: integer
-      required:
-      - name
-      - values
     HogFlowSchedule:
       type: object
       properties:
@@ -2257,171 +2391,30 @@ components:
       - starts_at
       - status
       - updated_at
-    PatchedHogFlow:
+    ExitConditionEnum:
+      enum:
+      - exit_on_conversion
+      - exit_on_trigger_not_matched
+      - exit_on_trigger_not_matched_or_conversion
+      - exit_only_at_end
+      type: string
+      description: '* `exit_on_conversion` - Conversion
+
+        * `exit_on_trigger_not_matched` - Trigger Not Matched
+
+        * `exit_on_trigger_not_matched_or_conversion` - Trigger Not Matched Or Conversion
+
+        * `exit_only_at_end` - Only At End'
+    AppMetricsTotalsResponse:
       type: object
       properties:
-        id:
-          type: string
-          format: uuid
-          readOnly: true
-        name:
-          type:
-          - string
-          - 'null'
-          maxLength: 400
-        description:
-          type: string
-        version:
-          type: integer
-          readOnly: true
-        status:
-          $ref: '#/components/schemas/HogFlowStatusEnum'
-        created_at:
-          type: string
-          format: date-time
-          readOnly: true
-        created_by:
-          allOf:
-          - $ref: '#/components/schemas/UserBasic'
-          readOnly: true
-        updated_at:
-          type: string
-          format: date-time
-          readOnly: true
-        trigger: {}
-        trigger_masking:
-          allOf:
-          - $ref: '#/components/schemas/HogFlowMasking'
-        conversion: {}
-        exit_condition:
-          $ref: '#/components/schemas/ExitConditionEnum'
-        edges: {}
-        actions:
-          type: array
-          items:
-            $ref: '#/components/schemas/HogFlowAction'
-        abort_action:
-          type:
-          - string
-          - 'null'
-          readOnly: true
-        variables:
-          type: array
-          items:
-            type: object
-            additionalProperties:
-              type: string
-        billable_action_types:
-          readOnly: true
-    PaginatedHogFlowMinimalList:
-      type: object
-      required:
-      - count
-      - results
-      properties:
-        count:
-          type: integer
-          example: 123
-        next:
-          type:
-          - string
-          - 'null'
-          format: uri
-          example: http://api.example.org/accounts/?offset=400&limit=100
-        previous:
-          type:
-          - string
-          - 'null'
-          format: uri
-          example: http://api.example.org/accounts/?offset=200&limit=100
-        results:
-          type: array
-          items:
-            $ref: '#/components/schemas/HogFlowMinimal'
-    OnErrorEnum:
-      enum:
-      - continue
-      - abort
-      - complete
-      - branch
-      type: string
-      description: '* `continue` - continue
-
-        * `abort` - abort
-
-        * `complete` - complete
-
-        * `branch` - branch'
-    HogFunctionFiltersSourceEnum:
-      enum:
-      - events
-      - person-updates
-      - data-warehouse-table
-      type: string
-      description: '* `events` - events
-
-        * `person-updates` - person-updates
-
-        * `data-warehouse-table` - data-warehouse-table'
-    HogFlowStatusEnum:
-      enum:
-      - draft
-      - active
-      - archived
-      type: string
-      description: '* `draft` - Draft
-
-        * `active` - Active
-
-        * `archived` - Archived'
-    RoleAtOrganizationEnum:
-      enum:
-      - engineering
-      - data
-      - product
-      - founder
-      - leadership
-      - marketing
-      - sales
-      - other
-      type: string
-      description: '* `engineering` - Engineering
-
-        * `data` - Data
-
-        * `product` - Product Management
-
-        * `founder` - Founder
-
-        * `leadership` - Leadership
-
-        * `marketing` - Marketing
-
-        * `sales` - Sales / Success
-
-        * `other` - Other'
-    BlastRadiusRequest:
-      type: object
-      properties:
-        filters:
+        totals:
           type: object
-          additionalProperties: true
-          description: Property filters to apply
-        group_type_index:
-          type:
-          - integer
-          - 'null'
-          description: Group type index for group-based targeting
+          additionalProperties:
+            type: integer
       required:
-      - filters
+      - totals
   parameters:
-    EnvironmentIdPath:
-      in: path
-      name: environment_id
-      required: true
-      schema:
-        type: string
-      description: Deprecated. Use /api/projects/{project_id}/ instead.
     ProjectIdPath:
       in: path
       name: project_id
@@ -2429,6 +2422,13 @@ components:
       schema:
         type: string
       description: Project ID of the project you're trying to access. To find the ID of the project, make a call to /api/projects/.
+    EnvironmentIdPath:
+      in: path
+      name: environment_id
+      required: true
+      schema:
+        type: string
+      description: Deprecated. Use /api/projects/{project_id}/ instead.
   securitySchemes:
     PersonalAPIKeyAuth:
       type: http

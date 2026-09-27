@@ -34,68 +34,6 @@ paths:
       - sdk_doctor
 components:
   schemas:
-    SdkAssessment:
-      type: object
-      properties:
-        lib:
-          type: string
-          description: SDK identifier, e.g. 'web', 'posthog-python', 'posthog-node', 'posthog-ios'.
-        readable_name:
-          type: string
-          description: Human-readable SDK name matching the SDK Doctor UI (e.g. 'Python', 'Node.js', 'Web', 'iOS').
-        latest_version:
-          type: string
-          description: Most recent published version of this SDK.
-        needs_updating:
-          type: boolean
-          description: True if this SDK needs attention (is_outdated OR is_old).
-        is_outdated:
-          type: boolean
-          description: True if the primary in-use version is flagged as outdated.
-        is_old:
-          type: boolean
-          description: True if the primary in-use version is flagged as old by age alone.
-        severity:
-          allOf:
-          - $ref: '#/components/schemas/SdkAssessmentSeverityEnum'
-          description: 'UI severity badge — ''none'' when healthy, ''warning'' when outdated, ''danger'' when the majority of team SDKs are outdated.
-
-
-            * `none` - none
-
-            * `warning` - warning
-
-            * `danger` - danger'
-        reason:
-          type: string
-          description: Per-SDK programmatic summary (used for ranking/filtering). For user-facing copy, prefer releases[].status_reason (badge tooltip) and banners (top-level alert text) — those match the UI exactly.
-        banners:
-          type: array
-          items:
-            type: string
-          description: Top-level alert sentences matching the SDK Doctor UI's 'Time for an update!' banner — one per outdated version with significant traffic. Quote verbatim when surfacing the headline to users.
-        releases:
-          type: array
-          items:
-            $ref: '#/components/schemas/SdkReleaseAssessment'
-          description: Per-version assessment for all versions seen in the last 7 days.
-        outdated_traffic_alerts:
-          type: array
-          items:
-            $ref: '#/components/schemas/OutdatedTrafficAlert'
-          description: Outdated versions that handle a significant share of traffic (above the threshold). Not populated for mobile SDKs.
-      required:
-      - banners
-      - is_old
-      - is_outdated
-      - latest_version
-      - lib
-      - needs_updating
-      - outdated_traffic_alerts
-      - readable_name
-      - reason
-      - releases
-      - severity
     SdkReleaseAssessment:
       type: object
       properties:
@@ -158,17 +96,14 @@ components:
       - sql_query
       - status_reason
       - version
-    SdkAssessmentSeverityEnum:
+    OverallHealthEnum:
       enum:
-      - none
-      - warning
-      - danger
+      - healthy
+      - needs_attention
       type: string
-      description: '* `none` - none
+      description: '* `healthy` - healthy
 
-        * `warning` - warning
-
-        * `danger` - danger'
+        * `needs_attention` - needs_attention'
     OutdatedTrafficAlert:
       type: object
       properties:
@@ -182,6 +117,68 @@ components:
       required:
       - threshold_percent
       - version
+    SdkAssessment:
+      type: object
+      properties:
+        lib:
+          type: string
+          description: SDK identifier, e.g. 'web', 'posthog-python', 'posthog-node', 'posthog-ios'.
+        readable_name:
+          type: string
+          description: Human-readable SDK name matching the SDK Doctor UI (e.g. 'Python', 'Node.js', 'Web', 'iOS').
+        latest_version:
+          type: string
+          description: Most recent published version of this SDK.
+        needs_updating:
+          type: boolean
+          description: True if this SDK needs attention (is_outdated OR is_old).
+        is_outdated:
+          type: boolean
+          description: True if the primary in-use version is flagged as outdated.
+        is_old:
+          type: boolean
+          description: True if the primary in-use version is flagged as old by age alone.
+        severity:
+          allOf:
+          - $ref: '#/components/schemas/SdkAssessmentSeverityEnum'
+          description: 'UI severity badge — ''none'' when healthy, ''warning'' when outdated, ''danger'' when the majority of team SDKs are outdated.
+
+
+            * `none` - none
+
+            * `warning` - warning
+
+            * `danger` - danger'
+        reason:
+          type: string
+          description: Per-SDK programmatic summary (used for ranking/filtering). For user-facing copy, prefer releases[].status_reason (badge tooltip) and banners (top-level alert text) — those match the UI exactly.
+        banners:
+          type: array
+          items:
+            type: string
+          description: Top-level alert sentences matching the SDK Doctor UI's 'Time for an update!' banner — one per outdated version with significant traffic. Quote verbatim when surfacing the headline to users.
+        releases:
+          type: array
+          items:
+            $ref: '#/components/schemas/SdkReleaseAssessment'
+          description: Per-version assessment for all versions seen in the last 7 days.
+        outdated_traffic_alerts:
+          type: array
+          items:
+            $ref: '#/components/schemas/OutdatedTrafficAlert'
+          description: Outdated versions that handle a significant share of traffic (above the threshold). Not populated for mobile SDKs.
+      required:
+      - banners
+      - is_old
+      - is_outdated
+      - latest_version
+      - lib
+      - needs_updating
+      - outdated_traffic_alerts
+      - readable_name
+      - reason
+      - releases
+      - severity
     HealthEnum:
       enum:
       - success
@@ -193,14 +190,6 @@ components:
         * `warning` - warning
 
         * `danger` - danger'
-    OverallHealthEnum:
-      enum:
-      - healthy
-      - needs_attention
-      type: string
-      description: '* `healthy` - healthy
-
-        * `needs_attention` - needs_attention'
     SdkHealthReport:
       type: object
       properties:
@@ -241,6 +230,17 @@ components:
       - overall_health
       - sdks
       - team_sdk_count
+    SdkAssessmentSeverityEnum:
+      enum:
+      - none
+      - warning
+      - danger
+      type: string
+      description: '* `none` - none
+
+        * `warning` - warning
+
+        * `danger` - danger'
   parameters:
     ProjectIdPath:
       in: path

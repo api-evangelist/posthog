@@ -347,144 +347,6 @@ paths:
       x-summary-source: derived
 components:
   schemas:
-    ConversationMinimal:
-      type: object
-      properties:
-        id:
-          type: string
-          format: uuid
-          readOnly: true
-        status:
-          allOf:
-          - $ref: '#/components/schemas/ConversationStatus'
-          readOnly: true
-        title:
-          type:
-          - string
-          - 'null'
-          readOnly: true
-          description: Title of the conversation.
-        user:
-          allOf:
-          - $ref: '#/components/schemas/UserBasic'
-          readOnly: true
-        created_at:
-          type:
-          - string
-          - 'null'
-          format: date-time
-          readOnly: true
-        updated_at:
-          type:
-          - string
-          - 'null'
-          format: date-time
-          readOnly: true
-        type:
-          allOf:
-          - $ref: '#/components/schemas/ConversationType'
-          readOnly: true
-        is_internal:
-          type:
-          - boolean
-          - 'null'
-          readOnly: true
-          description: Whether this conversation was created during an impersonated session (e.g., by support agents). Internal conversations are hidden from customers.
-        slack_thread_key:
-          type:
-          - string
-          - 'null'
-          readOnly: true
-          description: 'Unique key for Slack thread: ''{workspace_id}:{channel}:{thread_ts}'''
-        slack_workspace_domain:
-          type:
-          - string
-          - 'null'
-          readOnly: true
-          description: Slack workspace subdomain (e.g. 'posthog' for posthog.slack.com)
-      required:
-      - created_at
-      - id
-      - is_internal
-      - slack_thread_key
-      - slack_workspace_domain
-      - status
-      - title
-      - type
-      - updated_at
-      - user
-    NullEnum:
-      enum:
-      - null
-    UserBasic:
-      type: object
-      properties:
-        id:
-          type: integer
-          readOnly: true
-        uuid:
-          type: string
-          format: uuid
-          readOnly: true
-        distinct_id:
-          type:
-          - string
-          - 'null'
-          maxLength: 200
-        first_name:
-          type: string
-          maxLength: 150
-        last_name:
-          type: string
-          maxLength: 150
-        email:
-          type: string
-          format: email
-          title: Email address
-          maxLength: 254
-        is_email_verified:
-          type:
-          - boolean
-          - 'null'
-        hedgehog_config:
-          type:
-          - object
-          - 'null'
-          additionalProperties: true
-          readOnly: true
-        role_at_organization:
-          oneOf:
-          - $ref: '#/components/schemas/RoleAtOrganizationEnum'
-          - $ref: '#/components/schemas/BlankEnum'
-          - $ref: '#/components/schemas/NullEnum'
-      required:
-      - email
-      - hedgehog_config
-      - id
-      - uuid
-    MessageMinimal:
-      type: object
-      description: Serializer for appending a message to an existing conversation without triggering AI processing.
-      properties:
-        content:
-          type: string
-          maxLength: 10000
-      required:
-      - content
-    BlankEnum:
-      enum:
-      - ''
-    ConversationStatus:
-      enum:
-      - idle
-      - in_progress
-      - canceling
-      type: string
-      description: '* `idle` - Idle
-
-        * `in_progress` - In progress
-
-        * `canceling` - Canceling'
     AgentModeEnum:
       enum:
       - product_analytics
@@ -546,6 +408,17 @@ components:
         * `sales` - Sales / Success
 
         * `other` - Other'
+    ConversationStatus:
+      enum:
+      - idle
+      - in_progress
+      - canceling
+      type: string
+      description: '* `idle` - Idle
+
+        * `in_progress` - In progress
+
+        * `canceling` - Canceling'
     PatchedConversation:
       type: object
       properties:
@@ -630,6 +503,121 @@ components:
 
             interrupts (single source of truth for payload data).'
           readOnly: true
+    BlankEnum:
+      enum:
+      - ''
+    ConversationMinimal:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+          readOnly: true
+        status:
+          allOf:
+          - $ref: '#/components/schemas/ConversationStatus'
+          readOnly: true
+        title:
+          type:
+          - string
+          - 'null'
+          readOnly: true
+          description: Title of the conversation.
+        user:
+          allOf:
+          - $ref: '#/components/schemas/UserBasic'
+          readOnly: true
+        created_at:
+          type:
+          - string
+          - 'null'
+          format: date-time
+          readOnly: true
+        updated_at:
+          type:
+          - string
+          - 'null'
+          format: date-time
+          readOnly: true
+        type:
+          allOf:
+          - $ref: '#/components/schemas/ConversationType'
+          readOnly: true
+        is_internal:
+          type:
+          - boolean
+          - 'null'
+          readOnly: true
+          description: Whether this conversation was created during an impersonated session (e.g., by support agents). Internal conversations are hidden from customers.
+        slack_thread_key:
+          type:
+          - string
+          - 'null'
+          readOnly: true
+          description: 'Unique key for Slack thread: ''{workspace_id}:{channel}:{thread_ts}'''
+        slack_workspace_domain:
+          type:
+          - string
+          - 'null'
+          readOnly: true
+          description: Slack workspace subdomain (e.g. 'posthog' for posthog.slack.com)
+      required:
+      - created_at
+      - id
+      - is_internal
+      - slack_thread_key
+      - slack_workspace_domain
+      - status
+      - title
+      - type
+      - updated_at
+      - user
+    UserBasic:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        uuid:
+          type: string
+          format: uuid
+          readOnly: true
+        distinct_id:
+          type:
+          - string
+          - 'null'
+          maxLength: 200
+        first_name:
+          type: string
+          maxLength: 150
+        last_name:
+          type: string
+          maxLength: 150
+        email:
+          type: string
+          format: email
+          title: Email address
+          maxLength: 254
+        is_email_verified:
+          type:
+          - boolean
+          - 'null'
+        hedgehog_config:
+          type:
+          - object
+          - 'null'
+          additionalProperties: true
+          readOnly: true
+        role_at_organization:
+          oneOf:
+          - $ref: '#/components/schemas/RoleAtOrganizationEnum'
+          - $ref: '#/components/schemas/BlankEnum'
+          - $ref: '#/components/schemas/NullEnum'
+      required:
+      - email
+      - hedgehog_config
+      - id
+      - uuid
     ConversationType:
       enum:
       - assistant
@@ -644,6 +632,31 @@ components:
         * `deep_research` - Deep research
 
         * `slack` - Slack'
+    PaginatedConversationMinimalList:
+      type: object
+      required:
+      - count
+      - results
+      properties:
+        count:
+          type: integer
+          example: 123
+        next:
+          type:
+          - string
+          - 'null'
+          format: uri
+          example: http://api.example.org/accounts/?offset=400&limit=100
+        previous:
+          type:
+          - string
+          - 'null'
+          format: uri
+          example: http://api.example.org/accounts/?offset=200&limit=100
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/ConversationMinimal'
     Message:
       type: object
       description: Serializer for appending a message to an existing conversation without triggering AI processing.
@@ -676,31 +689,9 @@ components:
       - content
       - conversation
       - trace_id
-    PaginatedConversationMinimalList:
-      type: object
-      required:
-      - count
-      - results
-      properties:
-        count:
-          type: integer
-          example: 123
-        next:
-          type:
-          - string
-          - 'null'
-          format: uri
-          example: http://api.example.org/accounts/?offset=400&limit=100
-        previous:
-          type:
-          - string
-          - 'null'
-          format: uri
-          example: http://api.example.org/accounts/?offset=200&limit=100
-        results:
-          type: array
-          items:
-            $ref: '#/components/schemas/ConversationMinimal'
+    NullEnum:
+      enum:
+      - null
     Conversation:
       type: object
       properties:
@@ -801,6 +792,15 @@ components:
       - type
       - updated_at
       - user
+    MessageMinimal:
+      type: object
+      description: Serializer for appending a message to an existing conversation without triggering AI processing.
+      properties:
+        content:
+          type: string
+          maxLength: 10000
+      required:
+      - content
   parameters:
     ProjectIdPath:
       in: path

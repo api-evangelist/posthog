@@ -327,111 +327,6 @@ paths:
       x-summary-source: derived
 components:
   schemas:
-    PropertyItemOperatorEnum:
-      enum:
-      - exact
-      - is_not
-      - icontains
-      - not_icontains
-      - regex
-      - not_regex
-      - gt
-      - lt
-      - gte
-      - lte
-      - is_set
-      - is_not_set
-      - is_date_exact
-      - is_date_after
-      - is_date_before
-      - in
-      - not_in
-      type: string
-      description: '* `exact` - exact
-
-        * `is_not` - is_not
-
-        * `icontains` - icontains
-
-        * `not_icontains` - not_icontains
-
-        * `regex` - regex
-
-        * `not_regex` - not_regex
-
-        * `gt` - gt
-
-        * `lt` - lt
-
-        * `gte` - gte
-
-        * `lte` - lte
-
-        * `is_set` - is_set
-
-        * `is_not_set` - is_not_set
-
-        * `is_date_exact` - is_date_exact
-
-        * `is_date_after` - is_date_after
-
-        * `is_date_before` - is_date_before
-
-        * `in` - in
-
-        * `not_in` - not_in'
-    PropertyGroupOperator:
-      enum:
-      - AND
-      - OR
-      type: string
-    NullEnum:
-      enum:
-      - null
-    PropertyItem:
-      type: object
-      properties:
-        key:
-          type: string
-          description: Key of the property you're filtering on. For example `email` or `$current_url`
-        value:
-          oneOf:
-          - type: string
-          - type: number
-          - type: boolean
-          - type: array
-            items:
-              oneOf:
-              - type: string
-              - type: number
-          description: Value of your filter. For example `test@example.com` or `https://example.com/test/`. Can be an array for an OR query, like `["test@example.com","ok@example.com"]`
-        operator:
-          default: exact
-          oneOf:
-          - $ref: '#/components/schemas/PropertyItemOperatorEnum'
-          - $ref: '#/components/schemas/BlankEnum'
-          - $ref: '#/components/schemas/NullEnum'
-        type:
-          default: event
-          oneOf:
-          - $ref: '#/components/schemas/PropertyFilterTypeEnum'
-          - $ref: '#/components/schemas/BlankEnum'
-      required:
-      - key
-      - value
-    PaginatedClickhouseEventList:
-      type: object
-      properties:
-        next:
-          type:
-          - string
-          - 'null'
-          format: uri
-          example: http://api.example.org/accounts/?offset=400&limit=100
-        results:
-          type: array
-          items:
-            $ref: '#/components/schemas/ClickhouseEvent'
     EventElement:
       type: object
       properties:
@@ -485,6 +380,59 @@ components:
           minimum: -2147483648
       required:
       - event
+    PropertyItemOperatorEnum:
+      enum:
+      - exact
+      - is_not
+      - icontains
+      - not_icontains
+      - regex
+      - not_regex
+      - gt
+      - lt
+      - gte
+      - lte
+      - is_set
+      - is_not_set
+      - is_date_exact
+      - is_date_after
+      - is_date_before
+      - in
+      - not_in
+      type: string
+      description: '* `exact` - exact
+
+        * `is_not` - is_not
+
+        * `icontains` - icontains
+
+        * `not_icontains` - not_icontains
+
+        * `regex` - regex
+
+        * `not_regex` - not_regex
+
+        * `gt` - gt
+
+        * `lt` - lt
+
+        * `gte` - gte
+
+        * `lte` - lte
+
+        * `is_set` - is_set
+
+        * `is_not_set` - is_not_set
+
+        * `is_date_exact` - is_date_exact
+
+        * `is_date_after` - is_date_after
+
+        * `is_date_before` - is_date_before
+
+        * `in` - in
+
+        * `not_in` - not_in'
     ClickhouseEvent:
       type: object
       properties:
@@ -528,9 +476,19 @@ components:
       - person
       - properties
       - timestamp
-    BlankEnum:
-      enum:
-      - ''
+    PaginatedClickhouseEventList:
+      type: object
+      properties:
+        next:
+          type:
+          - string
+          - 'null'
+          format: uri
+          example: http://api.example.org/accounts/?offset=400&limit=100
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/ClickhouseEvent'
     PropertyFilterTypeEnum:
       enum:
       - event
@@ -614,6 +572,48 @@ components:
         * `flag` - flag
 
         * `workflow_variable` - workflow_variable'
+    PropertyItem:
+      type: object
+      properties:
+        key:
+          type: string
+          description: Key of the property you're filtering on. For example `email` or `$current_url`
+        value:
+          oneOf:
+          - type: string
+          - type: number
+          - type: boolean
+          - type: array
+            items:
+              oneOf:
+              - type: string
+              - type: number
+          description: Value of your filter. For example `test@example.com` or `https://example.com/test/`. Can be an array for an OR query, like `["test@example.com","ok@example.com"]`
+        operator:
+          default: exact
+          oneOf:
+          - $ref: '#/components/schemas/PropertyItemOperatorEnum'
+          - $ref: '#/components/schemas/BlankEnum'
+          - $ref: '#/components/schemas/NullEnum'
+        type:
+          default: event
+          oneOf:
+          - $ref: '#/components/schemas/PropertyFilterTypeEnum'
+          - $ref: '#/components/schemas/BlankEnum'
+      required:
+      - key
+      - value
+    NullEnum:
+      enum:
+      - null
+    PropertyGroupOperator:
+      enum:
+      - AND
+      - OR
+      type: string
+    BlankEnum:
+      enum:
+      - ''
     Property:
       type: object
       properties:

@@ -169,44 +169,86 @@ paths:
       x-summary-source: derived
 components:
   schemas:
-    NullEnum:
+    EventDefinitionBasic:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        name:
+          type: string
+      required:
+      - id
+      - name
+    PaginatedEventSchemaList:
+      type: object
+      required:
+      - count
+      - results
+      properties:
+        count:
+          type: integer
+          example: 123
+        next:
+          type:
+          - string
+          - 'null'
+          format: uri
+          example: http://api.example.org/accounts/?offset=400&limit=100
+        previous:
+          type:
+          - string
+          - 'null'
+          format: uri
+          example: http://api.example.org/accounts/?offset=200&limit=100
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/EventSchema'
+    RoleAtOrganizationEnum:
       enum:
-      - null
-    SchemaPropertyGroupPropertyPropertyTypeEnum:
-      enum:
-      - DateTime
-      - String
-      - Numeric
-      - Boolean
-      - Object
+      - engineering
+      - data
+      - product
+      - founder
+      - leadership
+      - marketing
+      - sales
+      - other
       type: string
-      description: '* `DateTime` - DateTime
+      description: '* `engineering` - Engineering
 
-        * `String` - String
+        * `data` - Data
 
-        * `Numeric` - Numeric
+        * `product` - Product Management
 
-        * `Boolean` - Boolean
+        * `founder` - Founder
 
-        * `Object` - Object'
-    EventSchema:
+        * `leadership` - Leadership
+
+        * `marketing` - Marketing
+
+        * `sales` - Sales / Success
+
+        * `other` - Other'
+    SchemaPropertyGroupProperty:
       type: object
       properties:
         id:
           type: string
           format: uuid
           readOnly: true
-        event_definition:
+        name:
           type: string
-          format: uuid
-        property_group:
-          allOf:
-          - $ref: '#/components/schemas/SchemaPropertyGroup'
-          readOnly: true
-        property_group_id:
+          maxLength: 400
+        property_type:
+          $ref: '#/components/schemas/SchemaPropertyGroupPropertyPropertyTypeEnum'
+        is_required:
+          type: boolean
+        is_optional_in_types:
+          type: boolean
+        description:
           type: string
-          format: uuid
-          writeOnly: true
         created_at:
           type: string
           format: date-time
@@ -217,10 +259,9 @@ components:
           readOnly: true
       required:
       - created_at
-      - event_definition
       - id
-      - property_group
-      - property_group_id
+      - name
+      - property_type
       - updated_at
     PatchedEventSchema:
       type: object
@@ -334,63 +375,41 @@ components:
       - hedgehog_config
       - id
       - uuid
-    PaginatedEventSchemaList:
-      type: object
-      required:
-      - count
-      - results
-      properties:
-        count:
-          type: integer
-          example: 123
-        next:
-          type:
-          - string
-          - 'null'
-          format: uri
-          example: http://api.example.org/accounts/?offset=400&limit=100
-        previous:
-          type:
-          - string
-          - 'null'
-          format: uri
-          example: http://api.example.org/accounts/?offset=200&limit=100
-        results:
-          type: array
-          items:
-            $ref: '#/components/schemas/EventSchema'
-    BlankEnum:
+    SchemaPropertyGroupPropertyPropertyTypeEnum:
       enum:
-      - ''
-    EventDefinitionBasic:
-      type: object
-      properties:
-        id:
-          type: string
-          format: uuid
-        name:
-          type: string
-      required:
-      - id
-      - name
-    SchemaPropertyGroupProperty:
+      - DateTime
+      - String
+      - Numeric
+      - Boolean
+      - Object
+      type: string
+      description: '* `DateTime` - DateTime
+
+        * `String` - String
+
+        * `Numeric` - Numeric
+
+        * `Boolean` - Boolean
+
+        * `Object` - Object'
+    EventSchema:
       type: object
       properties:
         id:
           type: string
           format: uuid
           readOnly: true
-        name:
+        event_definition:
           type: string
-          maxLength: 400
-        property_type:
-          $ref: '#/components/schemas/SchemaPropertyGroupPropertyPropertyTypeEnum'
-        is_required:
-          type: boolean
-        is_optional_in_types:
-          type: boolean
-        description:
+          format: uuid
+        property_group:
+          allOf:
+          - $ref: '#/components/schemas/SchemaPropertyGroup'
+          readOnly: true
+        property_group_id:
           type: string
+          format: uuid
+          writeOnly: true
         created_at:
           type: string
           format: date-time
@@ -401,36 +420,17 @@ components:
           readOnly: true
       required:
       - created_at
+      - event_definition
       - id
-      - name
-      - property_type
+      - property_group
+      - property_group_id
       - updated_at
-    RoleAtOrganizationEnum:
+    NullEnum:
       enum:
-      - engineering
-      - data
-      - product
-      - founder
-      - leadership
-      - marketing
-      - sales
-      - other
-      type: string
-      description: '* `engineering` - Engineering
-
-        * `data` - Data
-
-        * `product` - Product Management
-
-        * `founder` - Founder
-
-        * `leadership` - Leadership
-
-        * `marketing` - Marketing
-
-        * `sales` - Sales / Success
-
-        * `other` - Other'
+      - null
+    BlankEnum:
+      enum:
+      - ''
   parameters:
     ProjectIdPath:
       in: path

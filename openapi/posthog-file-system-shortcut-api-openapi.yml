@@ -448,55 +448,7 @@ paths:
       summary: File system shortcut reorder create
       x-summary-source: derived
 components:
-  parameters:
-    EnvironmentIdPath:
-      in: path
-      name: environment_id
-      required: true
-      schema:
-        type: string
-      description: Deprecated. Use /api/projects/{project_id}/ instead.
-    ProjectIdPath:
-      in: path
-      name: project_id
-      required: true
-      schema:
-        type: string
-      description: Project ID of the project you're trying to access. To find the ID of the project, make a call to /api/projects/.
   schemas:
-    FileSystemShortcut:
-      type: object
-      properties:
-        id:
-          type: string
-          format: uuid
-          readOnly: true
-        path:
-          type: string
-        type:
-          type: string
-          maxLength: 100
-        ref:
-          type:
-          - string
-          - 'null'
-          maxLength: 100
-        href:
-          type:
-          - string
-          - 'null'
-        order:
-          type: integer
-          maximum: 2147483647
-          minimum: -2147483648
-        created_at:
-          type: string
-          format: date-time
-          readOnly: true
-      required:
-      - created_at
-      - id
-      - path
     PaginatedFileSystemShortcutList:
       type: object
       required:
@@ -551,6 +503,39 @@ components:
           type: string
           format: date-time
           readOnly: true
+    FileSystemShortcut:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+          readOnly: true
+        path:
+          type: string
+        type:
+          type: string
+          maxLength: 100
+        ref:
+          type:
+          - string
+          - 'null'
+          maxLength: 100
+        href:
+          type:
+          - string
+          - 'null'
+        order:
+          type: integer
+          maximum: 2147483647
+          minimum: -2147483648
+        created_at:
+          type: string
+          format: date-time
+          readOnly: true
+      required:
+      - created_at
+      - id
+      - path
     FileSystemShortcutReorder:
       type: object
       properties:
@@ -562,6 +547,21 @@ components:
           description: IDs of the current user's shortcuts in the desired display order.
       required:
       - ordered_ids
+  parameters:
+    EnvironmentIdPath:
+      in: path
+      name: environment_id
+      required: true
+      schema:
+        type: string
+      description: Deprecated. Use /api/projects/{project_id}/ instead.
+    ProjectIdPath:
+      in: path
+      name: project_id
+      required: true
+      schema:
+        type: string
+      description: Project ID of the project you're trying to access. To find the ID of the project, make a call to /api/projects/.
   securitySchemes:
     PersonalAPIKeyAuth:
       type: http

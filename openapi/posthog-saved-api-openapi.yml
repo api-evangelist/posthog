@@ -362,6 +362,150 @@ paths:
       x-summary-source: derived
 components:
   schemas:
+    RoleAtOrganizationEnum:
+      enum:
+      - engineering
+      - data
+      - product
+      - founder
+      - leadership
+      - marketing
+      - sales
+      - other
+      type: string
+      description: '* `engineering` - Engineering
+
+        * `data` - Data
+
+        * `product` - Product Management
+
+        * `founder` - Founder
+
+        * `leadership` - Leadership
+
+        * `marketing` - Marketing
+
+        * `sales` - Sales / Success
+
+        * `other` - Other'
+    HeatmapScreenshotResponseTypeEnum:
+      enum:
+      - screenshot
+      - iframe
+      - recording
+      type: string
+      description: '* `screenshot` - Screenshot
+
+        * `iframe` - Iframe
+
+        * `recording` - Recording'
+    PatchedHeatmapScreenshotResponse:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+          readOnly: true
+        short_id:
+          type: string
+          readOnly: true
+        name:
+          type:
+          - string
+          - 'null'
+          maxLength: 400
+        url:
+          type: string
+          format: uri
+          maxLength: 2000
+        data_url:
+          type:
+          - string
+          - 'null'
+          format: uri
+          description: URL for fetching heatmap data
+          maxLength: 2000
+        target_widths: {}
+        type:
+          $ref: '#/components/schemas/HeatmapScreenshotResponseTypeEnum'
+        status:
+          allOf:
+          - $ref: '#/components/schemas/HeatmapScreenshotResponseStatusEnum'
+          readOnly: true
+        has_content:
+          type: boolean
+          readOnly: true
+        snapshots:
+          type: array
+          items:
+            type: object
+            additionalProperties: true
+          readOnly: true
+        deleted:
+          type: boolean
+        created_by:
+          allOf:
+          - $ref: '#/components/schemas/UserBasic'
+          readOnly: true
+        created_at:
+          type: string
+          format: date-time
+          readOnly: true
+        updated_at:
+          type: string
+          format: date-time
+          readOnly: true
+        exception:
+          type:
+          - string
+          - 'null'
+          readOnly: true
+    UserBasic:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        uuid:
+          type: string
+          format: uuid
+          readOnly: true
+        distinct_id:
+          type:
+          - string
+          - 'null'
+          maxLength: 200
+        first_name:
+          type: string
+          maxLength: 150
+        last_name:
+          type: string
+          maxLength: 150
+        email:
+          type: string
+          format: email
+          title: Email address
+          maxLength: 254
+        is_email_verified:
+          type:
+          - boolean
+          - 'null'
+        hedgehog_config:
+          type:
+          - object
+          - 'null'
+          additionalProperties: true
+          readOnly: true
+        role_at_organization:
+          oneOf:
+          - $ref: '#/components/schemas/RoleAtOrganizationEnum'
+          - $ref: '#/components/schemas/BlankEnum'
+          - $ref: '#/components/schemas/NullEnum'
+      required:
+      - email
+      - hedgehog_config
+      - id
+      - uuid
     PaginatedHeatmapScreenshotResponseList:
       type: object
       required:
@@ -387,9 +531,17 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/HeatmapScreenshotResponse'
-    NullEnum:
+    HeatmapScreenshotResponseStatusEnum:
       enum:
-      - null
+      - processing
+      - completed
+      - failed
+      type: string
+      description: '* `processing` - Processing
+
+        * `completed` - Completed
+
+        * `failed` - Failed'
     HeatmapScreenshotResponse:
       type: object
       properties:
@@ -462,164 +614,12 @@ components:
       - status
       - updated_at
       - url
-    HeatmapScreenshotResponseTypeEnum:
+    NullEnum:
       enum:
-      - screenshot
-      - iframe
-      - recording
-      type: string
-      description: '* `screenshot` - Screenshot
-
-        * `iframe` - Iframe
-
-        * `recording` - Recording'
-    UserBasic:
-      type: object
-      properties:
-        id:
-          type: integer
-          readOnly: true
-        uuid:
-          type: string
-          format: uuid
-          readOnly: true
-        distinct_id:
-          type:
-          - string
-          - 'null'
-          maxLength: 200
-        first_name:
-          type: string
-          maxLength: 150
-        last_name:
-          type: string
-          maxLength: 150
-        email:
-          type: string
-          format: email
-          title: Email address
-          maxLength: 254
-        is_email_verified:
-          type:
-          - boolean
-          - 'null'
-        hedgehog_config:
-          type:
-          - object
-          - 'null'
-          additionalProperties: true
-          readOnly: true
-        role_at_organization:
-          oneOf:
-          - $ref: '#/components/schemas/RoleAtOrganizationEnum'
-          - $ref: '#/components/schemas/BlankEnum'
-          - $ref: '#/components/schemas/NullEnum'
-      required:
-      - email
-      - hedgehog_config
-      - id
-      - uuid
+      - null
     BlankEnum:
       enum:
       - ''
-    HeatmapScreenshotResponseStatusEnum:
-      enum:
-      - processing
-      - completed
-      - failed
-      type: string
-      description: '* `processing` - Processing
-
-        * `completed` - Completed
-
-        * `failed` - Failed'
-    RoleAtOrganizationEnum:
-      enum:
-      - engineering
-      - data
-      - product
-      - founder
-      - leadership
-      - marketing
-      - sales
-      - other
-      type: string
-      description: '* `engineering` - Engineering
-
-        * `data` - Data
-
-        * `product` - Product Management
-
-        * `founder` - Founder
-
-        * `leadership` - Leadership
-
-        * `marketing` - Marketing
-
-        * `sales` - Sales / Success
-
-        * `other` - Other'
-    PatchedHeatmapScreenshotResponse:
-      type: object
-      properties:
-        id:
-          type: string
-          format: uuid
-          readOnly: true
-        short_id:
-          type: string
-          readOnly: true
-        name:
-          type:
-          - string
-          - 'null'
-          maxLength: 400
-        url:
-          type: string
-          format: uri
-          maxLength: 2000
-        data_url:
-          type:
-          - string
-          - 'null'
-          format: uri
-          description: URL for fetching heatmap data
-          maxLength: 2000
-        target_widths: {}
-        type:
-          $ref: '#/components/schemas/HeatmapScreenshotResponseTypeEnum'
-        status:
-          allOf:
-          - $ref: '#/components/schemas/HeatmapScreenshotResponseStatusEnum'
-          readOnly: true
-        has_content:
-          type: boolean
-          readOnly: true
-        snapshots:
-          type: array
-          items:
-            type: object
-            additionalProperties: true
-          readOnly: true
-        deleted:
-          type: boolean
-        created_by:
-          allOf:
-          - $ref: '#/components/schemas/UserBasic'
-          readOnly: true
-        created_at:
-          type: string
-          format: date-time
-          readOnly: true
-        updated_at:
-          type: string
-          format: date-time
-          readOnly: true
-        exception:
-          type:
-          - string
-          - 'null'
-          readOnly: true
   parameters:
     EnvironmentIdPath:
       in: path

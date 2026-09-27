@@ -118,6 +118,32 @@ paths:
       x-summary-source: derived
 components:
   schemas:
+    AppMetricSeries:
+      type: object
+      properties:
+        name:
+          type: string
+        values:
+          type: array
+          items:
+            type: integer
+      required:
+      - name
+      - values
+    AppMetricsResponse:
+      type: object
+      properties:
+        labels:
+          type: array
+          items:
+            type: string
+        series:
+          type: array
+          items:
+            $ref: '#/components/schemas/AppMetricSeries'
+      required:
+      - labels
+      - series
     EventFilterConfigModeEnum:
       enum:
       - disabled
@@ -163,32 +189,6 @@ components:
             type: integer
       required:
       - totals
-    AppMetricsResponse:
-      type: object
-      properties:
-        labels:
-          type: array
-          items:
-            type: string
-        series:
-          type: array
-          items:
-            $ref: '#/components/schemas/AppMetricSeries'
-      required:
-      - labels
-      - series
-    AppMetricSeries:
-      type: object
-      properties:
-        name:
-          type: string
-        values:
-          type: array
-          items:
-            type: integer
-      required:
-      - name
-      - values
   parameters:
     ProjectIdPath:
       in: path

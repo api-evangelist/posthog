@@ -360,6 +360,139 @@ components:
         * `remove` - remove
 
         * `set` - set'
+    BulkUpdateTagsResponse:
+      type: object
+      properties:
+        updated:
+          type: array
+          items:
+            $ref: '#/components/schemas/BulkUpdateTagsItem'
+        skipped:
+          type: array
+          items:
+            $ref: '#/components/schemas/BulkUpdateTagsError'
+      required:
+      - skipped
+      - updated
+    DateOperatorEnum:
+      enum:
+      - is_date_exact
+      - is_date_before
+      - is_date_after
+      type: string
+      description: '* `is_date_exact` - is_date_exact
+
+        * `is_date_before` - is_date_before
+
+        * `is_date_after` - is_date_after'
+    PaginatedActionList:
+      type: object
+      required:
+      - count
+      - results
+      properties:
+        count:
+          type: integer
+          example: 123
+        next:
+          type:
+          - string
+          - 'null'
+          format: uri
+          example: http://api.example.org/accounts/?offset=400&limit=100
+        previous:
+          type:
+          - string
+          - 'null'
+          format: uri
+          example: http://api.example.org/accounts/?offset=200&limit=100
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/Action'
+    ActionStepJSON:
+      type: object
+      properties:
+        event:
+          type:
+          - string
+          - 'null'
+          description: Event name to match (e.g. '$pageview', '$autocapture', or a custom event name).
+        properties:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/ActionStepPropertyFilter'
+          description: Event or person property filters. Each item should have 'key' (string), 'value' (string, number, boolean, or array), optional 'operator' (exact, is_not, is_set, is_not_set, icontains, not_icontains, regex, not_regex, gt, gte, lt, lte), and optional 'type' (event, person).
+        selector:
+          type:
+          - string
+          - 'null'
+          description: CSS selector to match the target element (e.g. 'div > button.cta').
+        selector_regex:
+          type:
+          - string
+          - 'null'
+          readOnly: true
+        tag_name:
+          type:
+          - string
+          - 'null'
+          description: HTML tag name to match (e.g. "button", "a", "input").
+        text:
+          type:
+          - string
+          - 'null'
+          description: Element text content to match.
+        text_matching:
+          description: 'How to match the text value. Defaults to exact.
+
+
+            * `contains` - contains
+
+            * `regex` - regex
+
+            * `exact` - exact'
+          oneOf:
+          - $ref: '#/components/schemas/ActionStepMatchingEnum'
+          - $ref: '#/components/schemas/NullEnum'
+        href:
+          type:
+          - string
+          - 'null'
+          description: Link href attribute to match.
+        href_matching:
+          description: 'How to match the href value. Defaults to exact.
+
+
+            * `contains` - contains
+
+            * `regex` - regex
+
+            * `exact` - exact'
+          oneOf:
+          - $ref: '#/components/schemas/ActionStepMatchingEnum'
+          - $ref: '#/components/schemas/NullEnum'
+        url:
+          type:
+          - string
+          - 'null'
+          description: Page URL to match.
+        url_matching:
+          description: 'How to match the URL value. Defaults to contains.
+
+
+            * `contains` - contains
+
+            * `regex` - regex
+
+            * `exact` - exact'
+          oneOf:
+          - $ref: '#/components/schemas/ActionStepMatchingEnum'
+          - $ref: '#/components/schemas/NullEnum'
+      required:
+      - selector_regex
     NumericPropertyFilter:
       type: object
       description: Matches numeric values with comparison operators.
@@ -462,576 +595,32 @@ components:
       required:
       - id
       - reason
-    ExistenceOperatorEnum:
+    RoleAtOrganizationEnum:
       enum:
-      - is_set
-      - is_not_set
+      - engineering
+      - data
+      - product
+      - founder
+      - leadership
+      - marketing
+      - sales
+      - other
       type: string
-      description: '* `is_set` - is_set
+      description: '* `engineering` - Engineering
 
-        * `is_not_set` - is_not_set'
-    UserBasic:
-      type: object
-      properties:
-        id:
-          type: integer
-          readOnly: true
-        uuid:
-          type: string
-          format: uuid
-          readOnly: true
-        distinct_id:
-          type:
-          - string
-          - 'null'
-          maxLength: 200
-        first_name:
-          type: string
-          maxLength: 150
-        last_name:
-          type: string
-          maxLength: 150
-        email:
-          type: string
-          format: email
-          title: Email address
-          maxLength: 254
-        is_email_verified:
-          type:
-          - boolean
-          - 'null'
-        hedgehog_config:
-          type:
-          - object
-          - 'null'
-          additionalProperties: true
-          readOnly: true
-        role_at_organization:
-          oneOf:
-          - $ref: '#/components/schemas/RoleAtOrganizationEnum'
-          - $ref: '#/components/schemas/BlankEnum'
-          - $ref: '#/components/schemas/NullEnum'
-      required:
-      - email
-      - hedgehog_config
-      - id
-      - uuid
-    Action:
-      type: object
-      description: Serializer mixin that handles tags for objects.
-      properties:
-        id:
-          type: integer
-          readOnly: true
-        name:
-          type:
-          - string
-          - 'null'
-          description: Name of the action (must be unique within the project).
-          maxLength: 400
-        description:
-          type: string
-          description: Human-readable description of what this action represents.
-        tags:
-          type: array
-          items: {}
-        post_to_slack:
-          type: boolean
-          description: Whether to post a notification to Slack when this action is triggered.
-        slack_message_format:
-          type: string
-          description: Custom Slack message format. Supports templates with event properties.
-          maxLength: 1200
-        steps:
-          type: array
-          items:
-            $ref: '#/components/schemas/ActionStepJSON'
-          description: Action steps defining trigger conditions. Each step matches events by name, properties, URL, or element attributes. Multiple steps are OR-ed together.
-        created_at:
-          type: string
-          format: date-time
-          readOnly: true
-        created_by:
-          allOf:
-          - $ref: '#/components/schemas/UserBasic'
-          readOnly: true
-        deleted:
-          type: boolean
-        is_calculating:
-          type: boolean
-          readOnly: true
-        last_calculated_at:
-          type: string
-          format: date-time
-        team_id:
-          type: integer
-          readOnly: true
-        is_action:
-          type: boolean
-          readOnly: true
-          default: true
-        bytecode_error:
-          type:
-          - string
-          - 'null'
-          readOnly: true
-        pinned_at:
-          type:
-          - string
-          - 'null'
-          format: date-time
-          description: ISO 8601 timestamp when the action was pinned, or null if not pinned. Set any value to pin, null to unpin.
-        creation_context:
-          type:
-          - string
-          - 'null'
-          readOnly: true
-        _create_in_folder:
-          type: string
-          writeOnly: true
-          title: ' create in folder'
-        user_access_level:
-          type:
-          - string
-          - 'null'
-          readOnly: true
-          description: The effective access level the user has for this object
-      required:
-      - bytecode_error
-      - created_at
-      - created_by
-      - creation_context
-      - id
-      - is_action
-      - is_calculating
-      - team_id
-      - user_access_level
-    ExistencePropertyFilter:
-      type: object
-      description: Checks whether a property is set or not, without comparing values.
-      properties:
-        key:
-          type: string
-          description: Key of the property you're filtering on. For example `email` or `$current_url`.
-        type:
-          allOf:
-          - $ref: '#/components/schemas/PropertyFilterTypeEnum'
-          default: event
-          description: 'Property type (event, person, session, etc.).
+        * `data` - Data
 
+        * `product` - Product Management
 
-            * `event` - event
+        * `founder` - Founder
 
-            * `event_metadata` - event_metadata
+        * `leadership` - Leadership
 
-            * `feature` - feature
+        * `marketing` - Marketing
 
-            * `person` - person
+        * `sales` - Sales / Success
 
-            * `cohort` - cohort
-
-            * `element` - element
-
-            * `static-cohort` - static-cohort
-
-            * `dynamic-cohort` - dynamic-cohort
-
-            * `precalculated-cohort` - precalculated-cohort
-
-            * `group` - group
-
-            * `recording` - recording
-
-            * `log_entry` - log_entry
-
-            * `behavioral` - behavioral
-
-            * `session` - session
-
-            * `hogql` - hogql
-
-            * `data_warehouse` - data_warehouse
-
-            * `data_warehouse_person_property` - data_warehouse_person_property
-
-            * `error_tracking_issue` - error_tracking_issue
-
-            * `log` - log
-
-            * `log_attribute` - log_attribute
-
-            * `log_resource_attribute` - log_resource_attribute
-
-            * `span` - span
-
-            * `span_attribute` - span_attribute
-
-            * `span_resource_attribute` - span_resource_attribute
-
-            * `revenue_analytics` - revenue_analytics
-
-            * `flag` - flag
-
-            * `workflow_variable` - workflow_variable'
-        operator:
-          allOf:
-          - $ref: '#/components/schemas/ExistenceOperatorEnum'
-          description: 'Existence check operator.
-
-
-            * `is_set` - is_set
-
-            * `is_not_set` - is_not_set'
-      required:
-      - key
-      - operator
-    PatchedAction:
-      type: object
-      description: Serializer mixin that handles tags for objects.
-      properties:
-        id:
-          type: integer
-          readOnly: true
-        name:
-          type:
-          - string
-          - 'null'
-          description: Name of the action (must be unique within the project).
-          maxLength: 400
-        description:
-          type: string
-          description: Human-readable description of what this action represents.
-        tags:
-          type: array
-          items: {}
-        post_to_slack:
-          type: boolean
-          description: Whether to post a notification to Slack when this action is triggered.
-        slack_message_format:
-          type: string
-          description: Custom Slack message format. Supports templates with event properties.
-          maxLength: 1200
-        steps:
-          type: array
-          items:
-            $ref: '#/components/schemas/ActionStepJSON'
-          description: Action steps defining trigger conditions. Each step matches events by name, properties, URL, or element attributes. Multiple steps are OR-ed together.
-        created_at:
-          type: string
-          format: date-time
-          readOnly: true
-        created_by:
-          allOf:
-          - $ref: '#/components/schemas/UserBasic'
-          readOnly: true
-        deleted:
-          type: boolean
-        is_calculating:
-          type: boolean
-          readOnly: true
-        last_calculated_at:
-          type: string
-          format: date-time
-        team_id:
-          type: integer
-          readOnly: true
-        is_action:
-          type: boolean
-          readOnly: true
-          default: true
-        bytecode_error:
-          type:
-          - string
-          - 'null'
-          readOnly: true
-        pinned_at:
-          type:
-          - string
-          - 'null'
-          format: date-time
-          description: ISO 8601 timestamp when the action was pinned, or null if not pinned. Set any value to pin, null to unpin.
-        creation_context:
-          type:
-          - string
-          - 'null'
-          readOnly: true
-        _create_in_folder:
-          type: string
-          writeOnly: true
-          title: ' create in folder'
-        user_access_level:
-          type:
-          - string
-          - 'null'
-          readOnly: true
-          description: The effective access level the user has for this object
-    DateOperatorEnum:
-      enum:
-      - is_date_exact
-      - is_date_before
-      - is_date_after
-      type: string
-      description: '* `is_date_exact` - is_date_exact
-
-        * `is_date_before` - is_date_before
-
-        * `is_date_after` - is_date_after'
-    NullEnum:
-      enum:
-      - null
-    BulkUpdateTagsItem:
-      type: object
-      properties:
-        id:
-          type: integer
-        tags:
-          type: array
-          items:
-            type: string
-      required:
-      - id
-      - tags
-    ActionStepJSON:
-      type: object
-      properties:
-        event:
-          type:
-          - string
-          - 'null'
-          description: Event name to match (e.g. '$pageview', '$autocapture', or a custom event name).
-        properties:
-          type:
-          - array
-          - 'null'
-          items:
-            $ref: '#/components/schemas/ActionStepPropertyFilter'
-          description: Event or person property filters. Each item should have 'key' (string), 'value' (string, number, boolean, or array), optional 'operator' (exact, is_not, is_set, is_not_set, icontains, not_icontains, regex, not_regex, gt, gte, lt, lte), and optional 'type' (event, person).
-        selector:
-          type:
-          - string
-          - 'null'
-          description: CSS selector to match the target element (e.g. 'div > button.cta').
-        selector_regex:
-          type:
-          - string
-          - 'null'
-          readOnly: true
-        tag_name:
-          type:
-          - string
-          - 'null'
-          description: HTML tag name to match (e.g. "button", "a", "input").
-        text:
-          type:
-          - string
-          - 'null'
-          description: Element text content to match.
-        text_matching:
-          description: 'How to match the text value. Defaults to exact.
-
-
-            * `contains` - contains
-
-            * `regex` - regex
-
-            * `exact` - exact'
-          oneOf:
-          - $ref: '#/components/schemas/ActionStepMatchingEnum'
-          - $ref: '#/components/schemas/NullEnum'
-        href:
-          type:
-          - string
-          - 'null'
-          description: Link href attribute to match.
-        href_matching:
-          description: 'How to match the href value. Defaults to exact.
-
-
-            * `contains` - contains
-
-            * `regex` - regex
-
-            * `exact` - exact'
-          oneOf:
-          - $ref: '#/components/schemas/ActionStepMatchingEnum'
-          - $ref: '#/components/schemas/NullEnum'
-        url:
-          type:
-          - string
-          - 'null'
-          description: Page URL to match.
-        url_matching:
-          description: 'How to match the URL value. Defaults to contains.
-
-
-            * `contains` - contains
-
-            * `regex` - regex
-
-            * `exact` - exact'
-          oneOf:
-          - $ref: '#/components/schemas/ActionStepMatchingEnum'
-          - $ref: '#/components/schemas/NullEnum'
-      required:
-      - selector_regex
-    BulkUpdateTagsRequest:
-      type: object
-      properties:
-        ids:
-          type: array
-          items:
-            type: integer
-          description: List of object IDs to update tags on.
-          maxItems: 500
-        action:
-          allOf:
-          - $ref: '#/components/schemas/ActionEnum'
-          description: '''add'' merges with existing tags, ''remove'' deletes specific tags, ''set'' replaces all tags.
-
-
-            * `add` - add
-
-            * `remove` - remove
-
-            * `set` - set'
-        tags:
-          type: array
-          items:
-            type: string
-          description: Tag names to add, remove, or set.
-      required:
-      - action
-      - ids
-      - tags
-    ActionStepMatchingEnum:
-      enum:
-      - contains
-      - regex
-      - exact
-      type: string
-      description: '* `contains` - contains
-
-        * `regex` - regex
-
-        * `exact` - exact'
-    ActionReference:
-      type: object
-      properties:
-        type:
-          type: string
-          description: 'Resource type: insight, experiment, cohort, or hog_function'
-        id:
-          type: string
-          description: Resource ID (integer or UUID depending on type)
-        name:
-          type: string
-          description: Resource name
-        url:
-          type: string
-          description: Relative URL to the resource
-        created_at:
-          type:
-          - string
-          - 'null'
-          format: date-time
-          description: When the resource was created
-        created_by:
-          allOf:
-          - $ref: '#/components/schemas/UserBasic'
-          description: User who created the resource
-      required:
-      - created_at
-      - created_by
-      - id
-      - name
-      - type
-      - url
-    BlankEnum:
-      enum:
-      - ''
-    PropertyFilterTypeEnum:
-      enum:
-      - event
-      - event_metadata
-      - feature
-      - person
-      - cohort
-      - element
-      - static-cohort
-      - dynamic-cohort
-      - precalculated-cohort
-      - group
-      - recording
-      - log_entry
-      - behavioral
-      - session
-      - hogql
-      - data_warehouse
-      - data_warehouse_person_property
-      - error_tracking_issue
-      - log
-      - log_attribute
-      - log_resource_attribute
-      - span
-      - span_attribute
-      - span_resource_attribute
-      - revenue_analytics
-      - flag
-      - workflow_variable
-      type: string
-      description: '* `event` - event
-
-        * `event_metadata` - event_metadata
-
-        * `feature` - feature
-
-        * `person` - person
-
-        * `cohort` - cohort
-
-        * `element` - element
-
-        * `static-cohort` - static-cohort
-
-        * `dynamic-cohort` - dynamic-cohort
-
-        * `precalculated-cohort` - precalculated-cohort
-
-        * `group` - group
-
-        * `recording` - recording
-
-        * `log_entry` - log_entry
-
-        * `behavioral` - behavioral
-
-        * `session` - session
-
-        * `hogql` - hogql
-
-        * `data_warehouse` - data_warehouse
-
-        * `data_warehouse_person_property` - data_warehouse_person_property
-
-        * `error_tracking_issue` - error_tracking_issue
-
-        * `log` - log
-
-        * `log_attribute` - log_attribute
-
-        * `log_resource_attribute` - log_resource_attribute
-
-        * `span` - span
-
-        * `span_attribute` - span_attribute
-
-        * `span_resource_attribute` - span_resource_attribute
-
-        * `revenue_analytics` - revenue_analytics
-
-        * `flag` - flag
-
-        * `workflow_variable` - workflow_variable'
+        * `other` - Other'
     StringPropertyFilter:
       type: object
       description: Matches string values with text-oriented operators.
@@ -1143,41 +732,391 @@ components:
         * `regex` - regex
 
         * `not_regex` - not_regex'
-    BulkUpdateTagsResponse:
+    ExistencePropertyFilter:
+      type: object
+      description: Checks whether a property is set or not, without comparing values.
+      properties:
+        key:
+          type: string
+          description: Key of the property you're filtering on. For example `email` or `$current_url`.
+        type:
+          allOf:
+          - $ref: '#/components/schemas/PropertyFilterTypeEnum'
+          default: event
+          description: 'Property type (event, person, session, etc.).
+
+
+            * `event` - event
+
+            * `event_metadata` - event_metadata
+
+            * `feature` - feature
+
+            * `person` - person
+
+            * `cohort` - cohort
+
+            * `element` - element
+
+            * `static-cohort` - static-cohort
+
+            * `dynamic-cohort` - dynamic-cohort
+
+            * `precalculated-cohort` - precalculated-cohort
+
+            * `group` - group
+
+            * `recording` - recording
+
+            * `log_entry` - log_entry
+
+            * `behavioral` - behavioral
+
+            * `session` - session
+
+            * `hogql` - hogql
+
+            * `data_warehouse` - data_warehouse
+
+            * `data_warehouse_person_property` - data_warehouse_person_property
+
+            * `error_tracking_issue` - error_tracking_issue
+
+            * `log` - log
+
+            * `log_attribute` - log_attribute
+
+            * `log_resource_attribute` - log_resource_attribute
+
+            * `span` - span
+
+            * `span_attribute` - span_attribute
+
+            * `span_resource_attribute` - span_resource_attribute
+
+            * `revenue_analytics` - revenue_analytics
+
+            * `flag` - flag
+
+            * `workflow_variable` - workflow_variable'
+        operator:
+          allOf:
+          - $ref: '#/components/schemas/ExistenceOperatorEnum'
+          description: 'Existence check operator.
+
+
+            * `is_set` - is_set
+
+            * `is_not_set` - is_not_set'
+      required:
+      - key
+      - operator
+    NullEnum:
+      enum:
+      - null
+    ActionReference:
       type: object
       properties:
-        updated:
-          type: array
-          items:
-            $ref: '#/components/schemas/BulkUpdateTagsItem'
-        skipped:
-          type: array
-          items:
-            $ref: '#/components/schemas/BulkUpdateTagsError'
+        type:
+          type: string
+          description: 'Resource type: insight, experiment, cohort, or hog_function'
+        id:
+          type: string
+          description: Resource ID (integer or UUID depending on type)
+        name:
+          type: string
+          description: Resource name
+        url:
+          type: string
+          description: Relative URL to the resource
+        created_at:
+          type:
+          - string
+          - 'null'
+          format: date-time
+          description: When the resource was created
+        created_by:
+          allOf:
+          - $ref: '#/components/schemas/UserBasic'
+          description: User who created the resource
       required:
-      - skipped
-      - updated
-    ActionStepPropertyFilter:
-      oneOf:
-      - $ref: '#/components/schemas/StringPropertyFilter'
-      - $ref: '#/components/schemas/NumericPropertyFilter'
-      - $ref: '#/components/schemas/ArrayPropertyFilter'
-      - $ref: '#/components/schemas/DatePropertyFilter'
-      - $ref: '#/components/schemas/ExistencePropertyFilter'
-    ArrayPropertyFilterOperatorEnum:
+      - created_at
+      - created_by
+      - id
+      - name
+      - type
+      - url
+    BlankEnum:
+      enum:
+      - ''
+    Action:
+      type: object
+      description: Serializer mixin that handles tags for objects.
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        name:
+          type:
+          - string
+          - 'null'
+          description: Name of the action (must be unique within the project).
+          maxLength: 400
+        description:
+          type: string
+          description: Human-readable description of what this action represents.
+        tags:
+          type: array
+          items: {}
+        post_to_slack:
+          type: boolean
+          description: Whether to post a notification to Slack when this action is triggered.
+        slack_message_format:
+          type: string
+          description: Custom Slack message format. Supports templates with event properties.
+          maxLength: 1200
+        steps:
+          type: array
+          items:
+            $ref: '#/components/schemas/ActionStepJSON'
+          description: Action steps defining trigger conditions. Each step matches events by name, properties, URL, or element attributes. Multiple steps are OR-ed together.
+        created_at:
+          type: string
+          format: date-time
+          readOnly: true
+        created_by:
+          allOf:
+          - $ref: '#/components/schemas/UserBasic'
+          readOnly: true
+        deleted:
+          type: boolean
+        is_calculating:
+          type: boolean
+          readOnly: true
+        last_calculated_at:
+          type: string
+          format: date-time
+        team_id:
+          type: integer
+          readOnly: true
+        is_action:
+          type: boolean
+          readOnly: true
+          default: true
+        bytecode_error:
+          type:
+          - string
+          - 'null'
+          readOnly: true
+        pinned_at:
+          type:
+          - string
+          - 'null'
+          format: date-time
+          description: ISO 8601 timestamp when the action was pinned, or null if not pinned. Set any value to pin, null to unpin.
+        creation_context:
+          type:
+          - string
+          - 'null'
+          readOnly: true
+        _create_in_folder:
+          type: string
+          writeOnly: true
+          title: ' create in folder'
+        user_access_level:
+          type:
+          - string
+          - 'null'
+          readOnly: true
+          description: The effective access level the user has for this object
+      required:
+      - bytecode_error
+      - created_at
+      - created_by
+      - creation_context
+      - id
+      - is_action
+      - is_calculating
+      - team_id
+      - user_access_level
+    NumericPropertyFilterOperatorEnum:
       enum:
       - exact
       - is_not
-      - in
-      - not_in
+      - gt
+      - lt
+      - gte
+      - lte
       type: string
       description: '* `exact` - exact
 
         * `is_not` - is_not
 
-        * `in` - in
+        * `gt` - gt
 
-        * `not_in` - not_in'
+        * `lt` - lt
+
+        * `gte` - gte
+
+        * `lte` - lte'
+    PropertyFilterTypeEnum:
+      enum:
+      - event
+      - event_metadata
+      - feature
+      - person
+      - cohort
+      - element
+      - static-cohort
+      - dynamic-cohort
+      - precalculated-cohort
+      - group
+      - recording
+      - log_entry
+      - behavioral
+      - session
+      - hogql
+      - data_warehouse
+      - data_warehouse_person_property
+      - error_tracking_issue
+      - log
+      - log_attribute
+      - log_resource_attribute
+      - span
+      - span_attribute
+      - span_resource_attribute
+      - revenue_analytics
+      - flag
+      - workflow_variable
+      type: string
+      description: '* `event` - event
+
+        * `event_metadata` - event_metadata
+
+        * `feature` - feature
+
+        * `person` - person
+
+        * `cohort` - cohort
+
+        * `element` - element
+
+        * `static-cohort` - static-cohort
+
+        * `dynamic-cohort` - dynamic-cohort
+
+        * `precalculated-cohort` - precalculated-cohort
+
+        * `group` - group
+
+        * `recording` - recording
+
+        * `log_entry` - log_entry
+
+        * `behavioral` - behavioral
+
+        * `session` - session
+
+        * `hogql` - hogql
+
+        * `data_warehouse` - data_warehouse
+
+        * `data_warehouse_person_property` - data_warehouse_person_property
+
+        * `error_tracking_issue` - error_tracking_issue
+
+        * `log` - log
+
+        * `log_attribute` - log_attribute
+
+        * `log_resource_attribute` - log_resource_attribute
+
+        * `span` - span
+
+        * `span_attribute` - span_attribute
+
+        * `span_resource_attribute` - span_resource_attribute
+
+        * `revenue_analytics` - revenue_analytics
+
+        * `flag` - flag
+
+        * `workflow_variable` - workflow_variable'
+    BulkUpdateTagsRequest:
+      type: object
+      properties:
+        ids:
+          type: array
+          items:
+            type: integer
+          description: List of object IDs to update tags on.
+          maxItems: 500
+        action:
+          allOf:
+          - $ref: '#/components/schemas/ActionEnum'
+          description: '''add'' merges with existing tags, ''remove'' deletes specific tags, ''set'' replaces all tags.
+
+
+            * `add` - add
+
+            * `remove` - remove
+
+            * `set` - set'
+        tags:
+          type: array
+          items:
+            type: string
+          description: Tag names to add, remove, or set.
+      required:
+      - action
+      - ids
+      - tags
+    UserBasic:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        uuid:
+          type: string
+          format: uuid
+          readOnly: true
+        distinct_id:
+          type:
+          - string
+          - 'null'
+          maxLength: 200
+        first_name:
+          type: string
+          maxLength: 150
+        last_name:
+          type: string
+          maxLength: 150
+        email:
+          type: string
+          format: email
+          title: Email address
+          maxLength: 254
+        is_email_verified:
+          type:
+          - boolean
+          - 'null'
+        hedgehog_config:
+          type:
+          - object
+          - 'null'
+          additionalProperties: true
+          readOnly: true
+        role_at_organization:
+          oneOf:
+          - $ref: '#/components/schemas/RoleAtOrganizationEnum'
+          - $ref: '#/components/schemas/BlankEnum'
+          - $ref: '#/components/schemas/NullEnum'
+      required:
+      - email
+      - hedgehog_config
+      - id
+      - uuid
     DatePropertyFilter:
       type: object
       description: Matches date/datetime values with date-specific operators.
@@ -1263,31 +1202,124 @@ components:
       required:
       - key
       - value
-    PaginatedActionList:
+    PatchedAction:
       type: object
-      required:
-      - count
-      - results
+      description: Serializer mixin that handles tags for objects.
       properties:
-        count:
+        id:
           type: integer
-          example: 123
-        next:
+          readOnly: true
+        name:
           type:
           - string
           - 'null'
-          format: uri
-          example: http://api.example.org/accounts/?offset=400&limit=100
-        previous:
-          type:
-          - string
-          - 'null'
-          format: uri
-          example: http://api.example.org/accounts/?offset=200&limit=100
-        results:
+          description: Name of the action (must be unique within the project).
+          maxLength: 400
+        description:
+          type: string
+          description: Human-readable description of what this action represents.
+        tags:
+          type: array
+          items: {}
+        post_to_slack:
+          type: boolean
+          description: Whether to post a notification to Slack when this action is triggered.
+        slack_message_format:
+          type: string
+          description: Custom Slack message format. Supports templates with event properties.
+          maxLength: 1200
+        steps:
           type: array
           items:
-            $ref: '#/components/schemas/Action'
+            $ref: '#/components/schemas/ActionStepJSON'
+          description: Action steps defining trigger conditions. Each step matches events by name, properties, URL, or element attributes. Multiple steps are OR-ed together.
+        created_at:
+          type: string
+          format: date-time
+          readOnly: true
+        created_by:
+          allOf:
+          - $ref: '#/components/schemas/UserBasic'
+          readOnly: true
+        deleted:
+          type: boolean
+        is_calculating:
+          type: boolean
+          readOnly: true
+        last_calculated_at:
+          type: string
+          format: date-time
+        team_id:
+          type: integer
+          readOnly: true
+        is_action:
+          type: boolean
+          readOnly: true
+          default: true
+        bytecode_error:
+          type:
+          - string
+          - 'null'
+          readOnly: true
+        pinned_at:
+          type:
+          - string
+          - 'null'
+          format: date-time
+          description: ISO 8601 timestamp when the action was pinned, or null if not pinned. Set any value to pin, null to unpin.
+        creation_context:
+          type:
+          - string
+          - 'null'
+          readOnly: true
+        _create_in_folder:
+          type: string
+          writeOnly: true
+          title: ' create in folder'
+        user_access_level:
+          type:
+          - string
+          - 'null'
+          readOnly: true
+          description: The effective access level the user has for this object
+    BulkUpdateTagsItem:
+      type: object
+      properties:
+        id:
+          type: integer
+        tags:
+          type: array
+          items:
+            type: string
+      required:
+      - id
+      - tags
+    ActionStepPropertyFilter:
+      oneOf:
+      - $ref: '#/components/schemas/StringPropertyFilter'
+      - $ref: '#/components/schemas/NumericPropertyFilter'
+      - $ref: '#/components/schemas/ArrayPropertyFilter'
+      - $ref: '#/components/schemas/DatePropertyFilter'
+      - $ref: '#/components/schemas/ExistencePropertyFilter'
+    ExistenceOperatorEnum:
+      enum:
+      - is_set
+      - is_not_set
+      type: string
+      description: '* `is_set` - is_set
+
+        * `is_not_set` - is_not_set'
+    ActionStepMatchingEnum:
+      enum:
+      - contains
+      - regex
+      - exact
+      type: string
+      description: '* `contains` - contains
+
+        * `regex` - regex
+
+        * `exact` - exact'
     ArrayPropertyFilter:
       type: object
       description: Matches against a list of values (OR semantics for exact/is_not, set membership for in/not_in).
@@ -1377,52 +1409,20 @@ components:
       required:
       - key
       - value
-    NumericPropertyFilterOperatorEnum:
+    ArrayPropertyFilterOperatorEnum:
       enum:
       - exact
       - is_not
-      - gt
-      - lt
-      - gte
-      - lte
+      - in
+      - not_in
       type: string
       description: '* `exact` - exact
 
         * `is_not` - is_not
 
-        * `gt` - gt
+        * `in` - in
 
-        * `lt` - lt
-
-        * `gte` - gte
-
-        * `lte` - lte'
-    RoleAtOrganizationEnum:
-      enum:
-      - engineering
-      - data
-      - product
-      - founder
-      - leadership
-      - marketing
-      - sales
-      - other
-      type: string
-      description: '* `engineering` - Engineering
-
-        * `data` - Data
-
-        * `product` - Product Management
-
-        * `founder` - Founder
-
-        * `leadership` - Leadership
-
-        * `marketing` - Marketing
-
-        * `sales` - Sales / Success
-
-        * `other` - Other'
+        * `not_in` - not_in'
   parameters:
     ProjectIdPath:
       in: path

@@ -68,9 +68,102 @@ paths:
       x-summary-source: derived
 components:
   schemas:
-    NullEnum:
+    PaginatedDataWarehouseModelPathList:
+      type: object
+      required:
+      - count
+      - results
+      properties:
+        count:
+          type: integer
+          example: 123
+        next:
+          type:
+          - string
+          - 'null'
+          format: uri
+          example: http://api.example.org/accounts/?offset=400&limit=100
+        previous:
+          type:
+          - string
+          - 'null'
+          format: uri
+          example: http://api.example.org/accounts/?offset=200&limit=100
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/DataWarehouseModelPath'
+    DataWarehouseModelPath:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+          readOnly: true
+        path:
+          type: array
+          items:
+            type: string
+          readOnly: true
+        team:
+          type: integer
+        table:
+          type:
+          - string
+          - 'null'
+          format: uuid
+        saved_query:
+          type:
+          - string
+          - 'null'
+          format: uuid
+        created_at:
+          type: string
+          format: date-time
+          readOnly: true
+        created_by:
+          allOf:
+          - $ref: '#/components/schemas/UserBasic'
+          readOnly: true
+        updated_at:
+          type:
+          - string
+          - 'null'
+          format: date-time
+          readOnly: true
+      required:
+      - created_at
+      - created_by
+      - id
+      - path
+      - team
+      - updated_at
+    RoleAtOrganizationEnum:
       enum:
-      - null
+      - engineering
+      - data
+      - product
+      - founder
+      - leadership
+      - marketing
+      - sales
+      - other
+      type: string
+      description: '* `engineering` - Engineering
+
+        * `data` - Data
+
+        * `product` - Product Management
+
+        * `founder` - Founder
+
+        * `leadership` - Leadership
+
+        * `marketing` - Marketing
+
+        * `sales` - Sales / Success
+
+        * `other` - Other'
     UserBasic:
       type: object
       properties:
@@ -117,105 +210,12 @@ components:
       - hedgehog_config
       - id
       - uuid
-    DataWarehouseModelPath:
-      type: object
-      properties:
-        id:
-          type: string
-          format: uuid
-          readOnly: true
-        path:
-          type: array
-          items:
-            type: string
-          readOnly: true
-        team:
-          type: integer
-        table:
-          type:
-          - string
-          - 'null'
-          format: uuid
-        saved_query:
-          type:
-          - string
-          - 'null'
-          format: uuid
-        created_at:
-          type: string
-          format: date-time
-          readOnly: true
-        created_by:
-          allOf:
-          - $ref: '#/components/schemas/UserBasic'
-          readOnly: true
-        updated_at:
-          type:
-          - string
-          - 'null'
-          format: date-time
-          readOnly: true
-      required:
-      - created_at
-      - created_by
-      - id
-      - path
-      - team
-      - updated_at
+    NullEnum:
+      enum:
+      - null
     BlankEnum:
       enum:
       - ''
-    PaginatedDataWarehouseModelPathList:
-      type: object
-      required:
-      - count
-      - results
-      properties:
-        count:
-          type: integer
-          example: 123
-        next:
-          type:
-          - string
-          - 'null'
-          format: uri
-          example: http://api.example.org/accounts/?offset=400&limit=100
-        previous:
-          type:
-          - string
-          - 'null'
-          format: uri
-          example: http://api.example.org/accounts/?offset=200&limit=100
-        results:
-          type: array
-          items:
-            $ref: '#/components/schemas/DataWarehouseModelPath'
-    RoleAtOrganizationEnum:
-      enum:
-      - engineering
-      - data
-      - product
-      - founder
-      - leadership
-      - marketing
-      - sales
-      - other
-      type: string
-      description: '* `engineering` - Engineering
-
-        * `data` - Data
-
-        * `product` - Product Management
-
-        * `founder` - Founder
-
-        * `leadership` - Leadership
-
-        * `marketing` - Marketing
-
-        * `sales` - Sales / Success
-
-        * `other` - Other'
   parameters:
     ProjectIdPath:
       in: path

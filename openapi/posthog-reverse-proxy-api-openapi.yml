@@ -143,6 +143,14 @@ paths:
       summary: Proxy records retry create
       x-summary-source: derived
 components:
+  parameters:
+    OrganizationIdPath:
+      in: path
+      name: organization_id
+      required: true
+      schema:
+        type: string
+      description: ID of the organization you're trying to access. To find the ID of the organization, make a call to /api/organizations/.
   schemas:
     ProxyRecord:
       type: object
@@ -208,19 +216,6 @@ components:
       - status
       - target_cname
       - updated_at
-    ProxyRecordListResponse:
-      type: object
-      properties:
-        results:
-          type: array
-          items:
-            $ref: '#/components/schemas/ProxyRecord'
-        max_proxy_records:
-          type: integer
-          description: Maximum number of proxy records allowed for this organization's current plan.
-      required:
-      - max_proxy_records
-      - results
     ProxyRecordStatusEnum:
       enum:
       - waiting
@@ -244,14 +239,19 @@ components:
         * `deleting` - Deleting
 
         * `timed_out` - Timed Out'
-  parameters:
-    OrganizationIdPath:
-      in: path
-      name: organization_id
-      required: true
-      schema:
-        type: string
-      description: ID of the organization you're trying to access. To find the ID of the organization, make a call to /api/organizations/.
+    ProxyRecordListResponse:
+      type: object
+      properties:
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/ProxyRecord'
+        max_proxy_records:
+          type: integer
+          description: Maximum number of proxy records allowed for this organization's current plan.
+      required:
+      - max_proxy_records
+      - results
   securitySchemes:
     PersonalAPIKeyAuth:
       type: http

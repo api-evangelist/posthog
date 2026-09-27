@@ -471,44 +471,26 @@ paths:
       x-summary-source: derived
 components:
   schemas:
-    NullEnum:
-      enum:
-      - null
-    PatchedViewLink:
+    ViewLinkValidation:
       type: object
       properties:
-        id:
-          type: string
-          format: uuid
-          readOnly: true
-        deleted:
-          type:
-          - boolean
-          - 'null'
-        created_by:
-          allOf:
-          - $ref: '#/components/schemas/UserBasic'
-          readOnly: true
-        created_at:
-          type: string
-          format: date-time
-          readOnly: true
-        source_table_name:
-          type: string
-          maxLength: 400
-        source_table_key:
-          type: string
-          maxLength: 400
         joining_table_name:
           type: string
-          maxLength: 400
+          maxLength: 255
         joining_table_key:
           type: string
-          maxLength: 400
-        field_name:
+          maxLength: 255
+        source_table_name:
           type: string
-          maxLength: 400
-        configuration: {}
+          maxLength: 255
+        source_table_key:
+          type: string
+          maxLength: 255
+      required:
+      - joining_table_key
+      - joining_table_name
+      - source_table_key
+      - source_table_name
     PaginatedViewLinkList:
       type: object
       required:
@@ -534,6 +516,32 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/ViewLink'
+    RoleAtOrganizationEnum:
+      enum:
+      - engineering
+      - data
+      - product
+      - founder
+      - leadership
+      - marketing
+      - sales
+      - other
+      type: string
+      description: '* `engineering` - Engineering
+
+        * `data` - Data
+
+        * `product` - Product Management
+
+        * `founder` - Founder
+
+        * `leadership` - Leadership
+
+        * `marketing` - Marketing
+
+        * `sales` - Sales / Success
+
+        * `other` - Other'
     UserBasic:
       type: object
       properties:
@@ -580,6 +588,47 @@ components:
       - hedgehog_config
       - id
       - uuid
+    PatchedViewLink:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+          readOnly: true
+        deleted:
+          type:
+          - boolean
+          - 'null'
+        created_by:
+          allOf:
+          - $ref: '#/components/schemas/UserBasic'
+          readOnly: true
+        created_at:
+          type: string
+          format: date-time
+          readOnly: true
+        source_table_name:
+          type: string
+          maxLength: 400
+        source_table_key:
+          type: string
+          maxLength: 400
+        joining_table_name:
+          type: string
+          maxLength: 400
+        joining_table_key:
+          type: string
+          maxLength: 400
+        field_name:
+          type: string
+          maxLength: 400
+        configuration: {}
+    NullEnum:
+      enum:
+      - null
+    BlankEnum:
+      enum:
+      - ''
     ViewLink:
       type: object
       properties:
@@ -624,55 +673,6 @@ components:
       - joining_table_name
       - source_table_key
       - source_table_name
-    BlankEnum:
-      enum:
-      - ''
-    ViewLinkValidation:
-      type: object
-      properties:
-        joining_table_name:
-          type: string
-          maxLength: 255
-        joining_table_key:
-          type: string
-          maxLength: 255
-        source_table_name:
-          type: string
-          maxLength: 255
-        source_table_key:
-          type: string
-          maxLength: 255
-      required:
-      - joining_table_key
-      - joining_table_name
-      - source_table_key
-      - source_table_name
-    RoleAtOrganizationEnum:
-      enum:
-      - engineering
-      - data
-      - product
-      - founder
-      - leadership
-      - marketing
-      - sales
-      - other
-      type: string
-      description: '* `engineering` - Engineering
-
-        * `data` - Data
-
-        * `product` - Product Management
-
-        * `founder` - Founder
-
-        * `leadership` - Leadership
-
-        * `marketing` - Marketing
-
-        * `sales` - Sales / Success
-
-        * `other` - Other'
   parameters:
     EnvironmentIdPath:
       in: path

@@ -2059,13 +2059,374 @@ paths:
       x-summary-source: derived
 components:
   schemas:
-    BatchExportBackfillStatusEnum:
+    BatchExportRun:
+      type: object
+      description: Serializer for a BatchExportRun model.
+      properties:
+        id:
+          type: string
+          format: uuid
+          readOnly: true
+        status:
+          allOf:
+          - $ref: '#/components/schemas/BatchExportRunStatusEnum'
+          description: 'The status of this run.
+
+
+            * `Cancelled` - Cancelled
+
+            * `Completed` - Completed
+
+            * `ContinuedAsNew` - Continued As New
+
+            * `Failed` - Failed
+
+            * `FailedRetryable` - Failed Retryable
+
+            * `FailedBilling` - Failed Billing
+
+            * `Terminated` - Terminated
+
+            * `TimedOut` - Timedout
+
+            * `Running` - Running
+
+            * `Starting` - Starting'
+        records_completed:
+          type:
+          - integer
+          - 'null'
+          maximum: 2147483647
+          minimum: -2147483648
+          description: The number of records that have been exported.
+        records_failed:
+          type:
+          - integer
+          - 'null'
+          maximum: 2147483647
+          minimum: -2147483648
+          description: The number of records that failed downstream processing (e.g. hog function execution errors).
+        latest_error:
+          type:
+          - string
+          - 'null'
+          description: The latest error that occurred during this run.
+        data_interval_start:
+          type:
+          - string
+          - 'null'
+          format: date-time
+          description: The start of the data interval.
+        data_interval_end:
+          type: string
+          format: date-time
+          description: The end of the data interval.
+        cursor:
+          type:
+          - string
+          - 'null'
+          description: An opaque cursor that may be used to resume.
+        created_at:
+          type: string
+          format: date-time
+          readOnly: true
+          description: The timestamp at which this BatchExportRun was created.
+        finished_at:
+          type:
+          - string
+          - 'null'
+          format: date-time
+          description: The timestamp at which this BatchExportRun finished, successfully or not.
+        last_updated_at:
+          type: string
+          format: date-time
+          readOnly: true
+          description: The timestamp at which this BatchExportRun was last updated.
+        records_total_count:
+          type:
+          - integer
+          - 'null'
+          maximum: 2147483647
+          minimum: -2147483648
+          description: The total count of records that should be exported in this BatchExportRun.
+        bytes_exported:
+          type:
+          - integer
+          - 'null'
+          maximum: 9223372036854775807
+          minimum: -9223372036854775808
+          format: int64
+          description: The number of bytes that have been exported in this BatchExportRun.
+        batch_export:
+          type: string
+          format: uuid
+          readOnly: true
+          description: The BatchExport this run belongs to.
+        backfill:
+          type:
+          - string
+          - 'null'
+          format: uuid
+          description: The backfill this run belongs to.
+      required:
+      - batch_export
+      - created_at
+      - data_interval_end
+      - id
+      - last_updated_at
+      - status
+    PaginatedBatchExportBackfillList:
+      type: object
+      required:
+      - results
+      properties:
+        next:
+          type:
+          - string
+          - 'null'
+          format: uri
+          example: http://api.example.org/accounts/?cursor=cD00ODY%3D"
+        previous:
+          type:
+          - string
+          - 'null'
+          format: uri
+          example: http://api.example.org/accounts/?cursor=cj0xJnA9NDg3
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/BatchExportBackfill'
+    BatchExportDestination:
+      type: object
+      description: Serializer for an BatchExportDestination model.
+      properties:
+        type:
+          allOf:
+          - $ref: '#/components/schemas/BatchExportDestinationTypeEnum'
+          description: 'A choice of supported BatchExportDestination types.
+
+
+            * `S3` - S3
+
+            * `Snowflake` - Snowflake
+
+            * `Postgres` - Postgres
+
+            * `Redshift` - Redshift
+
+            * `BigQuery` - Bigquery
+
+            * `Databricks` - Databricks
+
+            * `AzureBlob` - Azure Blob
+
+            * `Workflows` - Workflows
+
+            * `HTTP` - Http
+
+            * `NoOp` - Noop'
+        config:
+          description: A JSON field to store all configuration parameters required to access a BatchExportDestination.
+        integration:
+          type:
+          - integer
+          - 'null'
+        integration_id:
+          type:
+          - integer
+          - 'null'
+          writeOnly: true
+      required:
+      - type
+    BatchExportBackfill:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+          readOnly: true
+        progress:
+          type:
+          - object
+          - 'null'
+          properties:
+            total_runs:
+              type:
+              - integer
+              - 'null'
+            finished_runs:
+              type:
+              - integer
+              - 'null'
+            progress:
+              type:
+              - number
+              - 'null'
+          readOnly: true
+        start_at:
+          type:
+          - string
+          - 'null'
+          format: date-time
+          description: The start of the data interval.
+        end_at:
+          type:
+          - string
+          - 'null'
+          format: date-time
+          description: The end of the data interval.
+        status:
+          allOf:
+          - $ref: '#/components/schemas/BatchExportBackfillStatusEnum'
+          description: 'The status of this backfill.
+
+
+            * `Cancelled` - Cancelled
+
+            * `Completed` - Completed
+
+            * `ContinuedAsNew` - Continued As New
+
+            * `Failed` - Failed
+
+            * `FailedRetryable` - Failed Retryable
+
+            * `Terminated` - Terminated
+
+            * `TimedOut` - Timedout
+
+            * `Running` - Running
+
+            * `Starting` - Starting'
+        created_at:
+          type: string
+          format: date-time
+          readOnly: true
+          description: The timestamp at which this BatchExportBackfill was created.
+        finished_at:
+          type:
+          - string
+          - 'null'
+          format: date-time
+          description: The timestamp at which this BatchExportBackfill finished, successfully or not.
+        last_updated_at:
+          type: string
+          format: date-time
+          readOnly: true
+          description: The timestamp at which this BatchExportBackfill was last updated.
+        total_records_count:
+          type:
+          - integer
+          - 'null'
+          maximum: 9223372036854775807
+          minimum: -9223372036854775808
+          format: int64
+          description: The total number of records to export. Initially estimated, updated with actual count after completion.
+        adjusted_start_at:
+          type:
+          - string
+          - 'null'
+          format: date-time
+          description: The actual start time after adjustment for earliest available data. May differ from start_at if user requested a date before data exists.
+        team:
+          type: integer
+          description: The team this belongs to.
+        batch_export:
+          type: string
+          format: uuid
+          description: The BatchExport this backfill belongs to.
+      required:
+      - batch_export
+      - created_at
+      - id
+      - last_updated_at
+      - progress
+      - status
+      - team
+    NullEnum:
+      enum:
+      - null
+    BlankEnum:
+      enum:
+      - ''
+    PaginatedBatchExportRunList:
+      type: object
+      required:
+      - results
+      properties:
+        next:
+          type:
+          - string
+          - 'null'
+          format: uri
+          example: http://api.example.org/accounts/?cursor=cD00ODY%3D"
+        previous:
+          type:
+          - string
+          - 'null'
+          format: uri
+          example: http://api.example.org/accounts/?cursor=cj0xJnA9NDg3
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/BatchExportRun'
+    IntervalEnum:
+      enum:
+      - hour
+      - day
+      - week
+      - every 5 minutes
+      - every 15 minutes
+      type: string
+      description: '* `hour` - hour
+
+        * `day` - day
+
+        * `week` - week
+
+        * `every 5 minutes` - every 5 minutes
+
+        * `every 15 minutes` - every 15 minutes'
+    BatchExportDestinationTypeEnum:
+      enum:
+      - S3
+      - Snowflake
+      - Postgres
+      - Redshift
+      - BigQuery
+      - Databricks
+      - AzureBlob
+      - Workflows
+      - HTTP
+      - NoOp
+      type: string
+      description: '* `S3` - S3
+
+        * `Snowflake` - Snowflake
+
+        * `Postgres` - Postgres
+
+        * `Redshift` - Redshift
+
+        * `BigQuery` - Bigquery
+
+        * `Databricks` - Databricks
+
+        * `AzureBlob` - Azure Blob
+
+        * `Workflows` - Workflows
+
+        * `HTTP` - Http
+
+        * `NoOp` - Noop'
+    BatchExportRunStatusEnum:
       enum:
       - Cancelled
       - Completed
       - ContinuedAsNew
       - Failed
       - FailedRetryable
+      - FailedBilling
       - Terminated
       - TimedOut
       - Running
@@ -2080,6 +2441,8 @@ components:
         * `Failed` - Failed
 
         * `FailedRetryable` - Failed Retryable
+
+        * `FailedBilling` - Failed Billing
 
         * `Terminated` - Terminated
 
@@ -3878,351 +4241,6 @@ components:
         * `WET` - WET
 
         * `Zulu` - Zulu'
-    BatchExportBackfill:
-      type: object
-      properties:
-        id:
-          type: string
-          format: uuid
-          readOnly: true
-        progress:
-          type:
-          - object
-          - 'null'
-          properties:
-            total_runs:
-              type:
-              - integer
-              - 'null'
-            finished_runs:
-              type:
-              - integer
-              - 'null'
-            progress:
-              type:
-              - number
-              - 'null'
-          readOnly: true
-        start_at:
-          type:
-          - string
-          - 'null'
-          format: date-time
-          description: The start of the data interval.
-        end_at:
-          type:
-          - string
-          - 'null'
-          format: date-time
-          description: The end of the data interval.
-        status:
-          allOf:
-          - $ref: '#/components/schemas/BatchExportBackfillStatusEnum'
-          description: 'The status of this backfill.
-
-
-            * `Cancelled` - Cancelled
-
-            * `Completed` - Completed
-
-            * `ContinuedAsNew` - Continued As New
-
-            * `Failed` - Failed
-
-            * `FailedRetryable` - Failed Retryable
-
-            * `Terminated` - Terminated
-
-            * `TimedOut` - Timedout
-
-            * `Running` - Running
-
-            * `Starting` - Starting'
-        created_at:
-          type: string
-          format: date-time
-          readOnly: true
-          description: The timestamp at which this BatchExportBackfill was created.
-        finished_at:
-          type:
-          - string
-          - 'null'
-          format: date-time
-          description: The timestamp at which this BatchExportBackfill finished, successfully or not.
-        last_updated_at:
-          type: string
-          format: date-time
-          readOnly: true
-          description: The timestamp at which this BatchExportBackfill was last updated.
-        total_records_count:
-          type:
-          - integer
-          - 'null'
-          maximum: 9223372036854775807
-          minimum: -9223372036854775808
-          format: int64
-          description: The total number of records to export. Initially estimated, updated with actual count after completion.
-        adjusted_start_at:
-          type:
-          - string
-          - 'null'
-          format: date-time
-          description: The actual start time after adjustment for earliest available data. May differ from start_at if user requested a date before data exists.
-        team:
-          type: integer
-          description: The team this belongs to.
-        batch_export:
-          type: string
-          format: uuid
-          description: The BatchExport this backfill belongs to.
-      required:
-      - batch_export
-      - created_at
-      - id
-      - last_updated_at
-      - progress
-      - status
-      - team
-    PaginatedBatchExportRunList:
-      type: object
-      required:
-      - results
-      properties:
-        next:
-          type:
-          - string
-          - 'null'
-          format: uri
-          example: http://api.example.org/accounts/?cursor=cD00ODY%3D"
-        previous:
-          type:
-          - string
-          - 'null'
-          format: uri
-          example: http://api.example.org/accounts/?cursor=cj0xJnA9NDg3
-        results:
-          type: array
-          items:
-            $ref: '#/components/schemas/BatchExportRun'
-    PaginatedBatchExportBackfillList:
-      type: object
-      required:
-      - results
-      properties:
-        next:
-          type:
-          - string
-          - 'null'
-          format: uri
-          example: http://api.example.org/accounts/?cursor=cD00ODY%3D"
-        previous:
-          type:
-          - string
-          - 'null'
-          format: uri
-          example: http://api.example.org/accounts/?cursor=cj0xJnA9NDg3
-        results:
-          type: array
-          items:
-            $ref: '#/components/schemas/BatchExportBackfill'
-    IntervalEnum:
-      enum:
-      - hour
-      - day
-      - week
-      - every 5 minutes
-      - every 15 minutes
-      type: string
-      description: '* `hour` - hour
-
-        * `day` - day
-
-        * `week` - week
-
-        * `every 5 minutes` - every 5 minutes
-
-        * `every 15 minutes` - every 15 minutes'
-    BatchExportDestinationTypeEnum:
-      enum:
-      - S3
-      - Snowflake
-      - Postgres
-      - Redshift
-      - BigQuery
-      - Databricks
-      - AzureBlob
-      - Workflows
-      - HTTP
-      - NoOp
-      type: string
-      description: '* `S3` - S3
-
-        * `Snowflake` - Snowflake
-
-        * `Postgres` - Postgres
-
-        * `Redshift` - Redshift
-
-        * `BigQuery` - Bigquery
-
-        * `Databricks` - Databricks
-
-        * `AzureBlob` - Azure Blob
-
-        * `Workflows` - Workflows
-
-        * `HTTP` - Http
-
-        * `NoOp` - Noop'
-    NullEnum:
-      enum:
-      - null
-    BlankEnum:
-      enum:
-      - ''
-    BatchExportDestination:
-      type: object
-      description: Serializer for an BatchExportDestination model.
-      properties:
-        type:
-          allOf:
-          - $ref: '#/components/schemas/BatchExportDestinationTypeEnum'
-          description: 'A choice of supported BatchExportDestination types.
-
-
-            * `S3` - S3
-
-            * `Snowflake` - Snowflake
-
-            * `Postgres` - Postgres
-
-            * `Redshift` - Redshift
-
-            * `BigQuery` - Bigquery
-
-            * `Databricks` - Databricks
-
-            * `AzureBlob` - Azure Blob
-
-            * `Workflows` - Workflows
-
-            * `HTTP` - Http
-
-            * `NoOp` - Noop'
-        config:
-          description: A JSON field to store all configuration parameters required to access a BatchExportDestination.
-        integration:
-          type:
-          - integer
-          - 'null'
-        integration_id:
-          type:
-          - integer
-          - 'null'
-          writeOnly: true
-      required:
-      - type
-    PatchedBatchExport:
-      type: object
-      description: Serializer for a BatchExport model.
-      properties:
-        id:
-          type: string
-          format: uuid
-          readOnly: true
-        team_id:
-          type: integer
-          description: The team this belongs to.
-          readOnly: true
-        name:
-          type: string
-          description: A human-readable name for this BatchExport.
-        model:
-          description: 'Which model this BatchExport is exporting.
-
-
-            * `events` - Events
-
-            * `persons` - Persons
-
-            * `sessions` - Sessions'
-          oneOf:
-          - $ref: '#/components/schemas/ModelEnum'
-          - $ref: '#/components/schemas/BlankEnum'
-          - $ref: '#/components/schemas/NullEnum'
-        destination:
-          $ref: '#/components/schemas/BatchExportDestination'
-        interval:
-          $ref: '#/components/schemas/IntervalEnum'
-        paused:
-          type: boolean
-          description: Whether this BatchExport is paused or not.
-        created_at:
-          type: string
-          format: date-time
-          readOnly: true
-          description: The timestamp at which this BatchExport was created.
-        last_updated_at:
-          type: string
-          format: date-time
-          readOnly: true
-          description: The timestamp at which this BatchExport was last updated.
-        last_paused_at:
-          type:
-          - string
-          - 'null'
-          format: date-time
-          description: The timestamp at which this BatchExport was last paused.
-        start_at:
-          type:
-          - string
-          - 'null'
-          format: date-time
-          description: Time before which any Batch Export runs won't be triggered.
-        end_at:
-          type:
-          - string
-          - 'null'
-          format: date-time
-          description: Time after which any Batch Export runs won't be triggered.
-        latest_runs:
-          type: array
-          items:
-            $ref: '#/components/schemas/BatchExportRun'
-          readOnly: true
-        hogql_query:
-          type: string
-        schema:
-          readOnly: true
-          description: A schema of custom fields to select when exporting data.
-        filters: {}
-        timezone:
-          oneOf:
-          - $ref: '#/components/schemas/TimezoneEnum'
-          - $ref: '#/components/schemas/NullEnum'
-        offset_day:
-          type:
-          - integer
-          - 'null'
-          maximum: 6
-          minimum: 0
-        offset_hour:
-          type:
-          - integer
-          - 'null'
-          maximum: 23
-          minimum: 0
-    ModelEnum:
-      enum:
-      - events
-      - persons
-      - sessions
-      type: string
-      description: '* `events` - Events
-
-        * `persons` - Persons
-
-        * `sessions` - Sessions'
     PaginatedBatchExportList:
       type: object
       required:
@@ -4248,130 +4266,13 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/BatchExport'
-    BatchExportRun:
-      type: object
-      description: Serializer for a BatchExportRun model.
-      properties:
-        id:
-          type: string
-          format: uuid
-          readOnly: true
-        status:
-          allOf:
-          - $ref: '#/components/schemas/BatchExportRunStatusEnum'
-          description: 'The status of this run.
-
-
-            * `Cancelled` - Cancelled
-
-            * `Completed` - Completed
-
-            * `ContinuedAsNew` - Continued As New
-
-            * `Failed` - Failed
-
-            * `FailedRetryable` - Failed Retryable
-
-            * `FailedBilling` - Failed Billing
-
-            * `Terminated` - Terminated
-
-            * `TimedOut` - Timedout
-
-            * `Running` - Running
-
-            * `Starting` - Starting'
-        records_completed:
-          type:
-          - integer
-          - 'null'
-          maximum: 2147483647
-          minimum: -2147483648
-          description: The number of records that have been exported.
-        records_failed:
-          type:
-          - integer
-          - 'null'
-          maximum: 2147483647
-          minimum: -2147483648
-          description: The number of records that failed downstream processing (e.g. hog function execution errors).
-        latest_error:
-          type:
-          - string
-          - 'null'
-          description: The latest error that occurred during this run.
-        data_interval_start:
-          type:
-          - string
-          - 'null'
-          format: date-time
-          description: The start of the data interval.
-        data_interval_end:
-          type: string
-          format: date-time
-          description: The end of the data interval.
-        cursor:
-          type:
-          - string
-          - 'null'
-          description: An opaque cursor that may be used to resume.
-        created_at:
-          type: string
-          format: date-time
-          readOnly: true
-          description: The timestamp at which this BatchExportRun was created.
-        finished_at:
-          type:
-          - string
-          - 'null'
-          format: date-time
-          description: The timestamp at which this BatchExportRun finished, successfully or not.
-        last_updated_at:
-          type: string
-          format: date-time
-          readOnly: true
-          description: The timestamp at which this BatchExportRun was last updated.
-        records_total_count:
-          type:
-          - integer
-          - 'null'
-          maximum: 2147483647
-          minimum: -2147483648
-          description: The total count of records that should be exported in this BatchExportRun.
-        bytes_exported:
-          type:
-          - integer
-          - 'null'
-          maximum: 9223372036854775807
-          minimum: -9223372036854775808
-          format: int64
-          description: The number of bytes that have been exported in this BatchExportRun.
-        batch_export:
-          type: string
-          format: uuid
-          readOnly: true
-          description: The BatchExport this run belongs to.
-        backfill:
-          type:
-          - string
-          - 'null'
-          format: uuid
-          description: The backfill this run belongs to.
-      required:
-      - batch_export
-      - created_at
-      - data_interval_end
-      - id
-      - last_updated_at
-      - status
-    BatchExportRunStatusEnum:
+    BatchExportBackfillStatusEnum:
       enum:
       - Cancelled
       - Completed
       - ContinuedAsNew
       - Failed
       - FailedRetryable
-      - FailedBilling
       - Terminated
       - TimedOut
       - Running
@@ -4386,8 +4287,6 @@ components:
         * `Failed` - Failed
 
         * `FailedRetryable` - Failed Retryable
-
-        * `FailedBilling` - Failed Billing
 
         * `Terminated` - Terminated
 
@@ -4496,21 +4395,108 @@ components:
       - name
       - schema
       - team_id
+    ModelEnum:
+      enum:
+      - events
+      - persons
+      - sessions
+      type: string
+      description: '* `events` - Events
+
+        * `persons` - Persons
+
+        * `sessions` - Sessions'
+    PatchedBatchExport:
+      type: object
+      description: Serializer for a BatchExport model.
+      properties:
+        id:
+          type: string
+          format: uuid
+          readOnly: true
+        team_id:
+          type: integer
+          description: The team this belongs to.
+          readOnly: true
+        name:
+          type: string
+          description: A human-readable name for this BatchExport.
+        model:
+          description: 'Which model this BatchExport is exporting.
+
+
+            * `events` - Events
+
+            * `persons` - Persons
+
+            * `sessions` - Sessions'
+          oneOf:
+          - $ref: '#/components/schemas/ModelEnum'
+          - $ref: '#/components/schemas/BlankEnum'
+          - $ref: '#/components/schemas/NullEnum'
+        destination:
+          $ref: '#/components/schemas/BatchExportDestination'
+        interval:
+          $ref: '#/components/schemas/IntervalEnum'
+        paused:
+          type: boolean
+          description: Whether this BatchExport is paused or not.
+        created_at:
+          type: string
+          format: date-time
+          readOnly: true
+          description: The timestamp at which this BatchExport was created.
+        last_updated_at:
+          type: string
+          format: date-time
+          readOnly: true
+          description: The timestamp at which this BatchExport was last updated.
+        last_paused_at:
+          type:
+          - string
+          - 'null'
+          format: date-time
+          description: The timestamp at which this BatchExport was last paused.
+        start_at:
+          type:
+          - string
+          - 'null'
+          format: date-time
+          description: Time before which any Batch Export runs won't be triggered.
+        end_at:
+          type:
+          - string
+          - 'null'
+          format: date-time
+          description: Time after which any Batch Export runs won't be triggered.
+        latest_runs:
+          type: array
+          items:
+            $ref: '#/components/schemas/BatchExportRun'
+          readOnly: true
+        hogql_query:
+          type: string
+        schema:
+          readOnly: true
+          description: A schema of custom fields to select when exporting data.
+        filters: {}
+        timezone:
+          oneOf:
+          - $ref: '#/components/schemas/TimezoneEnum'
+          - $ref: '#/components/schemas/NullEnum'
+        offset_day:
+          type:
+          - integer
+          - 'null'
+          maximum: 6
+          minimum: 0
+        offset_hour:
+          type:
+          - integer
+          - 'null'
+          maximum: 23
+          minimum: 0
   parameters:
-    EnvironmentIdPath:
-      in: path
-      name: environment_id
-      required: true
-      schema:
-        type: string
-      description: Deprecated. Use /api/projects/{project_id}/ instead.
-    OrganizationIdPath:
-      in: path
-      name: organization_id
-      required: true
-      schema:
-        type: string
-      description: ID of the organization you're trying to access. To find the ID of the organization, make a call to /api/organizations/.
     ProjectIdPath:
       in: path
       name: project_id
@@ -4518,6 +4504,20 @@ components:
       schema:
         type: string
       description: Project ID of the project you're trying to access. To find the ID of the project, make a call to /api/projects/.
+    OrganizationIdPath:
+      in: path
+      name: organization_id
+      required: true
+      schema:
+        type: string
+      description: ID of the organization you're trying to access. To find the ID of the organization, make a call to /api/organizations/.
+    EnvironmentIdPath:
+      in: path
+      name: environment_id
+      required: true
+      schema:
+        type: string
+      description: Deprecated. Use /api/projects/{project_id}/ instead.
   securitySchemes:
     PersonalAPIKeyAuth:
       type: http

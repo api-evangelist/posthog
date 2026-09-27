@@ -195,26 +195,17 @@ paths:
       x-summary-source: derived
 components:
   schemas:
-    NullEnum:
-      enum:
-      - null
-    SchemaPropertyGroupPropertyPropertyTypeEnum:
-      enum:
-      - DateTime
-      - String
-      - Numeric
-      - Boolean
-      - Object
-      type: string
-      description: '* `DateTime` - DateTime
-
-        * `String` - String
-
-        * `Numeric` - Numeric
-
-        * `Boolean` - Boolean
-
-        * `Object` - Object'
+    EventDefinitionBasic:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        name:
+          type: string
+      required:
+      - id
+      - name
     PaginatedSchemaPropertyGroupList:
       type: object
       required:
@@ -240,6 +231,64 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/SchemaPropertyGroup'
+    RoleAtOrganizationEnum:
+      enum:
+      - engineering
+      - data
+      - product
+      - founder
+      - leadership
+      - marketing
+      - sales
+      - other
+      type: string
+      description: '* `engineering` - Engineering
+
+        * `data` - Data
+
+        * `product` - Product Management
+
+        * `founder` - Founder
+
+        * `leadership` - Leadership
+
+        * `marketing` - Marketing
+
+        * `sales` - Sales / Success
+
+        * `other` - Other'
+    SchemaPropertyGroupProperty:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+          readOnly: true
+        name:
+          type: string
+          maxLength: 400
+        property_type:
+          $ref: '#/components/schemas/SchemaPropertyGroupPropertyPropertyTypeEnum'
+        is_required:
+          type: boolean
+        is_optional_in_types:
+          type: boolean
+        description:
+          type: string
+        created_at:
+          type: string
+          format: date-time
+          readOnly: true
+        updated_at:
+          type: string
+          format: date-time
+          readOnly: true
+      required:
+      - created_at
+      - id
+      - name
+      - property_type
+      - updated_at
     SchemaPropertyGroup:
       type: object
       properties:
@@ -326,52 +375,23 @@ components:
       - hedgehog_config
       - id
       - uuid
-    BlankEnum:
+    SchemaPropertyGroupPropertyPropertyTypeEnum:
       enum:
-      - ''
-    EventDefinitionBasic:
-      type: object
-      properties:
-        id:
-          type: string
-          format: uuid
-        name:
-          type: string
-      required:
-      - id
-      - name
-    SchemaPropertyGroupProperty:
-      type: object
-      properties:
-        id:
-          type: string
-          format: uuid
-          readOnly: true
-        name:
-          type: string
-          maxLength: 400
-        property_type:
-          $ref: '#/components/schemas/SchemaPropertyGroupPropertyPropertyTypeEnum'
-        is_required:
-          type: boolean
-        is_optional_in_types:
-          type: boolean
-        description:
-          type: string
-        created_at:
-          type: string
-          format: date-time
-          readOnly: true
-        updated_at:
-          type: string
-          format: date-time
-          readOnly: true
-      required:
-      - created_at
-      - id
-      - name
-      - property_type
-      - updated_at
+      - DateTime
+      - String
+      - Numeric
+      - Boolean
+      - Object
+      type: string
+      description: '* `DateTime` - DateTime
+
+        * `String` - String
+
+        * `Numeric` - Numeric
+
+        * `Boolean` - Boolean
+
+        * `Object` - Object'
     PatchedSchemaPropertyGroup:
       type: object
       properties:
@@ -405,32 +425,12 @@ components:
           allOf:
           - $ref: '#/components/schemas/UserBasic'
           readOnly: true
-    RoleAtOrganizationEnum:
+    NullEnum:
       enum:
-      - engineering
-      - data
-      - product
-      - founder
-      - leadership
-      - marketing
-      - sales
-      - other
-      type: string
-      description: '* `engineering` - Engineering
-
-        * `data` - Data
-
-        * `product` - Product Management
-
-        * `founder` - Founder
-
-        * `leadership` - Leadership
-
-        * `marketing` - Marketing
-
-        * `sales` - Sales / Success
-
-        * `other` - Other'
+      - null
+    BlankEnum:
+      enum:
+      - ''
   parameters:
     ProjectIdPath:
       in: path

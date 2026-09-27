@@ -159,6 +159,53 @@ paths:
       x-summary-source: derived
 components:
   schemas:
+    HealthIssueSeverityEnum:
+      enum:
+      - critical
+      - warning
+      - info
+      type: string
+      description: '* `critical` - Critical
+
+        * `warning` - Warning
+
+        * `info` - Info'
+    PatchedHealthIssue:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+          readOnly: true
+        kind:
+          type: string
+          readOnly: true
+        severity:
+          allOf:
+          - $ref: '#/components/schemas/HealthIssueSeverityEnum'
+          readOnly: true
+        status:
+          allOf:
+          - $ref: '#/components/schemas/HealthIssueStatusEnum'
+          readOnly: true
+        dismissed:
+          type: boolean
+        payload:
+          readOnly: true
+        created_at:
+          type: string
+          format: date-time
+          readOnly: true
+        updated_at:
+          type: string
+          format: date-time
+          readOnly: true
+        resolved_at:
+          type:
+          - string
+          - 'null'
+          format: date-time
+          readOnly: true
     HealthIssueStatusEnum:
       enum:
       - active
@@ -167,6 +214,31 @@ components:
       description: '* `active` - Active
 
         * `resolved` - Resolved'
+    PaginatedHealthIssueList:
+      type: object
+      required:
+      - count
+      - results
+      properties:
+        count:
+          type: integer
+          example: 123
+        next:
+          type:
+          - string
+          - 'null'
+          format: uri
+          example: http://api.example.org/accounts/?offset=400&limit=100
+        previous:
+          type:
+          - string
+          - 'null'
+          format: uri
+          example: http://api.example.org/accounts/?offset=200&limit=100
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/HealthIssue'
     HealthIssue:
       type: object
       properties:
@@ -212,78 +284,6 @@ components:
       - severity
       - status
       - updated_at
-    HealthIssueSeverityEnum:
-      enum:
-      - critical
-      - warning
-      - info
-      type: string
-      description: '* `critical` - Critical
-
-        * `warning` - Warning
-
-        * `info` - Info'
-    PaginatedHealthIssueList:
-      type: object
-      required:
-      - count
-      - results
-      properties:
-        count:
-          type: integer
-          example: 123
-        next:
-          type:
-          - string
-          - 'null'
-          format: uri
-          example: http://api.example.org/accounts/?offset=400&limit=100
-        previous:
-          type:
-          - string
-          - 'null'
-          format: uri
-          example: http://api.example.org/accounts/?offset=200&limit=100
-        results:
-          type: array
-          items:
-            $ref: '#/components/schemas/HealthIssue'
-    PatchedHealthIssue:
-      type: object
-      properties:
-        id:
-          type: string
-          format: uuid
-          readOnly: true
-        kind:
-          type: string
-          readOnly: true
-        severity:
-          allOf:
-          - $ref: '#/components/schemas/HealthIssueSeverityEnum'
-          readOnly: true
-        status:
-          allOf:
-          - $ref: '#/components/schemas/HealthIssueStatusEnum'
-          readOnly: true
-        dismissed:
-          type: boolean
-        payload:
-          readOnly: true
-        created_at:
-          type: string
-          format: date-time
-          readOnly: true
-        updated_at:
-          type: string
-          format: date-time
-          readOnly: true
-        resolved_at:
-          type:
-          - string
-          - 'null'
-          format: date-time
-          readOnly: true
   parameters:
     ProjectIdPath:
       in: path

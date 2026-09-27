@@ -243,14 +243,6 @@ paths:
       x-summary-source: derived
 components:
   schemas:
-    MathEnum:
-      enum:
-      - count
-      - sum
-      type: string
-      description: '* `count` - count
-
-        * `sum` - sum'
     GroupUsageMetricDisplayEnum:
       enum:
       - number
@@ -259,100 +251,6 @@ components:
       description: '* `number` - number
 
         * `sparkline` - sparkline'
-    PatchedGroupUsageMetric:
-      type: object
-      properties:
-        id:
-          type: string
-          format: uuid
-          readOnly: true
-        name:
-          type: string
-          description: Name of the usage metric. Must be unique per group type within the project.
-          maxLength: 255
-        format:
-          allOf:
-          - $ref: '#/components/schemas/GroupUsageMetricFormatEnum'
-          default: numeric
-          description: 'How the metric value is formatted in the UI. One of `numeric` or `currency`.
-
-
-            * `numeric` - numeric
-
-            * `currency` - currency'
-        interval:
-          type: integer
-          default: 7
-          description: Rolling time window in days used to compute the metric. Defaults to 7.
-        display:
-          allOf:
-          - $ref: '#/components/schemas/GroupUsageMetricDisplayEnum'
-          default: number
-          description: 'Visual representation in the UI. One of `number` or `sparkline`.
-
-
-            * `number` - number
-
-            * `sparkline` - sparkline'
-        filters:
-          type: object
-          additionalProperties: true
-          description: 'Filter definition for the metric. Two shapes are accepted, discriminated by an optional `source` key.
-
-
-            **Events** (default, when `source` is missing or `"events"`): HogFunction filter shape — `events: [...]`, optional `actions: [...]`, `properties: [...]`, `filter_test_accounts: bool`.
-
-
-            **Data warehouse** (`source: "data_warehouse"`): `table_name` (synced DW table), `timestamp_field` (timestamp column or HogQL expression), `key_field` (column whose value matches the entity key). Currently DW metrics only render on group profiles — person profiles are not yet supported.'
-        math:
-          allOf:
-          - $ref: '#/components/schemas/MathEnum'
-          default: count
-          description: 'Aggregation function. `count` counts matching events; `sum` sums the value of `math_property` on matching events.
-
-
-            * `count` - count
-
-            * `sum` - sum'
-        math_property:
-          type:
-          - string
-          - 'null'
-          description: Required when `math` is `sum`; must be empty when `math` is `count`. For events metrics this is an event property name. For data warehouse metrics this is the column name (or HogQL expression) to sum on the DW table.
-          maxLength: 255
-    GroupUsageMetricFormatEnum:
-      enum:
-      - numeric
-      - currency
-      type: string
-      description: '* `numeric` - numeric
-
-        * `currency` - currency'
-    PaginatedGroupUsageMetricList:
-      type: object
-      required:
-      - count
-      - results
-      properties:
-        count:
-          type: integer
-          example: 123
-        next:
-          type:
-          - string
-          - 'null'
-          format: uri
-          example: http://api.example.org/accounts/?offset=400&limit=100
-        previous:
-          type:
-          - string
-          - 'null'
-          format: uri
-          example: http://api.example.org/accounts/?offset=200&limit=100
-        results:
-          type: array
-          items:
-            $ref: '#/components/schemas/GroupUsageMetric'
     GroupUsageMetric:
       type: object
       properties:
@@ -418,6 +316,108 @@ components:
       - filters
       - id
       - name
+    GroupUsageMetricFormatEnum:
+      enum:
+      - numeric
+      - currency
+      type: string
+      description: '* `numeric` - numeric
+
+        * `currency` - currency'
+    PatchedGroupUsageMetric:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+          readOnly: true
+        name:
+          type: string
+          description: Name of the usage metric. Must be unique per group type within the project.
+          maxLength: 255
+        format:
+          allOf:
+          - $ref: '#/components/schemas/GroupUsageMetricFormatEnum'
+          default: numeric
+          description: 'How the metric value is formatted in the UI. One of `numeric` or `currency`.
+
+
+            * `numeric` - numeric
+
+            * `currency` - currency'
+        interval:
+          type: integer
+          default: 7
+          description: Rolling time window in days used to compute the metric. Defaults to 7.
+        display:
+          allOf:
+          - $ref: '#/components/schemas/GroupUsageMetricDisplayEnum'
+          default: number
+          description: 'Visual representation in the UI. One of `number` or `sparkline`.
+
+
+            * `number` - number
+
+            * `sparkline` - sparkline'
+        filters:
+          type: object
+          additionalProperties: true
+          description: 'Filter definition for the metric. Two shapes are accepted, discriminated by an optional `source` key.
+
+
+            **Events** (default, when `source` is missing or `"events"`): HogFunction filter shape — `events: [...]`, optional `actions: [...]`, `properties: [...]`, `filter_test_accounts: bool`.
+
+
+            **Data warehouse** (`source: "data_warehouse"`): `table_name` (synced DW table), `timestamp_field` (timestamp column or HogQL expression), `key_field` (column whose value matches the entity key). Currently DW metrics only render on group profiles — person profiles are not yet supported.'
+        math:
+          allOf:
+          - $ref: '#/components/schemas/MathEnum'
+          default: count
+          description: 'Aggregation function. `count` counts matching events; `sum` sums the value of `math_property` on matching events.
+
+
+            * `count` - count
+
+            * `sum` - sum'
+        math_property:
+          type:
+          - string
+          - 'null'
+          description: Required when `math` is `sum`; must be empty when `math` is `count`. For events metrics this is an event property name. For data warehouse metrics this is the column name (or HogQL expression) to sum on the DW table.
+          maxLength: 255
+    PaginatedGroupUsageMetricList:
+      type: object
+      required:
+      - count
+      - results
+      properties:
+        count:
+          type: integer
+          example: 123
+        next:
+          type:
+          - string
+          - 'null'
+          format: uri
+          example: http://api.example.org/accounts/?offset=400&limit=100
+        previous:
+          type:
+          - string
+          - 'null'
+          format: uri
+          example: http://api.example.org/accounts/?offset=200&limit=100
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/GroupUsageMetric'
+    MathEnum:
+      enum:
+      - count
+      - sum
+      type: string
+      description: '* `count` - count
+
+        * `sum` - sum'
   parameters:
     ProjectIdPath:
       in: path

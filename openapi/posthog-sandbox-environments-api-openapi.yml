@@ -179,9 +179,6 @@ paths:
       x-summary-source: derived
 components:
   schemas:
-    NullEnum:
-      enum:
-      - null
     NetworkAccessLevelEnum:
       enum:
       - trusted
@@ -193,125 +190,6 @@ components:
         * `full` - Full
 
         * `custom` - Custom'
-    PaginatedSandboxEnvironmentListList:
-      type: object
-      required:
-      - count
-      - results
-      properties:
-        count:
-          type: integer
-          example: 123
-        next:
-          type:
-          - string
-          - 'null'
-          format: uri
-          example: http://api.example.org/accounts/?offset=400&limit=100
-        previous:
-          type:
-          - string
-          - 'null'
-          format: uri
-          example: http://api.example.org/accounts/?offset=200&limit=100
-        results:
-          type: array
-          items:
-            $ref: '#/components/schemas/SandboxEnvironmentList'
-    UserBasic:
-      type: object
-      properties:
-        id:
-          type: integer
-          readOnly: true
-        uuid:
-          type: string
-          format: uuid
-          readOnly: true
-        distinct_id:
-          type:
-          - string
-          - 'null'
-          maxLength: 200
-        first_name:
-          type: string
-          maxLength: 150
-        last_name:
-          type: string
-          maxLength: 150
-        email:
-          type: string
-          format: email
-          title: Email address
-          maxLength: 254
-        is_email_verified:
-          type:
-          - boolean
-          - 'null'
-        hedgehog_config:
-          type:
-          - object
-          - 'null'
-          additionalProperties: true
-          readOnly: true
-        role_at_organization:
-          oneOf:
-          - $ref: '#/components/schemas/RoleAtOrganizationEnum'
-          - $ref: '#/components/schemas/BlankEnum'
-          - $ref: '#/components/schemas/NullEnum'
-      required:
-      - email
-      - hedgehog_config
-      - id
-      - uuid
-    SandboxEnvironmentList:
-      type: object
-      properties:
-        id:
-          type: string
-          format: uuid
-          readOnly: true
-        name:
-          type: string
-          maxLength: 255
-        network_access_level:
-          $ref: '#/components/schemas/NetworkAccessLevelEnum'
-        allowed_domains:
-          type: array
-          items:
-            type: string
-            maxLength: 255
-          description: List of allowed domains for custom network access
-        repositories:
-          type: array
-          items:
-            type: string
-            maxLength: 255
-          description: 'List of repositories this environment applies to (format: org/repo)'
-        private:
-          type: boolean
-          description: If true, only the creator can see this environment. Otherwise visible to whole team.
-        internal:
-          type: boolean
-          description: If true, this environment is for internal use (e.g. signals pipeline) and should not be exposed to end users.
-        created_by:
-          allOf:
-          - $ref: '#/components/schemas/UserBasic'
-          readOnly: true
-        created_at:
-          type: string
-          format: date-time
-          readOnly: true
-        updated_at:
-          type: string
-          format: date-time
-          readOnly: true
-      required:
-      - created_at
-      - created_by
-      - id
-      - name
-      - updated_at
     SandboxEnvironment:
       type: object
       properties:
@@ -380,9 +258,154 @@ components:
       - internal
       - name
       - updated_at
-    BlankEnum:
+    RoleAtOrganizationEnum:
       enum:
-      - ''
+      - engineering
+      - data
+      - product
+      - founder
+      - leadership
+      - marketing
+      - sales
+      - other
+      type: string
+      description: '* `engineering` - Engineering
+
+        * `data` - Data
+
+        * `product` - Product Management
+
+        * `founder` - Founder
+
+        * `leadership` - Leadership
+
+        * `marketing` - Marketing
+
+        * `sales` - Sales / Success
+
+        * `other` - Other'
+    PaginatedSandboxEnvironmentListList:
+      type: object
+      required:
+      - count
+      - results
+      properties:
+        count:
+          type: integer
+          example: 123
+        next:
+          type:
+          - string
+          - 'null'
+          format: uri
+          example: http://api.example.org/accounts/?offset=400&limit=100
+        previous:
+          type:
+          - string
+          - 'null'
+          format: uri
+          example: http://api.example.org/accounts/?offset=200&limit=100
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/SandboxEnvironmentList'
+    SandboxEnvironmentList:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+          readOnly: true
+        name:
+          type: string
+          maxLength: 255
+        network_access_level:
+          $ref: '#/components/schemas/NetworkAccessLevelEnum'
+        allowed_domains:
+          type: array
+          items:
+            type: string
+            maxLength: 255
+          description: List of allowed domains for custom network access
+        repositories:
+          type: array
+          items:
+            type: string
+            maxLength: 255
+          description: 'List of repositories this environment applies to (format: org/repo)'
+        private:
+          type: boolean
+          description: If true, only the creator can see this environment. Otherwise visible to whole team.
+        internal:
+          type: boolean
+          description: If true, this environment is for internal use (e.g. signals pipeline) and should not be exposed to end users.
+        created_by:
+          allOf:
+          - $ref: '#/components/schemas/UserBasic'
+          readOnly: true
+        created_at:
+          type: string
+          format: date-time
+          readOnly: true
+        updated_at:
+          type: string
+          format: date-time
+          readOnly: true
+      required:
+      - created_at
+      - created_by
+      - id
+      - name
+      - updated_at
+    UserBasic:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        uuid:
+          type: string
+          format: uuid
+          readOnly: true
+        distinct_id:
+          type:
+          - string
+          - 'null'
+          maxLength: 200
+        first_name:
+          type: string
+          maxLength: 150
+        last_name:
+          type: string
+          maxLength: 150
+        email:
+          type: string
+          format: email
+          title: Email address
+          maxLength: 254
+        is_email_verified:
+          type:
+          - boolean
+          - 'null'
+        hedgehog_config:
+          type:
+          - object
+          - 'null'
+          additionalProperties: true
+          readOnly: true
+        role_at_organization:
+          oneOf:
+          - $ref: '#/components/schemas/RoleAtOrganizationEnum'
+          - $ref: '#/components/schemas/BlankEnum'
+          - $ref: '#/components/schemas/NullEnum'
+      required:
+      - email
+      - hedgehog_config
+      - id
+      - uuid
+    NullEnum:
+      enum:
+      - null
     PatchedSandboxEnvironment:
       type: object
       properties:
@@ -442,32 +465,9 @@ components:
           type: string
           format: date-time
           readOnly: true
-    RoleAtOrganizationEnum:
+    BlankEnum:
       enum:
-      - engineering
-      - data
-      - product
-      - founder
-      - leadership
-      - marketing
-      - sales
-      - other
-      type: string
-      description: '* `engineering` - Engineering
-
-        * `data` - Data
-
-        * `product` - Product Management
-
-        * `founder` - Founder
-
-        * `leadership` - Leadership
-
-        * `marketing` - Marketing
-
-        * `sales` - Sales / Success
-
-        * `other` - Other'
+      - ''
   parameters:
     ProjectIdPath:
       in: path

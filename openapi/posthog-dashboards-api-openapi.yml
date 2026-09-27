@@ -575,118 +575,6 @@ paths:
       x-summary-source: derived
 components:
   schemas:
-    NullEnum:
-      enum:
-      - null
-    DataColorTheme:
-      type: object
-      properties:
-        id:
-          type: integer
-          readOnly: true
-        name:
-          type: string
-          maxLength: 100
-        colors: {}
-        is_global:
-          type: boolean
-          readOnly: true
-        created_at:
-          type:
-          - string
-          - 'null'
-          format: date-time
-          readOnly: true
-        created_by:
-          allOf:
-          - $ref: '#/components/schemas/UserBasic'
-          readOnly: true
-      required:
-      - created_at
-      - created_by
-      - id
-      - is_global
-      - name
-    PatchedDataColorTheme:
-      type: object
-      properties:
-        id:
-          type: integer
-          readOnly: true
-        name:
-          type: string
-          maxLength: 100
-        colors: {}
-        is_global:
-          type: boolean
-          readOnly: true
-        created_at:
-          type:
-          - string
-          - 'null'
-          format: date-time
-          readOnly: true
-        created_by:
-          allOf:
-          - $ref: '#/components/schemas/UserBasic'
-          readOnly: true
-    UserBasic:
-      type: object
-      properties:
-        id:
-          type: integer
-          readOnly: true
-        uuid:
-          type: string
-          format: uuid
-          readOnly: true
-        distinct_id:
-          type:
-          - string
-          - 'null'
-          maxLength: 200
-        first_name:
-          type: string
-          maxLength: 150
-        last_name:
-          type: string
-          maxLength: 150
-        email:
-          type: string
-          format: email
-          title: Email address
-          maxLength: 254
-        is_email_verified:
-          type:
-          - boolean
-          - 'null'
-        hedgehog_config:
-          type:
-          - object
-          - 'null'
-          additionalProperties: true
-          readOnly: true
-        role_at_organization:
-          oneOf:
-          - $ref: '#/components/schemas/RoleAtOrganizationEnum'
-          - $ref: '#/components/schemas/BlankEnum'
-          - $ref: '#/components/schemas/NullEnum'
-      required:
-      - email
-      - hedgehog_config
-      - id
-      - uuid
-    BlankEnum:
-      enum:
-      - ''
-    RestrictionLevelEnum:
-      enum:
-      - 21
-      - 37
-      type: integer
-      description: '* `21` - Everyone in the project can edit
-
-        * `37` - Only those invited to this dashboard can edit'
     PaginatedDataColorThemeList:
       type: object
       required:
@@ -738,6 +626,75 @@ components:
         * `sales` - Sales / Success
 
         * `other` - Other'
+    UserBasic:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        uuid:
+          type: string
+          format: uuid
+          readOnly: true
+        distinct_id:
+          type:
+          - string
+          - 'null'
+          maxLength: 200
+        first_name:
+          type: string
+          maxLength: 150
+        last_name:
+          type: string
+          maxLength: 150
+        email:
+          type: string
+          format: email
+          title: Email address
+          maxLength: 254
+        is_email_verified:
+          type:
+          - boolean
+          - 'null'
+        hedgehog_config:
+          type:
+          - object
+          - 'null'
+          additionalProperties: true
+          readOnly: true
+        role_at_organization:
+          oneOf:
+          - $ref: '#/components/schemas/RoleAtOrganizationEnum'
+          - $ref: '#/components/schemas/BlankEnum'
+          - $ref: '#/components/schemas/NullEnum'
+      required:
+      - email
+      - hedgehog_config
+      - id
+      - uuid
+    PatchedDataColorTheme:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        name:
+          type: string
+          maxLength: 100
+        colors: {}
+        is_global:
+          type: boolean
+          readOnly: true
+        created_at:
+          type:
+          - string
+          - 'null'
+          format: date-time
+          readOnly: true
+        created_by:
+          allOf:
+          - $ref: '#/components/schemas/UserBasic'
+          readOnly: true
     DashboardCollaborator:
       type: object
       properties:
@@ -774,6 +731,49 @@ components:
       - updated_at
       - user
       - user_uuid
+    DataColorTheme:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        name:
+          type: string
+          maxLength: 100
+        colors: {}
+        is_global:
+          type: boolean
+          readOnly: true
+        created_at:
+          type:
+          - string
+          - 'null'
+          format: date-time
+          readOnly: true
+        created_by:
+          allOf:
+          - $ref: '#/components/schemas/UserBasic'
+          readOnly: true
+      required:
+      - created_at
+      - created_by
+      - id
+      - is_global
+      - name
+    NullEnum:
+      enum:
+      - null
+    RestrictionLevelEnum:
+      enum:
+      - 21
+      - 37
+      type: integer
+      description: '* `21` - Everyone in the project can edit
+
+        * `37` - Only those invited to this dashboard can edit'
+    BlankEnum:
+      enum:
+      - ''
   parameters:
     EnvironmentIdPath:
       in: path

@@ -922,6 +922,340 @@ paths:
       x-summary-source: derived
 components:
   schemas:
+    PaginatedSessionRecordingPlaylistList:
+      type: object
+      required:
+      - count
+      - results
+      properties:
+        count:
+          type: integer
+          example: 123
+        next:
+          type:
+          - string
+          - 'null'
+          format: uri
+          example: http://api.example.org/accounts/?offset=400&limit=100
+        previous:
+          type:
+          - string
+          - 'null'
+          format: uri
+          example: http://api.example.org/accounts/?offset=200&limit=100
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/SessionRecordingPlaylist'
+    MinimalPerson:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+          description: Numeric person ID.
+        name:
+          type: string
+          readOnly: true
+          description: Display name derived from person properties (email, name, or username).
+        distinct_ids:
+          type: array
+          items:
+            type: string
+          readOnly: true
+        properties:
+          description: Key-value map of person properties set via $set and $set_once operations.
+        created_at:
+          type: string
+          format: date-time
+          readOnly: true
+          description: When this person was first seen (ISO 8601).
+        uuid:
+          type: string
+          format: uuid
+          readOnly: true
+          description: Unique identifier (UUID) for this person.
+        last_seen_at:
+          type:
+          - string
+          - 'null'
+          format: date-time
+          readOnly: true
+          description: Timestamp of the last event from this person, or null.
+      required:
+      - created_at
+      - distinct_ids
+      - id
+      - last_seen_at
+      - name
+      - uuid
+    RoleAtOrganizationEnum:
+      enum:
+      - engineering
+      - data
+      - product
+      - founder
+      - leadership
+      - marketing
+      - sales
+      - other
+      type: string
+      description: '* `engineering` - Engineering
+
+        * `data` - Data
+
+        * `product` - Product Management
+
+        * `founder` - Founder
+
+        * `leadership` - Leadership
+
+        * `marketing` - Marketing
+
+        * `sales` - Sales / Success
+
+        * `other` - Other'
+    Outcome:
+      type: object
+      description: Initial goal and session outcome coming from LLM.
+      properties:
+        description:
+          type:
+          - string
+          - 'null'
+          maxLength: 10000
+          minLength: 1
+        success:
+          type:
+          - boolean
+          - 'null'
+    SessionRecordingPlaylistTypeEnum:
+      enum:
+      - collection
+      - filters
+      type: string
+      description: '* `collection` - Collection
+
+        * `filters` - Filters'
+    PatchedSessionRecordingPlaylist:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        short_id:
+          type: string
+          readOnly: true
+        name:
+          type:
+          - string
+          - 'null'
+          description: Human-readable name for the playlist.
+          maxLength: 400
+        derived_name:
+          type:
+          - string
+          - 'null'
+          maxLength: 400
+        description:
+          type: string
+          description: Optional description of the playlist's purpose or contents.
+        pinned:
+          type: boolean
+          description: Whether this playlist is pinned to the top of the list.
+        created_at:
+          type: string
+          format: date-time
+          readOnly: true
+        created_by:
+          allOf:
+          - $ref: '#/components/schemas/UserBasic'
+          readOnly: true
+        deleted:
+          type: boolean
+          description: Set to true to soft-delete the playlist.
+        filters:
+          description: JSON object with recording filter criteria. Only used when type is 'filters'. Defines which recordings match this saved filter view. When updating a filters-type playlist, you must include the existing filters alongside any other changes — omitting filters will be treated as removing them.
+        last_modified_at:
+          type: string
+          format: date-time
+          readOnly: true
+        last_modified_by:
+          allOf:
+          - $ref: '#/components/schemas/UserBasic'
+          readOnly: true
+        recordings_counts:
+          type: object
+          additionalProperties:
+            type: object
+            additionalProperties:
+              oneOf:
+              - type: integer
+              - type: boolean
+          readOnly: true
+        type:
+          description: 'Playlist type: ''collection'' for manually curated recordings, ''filters'' for saved filter views. Required on create, cannot be changed after.
+
+
+            * `collection` - Collection
+
+            * `filters` - Filters'
+          oneOf:
+          - $ref: '#/components/schemas/SessionRecordingPlaylistTypeEnum'
+          - $ref: '#/components/schemas/NullEnum'
+        is_synthetic:
+          type: boolean
+          description: Return whether this is a synthetic playlist
+          readOnly: true
+        _create_in_folder:
+          type: string
+          writeOnly: true
+          title: ' create in folder'
+    SessionSummaries:
+      type: object
+      properties:
+        session_ids:
+          type: array
+          items:
+            type: string
+          description: List of session IDs to summarize (max 300)
+          maxItems: 300
+          minItems: 1
+        focus_area:
+          type: string
+          description: Optional focus area for the summarization
+          maxLength: 500
+      required:
+      - session_ids
+    UserBasic:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        uuid:
+          type: string
+          format: uuid
+          readOnly: true
+        distinct_id:
+          type:
+          - string
+          - 'null'
+          maxLength: 200
+        first_name:
+          type: string
+          maxLength: 150
+        last_name:
+          type: string
+          maxLength: 150
+        email:
+          type: string
+          format: email
+          title: Email address
+          maxLength: 254
+        is_email_verified:
+          type:
+          - boolean
+          - 'null'
+        hedgehog_config:
+          type:
+          - object
+          - 'null'
+          additionalProperties: true
+          readOnly: true
+        role_at_organization:
+          oneOf:
+          - $ref: '#/components/schemas/RoleAtOrganizationEnum'
+          - $ref: '#/components/schemas/BlankEnum'
+          - $ref: '#/components/schemas/NullEnum'
+      required:
+      - email
+      - hedgehog_config
+      - id
+      - uuid
+    SessionRecordingPlaylist:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        short_id:
+          type: string
+          readOnly: true
+        name:
+          type:
+          - string
+          - 'null'
+          description: Human-readable name for the playlist.
+          maxLength: 400
+        derived_name:
+          type:
+          - string
+          - 'null'
+          maxLength: 400
+        description:
+          type: string
+          description: Optional description of the playlist's purpose or contents.
+        pinned:
+          type: boolean
+          description: Whether this playlist is pinned to the top of the list.
+        created_at:
+          type: string
+          format: date-time
+          readOnly: true
+        created_by:
+          allOf:
+          - $ref: '#/components/schemas/UserBasic'
+          readOnly: true
+        deleted:
+          type: boolean
+          description: Set to true to soft-delete the playlist.
+        filters:
+          description: JSON object with recording filter criteria. Only used when type is 'filters'. Defines which recordings match this saved filter view. When updating a filters-type playlist, you must include the existing filters alongside any other changes — omitting filters will be treated as removing them.
+        last_modified_at:
+          type: string
+          format: date-time
+          readOnly: true
+        last_modified_by:
+          allOf:
+          - $ref: '#/components/schemas/UserBasic'
+          readOnly: true
+        recordings_counts:
+          type: object
+          additionalProperties:
+            type: object
+            additionalProperties:
+              oneOf:
+              - type: integer
+              - type: boolean
+          readOnly: true
+        type:
+          description: 'Playlist type: ''collection'' for manually curated recordings, ''filters'' for saved filter views. Required on create, cannot be changed after.
+
+
+            * `collection` - Collection
+
+            * `filters` - Filters'
+          oneOf:
+          - $ref: '#/components/schemas/SessionRecordingPlaylistTypeEnum'
+          - $ref: '#/components/schemas/NullEnum'
+        is_synthetic:
+          type: boolean
+          description: Return whether this is a synthetic playlist
+          readOnly: true
+        _create_in_folder:
+          type: string
+          writeOnly: true
+          title: ' create in folder'
+      required:
+      - created_at
+      - created_by
+      - id
+      - is_synthetic
+      - last_modified_at
+      - last_modified_by
+      - recordings_counts
+      - short_id
     NullEnum:
       enum:
       - null
@@ -1082,227 +1416,6 @@ components:
       - summary_outcome
       - viewed
       - viewers
-    PatchedSessionRecordingPlaylist:
-      type: object
-      properties:
-        id:
-          type: integer
-          readOnly: true
-        short_id:
-          type: string
-          readOnly: true
-        name:
-          type:
-          - string
-          - 'null'
-          description: Human-readable name for the playlist.
-          maxLength: 400
-        derived_name:
-          type:
-          - string
-          - 'null'
-          maxLength: 400
-        description:
-          type: string
-          description: Optional description of the playlist's purpose or contents.
-        pinned:
-          type: boolean
-          description: Whether this playlist is pinned to the top of the list.
-        created_at:
-          type: string
-          format: date-time
-          readOnly: true
-        created_by:
-          allOf:
-          - $ref: '#/components/schemas/UserBasic'
-          readOnly: true
-        deleted:
-          type: boolean
-          description: Set to true to soft-delete the playlist.
-        filters:
-          description: JSON object with recording filter criteria. Only used when type is 'filters'. Defines which recordings match this saved filter view. When updating a filters-type playlist, you must include the existing filters alongside any other changes — omitting filters will be treated as removing them.
-        last_modified_at:
-          type: string
-          format: date-time
-          readOnly: true
-        last_modified_by:
-          allOf:
-          - $ref: '#/components/schemas/UserBasic'
-          readOnly: true
-        recordings_counts:
-          type: object
-          additionalProperties:
-            type: object
-            additionalProperties:
-              oneOf:
-              - type: integer
-              - type: boolean
-          readOnly: true
-        type:
-          description: 'Playlist type: ''collection'' for manually curated recordings, ''filters'' for saved filter views. Required on create, cannot be changed after.
-
-
-            * `collection` - Collection
-
-            * `filters` - Filters'
-          oneOf:
-          - $ref: '#/components/schemas/SessionRecordingPlaylistTypeEnum'
-          - $ref: '#/components/schemas/NullEnum'
-        is_synthetic:
-          type: boolean
-          description: Return whether this is a synthetic playlist
-          readOnly: true
-        _create_in_folder:
-          type: string
-          writeOnly: true
-          title: ' create in folder'
-    UserBasic:
-      type: object
-      properties:
-        id:
-          type: integer
-          readOnly: true
-        uuid:
-          type: string
-          format: uuid
-          readOnly: true
-        distinct_id:
-          type:
-          - string
-          - 'null'
-          maxLength: 200
-        first_name:
-          type: string
-          maxLength: 150
-        last_name:
-          type: string
-          maxLength: 150
-        email:
-          type: string
-          format: email
-          title: Email address
-          maxLength: 254
-        is_email_verified:
-          type:
-          - boolean
-          - 'null'
-        hedgehog_config:
-          type:
-          - object
-          - 'null'
-          additionalProperties: true
-          readOnly: true
-        role_at_organization:
-          oneOf:
-          - $ref: '#/components/schemas/RoleAtOrganizationEnum'
-          - $ref: '#/components/schemas/BlankEnum'
-          - $ref: '#/components/schemas/NullEnum'
-      required:
-      - email
-      - hedgehog_config
-      - id
-      - uuid
-    BlankEnum:
-      enum:
-      - ''
-    Outcome:
-      type: object
-      description: Initial goal and session outcome coming from LLM.
-      properties:
-        description:
-          type:
-          - string
-          - 'null'
-          maxLength: 10000
-          minLength: 1
-        success:
-          type:
-          - boolean
-          - 'null'
-    MinimalPerson:
-      type: object
-      properties:
-        id:
-          type: integer
-          readOnly: true
-          description: Numeric person ID.
-        name:
-          type: string
-          readOnly: true
-          description: Display name derived from person properties (email, name, or username).
-        distinct_ids:
-          type: array
-          items:
-            type: string
-          readOnly: true
-        properties:
-          description: Key-value map of person properties set via $set and $set_once operations.
-        created_at:
-          type: string
-          format: date-time
-          readOnly: true
-          description: When this person was first seen (ISO 8601).
-        uuid:
-          type: string
-          format: uuid
-          readOnly: true
-          description: Unique identifier (UUID) for this person.
-        last_seen_at:
-          type:
-          - string
-          - 'null'
-          format: date-time
-          readOnly: true
-          description: Timestamp of the last event from this person, or null.
-      required:
-      - created_at
-      - distinct_ids
-      - id
-      - last_seen_at
-      - name
-      - uuid
-    RoleAtOrganizationEnum:
-      enum:
-      - engineering
-      - data
-      - product
-      - founder
-      - leadership
-      - marketing
-      - sales
-      - other
-      type: string
-      description: '* `engineering` - Engineering
-
-        * `data` - Data
-
-        * `product` - Product Management
-
-        * `founder` - Founder
-
-        * `leadership` - Leadership
-
-        * `marketing` - Marketing
-
-        * `sales` - Sales / Success
-
-        * `other` - Other'
-    SessionSummaries:
-      type: object
-      properties:
-        session_ids:
-          type: array
-          items:
-            type: string
-          description: List of session IDs to summarize (max 300)
-          maxItems: 300
-          minItems: 1
-        focus_area:
-          type: string
-          description: Optional focus area for the summarization
-          maxLength: 500
-      required:
-      - session_ids
     PaginatedSessionRecordingList:
       type: object
       required:
@@ -1328,14 +1441,9 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/SessionRecording'
-    SessionRecordingPlaylistTypeEnum:
+    BlankEnum:
       enum:
-      - collection
-      - filters
-      type: string
-      description: '* `collection` - Collection
-
-        * `filters` - Filters'
+      - ''
     PatchedSessionRecording:
       type: object
       properties:
@@ -1466,114 +1574,6 @@ components:
             additionalProperties: true
           description: Load external references (linked issues) for this recording
           readOnly: true
-    SessionRecordingPlaylist:
-      type: object
-      properties:
-        id:
-          type: integer
-          readOnly: true
-        short_id:
-          type: string
-          readOnly: true
-        name:
-          type:
-          - string
-          - 'null'
-          description: Human-readable name for the playlist.
-          maxLength: 400
-        derived_name:
-          type:
-          - string
-          - 'null'
-          maxLength: 400
-        description:
-          type: string
-          description: Optional description of the playlist's purpose or contents.
-        pinned:
-          type: boolean
-          description: Whether this playlist is pinned to the top of the list.
-        created_at:
-          type: string
-          format: date-time
-          readOnly: true
-        created_by:
-          allOf:
-          - $ref: '#/components/schemas/UserBasic'
-          readOnly: true
-        deleted:
-          type: boolean
-          description: Set to true to soft-delete the playlist.
-        filters:
-          description: JSON object with recording filter criteria. Only used when type is 'filters'. Defines which recordings match this saved filter view. When updating a filters-type playlist, you must include the existing filters alongside any other changes — omitting filters will be treated as removing them.
-        last_modified_at:
-          type: string
-          format: date-time
-          readOnly: true
-        last_modified_by:
-          allOf:
-          - $ref: '#/components/schemas/UserBasic'
-          readOnly: true
-        recordings_counts:
-          type: object
-          additionalProperties:
-            type: object
-            additionalProperties:
-              oneOf:
-              - type: integer
-              - type: boolean
-          readOnly: true
-        type:
-          description: 'Playlist type: ''collection'' for manually curated recordings, ''filters'' for saved filter views. Required on create, cannot be changed after.
-
-
-            * `collection` - Collection
-
-            * `filters` - Filters'
-          oneOf:
-          - $ref: '#/components/schemas/SessionRecordingPlaylistTypeEnum'
-          - $ref: '#/components/schemas/NullEnum'
-        is_synthetic:
-          type: boolean
-          description: Return whether this is a synthetic playlist
-          readOnly: true
-        _create_in_folder:
-          type: string
-          writeOnly: true
-          title: ' create in folder'
-      required:
-      - created_at
-      - created_by
-      - id
-      - is_synthetic
-      - last_modified_at
-      - last_modified_by
-      - recordings_counts
-      - short_id
-    PaginatedSessionRecordingPlaylistList:
-      type: object
-      required:
-      - count
-      - results
-      properties:
-        count:
-          type: integer
-          example: 123
-        next:
-          type:
-          - string
-          - 'null'
-          format: uri
-          example: http://api.example.org/accounts/?offset=400&limit=100
-        previous:
-          type:
-          - string
-          - 'null'
-          format: uri
-          example: http://api.example.org/accounts/?offset=200&limit=100
-        results:
-          type: array
-          items:
-            $ref: '#/components/schemas/SessionRecordingPlaylist'
   parameters:
     EnvironmentIdPath:
       in: path

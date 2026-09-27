@@ -199,72 +199,6 @@ paths:
       x-summary-source: derived
 components:
   schemas:
-    NullEnum:
-      enum:
-      - null
-    PatchedSessionGroupSummary:
-      type: object
-      properties:
-        id:
-          type: string
-          format: uuid
-          readOnly: true
-        title:
-          type: string
-          readOnly: true
-          description: Title of the group session summary
-        session_ids:
-          type: array
-          items:
-            type: string
-            maxLength: 200
-          readOnly: true
-          description: List of session replay IDs included in this group summary
-        summary:
-          readOnly: true
-          description: Group summary in JSON format (EnrichedSessionGroupSummaryPatternsList schema)
-        extra_summary_context:
-          readOnly: true
-          description: Additional context passed to the summary (ExtraSummaryContext schema)
-        run_metadata:
-          readOnly: true
-          description: Summary run metadata (SessionSummaryRunMeta schema)
-        created_at:
-          type: string
-          format: date-time
-          readOnly: true
-        created_by:
-          allOf:
-          - $ref: '#/components/schemas/UserBasic'
-          readOnly: true
-        team:
-          type: integer
-          readOnly: true
-    PaginatedSessionGroupSummaryMinimalList:
-      type: object
-      required:
-      - count
-      - results
-      properties:
-        count:
-          type: integer
-          example: 123
-        next:
-          type:
-          - string
-          - 'null'
-          format: uri
-          example: http://api.example.org/accounts/?offset=400&limit=100
-        previous:
-          type:
-          - string
-          - 'null'
-          format: uri
-          example: http://api.example.org/accounts/?offset=200&limit=100
-        results:
-          type: array
-          items:
-            $ref: '#/components/schemas/SessionGroupSummaryMinimal'
     SessionGroupSummary:
       type: object
       properties:
@@ -313,6 +247,35 @@ components:
       - summary
       - team
       - title
+    RoleAtOrganizationEnum:
+      enum:
+      - engineering
+      - data
+      - product
+      - founder
+      - leadership
+      - marketing
+      - sales
+      - other
+      type: string
+      description: '* `engineering` - Engineering
+
+        * `data` - Data
+
+        * `product` - Product Management
+
+        * `founder` - Founder
+
+        * `leadership` - Leadership
+
+        * `marketing` - Marketing
+
+        * `sales` - Sales / Success
+
+        * `other` - Other'
+    BlankEnum:
+      enum:
+      - ''
     UserBasic:
       type: object
       properties:
@@ -359,9 +322,72 @@ components:
       - hedgehog_config
       - id
       - uuid
-    BlankEnum:
+    PaginatedSessionGroupSummaryMinimalList:
+      type: object
+      required:
+      - count
+      - results
+      properties:
+        count:
+          type: integer
+          example: 123
+        next:
+          type:
+          - string
+          - 'null'
+          format: uri
+          example: http://api.example.org/accounts/?offset=400&limit=100
+        previous:
+          type:
+          - string
+          - 'null'
+          format: uri
+          example: http://api.example.org/accounts/?offset=200&limit=100
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/SessionGroupSummaryMinimal'
+    NullEnum:
       enum:
-      - ''
+      - null
+    PatchedSessionGroupSummary:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+          readOnly: true
+        title:
+          type: string
+          readOnly: true
+          description: Title of the group session summary
+        session_ids:
+          type: array
+          items:
+            type: string
+            maxLength: 200
+          readOnly: true
+          description: List of session replay IDs included in this group summary
+        summary:
+          readOnly: true
+          description: Group summary in JSON format (EnrichedSessionGroupSummaryPatternsList schema)
+        extra_summary_context:
+          readOnly: true
+          description: Additional context passed to the summary (ExtraSummaryContext schema)
+        run_metadata:
+          readOnly: true
+          description: Summary run metadata (SessionSummaryRunMeta schema)
+        created_at:
+          type: string
+          format: date-time
+          readOnly: true
+        created_by:
+          allOf:
+          - $ref: '#/components/schemas/UserBasic'
+          readOnly: true
+        team:
+          type: integer
+          readOnly: true
     SessionGroupSummaryMinimal:
       type: object
       properties:
@@ -390,32 +416,6 @@ components:
       - id
       - session_count
       - title
-    RoleAtOrganizationEnum:
-      enum:
-      - engineering
-      - data
-      - product
-      - founder
-      - leadership
-      - marketing
-      - sales
-      - other
-      type: string
-      description: '* `engineering` - Engineering
-
-        * `data` - Data
-
-        * `product` - Product Management
-
-        * `founder` - Founder
-
-        * `leadership` - Leadership
-
-        * `marketing` - Marketing
-
-        * `sales` - Sales / Success
-
-        * `other` - Other'
   parameters:
     ProjectIdPath:
       in: path

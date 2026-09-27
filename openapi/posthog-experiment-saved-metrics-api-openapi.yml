@@ -197,46 +197,57 @@ paths:
       x-summary-source: derived
 components:
   schemas:
-    NullEnum:
-      enum:
-      - null
-    PatchedExperimentSavedMetric:
+    PaginatedExperimentSavedMetricList:
       type: object
-      description: Mixin for serializers to add user access control fields
+      required:
+      - count
+      - results
       properties:
-        id:
+        count:
           type: integer
-          readOnly: true
-        name:
-          type: string
-          maxLength: 400
-        description:
+          example: 123
+        next:
           type:
           - string
           - 'null'
-          maxLength: 400
-        query: {}
-        created_by:
-          allOf:
-          - $ref: '#/components/schemas/UserBasic'
-          readOnly: true
-        created_at:
-          type: string
-          format: date-time
-          readOnly: true
-        updated_at:
-          type: string
-          format: date-time
-          readOnly: true
-        tags:
+          format: uri
+          example: http://api.example.org/accounts/?offset=400&limit=100
+        previous:
+          type:
+          - string
+          - 'null'
+          format: uri
+          example: http://api.example.org/accounts/?offset=200&limit=100
+        results:
           type: array
-          items: {}
-        user_access_level:
-          type:
-          - string
-          - 'null'
-          readOnly: true
-          description: The effective access level the user has for this object
+          items:
+            $ref: '#/components/schemas/ExperimentSavedMetric'
+    RoleAtOrganizationEnum:
+      enum:
+      - engineering
+      - data
+      - product
+      - founder
+      - leadership
+      - marketing
+      - sales
+      - other
+      type: string
+      description: '* `engineering` - Engineering
+
+        * `data` - Data
+
+        * `product` - Product Management
+
+        * `founder` - Founder
+
+        * `leadership` - Leadership
+
+        * `marketing` - Marketing
+
+        * `sales` - Sales / Success
+
+        * `other` - Other'
     ExperimentSavedMetric:
       type: object
       description: Mixin for serializers to add user access control fields
@@ -328,60 +339,49 @@ components:
       - hedgehog_config
       - id
       - uuid
-    PaginatedExperimentSavedMetricList:
-      type: object
-      required:
-      - count
-      - results
-      properties:
-        count:
-          type: integer
-          example: 123
-        next:
-          type:
-          - string
-          - 'null'
-          format: uri
-          example: http://api.example.org/accounts/?offset=400&limit=100
-        previous:
-          type:
-          - string
-          - 'null'
-          format: uri
-          example: http://api.example.org/accounts/?offset=200&limit=100
-        results:
-          type: array
-          items:
-            $ref: '#/components/schemas/ExperimentSavedMetric'
+    NullEnum:
+      enum:
+      - null
     BlankEnum:
       enum:
       - ''
-    RoleAtOrganizationEnum:
-      enum:
-      - engineering
-      - data
-      - product
-      - founder
-      - leadership
-      - marketing
-      - sales
-      - other
-      type: string
-      description: '* `engineering` - Engineering
-
-        * `data` - Data
-
-        * `product` - Product Management
-
-        * `founder` - Founder
-
-        * `leadership` - Leadership
-
-        * `marketing` - Marketing
-
-        * `sales` - Sales / Success
-
-        * `other` - Other'
+    PatchedExperimentSavedMetric:
+      type: object
+      description: Mixin for serializers to add user access control fields
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        name:
+          type: string
+          maxLength: 400
+        description:
+          type:
+          - string
+          - 'null'
+          maxLength: 400
+        query: {}
+        created_by:
+          allOf:
+          - $ref: '#/components/schemas/UserBasic'
+          readOnly: true
+        created_at:
+          type: string
+          format: date-time
+          readOnly: true
+        updated_at:
+          type: string
+          format: date-time
+          readOnly: true
+        tags:
+          type: array
+          items: {}
+        user_access_level:
+          type:
+          - string
+          - 'null'
+          readOnly: true
+          description: The effective access level the user has for this object
   parameters:
     ProjectIdPath:
       in: path

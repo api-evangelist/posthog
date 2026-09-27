@@ -387,7 +387,34 @@ paths:
       x-summary-source: derived
 components:
   schemas:
-    PaginatedSignalSourceConfigList:
+    PatchedSignalSourceConfig:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+          readOnly: true
+        source_product:
+          $ref: '#/components/schemas/SourceProductEnum'
+        source_type:
+          $ref: '#/components/schemas/SignalSourceConfigSourceTypeEnum'
+        enabled:
+          type: boolean
+        config: {}
+        created_at:
+          type: string
+          format: date-time
+          readOnly: true
+        updated_at:
+          type: string
+          format: date-time
+          readOnly: true
+        status:
+          type:
+          - string
+          - 'null'
+          readOnly: true
+    PaginatedPauseStateResponseList:
       type: object
       required:
       - count
@@ -411,20 +438,33 @@ components:
         results:
           type: array
           items:
-            $ref: '#/components/schemas/SignalSourceConfig'
-    PauseResponse:
-      type: object
-      properties:
-        status:
-          type: string
-          description: Always 'paused'.
-        paused_until:
-          type: string
-          format: date-time
-          description: The timestamp the pipeline is paused until.
-      required:
-      - paused_until
-      - status
+            $ref: '#/components/schemas/PauseStateResponse'
+    SignalReportStatusEnum:
+      enum:
+      - potential
+      - candidate
+      - in_progress
+      - pending_input
+      - ready
+      - failed
+      - deleted
+      - suppressed
+      type: string
+      description: '* `potential` - Potential
+
+        * `candidate` - Candidate
+
+        * `in_progress` - In Progress
+
+        * `pending_input` - Pending Input
+
+        * `ready` - Ready
+
+        * `failed` - Failed
+
+        * `deleted` - Deleted
+
+        * `suppressed` - Suppressed'
     SignalReport:
       type: object
       properties:
@@ -518,6 +558,74 @@ components:
       - title
       - total_weight
       - updated_at
+    SourceProductEnum:
+      enum:
+      - session_replay
+      - llm_analytics
+      - github
+      - linear
+      - zendesk
+      - conversations
+      - error_tracking
+      type: string
+      description: '* `session_replay` - Session replay
+
+        * `llm_analytics` - LLM analytics
+
+        * `github` - GitHub
+
+        * `linear` - Linear
+
+        * `zendesk` - Zendesk
+
+        * `conversations` - Conversations
+
+        * `error_tracking` - Error tracking'
+    PauseUntilRequest:
+      type: object
+      properties:
+        timestamp:
+          type: string
+          format: date-time
+          description: Pause the grouping pipeline until this timestamp (ISO 8601).
+      required:
+      - timestamp
+    PauseResponse:
+      type: object
+      properties:
+        status:
+          type: string
+          description: Always 'paused'.
+        paused_until:
+          type: string
+          format: date-time
+          description: The timestamp the pipeline is paused until.
+      required:
+      - paused_until
+      - status
+    SignalSourceConfigSourceTypeEnum:
+      enum:
+      - session_analysis_cluster
+      - evaluation
+      - issue
+      - ticket
+      - issue_created
+      - issue_reopened
+      - issue_spiking
+      type: string
+      description: '* `session_analysis_cluster` - Session analysis cluster
+
+        * `evaluation` - Evaluation
+
+        * `issue` - Issue
+
+        * `ticket` - Ticket
+
+        * `issue_created` - Issue created
+
+        * `issue_reopened` - Issue reopened
+
+        * `issue_spiking` - Issue spiking'
     PauseStateResponse:
       type: object
       properties:
@@ -563,112 +671,6 @@ components:
       - source_type
       - status
       - updated_at
-    SourceProductEnum:
-      enum:
-      - session_replay
-      - llm_analytics
-      - github
-      - linear
-      - zendesk
-      - conversations
-      - error_tracking
-      type: string
-      description: '* `session_replay` - Session replay
-
-        * `llm_analytics` - LLM analytics
-
-        * `github` - GitHub
-
-        * `linear` - Linear
-
-        * `zendesk` - Zendesk
-
-        * `conversations` - Conversations
-
-        * `error_tracking` - Error tracking'
-    SignalSourceConfigSourceTypeEnum:
-      enum:
-      - session_analysis_cluster
-      - evaluation
-      - issue
-      - ticket
-      - issue_created
-      - issue_reopened
-      - issue_spiking
-      type: string
-      description: '* `session_analysis_cluster` - Session analysis cluster
-
-        * `evaluation` - Evaluation
-
-        * `issue` - Issue
-
-        * `ticket` - Ticket
-
-        * `issue_created` - Issue created
-
-        * `issue_reopened` - Issue reopened
-
-        * `issue_spiking` - Issue spiking'
-    SignalReportStatusEnum:
-      enum:
-      - potential
-      - candidate
-      - in_progress
-      - pending_input
-      - ready
-      - failed
-      - deleted
-      - suppressed
-      type: string
-      description: '* `potential` - Potential
-
-        * `candidate` - Candidate
-
-        * `in_progress` - In Progress
-
-        * `pending_input` - Pending Input
-
-        * `ready` - Ready
-
-        * `failed` - Failed
-
-        * `deleted` - Deleted
-
-        * `suppressed` - Suppressed'
-    PaginatedPauseStateResponseList:
-      type: object
-      required:
-      - count
-      - results
-      properties:
-        count:
-          type: integer
-          example: 123
-        next:
-          type:
-          - string
-          - 'null'
-          format: uri
-          example: http://api.example.org/accounts/?offset=400&limit=100
-        previous:
-          type:
-          - string
-          - 'null'
-          format: uri
-          example: http://api.example.org/accounts/?offset=200&limit=100
-        results:
-          type: array
-          items:
-            $ref: '#/components/schemas/PauseStateResponse'
-    PauseUntilRequest:
-      type: object
-      properties:
-        timestamp:
-          type: string
-          format: date-time
-          description: Pause the grouping pipeline until this timestamp (ISO 8601).
-      required:
-      - timestamp
     PaginatedSignalReportList:
       type: object
       required:
@@ -694,33 +696,31 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/SignalReport'
-    PatchedSignalSourceConfig:
+    PaginatedSignalSourceConfigList:
       type: object
+      required:
+      - count
+      - results
       properties:
-        id:
-          type: string
-          format: uuid
-          readOnly: true
-        source_product:
-          $ref: '#/components/schemas/SourceProductEnum'
-        source_type:
-          $ref: '#/components/schemas/SignalSourceConfigSourceTypeEnum'
-        enabled:
-          type: boolean
-        config: {}
-        created_at:
-          type: string
-          format: date-time
-          readOnly: true
-        updated_at:
-          type: string
-          format: date-time
-          readOnly: true
-        status:
+        count:
+          type: integer
+          example: 123
+        next:
           type:
           - string
           - 'null'
-          readOnly: true
+          format: uri
+          example: http://api.example.org/accounts/?offset=400&limit=100
+        previous:
+          type:
+          - string
+          - 'null'
+          format: uri
+          example: http://api.example.org/accounts/?offset=200&limit=100
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/SignalSourceConfig'
   parameters:
     ProjectIdPath:
       in: path

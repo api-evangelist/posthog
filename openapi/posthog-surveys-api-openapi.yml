@@ -653,625 +653,171 @@ paths:
       x-summary-source: derived
 components:
   schemas:
-    BucketingIdentifierEnum:
-      enum:
-      - distinct_id
-      - device_id
-      type: string
-      description: '* `distinct_id` - User ID (default)
-
-        * `device_id` - Device ID'
-    FeatureFlagMultivariateSchema:
+    SurveyLinkQuestionSchema:
       type: object
       properties:
-        variants:
+        type:
+          $ref: '#/components/schemas/SurveyLinkQuestionSchemaTypeEnum'
+        question:
+          type: string
+          description: Question text shown to respondents.
+        description:
+          type: string
+          description: Optional helper text.
+        descriptionContentType:
+          allOf:
+          - $ref: '#/components/schemas/DescriptionContentTypeEnum'
+          description: 'Format for the description field.
+
+
+            * `text` - text
+
+            * `html` - html'
+        optional:
+          type: boolean
+          description: Whether respondents may skip this question.
+        buttonText:
+          type: string
+          description: Custom button label.
+        link:
+          type: string
+          description: HTTPS or mailto URL for link questions.
+      required:
+      - link
+      - question
+      - type
+    FeatureFlagFilterPropertyExistsSchema:
+      type: object
+      properties:
+        key:
+          type: string
+          description: Property key used in this feature flag condition.
+        type:
+          allOf:
+          - $ref: '#/components/schemas/PropertyGroupTypeEnum'
+          description: 'Property filter type. Common values are ''person'' and ''cohort''.
+
+
+            * `cohort` - cohort
+
+            * `person` - person
+
+            * `group` - group'
+        cohort_name:
+          type:
+          - string
+          - 'null'
+          description: Resolved cohort name for cohort-type filters.
+        group_type_index:
+          type:
+          - integer
+          - 'null'
+          description: Group type index when using group-based filters.
+        operator:
+          allOf:
+          - $ref: '#/components/schemas/ExistenceOperatorEnum'
+          description: 'Existence operator.
+
+
+            * `is_set` - is_set
+
+            * `is_not_set` - is_not_set'
+        value:
+          description: Optional value. Runtime behavior determines whether this is ignored.
+      required:
+      - key
+      - operator
+    DateOperatorEnum:
+      enum:
+      - is_date_exact
+      - is_date_before
+      - is_date_after
+      type: string
+      description: '* `is_date_exact` - is_date_exact
+
+        * `is_date_before` - is_date_before
+
+        * `is_date_after` - is_date_after'
+    DescriptionContentTypeEnum:
+      enum:
+      - html
+      - text
+      type: string
+      description: '* `html` - html
+
+        * `text` - text'
+    GeneratedSurveyQuestionTranslation:
+      type: object
+      properties:
+        question:
+          type: string
+          description: Translated question text.
+        description:
+          type: string
+          description: Translated question description.
+        buttonText:
+          type: string
+          description: Translated submit button text.
+        choices:
           type: array
           items:
-            $ref: '#/components/schemas/FeatureFlagMultivariateVariantSchema'
-          description: Variant definitions for multivariate feature flags.
-      required:
-      - variants
+            type: string
+          description: Translated choices in the same order as the source choices.
+        lowerBoundLabel:
+          type: string
+          description: Translated lower rating bound label.
+        upperBoundLabel:
+          type: string
+          description: Translated upper rating bound label.
+        link:
+          type: string
+          description: Translated link text or localized URL.
+    FeatureFlagFilterPropertyGenericSchemaOperatorEnum:
+      enum:
+      - exact
+      - is_not
+      - icontains
+      - not_icontains
+      - regex
+      - not_regex
+      - gt
+      - gte
+      - lt
+      - lte
+      type: string
+      description: '* `exact` - exact
+
+        * `is_not` - is_not
+
+        * `icontains` - icontains
+
+        * `not_icontains` - not_icontains
+
+        * `regex` - regex
+
+        * `not_regex` - not_regex
+
+        * `gt` - gt
+
+        * `gte` - gte
+
+        * `lt` - lt
+
+        * `lte` - lte'
     SurveyBranchingSchema:
       oneOf:
       - $ref: '#/components/schemas/SurveyNextQuestionBranching'
       - $ref: '#/components/schemas/SurveyEndBranching'
       - $ref: '#/components/schemas/SurveySpecificQuestionBranching'
       - $ref: '#/components/schemas/SurveyResponseBasedBranching'
-    SurveyEndBranchingTypeEnum:
+    FeatureFlagFilterPropertyMultiContainsSchemaOperatorEnum:
       enum:
-      - end
+      - icontains_multi
+      - not_icontains_multi
       type: string
-      description: '* `end` - end'
-    FeatureFlagFilterPropertyCohortInSchemaOperatorEnum:
-      enum:
-      - in
-      - not_in
-      type: string
-      description: '* `in` - in
+      description: '* `icontains_multi` - icontains_multi
 
-        * `not_in` - not_in'
-    ExistenceOperatorEnum:
-      enum:
-      - is_set
-      - is_not_set
-      type: string
-      description: '* `is_set` - is_set
-
-        * `is_not_set` - is_not_set'
-    UserBasic:
-      type: object
-      properties:
-        id:
-          type: integer
-          readOnly: true
-        uuid:
-          type: string
-          format: uuid
-          readOnly: true
-        distinct_id:
-          type:
-          - string
-          - 'null'
-          maxLength: 200
-        first_name:
-          type: string
-          maxLength: 150
-        last_name:
-          type: string
-          maxLength: 150
-        email:
-          type: string
-          format: email
-          title: Email address
-          maxLength: 254
-        is_email_verified:
-          type:
-          - boolean
-          - 'null'
-        hedgehog_config:
-          type:
-          - object
-          - 'null'
-          additionalProperties: true
-          readOnly: true
-        role_at_organization:
-          oneOf:
-          - $ref: '#/components/schemas/RoleAtOrganizationEnum'
-          - $ref: '#/components/schemas/BlankEnum'
-          - $ref: '#/components/schemas/NullEnum'
-      required:
-      - email
-      - hedgehog_config
-      - id
-      - uuid
-    FeatureFlagFilterPropertySemverSchema:
-      type: object
-      properties:
-        key:
-          type: string
-          description: Property key used in this feature flag condition.
-        type:
-          allOf:
-          - $ref: '#/components/schemas/PropertyGroupTypeEnum'
-          description: 'Property filter type. Common values are ''person'' and ''cohort''.
-
-
-            * `cohort` - cohort
-
-            * `person` - person
-
-            * `group` - group'
-        cohort_name:
-          type:
-          - string
-          - 'null'
-          description: Resolved cohort name for cohort-type filters.
-        group_type_index:
-          type:
-          - integer
-          - 'null'
-          description: Group type index when using group-based filters.
-        operator:
-          allOf:
-          - $ref: '#/components/schemas/FeatureFlagFilterPropertySemverSchemaOperatorEnum'
-          description: 'Semantic version comparison operator.
-
-
-            * `semver_gt` - semver_gt
-
-            * `semver_gte` - semver_gte
-
-            * `semver_lt` - semver_lt
-
-            * `semver_lte` - semver_lte
-
-            * `semver_eq` - semver_eq
-
-            * `semver_neq` - semver_neq
-
-            * `semver_tilde` - semver_tilde
-
-            * `semver_caret` - semver_caret
-
-            * `semver_wildcard` - semver_wildcard'
-        value:
-          type: string
-          description: Semantic version string.
-      required:
-      - key
-      - operator
-      - value
-    FeatureFlagFilterPropertyGenericSchema:
-      type: object
-      properties:
-        key:
-          type: string
-          description: Property key used in this feature flag condition.
-        type:
-          allOf:
-          - $ref: '#/components/schemas/PropertyGroupTypeEnum'
-          description: 'Property filter type. Common values are ''person'' and ''cohort''.
-
-
-            * `cohort` - cohort
-
-            * `person` - person
-
-            * `group` - group'
-        cohort_name:
-          type:
-          - string
-          - 'null'
-          description: Resolved cohort name for cohort-type filters.
-        group_type_index:
-          type:
-          - integer
-          - 'null'
-          description: Group type index when using group-based filters.
-        value:
-          description: Comparison value for the property filter. Supports strings, numbers, booleans, and arrays.
-        operator:
-          allOf:
-          - $ref: '#/components/schemas/FeatureFlagFilterPropertyGenericSchemaOperatorEnum'
-          description: 'Operator used to compare the property value.
-
-
-            * `exact` - exact
-
-            * `is_not` - is_not
-
-            * `icontains` - icontains
-
-            * `not_icontains` - not_icontains
-
-            * `regex` - regex
-
-            * `not_regex` - not_regex
-
-            * `gt` - gt
-
-            * `gte` - gte
-
-            * `lt` - lt
-
-            * `lte` - lte'
-      required:
-      - key
-      - operator
-      - value
-    ScheduleEnum:
-      enum:
-      - once
-      - recurring
-      - always
-      type: string
-      description: '* `once` - once
-
-        * `recurring` - recurring
-
-        * `always` - always'
-    FeatureFlagFilterPropertyFlagEvaluatesSchemaOperatorEnum:
-      enum:
-      - flag_evaluates_to
-      type: string
-      description: '* `flag_evaluates_to` - flag_evaluates_to'
-    SurveySpecificQuestionBranching:
-      type: object
-      properties:
-        type:
-          allOf:
-          - $ref: '#/components/schemas/SurveySpecificQuestionBranchingTypeEnum'
-          description: 'Jump to a specific question index.
-
-
-            * `specific_question` - specific_question'
-        index:
-          type: integer
-          minimum: 0
-          description: 0-based index of the next question.
-      required:
-      - index
-      - type
-    SurveyAppearanceSchema:
-      type: object
-      properties:
-        backgroundColor:
-          type: string
-        submitButtonColor:
-          type: string
-        textColor:
-          type: string
-        submitButtonText:
-          type: string
-        submitButtonTextColor:
-          type: string
-        descriptionTextColor:
-          type: string
-        ratingButtonColor:
-          type: string
-        ratingButtonActiveColor:
-          type: string
-        ratingButtonHoverColor:
-          type: string
-        whiteLabel:
-          type: boolean
-        autoDisappear:
-          type: boolean
-        displayThankYouMessage:
-          type: boolean
-        thankYouMessageHeader:
-          type: string
-        thankYouMessageDescription:
-          type: string
-        thankYouMessageDescriptionContentType:
-          $ref: '#/components/schemas/DescriptionContentTypeEnum'
-        thankYouMessageCloseButtonText:
-          type: string
-        borderColor:
-          type: string
-        placeholder:
-          type: string
-        shuffleQuestions:
-          type: boolean
-        surveyPopupDelaySeconds:
-          type: integer
-        widgetType:
-          $ref: '#/components/schemas/WidgetTypeEnum'
-        widgetSelector:
-          type: string
-        widgetLabel:
-          type: string
-        widgetColor:
-          type: string
-        fontFamily:
-          type: string
-        maxWidth:
-          type: string
-        zIndex:
-          type: string
-        disabledButtonOpacity:
-          type: string
-        boxPadding:
-          type: string
-    SurveyOpenQuestionSchemaTypeEnum:
-      enum:
-      - open
-      type: string
-      description: '* `open` - open'
-    FeatureFlagFilterPropertyDateSchema:
-      type: object
-      properties:
-        key:
-          type: string
-          description: Property key used in this feature flag condition.
-        type:
-          allOf:
-          - $ref: '#/components/schemas/PropertyGroupTypeEnum'
-          description: 'Property filter type. Common values are ''person'' and ''cohort''.
-
-
-            * `cohort` - cohort
-
-            * `person` - person
-
-            * `group` - group'
-        cohort_name:
-          type:
-          - string
-          - 'null'
-          description: Resolved cohort name for cohort-type filters.
-        group_type_index:
-          type:
-          - integer
-          - 'null'
-          description: Group type index when using group-based filters.
-        operator:
-          allOf:
-          - $ref: '#/components/schemas/DateOperatorEnum'
-          description: 'Date comparison operator.
-
-
-            * `is_date_exact` - is_date_exact
-
-            * `is_date_after` - is_date_after
-
-            * `is_date_before` - is_date_before'
-        value:
-          type: string
-          description: Date value in ISO format or relative date expression.
-      required:
-      - key
-      - operator
-      - value
-    FeatureFlagFilterPropertyCohortInSchemaTypeEnum:
-      enum:
-      - cohort
-      type: string
-      description: '* `cohort` - cohort'
-    SurveyRatingQuestionSchemaTypeEnum:
-      enum:
-      - rating
-      type: string
-      description: '* `rating` - rating'
-    FeatureFlagConditionGroupSchema:
-      type: object
-      properties:
-        properties:
-          type: array
-          items:
-            $ref: '#/components/schemas/FeatureFlagFilterPropertySchema'
-          description: Property conditions for this release condition group.
-        rollout_percentage:
-          type: number
-          format: double
-          description: Rollout percentage for this release condition group.
-        variant:
-          type:
-          - string
-          - 'null'
-          description: Variant key override for multivariate flags.
-        aggregation_group_type_index:
-          type:
-          - integer
-          - 'null'
-          description: Group type index for this condition set. None means person-level aggregation.
-    FeatureFlagMultivariateVariantSchema:
-      type: object
-      properties:
-        key:
-          type: string
-          description: Unique key for this variant.
-        name:
-          type: string
-          description: Human-readable name for this variant.
-        rollout_percentage:
-          type: number
-          format: double
-          description: Variant rollout percentage.
-      required:
-      - key
-      - rollout_percentage
-    ResponseSamplingIntervalTypeEnum:
-      enum:
-      - day
-      - week
-      - month
-      type: string
-      description: '* `day` - day
-
-        * `week` - week
-
-        * `month` - month'
-    PatchedSurveySerializerCreateUpdateOnlySchema:
-      type: object
-      properties:
-        id:
-          type: string
-          format: uuid
-          readOnly: true
-        name:
-          type: string
-          description: Survey name.
-          maxLength: 400
-          minLength: 1
-        description:
-          type: string
-          description: Survey description.
-        type:
-          allOf:
-          - $ref: '#/components/schemas/SurveyType'
-          description: 'Survey type.
-
-
-            * `popover` - popover
-
-            * `widget` - widget
-
-            * `external_survey` - external survey
-
-            * `api` - api'
-        schedule:
-          description: 'Survey scheduling behavior: ''once'' = show once per user (default), ''recurring'' = repeat based on iteration_count and iteration_frequency_days settings, ''always'' = show every time conditions are met (mainly for widget surveys)
-
-
-            * `once` - once
-
-            * `recurring` - recurring
-
-            * `always` - always'
-          oneOf:
-          - $ref: '#/components/schemas/ScheduleEnum'
-          - $ref: '#/components/schemas/NullEnum'
-        linked_flag:
-          allOf:
-          - $ref: '#/components/schemas/MinimalFeatureFlag'
-          readOnly: true
-        linked_flag_id:
-          type:
-          - integer
-          - 'null'
-          writeOnly: true
-          description: The feature flag linked to this survey.
-        linked_insight_id:
-          type:
-          - integer
-          - 'null'
-          writeOnly: true
-        targeting_flag_id:
-          type: integer
-          writeOnly: true
-          description: An existing targeting flag to use for this survey.
-        targeting_flag:
-          allOf:
-          - $ref: '#/components/schemas/MinimalFeatureFlag'
-          readOnly: true
-        internal_targeting_flag:
-          allOf:
-          - $ref: '#/components/schemas/MinimalFeatureFlag'
-          readOnly: true
-        targeting_flag_filters:
-          allOf:
-          - $ref: '#/components/schemas/FeatureFlagFiltersSchema'
-          writeOnly: true
-          description: 'Target specific users based on their properties. Example: {groups: [{properties: [{key: ''email'', value: [''@company.com''], operator: ''icontains''}], rollout_percentage: 100}]}'
-        remove_targeting_flag:
-          type:
-          - boolean
-          - 'null'
-          writeOnly: true
-          description: Set to true to completely remove all targeting filters from the survey, making it visible to all users (subject to other display conditions like URL matching).
-        questions:
-          type:
-          - array
-          - 'null'
-          items:
-            $ref: '#/components/schemas/SurveyQuestionInputSchema'
-          description: "\n        The `array` of questions included in the survey. Each question must conform to one of the defined question types: Basic, Link, Rating, or Multiple Choice.\n\n        Basic (open-ended question)\n        - `id`: The question ID\n        - `type`: `open`\n        - `question`: The text of the question.\n        - `description`: Optional description of the question.\n        - `descriptionContentType`: Content type of the description (`html` or `text`).\n        - `optional`: Whether the question is optional (`boolean`).\n        - `buttonText`: Text displayed on the submit button.\n        - `branching`: Branching logic for the question. See branching types below for details.\n\n        Link (a question with a link)\n        - `id`: The question ID\n        - `type`: `link`\n        - `question`: The text of the question.\n        - `description`: Optional description of the question.\n        - `descriptionContentType`: Content type of the description (`html` or `text`).\n        - `optional`: Whether the question is optional (`boolean`).\n        - `buttonText`: Text displayed on the submit button.\n        - `link`: The URL associated with the question.\n        - `branching`: Branching logic for the question. See branching types below for details.\n\n        Rating (a question with a rating scale)\n        - `id`: The question ID\n        - `type`: `rating`\n        - `question`: The text of the question.\n        - `description`: Optional description of the question.\n        - `descriptionContentType`: Content type of the description (`html` or `text`).\n        - `optional`: Whether the question is optional (`boolean`).\n        - `buttonText`: Text displayed on the submit button.\n        - `display`: Display style of the rating (`number` or `emoji`).\n        - `scale`: The scale of the rating (`number`).\n        - `lowerBoundLabel`: Label for the lower bound of the scale.\n        - `upperBoundLabel`: Label for the upper bound of the scale.\n        - `isNpsQuestion`: Whether the question is an NPS rating.\n        - `branching`: Branching logic for the question. See branching types below for details.\n\n        Multiple choice\n        - `id`: The question ID\n        - `type`: `single_choice` or `multiple_choice`\n        - `question`: The text of the question.\n        - `description`: Optional description of the question.\n        - `descriptionContentType`: Content type of the description (`html` or `text`).\n        - `optional`: Whether the question is optional (`boolean`).\n        - `buttonText`: Text displayed on the submit button.\n        - `choices`: An array of choices for the question.\n        - `shuffleOptions`: Whether to shuffle the order of the choices (`boolean`).\n        - `hasOpenChoice`: Whether the question allows an open-ended response (`boolean`).\n        - `branching`: Branching logic for the question. See branching types below for details.\n\n        Branching logic can be one of the following types:\n\n        Next question: Proceeds to the next question\n        ```json\n        {\n            \"type\": \"next_question\"\n        }\n        ```\n\n        End: Ends the survey, optionally displaying a confirmation message.\n        ```json\n        {\n            \"type\": \"end\"\n        }\n        ```\n\n        Response-based: Branches based on the response values. Available for the `rating` and `single_choice` question types.\n        ```json\n        {\n            \"type\": \"response_based\",\n            \"responseValues\": {\n                \"responseKey\": \"value\"\n            }\n        }\n        ```\n\n        Specific question: Proceeds to a specific question by index.\n        ```json\n        {\n            \"type\": \"specific_question\",\n            \"index\": 2\n        }\n        ```\n\n        Translations: Each question can include inline translations.\n        - `translations`: Object mapping language codes to translated fields.\n        - Language codes: Any string - allows customers to use their own language keys (e.g., \"es\", \"es-MX\", \"english\", \"french\")\n        - Translatable fields: `question`, `description`, `buttonText`, `choices`, `lowerBoundLabel`, `upperBoundLabel`, `link`\n\n        Example with translations:\n        ```json\n        {\n            \"id\": \"uuid\",\n            \"type\": \"rating\",\n            \"question\": \"How satisfied are you?\",\n            \"lowerBoundLabel\": \"Not satisfied\",\n            \"upperBoundLabel\": \"Very satisfied\",\n            \"translations\": {\n                \"es\": {\n                    \"question\": \"¿Qué tan satisfecho estás?\",\n                    \"lowerBoundLabel\": \"No satisfecho\",\n                    \"upperBoundLabel\": \"Muy satisfecho\"\n                },\n                \"fr\": {\n                    \"question\": \"Dans quelle mesure êtes-vous satisfait?\"\n                }\n            }\n        }\n        ```\n        "
-        conditions:
-          allOf:
-          - $ref: '#/components/schemas/SurveyConditionsSchema'
-          description: Display and targeting conditions for the survey.
-        appearance:
-          allOf:
-          - $ref: '#/components/schemas/SurveyAppearanceSchema'
-          description: Survey appearance customization.
-        created_at:
-          type: string
-          format: date-time
-          readOnly: true
-        created_by:
-          allOf:
-          - $ref: '#/components/schemas/UserBasic'
-          readOnly: true
-        start_date:
-          type:
-          - string
-          - 'null'
-          format: date-time
-          description: Setting this will launch the survey immediately. Don't add a start_date unless explicitly requested to do so.
-        end_date:
-          type:
-          - string
-          - 'null'
-          format: date-time
-          description: When the survey stopped being shown to users. Setting this will complete the survey.
-        archived:
-          type: boolean
-          description: Archive state for the survey.
-        responses_limit:
-          type:
-          - integer
-          - 'null'
-          description: The maximum number of responses before automatically stopping the survey.
-        iteration_count:
-          type:
-          - integer
-          - 'null'
-          maximum: 500
-          minimum: 1
-          description: For a recurring schedule, this field specifies the number of times the survey should be shown to the user. Use 1 for 'once every X days', higher numbers for multiple repetitions. Works together with iteration_frequency_days to determine the overall survey schedule.
-        iteration_frequency_days:
-          type:
-          - integer
-          - 'null'
-          maximum: 365
-          minimum: 1
-          description: For a recurring schedule, this field specifies the interval in days between each survey instance shown to the user, used alongside iteration_count for precise scheduling.
-        iteration_start_dates:
-          type:
-          - array
-          - 'null'
-          items:
-            type:
-            - string
-            - 'null'
-            format: date-time
-        current_iteration:
-          type:
-          - integer
-          - 'null'
-          maximum: 2147483647
-          minimum: 0
-        current_iteration_start_date:
-          type:
-          - string
-          - 'null'
-          format: date-time
-        response_sampling_start_date:
-          type:
-          - string
-          - 'null'
-          format: date-time
-        response_sampling_interval_type:
-          oneOf:
-          - $ref: '#/components/schemas/ResponseSamplingIntervalTypeEnum'
-          - $ref: '#/components/schemas/BlankEnum'
-          - $ref: '#/components/schemas/NullEnum'
-        response_sampling_interval:
-          type:
-          - integer
-          - 'null'
-          maximum: 2147483647
-          minimum: 0
-        response_sampling_limit:
-          type:
-          - integer
-          - 'null'
-          maximum: 2147483647
-          minimum: 0
-        response_sampling_daily_limits: {}
-        enable_partial_responses:
-          type:
-          - boolean
-          - 'null'
-          description: When at least one question is answered, the response is stored (true). The response is stored when all questions are answered (false).
-        enable_iframe_embedding:
-          type:
-          - boolean
-          - 'null'
-        translations: {}
-        _create_in_folder:
-          type: string
-          writeOnly: true
-          title: ' create in folder'
-        form_content: {}
-    SurveyNextQuestionBranching:
-      type: object
-      properties:
-        type:
-          allOf:
-          - $ref: '#/components/schemas/SurveyNextQuestionBranchingTypeEnum'
-          description: 'Continue to the next question in sequence.
-
-
-            * `next_question` - next_question'
-      required:
-      - type
-    SurveyMultipleChoiceQuestionSchemaTypeEnum:
-      enum:
-      - multiple_choice
-      type: string
-      description: '* `multiple_choice` - multiple_choice'
+        * `not_icontains_multi` - not_icontains_multi'
     SurveyConditionsSchema:
       type: object
       properties:
@@ -1327,6 +873,28 @@ components:
         linkedFlagVariant:
           type: string
           description: The variant of the feature flag linked to this survey.
+    BucketingIdentifierEnum:
+      enum:
+      - distinct_id
+      - device_id
+      type: string
+      description: '* `distinct_id` - User ID (default)
+
+        * `device_id` - Device ID'
+    SurveyType:
+      enum:
+      - popover
+      - widget
+      - external_survey
+      - api
+      type: string
+      description: '* `popover` - popover
+
+        * `widget` - widget
+
+        * `external_survey` - external survey
+
+        * `api` - api'
     Survey:
       type: object
       description: Mixin for serializers to add user access control fields
@@ -1493,614 +1061,39 @@ components:
       - targeting_flag
       - type
       - user_access_level
-    SurveySerializerCreateUpdateOnly:
+    SurveyEndBranching:
       type: object
       properties:
-        id:
-          type: string
-          format: uuid
-          readOnly: true
-        name:
-          type: string
-          maxLength: 400
-        description:
-          type: string
         type:
-          $ref: '#/components/schemas/SurveyType'
-        schedule:
-          type:
-          - string
-          - 'null'
-        linked_flag:
           allOf:
-          - $ref: '#/components/schemas/MinimalFeatureFlag'
-          readOnly: true
-        linked_flag_id:
-          type:
-          - integer
-          - 'null'
-          writeOnly: true
-        linked_insight_id:
-          type:
-          - integer
-          - 'null'
-          writeOnly: true
-        targeting_flag_id:
-          type: integer
-          writeOnly: true
-        targeting_flag:
-          allOf:
-          - $ref: '#/components/schemas/MinimalFeatureFlag'
-          readOnly: true
-        internal_targeting_flag:
-          allOf:
-          - $ref: '#/components/schemas/MinimalFeatureFlag'
-          readOnly: true
-        targeting_flag_filters:
-          writeOnly: true
-        remove_targeting_flag:
-          type:
-          - boolean
-          - 'null'
-          writeOnly: true
-        questions:
-          description: "\n        The `array` of questions included in the survey. Each question must conform to one of the defined question types: Basic, Link, Rating, or Multiple Choice.\n\n        Basic (open-ended question)\n        - `id`: The question ID\n        - `type`: `open`\n        - `question`: The text of the question.\n        - `description`: Optional description of the question.\n        - `descriptionContentType`: Content type of the description (`html` or `text`).\n        - `optional`: Whether the question is optional (`boolean`).\n        - `buttonText`: Text displayed on the submit button.\n        - `branching`: Branching logic for the question. See branching types below for details.\n\n        Link (a question with a link)\n        - `id`: The question ID\n        - `type`: `link`\n        - `question`: The text of the question.\n        - `description`: Optional description of the question.\n        - `descriptionContentType`: Content type of the description (`html` or `text`).\n        - `optional`: Whether the question is optional (`boolean`).\n        - `buttonText`: Text displayed on the submit button.\n        - `link`: The URL associated with the question.\n        - `branching`: Branching logic for the question. See branching types below for details.\n\n        Rating (a question with a rating scale)\n        - `id`: The question ID\n        - `type`: `rating`\n        - `question`: The text of the question.\n        - `description`: Optional description of the question.\n        - `descriptionContentType`: Content type of the description (`html` or `text`).\n        - `optional`: Whether the question is optional (`boolean`).\n        - `buttonText`: Text displayed on the submit button.\n        - `display`: Display style of the rating (`number` or `emoji`).\n        - `scale`: The scale of the rating (`number`).\n        - `lowerBoundLabel`: Label for the lower bound of the scale.\n        - `upperBoundLabel`: Label for the upper bound of the scale.\n        - `isNpsQuestion`: Whether the question is an NPS rating.\n        - `branching`: Branching logic for the question. See branching types below for details.\n\n        Multiple choice\n        - `id`: The question ID\n        - `type`: `single_choice` or `multiple_choice`\n        - `question`: The text of the question.\n        - `description`: Optional description of the question.\n        - `descriptionContentType`: Content type of the description (`html` or `text`).\n        - `optional`: Whether the question is optional (`boolean`).\n        - `buttonText`: Text displayed on the submit button.\n        - `choices`: An array of choices for the question.\n        - `shuffleOptions`: Whether to shuffle the order of the choices (`boolean`).\n        - `hasOpenChoice`: Whether the question allows an open-ended response (`boolean`).\n        - `branching`: Branching logic for the question. See branching types below for details.\n\n        Branching logic can be one of the following types:\n\n        Next question: Proceeds to the next question\n        ```json\n        {\n            \"type\": \"next_question\"\n        }\n        ```\n\n        End: Ends the survey, optionally displaying a confirmation message.\n        ```json\n        {\n            \"type\": \"end\"\n        }\n        ```\n\n        Response-based: Branches based on the response values. Available for the `rating` and `single_choice` question types.\n        ```json\n        {\n            \"type\": \"response_based\",\n            \"responseValues\": {\n                \"responseKey\": \"value\"\n            }\n        }\n        ```\n\n        Specific question: Proceeds to a specific question by index.\n        ```json\n        {\n            \"type\": \"specific_question\",\n            \"index\": 2\n        }\n        ```\n\n        Translations: Each question can include inline translations.\n        - `translations`: Object mapping language codes to translated fields.\n        - Language codes: Any string - allows customers to use their own language keys (e.g., \"es\", \"es-MX\", \"english\", \"french\")\n        - Translatable fields: `question`, `description`, `buttonText`, `choices`, `lowerBoundLabel`, `upperBoundLabel`, `link`\n\n        Example with translations:\n        ```json\n        {\n            \"id\": \"uuid\",\n            \"type\": \"rating\",\n            \"question\": \"How satisfied are you?\",\n            \"lowerBoundLabel\": \"Not satisfied\",\n            \"upperBoundLabel\": \"Very satisfied\",\n            \"translations\": {\n                \"es\": {\n                    \"question\": \"¿Qué tan satisfecho estás?\",\n                    \"lowerBoundLabel\": \"No satisfecho\",\n                    \"upperBoundLabel\": \"Muy satisfecho\"\n                },\n                \"fr\": {\n                    \"question\": \"Dans quelle mesure êtes-vous satisfait?\"\n                }\n            }\n        }\n        ```\n        "
-        conditions: {}
-        appearance: {}
-        created_at:
-          type: string
-          format: date-time
-          readOnly: true
-        created_by:
-          allOf:
-          - $ref: '#/components/schemas/UserBasic'
-          readOnly: true
-        start_date:
-          type:
-          - string
-          - 'null'
-          format: date-time
-        end_date:
-          type:
-          - string
-          - 'null'
-          format: date-time
-        archived:
-          type: boolean
-        responses_limit:
-          type:
-          - integer
-          - 'null'
-          maximum: 2147483647
-          minimum: 0
-        iteration_count:
-          type:
-          - integer
-          - 'null'
-          maximum: 500
-          minimum: 0
-        iteration_frequency_days:
-          type:
-          - integer
-          - 'null'
-          maximum: 2147483647
-          minimum: 0
-        iteration_start_dates:
-          type:
-          - array
-          - 'null'
-          items:
-            type:
-            - string
-            - 'null'
-            format: date-time
-        current_iteration:
-          type:
-          - integer
-          - 'null'
-          maximum: 2147483647
-          minimum: 0
-        current_iteration_start_date:
-          type:
-          - string
-          - 'null'
-          format: date-time
-        response_sampling_start_date:
-          type:
-          - string
-          - 'null'
-          format: date-time
-        response_sampling_interval_type:
-          oneOf:
-          - $ref: '#/components/schemas/ResponseSamplingIntervalTypeEnum'
-          - $ref: '#/components/schemas/BlankEnum'
-          - $ref: '#/components/schemas/NullEnum'
-        response_sampling_interval:
-          type:
-          - integer
-          - 'null'
-          maximum: 2147483647
-          minimum: 0
-        response_sampling_limit:
-          type:
-          - integer
-          - 'null'
-          maximum: 2147483647
-          minimum: 0
-        response_sampling_daily_limits: {}
-        enable_partial_responses:
-          type:
-          - boolean
-          - 'null'
-        enable_iframe_embedding:
-          type:
-          - boolean
-          - 'null'
-        translations: {}
-        _create_in_folder:
-          type: string
-          writeOnly: true
-          title: ' create in folder'
-        form_content: {}
+          - $ref: '#/components/schemas/SurveyEndBranchingTypeEnum'
+          description: 'End the survey.
+
+
+            * `end` - end'
       required:
-      - created_at
-      - created_by
-      - id
-      - internal_targeting_flag
-      - linked_flag
-      - name
-      - targeting_flag
       - type
-    DateOperatorEnum:
+    SurveyMultipleChoiceQuestionSchemaTypeEnum:
       enum:
-      - is_date_exact
-      - is_date_before
-      - is_date_after
+      - multiple_choice
       type: string
-      description: '* `is_date_exact` - is_date_exact
-
-        * `is_date_before` - is_date_before
-
-        * `is_date_after` - is_date_after'
-    FeatureFlagFilterPropertySchema:
-      oneOf:
-      - $ref: '#/components/schemas/FeatureFlagFilterPropertyGenericSchema'
-      - $ref: '#/components/schemas/FeatureFlagFilterPropertyExistsSchema'
-      - $ref: '#/components/schemas/FeatureFlagFilterPropertyDateSchema'
-      - $ref: '#/components/schemas/FeatureFlagFilterPropertySemverSchema'
-      - $ref: '#/components/schemas/FeatureFlagFilterPropertyMultiContainsSchema'
-      - $ref: '#/components/schemas/FeatureFlagFilterPropertyCohortInSchema'
-      - $ref: '#/components/schemas/FeatureFlagFilterPropertyFlagEvaluatesSchema'
-    SurveyGlobalStatsResponse:
-      type: object
-      properties:
-        stats:
-          type: object
-          additionalProperties: true
-          description: Event counts keyed by event name (survey shown, survey dismissed, survey sent).
-        rates:
-          type: object
-          additionalProperties: true
-          description: Calculated response and dismissal rates.
-      required:
-      - rates
-      - stats
-    SurveyOpenQuestionSchema:
-      type: object
-      properties:
-        type:
-          $ref: '#/components/schemas/SurveyOpenQuestionSchemaTypeEnum'
-        question:
-          type: string
-          description: Question text shown to respondents.
-        description:
-          type: string
-          description: Optional helper text.
-        descriptionContentType:
-          allOf:
-          - $ref: '#/components/schemas/DescriptionContentTypeEnum'
-          description: 'Format for the description field.
-
-
-            * `text` - text
-
-            * `html` - html'
-        optional:
-          type: boolean
-          description: Whether respondents may skip this question.
-        buttonText:
-          type: string
-          description: Custom button label.
-      required:
-      - question
-      - type
-    SurveyStatsResponse:
-      type: object
-      properties:
-        survey_id:
-          type: string
-          description: The survey ID these stats belong to.
-        start_date:
-          type:
-          - string
-          - 'null'
-          format: date-time
-          description: When the survey started collecting responses.
-        end_date:
-          type:
-          - string
-          - 'null'
-          format: date-time
-          description: When the survey stopped collecting responses.
-        stats:
-          type: object
-          additionalProperties: true
-          description: Event counts keyed by event name (survey shown, survey dismissed, survey sent).
-        rates:
-          type: object
-          additionalProperties: true
-          description: Calculated response and dismissal rates.
-      required:
-      - end_date
-      - rates
-      - start_date
-      - stats
-      - survey_id
-    NullEnum:
+      description: '* `multiple_choice` - multiple_choice'
+    ResponseSamplingIntervalTypeEnum:
       enum:
-      - null
-    PropertyGroupTypeEnum:
-      enum:
-      - cohort
-      - person
-      - group
+      - day
+      - week
+      - month
       type: string
-      description: '* `cohort` - cohort
+      description: '* `day` - day
 
-        * `person` - person
+        * `week` - week
 
-        * `group` - group'
-    DescriptionContentTypeEnum:
+        * `month` - month'
+    SurveyNextQuestionBranchingTypeEnum:
       enum:
-      - html
-      - text
+      - next_question
       type: string
-      description: '* `html` - html
-
-        * `text` - text'
-    SurveySingleChoiceQuestionSchema:
-      type: object
-      properties:
-        type:
-          $ref: '#/components/schemas/SurveySingleChoiceQuestionSchemaTypeEnum'
-        question:
-          type: string
-          description: Question text shown to respondents.
-        description:
-          type: string
-          description: Optional helper text.
-        descriptionContentType:
-          allOf:
-          - $ref: '#/components/schemas/DescriptionContentTypeEnum'
-          description: 'Format for the description field.
-
-
-            * `text` - text
-
-            * `html` - html'
-        optional:
-          type: boolean
-          description: Whether respondents may skip this question.
-        buttonText:
-          type: string
-          description: Custom button label.
-        choices:
-          type: array
-          items:
-            type: string
-          description: Array of choice options. Choice indices (0, 1, 2, ...) are used for branching logic.
-          maxItems: 20
-          minItems: 2
-        shuffleOptions:
-          type: boolean
-          description: Whether to randomize the order of choices for each respondent.
-        hasOpenChoice:
-          type: boolean
-          description: Whether the final option should be an open-text choice (for example, 'Other').
-        branching:
-          allOf:
-          - $ref: '#/components/schemas/SurveyBranchingSchema'
-      required:
-      - choices
-      - question
-      - type
-    SurveyRatingQuestionSchema:
-      type: object
-      properties:
-        type:
-          $ref: '#/components/schemas/SurveyRatingQuestionSchemaTypeEnum'
-        question:
-          type: string
-          description: Question text shown to respondents.
-        description:
-          type: string
-          description: Optional helper text.
-        descriptionContentType:
-          allOf:
-          - $ref: '#/components/schemas/DescriptionContentTypeEnum'
-          description: 'Format for the description field.
-
-
-            * `text` - text
-
-            * `html` - html'
-        optional:
-          type: boolean
-          description: Whether respondents may skip this question.
-        buttonText:
-          type: string
-          description: Custom button label.
-        display:
-          allOf:
-          - $ref: '#/components/schemas/SurveyRatingQuestionSchemaDisplayEnum'
-          description: 'Display format: ''number'' shows numeric scale, ''emoji'' shows emoji scale.
-
-
-            * `number` - number
-
-            * `emoji` - emoji'
-        scale:
-          type: integer
-          minimum: 1
-          description: Rating scale can be one of 3, 5, or 7
-        lowerBoundLabel:
-          type: string
-          description: Label for the lowest rating (e.g., 'Very Poor')
-        upperBoundLabel:
-          type: string
-          description: Label for the highest rating (e.g., 'Excellent')
-        branching:
-          allOf:
-          - $ref: '#/components/schemas/SurveyBranchingSchema'
-      required:
-      - question
-      - type
-    GeneratedSurveyQuestionTranslationPatch:
-      type: object
-      properties:
-        id:
-          type: string
-          description: Survey question id this patch applies to.
-        translations:
-          type: object
-          additionalProperties:
-            $ref: '#/components/schemas/GeneratedSurveyQuestionTranslation'
-          description: Question translation patch keyed by target language.
-      required:
-      - id
-      - translations
-    FeatureFlagFilterPropertyCohortInSchema:
-      type: object
-      properties:
-        key:
-          type: string
-          description: Property key used in this feature flag condition.
-        type:
-          allOf:
-          - $ref: '#/components/schemas/FeatureFlagFilterPropertyCohortInSchemaTypeEnum'
-          description: 'Cohort property type required for in/not_in operators.
-
-
-            * `cohort` - cohort'
-        cohort_name:
-          type:
-          - string
-          - 'null'
-          description: Resolved cohort name for cohort-type filters.
-        group_type_index:
-          type:
-          - integer
-          - 'null'
-          description: Group type index when using group-based filters.
-        operator:
-          allOf:
-          - $ref: '#/components/schemas/FeatureFlagFilterPropertyCohortInSchemaOperatorEnum'
-          description: 'Membership operator for cohort properties.
-
-
-            * `in` - in
-
-            * `not_in` - not_in'
-        value:
-          description: Cohort comparison value (single or list, depending on usage).
-      required:
-      - key
-      - operator
-      - type
-      - value
-    FeatureFlagFilterPropertyFlagEvaluatesSchemaTypeEnum:
-      enum:
-      - flag
-      type: string
-      description: '* `flag` - flag'
-    BlankEnum:
-      enum:
-      - ''
-    DeviceTypesEnum:
-      enum:
-      - Desktop
-      - Mobile
-      - Tablet
-      type: string
-      description: '* `Desktop` - Desktop
-
-        * `Mobile` - Mobile
-
-        * `Tablet` - Tablet'
-    FeatureFlagFilterPropertyExistsSchema:
-      type: object
-      properties:
-        key:
-          type: string
-          description: Property key used in this feature flag condition.
-        type:
-          allOf:
-          - $ref: '#/components/schemas/PropertyGroupTypeEnum'
-          description: 'Property filter type. Common values are ''person'' and ''cohort''.
-
-
-            * `cohort` - cohort
-
-            * `person` - person
-
-            * `group` - group'
-        cohort_name:
-          type:
-          - string
-          - 'null'
-          description: Resolved cohort name for cohort-type filters.
-        group_type_index:
-          type:
-          - integer
-          - 'null'
-          description: Group type index when using group-based filters.
-        operator:
-          allOf:
-          - $ref: '#/components/schemas/ExistenceOperatorEnum'
-          description: 'Existence operator.
-
-
-            * `is_set` - is_set
-
-            * `is_not_set` - is_not_set'
-        value:
-          description: Optional value. Runtime behavior determines whether this is ignored.
-      required:
-      - key
-      - operator
-    EvaluationRuntimeEnum:
-      enum:
-      - server
-      - client
-      - all
-      type: string
-      description: '* `server` - Server
-
-        * `client` - Client
-
-        * `all` - All'
-    SurveyResponseBasedBranchingTypeEnum:
-      enum:
-      - response_based
-      type: string
-      description: '* `response_based` - response_based'
-    GenerateSurveyTranslationsRequest:
-      type: object
-      properties:
-        target_language:
-          type: string
-          description: Language code to generate translations for, for example pt-BR.
-        source_language:
-          type: string
-          default: en
-          description: Source language code for the existing survey copy.
-        overwrite:
-          type: boolean
-          default: false
-          description: Whether to overwrite existing translations for this language.
-        survey:
-          type: object
-          additionalProperties:
-            description: Draft survey field value.
-          description: Optional translation-only draft survey payload to translate instead of the last saved survey.
-      required:
-      - target_language
-    GeneratedSurveyRootTranslation:
-      type: object
-      properties:
-        name:
-          type: string
-          description: Translated survey name.
-        thankYouMessageHeader:
-          type: string
-          description: Translated thank-you header.
-        thankYouMessageDescription:
-          type: string
-          description: Translated thank-you description.
-        thankYouMessageCloseButtonText:
-          type: string
-          description: Translated thank-you close button text.
-    FeatureFlagFilterPropertyGenericSchemaOperatorEnum:
-      enum:
-      - exact
-      - is_not
-      - icontains
-      - not_icontains
-      - regex
-      - not_regex
-      - gt
-      - gte
-      - lt
-      - lte
-      type: string
-      description: '* `exact` - exact
-
-        * `is_not` - is_not
-
-        * `icontains` - icontains
-
-        * `not_icontains` - not_icontains
-
-        * `regex` - regex
-
-        * `not_regex` - not_regex
-
-        * `gt` - gt
-
-        * `gte` - gte
-
-        * `lt` - lt
-
-        * `lte` - lte'
-    StringMatchOperatorEnum:
-      enum:
-      - exact
-      - is_not
-      - icontains
-      - not_icontains
-      - regex
-      - not_regex
-      type: string
-      description: '* `exact` - exact
-
-        * `is_not` - is_not
-
-        * `icontains` - icontains
-
-        * `not_icontains` - not_icontains
-
-        * `regex` - regex
-
-        * `not_regex` - not_regex'
-    SurveyEventsConditionSchema:
-      type: object
-      properties:
-        repeatedActivation:
-          type: boolean
-          description: Whether to show the survey every time one of the events is triggered (true), or just once (false).
-        values:
-          type: array
-          items:
-            $ref: '#/components/schemas/SurveyConditionEventValueSchema'
-          description: Array of event names that trigger the survey.
-    SurveyConditionEventValueSchema:
-      type: object
-      properties:
-        name:
-          type: string
-          description: Event name that triggers the survey.
-      required:
-      - name
+      description: '* `next_question` - next_question'
     SurveyLinkQuestionSchemaTypeEnum:
       enum:
       - link
@@ -2151,6 +1144,11 @@ components:
       - key
       - operator
       - value
+    SurveySpecificQuestionBranchingTypeEnum:
+      enum:
+      - specific_question
+      type: string
+      description: '* `specific_question` - specific_question'
     GenerateSurveyTranslationsResponse:
       type: object
       properties:
@@ -2177,221 +1175,6 @@ components:
       - questions
       - trace_id
       - translations
-    FeatureFlagFilterPropertySemverSchemaOperatorEnum:
-      enum:
-      - semver_gt
-      - semver_gte
-      - semver_lt
-      - semver_lte
-      - semver_eq
-      - semver_neq
-      - semver_tilde
-      - semver_caret
-      - semver_wildcard
-      type: string
-      description: '* `semver_gt` - semver_gt
-
-        * `semver_gte` - semver_gte
-
-        * `semver_lt` - semver_lt
-
-        * `semver_lte` - semver_lte
-
-        * `semver_eq` - semver_eq
-
-        * `semver_neq` - semver_neq
-
-        * `semver_tilde` - semver_tilde
-
-        * `semver_caret` - semver_caret
-
-        * `semver_wildcard` - semver_wildcard'
-    SurveyResponseBasedBranching:
-      type: object
-      properties:
-        type:
-          allOf:
-          - $ref: '#/components/schemas/SurveyResponseBasedBranchingTypeEnum'
-          description: 'Branch based on the selected or entered response.
-
-
-            * `response_based` - response_based'
-        responseValues:
-          type: object
-          additionalProperties:
-            oneOf:
-            - type: integer
-              minimum: 0
-            - type: string
-              enum:
-              - end
-          description: Response-based branching map. Values can be a question index or 'end'.
-      required:
-      - responseValues
-      - type
-    FeatureFlagFilterPropertyMultiContainsSchemaOperatorEnum:
-      enum:
-      - icontains_multi
-      - not_icontains_multi
-      type: string
-      description: '* `icontains_multi` - icontains_multi
-
-        * `not_icontains_multi` - not_icontains_multi'
-    MinimalFeatureFlag:
-      type: object
-      properties:
-        id:
-          type: integer
-          readOnly: true
-        team_id:
-          type: integer
-          readOnly: true
-        name:
-          type: string
-        key:
-          type: string
-          maxLength: 400
-        filters:
-          type: object
-          additionalProperties: true
-        deleted:
-          type: boolean
-        active:
-          type: boolean
-        ensure_experience_continuity:
-          type:
-          - boolean
-          - 'null'
-        has_encrypted_payloads:
-          type:
-          - boolean
-          - 'null'
-        version:
-          type:
-          - integer
-          - 'null'
-          maximum: 2147483647
-          minimum: -2147483648
-        evaluation_runtime:
-          description: 'Specifies where this feature flag should be evaluated
-
-
-            * `server` - Server
-
-            * `client` - Client
-
-            * `all` - All'
-          oneOf:
-          - $ref: '#/components/schemas/EvaluationRuntimeEnum'
-          - $ref: '#/components/schemas/BlankEnum'
-          - $ref: '#/components/schemas/NullEnum'
-        bucketing_identifier:
-          description: 'Identifier used for bucketing users into rollout and variants
-
-
-            * `distinct_id` - User ID (default)
-
-            * `device_id` - Device ID'
-          oneOf:
-          - $ref: '#/components/schemas/BucketingIdentifierEnum'
-          - $ref: '#/components/schemas/BlankEnum'
-          - $ref: '#/components/schemas/NullEnum'
-        evaluation_contexts:
-          type: array
-          items:
-            type: string
-          readOnly: true
-      required:
-      - evaluation_contexts
-      - id
-      - key
-      - team_id
-    FeatureFlagFilterPropertyFlagEvaluatesSchema:
-      type: object
-      properties:
-        key:
-          type: string
-          description: Property key used in this feature flag condition.
-        type:
-          allOf:
-          - $ref: '#/components/schemas/FeatureFlagFilterPropertyFlagEvaluatesSchemaTypeEnum'
-          description: 'Flag property type required for flag dependency checks.
-
-
-            * `flag` - flag'
-        cohort_name:
-          type:
-          - string
-          - 'null'
-          description: Resolved cohort name for cohort-type filters.
-        group_type_index:
-          type:
-          - integer
-          - 'null'
-          description: Group type index when using group-based filters.
-        operator:
-          allOf:
-          - $ref: '#/components/schemas/FeatureFlagFilterPropertyFlagEvaluatesSchemaOperatorEnum'
-          description: 'Operator for feature flag dependency evaluation.
-
-
-            * `flag_evaluates_to` - flag_evaluates_to'
-        value:
-          description: Value to compare flag evaluation against.
-      required:
-      - key
-      - operator
-      - type
-      - value
-    SurveyLinkQuestionSchema:
-      type: object
-      properties:
-        type:
-          $ref: '#/components/schemas/SurveyLinkQuestionSchemaTypeEnum'
-        question:
-          type: string
-          description: Question text shown to respondents.
-        description:
-          type: string
-          description: Optional helper text.
-        descriptionContentType:
-          allOf:
-          - $ref: '#/components/schemas/DescriptionContentTypeEnum'
-          description: 'Format for the description field.
-
-
-            * `text` - text
-
-            * `html` - html'
-        optional:
-          type: boolean
-          description: Whether respondents may skip this question.
-        buttonText:
-          type: string
-          description: Custom button label.
-        link:
-          type: string
-          description: HTTPS or mailto URL for link questions.
-      required:
-      - link
-      - question
-      - type
-    SurveySingleChoiceQuestionSchemaTypeEnum:
-      enum:
-      - single_choice
-      type: string
-      description: '* `single_choice` - single_choice'
-    WidgetTypeEnum:
-      enum:
-      - button
-      - tab
-      - selector
-      type: string
-      description: '* `button` - button
-
-        * `tab` - tab
-
-        * `selector` - selector'
     SurveyRatingQuestionSchemaDisplayEnum:
       enum:
       - number
@@ -2400,36 +1183,63 @@ components:
       description: '* `number` - number
 
         * `emoji` - emoji'
-    SurveySpecificQuestionBranchingTypeEnum:
+    SurveyRatingQuestionSchemaTypeEnum:
       enum:
-      - specific_question
+      - rating
       type: string
-      description: '* `specific_question` - specific_question'
-    PaginatedSurveyList:
+      description: '* `rating` - rating'
+    RoleAtOrganizationEnum:
+      enum:
+      - engineering
+      - data
+      - product
+      - founder
+      - leadership
+      - marketing
+      - sales
+      - other
+      type: string
+      description: '* `engineering` - Engineering
+
+        * `data` - Data
+
+        * `product` - Product Management
+
+        * `founder` - Founder
+
+        * `leadership` - Leadership
+
+        * `marketing` - Marketing
+
+        * `sales` - Sales / Success
+
+        * `other` - Other'
+    GenerateSurveyTranslationsRequest:
       type: object
-      required:
-      - count
-      - results
       properties:
-        count:
-          type: integer
-          example: 123
-        next:
-          type:
-          - string
-          - 'null'
-          format: uri
-          example: http://api.example.org/accounts/?offset=400&limit=100
-        previous:
-          type:
-          - string
-          - 'null'
-          format: uri
-          example: http://api.example.org/accounts/?offset=200&limit=100
-        results:
-          type: array
-          items:
-            $ref: '#/components/schemas/Survey'
+        target_language:
+          type: string
+          description: Language code to generate translations for, for example pt-BR.
+        source_language:
+          type: string
+          default: en
+          description: Source language code for the existing survey copy.
+        overwrite:
+          type: boolean
+          default: false
+          description: Whether to overwrite existing translations for this language.
+        survey:
+          type: object
+          additionalProperties:
+            description: Draft survey field value.
+          description: Optional translation-only draft survey payload to translate instead of the last saved survey.
+      required:
+      - target_language
+    SurveyOpenQuestionSchemaTypeEnum:
+      enum:
+      - open
+      type: string
+      description: '* `open` - open'
     SurveySerializerCreateUpdateOnlySchema:
       type: object
       properties:
@@ -2632,6 +1442,1102 @@ components:
       - name
       - targeting_flag
       - type
+    FeatureFlagFilterPropertySemverSchemaOperatorEnum:
+      enum:
+      - semver_gt
+      - semver_gte
+      - semver_lt
+      - semver_lte
+      - semver_eq
+      - semver_neq
+      - semver_tilde
+      - semver_caret
+      - semver_wildcard
+      type: string
+      description: '* `semver_gt` - semver_gt
+
+        * `semver_gte` - semver_gte
+
+        * `semver_lt` - semver_lt
+
+        * `semver_lte` - semver_lte
+
+        * `semver_eq` - semver_eq
+
+        * `semver_neq` - semver_neq
+
+        * `semver_tilde` - semver_tilde
+
+        * `semver_caret` - semver_caret
+
+        * `semver_wildcard` - semver_wildcard'
+    SurveyAppearanceSchema:
+      type: object
+      properties:
+        backgroundColor:
+          type: string
+        submitButtonColor:
+          type: string
+        textColor:
+          type: string
+        submitButtonText:
+          type: string
+        submitButtonTextColor:
+          type: string
+        descriptionTextColor:
+          type: string
+        ratingButtonColor:
+          type: string
+        ratingButtonActiveColor:
+          type: string
+        ratingButtonHoverColor:
+          type: string
+        whiteLabel:
+          type: boolean
+        autoDisappear:
+          type: boolean
+        displayThankYouMessage:
+          type: boolean
+        thankYouMessageHeader:
+          type: string
+        thankYouMessageDescription:
+          type: string
+        thankYouMessageDescriptionContentType:
+          $ref: '#/components/schemas/DescriptionContentTypeEnum'
+        thankYouMessageCloseButtonText:
+          type: string
+        borderColor:
+          type: string
+        placeholder:
+          type: string
+        shuffleQuestions:
+          type: boolean
+        surveyPopupDelaySeconds:
+          type: integer
+        widgetType:
+          $ref: '#/components/schemas/WidgetTypeEnum'
+        widgetSelector:
+          type: string
+        widgetLabel:
+          type: string
+        widgetColor:
+          type: string
+        fontFamily:
+          type: string
+        maxWidth:
+          type: string
+        zIndex:
+          type: string
+        disabledButtonOpacity:
+          type: string
+        boxPadding:
+          type: string
+    SurveyResponseBasedBranching:
+      type: object
+      properties:
+        type:
+          allOf:
+          - $ref: '#/components/schemas/SurveyResponseBasedBranchingTypeEnum'
+          description: 'Branch based on the selected or entered response.
+
+
+            * `response_based` - response_based'
+        responseValues:
+          type: object
+          additionalProperties:
+            oneOf:
+            - type: integer
+              minimum: 0
+            - type: string
+              enum:
+              - end
+          description: Response-based branching map. Values can be a question index or 'end'.
+      required:
+      - responseValues
+      - type
+    StringMatchOperatorEnum:
+      enum:
+      - exact
+      - is_not
+      - icontains
+      - not_icontains
+      - regex
+      - not_regex
+      type: string
+      description: '* `exact` - exact
+
+        * `is_not` - is_not
+
+        * `icontains` - icontains
+
+        * `not_icontains` - not_icontains
+
+        * `regex` - regex
+
+        * `not_regex` - not_regex'
+    SurveySpecificQuestionBranching:
+      type: object
+      properties:
+        type:
+          allOf:
+          - $ref: '#/components/schemas/SurveySpecificQuestionBranchingTypeEnum'
+          description: 'Jump to a specific question index.
+
+
+            * `specific_question` - specific_question'
+        index:
+          type: integer
+          minimum: 0
+          description: 0-based index of the next question.
+      required:
+      - index
+      - type
+    SurveyGlobalStatsResponse:
+      type: object
+      properties:
+        stats:
+          type: object
+          additionalProperties: true
+          description: Event counts keyed by event name (survey shown, survey dismissed, survey sent).
+        rates:
+          type: object
+          additionalProperties: true
+          description: Calculated response and dismissal rates.
+      required:
+      - rates
+      - stats
+    WidgetTypeEnum:
+      enum:
+      - button
+      - tab
+      - selector
+      type: string
+      description: '* `button` - button
+
+        * `tab` - tab
+
+        * `selector` - selector'
+    NullEnum:
+      enum:
+      - null
+    SurveyNextQuestionBranching:
+      type: object
+      properties:
+        type:
+          allOf:
+          - $ref: '#/components/schemas/SurveyNextQuestionBranchingTypeEnum'
+          description: 'Continue to the next question in sequence.
+
+
+            * `next_question` - next_question'
+      required:
+      - type
+    FeatureFlagMultivariateVariantSchema:
+      type: object
+      properties:
+        key:
+          type: string
+          description: Unique key for this variant.
+        name:
+          type: string
+          description: Human-readable name for this variant.
+        rollout_percentage:
+          type: number
+          format: double
+          description: Variant rollout percentage.
+      required:
+      - key
+      - rollout_percentage
+    BlankEnum:
+      enum:
+      - ''
+    SurveyOpenQuestionSchema:
+      type: object
+      properties:
+        type:
+          $ref: '#/components/schemas/SurveyOpenQuestionSchemaTypeEnum'
+        question:
+          type: string
+          description: Question text shown to respondents.
+        description:
+          type: string
+          description: Optional helper text.
+        descriptionContentType:
+          allOf:
+          - $ref: '#/components/schemas/DescriptionContentTypeEnum'
+          description: 'Format for the description field.
+
+
+            * `text` - text
+
+            * `html` - html'
+        optional:
+          type: boolean
+          description: Whether respondents may skip this question.
+        buttonText:
+          type: string
+          description: Custom button label.
+      required:
+      - question
+      - type
+    SurveyEventsConditionSchema:
+      type: object
+      properties:
+        repeatedActivation:
+          type: boolean
+          description: Whether to show the survey every time one of the events is triggered (true), or just once (false).
+        values:
+          type: array
+          items:
+            $ref: '#/components/schemas/SurveyConditionEventValueSchema'
+          description: Array of event names that trigger the survey.
+    FeatureFlagFilterPropertyCohortInSchemaTypeEnum:
+      enum:
+      - cohort
+      type: string
+      description: '* `cohort` - cohort'
+    FeatureFlagFilterPropertySemverSchema:
+      type: object
+      properties:
+        key:
+          type: string
+          description: Property key used in this feature flag condition.
+        type:
+          allOf:
+          - $ref: '#/components/schemas/PropertyGroupTypeEnum'
+          description: 'Property filter type. Common values are ''person'' and ''cohort''.
+
+
+            * `cohort` - cohort
+
+            * `person` - person
+
+            * `group` - group'
+        cohort_name:
+          type:
+          - string
+          - 'null'
+          description: Resolved cohort name for cohort-type filters.
+        group_type_index:
+          type:
+          - integer
+          - 'null'
+          description: Group type index when using group-based filters.
+        operator:
+          allOf:
+          - $ref: '#/components/schemas/FeatureFlagFilterPropertySemverSchemaOperatorEnum'
+          description: 'Semantic version comparison operator.
+
+
+            * `semver_gt` - semver_gt
+
+            * `semver_gte` - semver_gte
+
+            * `semver_lt` - semver_lt
+
+            * `semver_lte` - semver_lte
+
+            * `semver_eq` - semver_eq
+
+            * `semver_neq` - semver_neq
+
+            * `semver_tilde` - semver_tilde
+
+            * `semver_caret` - semver_caret
+
+            * `semver_wildcard` - semver_wildcard'
+        value:
+          type: string
+          description: Semantic version string.
+      required:
+      - key
+      - operator
+      - value
+    SurveySingleChoiceQuestionSchemaTypeEnum:
+      enum:
+      - single_choice
+      type: string
+      description: '* `single_choice` - single_choice'
+    UserBasic:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        uuid:
+          type: string
+          format: uuid
+          readOnly: true
+        distinct_id:
+          type:
+          - string
+          - 'null'
+          maxLength: 200
+        first_name:
+          type: string
+          maxLength: 150
+        last_name:
+          type: string
+          maxLength: 150
+        email:
+          type: string
+          format: email
+          title: Email address
+          maxLength: 254
+        is_email_verified:
+          type:
+          - boolean
+          - 'null'
+        hedgehog_config:
+          type:
+          - object
+          - 'null'
+          additionalProperties: true
+          readOnly: true
+        role_at_organization:
+          oneOf:
+          - $ref: '#/components/schemas/RoleAtOrganizationEnum'
+          - $ref: '#/components/schemas/BlankEnum'
+          - $ref: '#/components/schemas/NullEnum'
+      required:
+      - email
+      - hedgehog_config
+      - id
+      - uuid
+    FeatureFlagFiltersSchema:
+      type: object
+      properties:
+        groups:
+          type: array
+          items:
+            $ref: '#/components/schemas/FeatureFlagConditionGroupSchema'
+          description: Release condition groups for the feature flag.
+        multivariate:
+          allOf:
+          - $ref: '#/components/schemas/FeatureFlagMultivariateSchema'
+          description: Multivariate configuration for variant-based rollouts.
+        aggregation_group_type_index:
+          type:
+          - integer
+          - 'null'
+          description: Group type index for group-based feature flags.
+        payloads:
+          type: object
+          additionalProperties:
+            type: string
+          description: Optional payload values keyed by variant key.
+        super_groups:
+          type: array
+          items:
+            type: object
+            additionalProperties: true
+          description: Additional super condition groups used by experiments.
+        feature_enrollment:
+          type:
+          - boolean
+          - 'null'
+          description: Whether this flag has early access feature enrollment enabled. When true, the flag is evaluated against the person property $feature_enrollment/{flag_key}.
+    PropertyGroupTypeEnum:
+      enum:
+      - cohort
+      - person
+      - group
+      type: string
+      description: '* `cohort` - cohort
+
+        * `person` - person
+
+        * `group` - group'
+    FeatureFlagFilterPropertyFlagEvaluatesSchemaTypeEnum:
+      enum:
+      - flag
+      type: string
+      description: '* `flag` - flag'
+    DeviceTypesEnum:
+      enum:
+      - Desktop
+      - Mobile
+      - Tablet
+      type: string
+      description: '* `Desktop` - Desktop
+
+        * `Mobile` - Mobile
+
+        * `Tablet` - Tablet'
+    SurveyConditionEventValueSchema:
+      type: object
+      properties:
+        name:
+          type: string
+          description: Event name that triggers the survey.
+      required:
+      - name
+    SurveyStatsResponse:
+      type: object
+      properties:
+        survey_id:
+          type: string
+          description: The survey ID these stats belong to.
+        start_date:
+          type:
+          - string
+          - 'null'
+          format: date-time
+          description: When the survey started collecting responses.
+        end_date:
+          type:
+          - string
+          - 'null'
+          format: date-time
+          description: When the survey stopped collecting responses.
+        stats:
+          type: object
+          additionalProperties: true
+          description: Event counts keyed by event name (survey shown, survey dismissed, survey sent).
+        rates:
+          type: object
+          additionalProperties: true
+          description: Calculated response and dismissal rates.
+      required:
+      - end_date
+      - rates
+      - start_date
+      - stats
+      - survey_id
+    ScheduleEnum:
+      enum:
+      - once
+      - recurring
+      - always
+      type: string
+      description: '* `once` - once
+
+        * `recurring` - recurring
+
+        * `always` - always'
+    MinimalFeatureFlag:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        team_id:
+          type: integer
+          readOnly: true
+        name:
+          type: string
+        key:
+          type: string
+          maxLength: 400
+        filters:
+          type: object
+          additionalProperties: true
+        deleted:
+          type: boolean
+        active:
+          type: boolean
+        ensure_experience_continuity:
+          type:
+          - boolean
+          - 'null'
+        has_encrypted_payloads:
+          type:
+          - boolean
+          - 'null'
+        version:
+          type:
+          - integer
+          - 'null'
+          maximum: 2147483647
+          minimum: -2147483648
+        evaluation_runtime:
+          description: 'Specifies where this feature flag should be evaluated
+
+
+            * `server` - Server
+
+            * `client` - Client
+
+            * `all` - All'
+          oneOf:
+          - $ref: '#/components/schemas/EvaluationRuntimeEnum'
+          - $ref: '#/components/schemas/BlankEnum'
+          - $ref: '#/components/schemas/NullEnum'
+        bucketing_identifier:
+          description: 'Identifier used for bucketing users into rollout and variants
+
+
+            * `distinct_id` - User ID (default)
+
+            * `device_id` - Device ID'
+          oneOf:
+          - $ref: '#/components/schemas/BucketingIdentifierEnum'
+          - $ref: '#/components/schemas/BlankEnum'
+          - $ref: '#/components/schemas/NullEnum'
+        evaluation_contexts:
+          type: array
+          items:
+            type: string
+          readOnly: true
+      required:
+      - evaluation_contexts
+      - id
+      - key
+      - team_id
+    PatchedSurveySerializerCreateUpdateOnlySchema:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+          readOnly: true
+        name:
+          type: string
+          description: Survey name.
+          maxLength: 400
+          minLength: 1
+        description:
+          type: string
+          description: Survey description.
+        type:
+          allOf:
+          - $ref: '#/components/schemas/SurveyType'
+          description: 'Survey type.
+
+
+            * `popover` - popover
+
+            * `widget` - widget
+
+            * `external_survey` - external survey
+
+            * `api` - api'
+        schedule:
+          description: 'Survey scheduling behavior: ''once'' = show once per user (default), ''recurring'' = repeat based on iteration_count and iteration_frequency_days settings, ''always'' = show every time conditions are met (mainly for widget surveys)
+
+
+            * `once` - once
+
+            * `recurring` - recurring
+
+            * `always` - always'
+          oneOf:
+          - $ref: '#/components/schemas/ScheduleEnum'
+          - $ref: '#/components/schemas/NullEnum'
+        linked_flag:
+          allOf:
+          - $ref: '#/components/schemas/MinimalFeatureFlag'
+          readOnly: true
+        linked_flag_id:
+          type:
+          - integer
+          - 'null'
+          writeOnly: true
+          description: The feature flag linked to this survey.
+        linked_insight_id:
+          type:
+          - integer
+          - 'null'
+          writeOnly: true
+        targeting_flag_id:
+          type: integer
+          writeOnly: true
+          description: An existing targeting flag to use for this survey.
+        targeting_flag:
+          allOf:
+          - $ref: '#/components/schemas/MinimalFeatureFlag'
+          readOnly: true
+        internal_targeting_flag:
+          allOf:
+          - $ref: '#/components/schemas/MinimalFeatureFlag'
+          readOnly: true
+        targeting_flag_filters:
+          allOf:
+          - $ref: '#/components/schemas/FeatureFlagFiltersSchema'
+          writeOnly: true
+          description: 'Target specific users based on their properties. Example: {groups: [{properties: [{key: ''email'', value: [''@company.com''], operator: ''icontains''}], rollout_percentage: 100}]}'
+        remove_targeting_flag:
+          type:
+          - boolean
+          - 'null'
+          writeOnly: true
+          description: Set to true to completely remove all targeting filters from the survey, making it visible to all users (subject to other display conditions like URL matching).
+        questions:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/SurveyQuestionInputSchema'
+          description: "\n        The `array` of questions included in the survey. Each question must conform to one of the defined question types: Basic, Link, Rating, or Multiple Choice.\n\n        Basic (open-ended question)\n        - `id`: The question ID\n        - `type`: `open`\n        - `question`: The text of the question.\n        - `description`: Optional description of the question.\n        - `descriptionContentType`: Content type of the description (`html` or `text`).\n        - `optional`: Whether the question is optional (`boolean`).\n        - `buttonText`: Text displayed on the submit button.\n        - `branching`: Branching logic for the question. See branching types below for details.\n\n        Link (a question with a link)\n        - `id`: The question ID\n        - `type`: `link`\n        - `question`: The text of the question.\n        - `description`: Optional description of the question.\n        - `descriptionContentType`: Content type of the description (`html` or `text`).\n        - `optional`: Whether the question is optional (`boolean`).\n        - `buttonText`: Text displayed on the submit button.\n        - `link`: The URL associated with the question.\n        - `branching`: Branching logic for the question. See branching types below for details.\n\n        Rating (a question with a rating scale)\n        - `id`: The question ID\n        - `type`: `rating`\n        - `question`: The text of the question.\n        - `description`: Optional description of the question.\n        - `descriptionContentType`: Content type of the description (`html` or `text`).\n        - `optional`: Whether the question is optional (`boolean`).\n        - `buttonText`: Text displayed on the submit button.\n        - `display`: Display style of the rating (`number` or `emoji`).\n        - `scale`: The scale of the rating (`number`).\n        - `lowerBoundLabel`: Label for the lower bound of the scale.\n        - `upperBoundLabel`: Label for the upper bound of the scale.\n        - `isNpsQuestion`: Whether the question is an NPS rating.\n        - `branching`: Branching logic for the question. See branching types below for details.\n\n        Multiple choice\n        - `id`: The question ID\n        - `type`: `single_choice` or `multiple_choice`\n        - `question`: The text of the question.\n        - `description`: Optional description of the question.\n        - `descriptionContentType`: Content type of the description (`html` or `text`).\n        - `optional`: Whether the question is optional (`boolean`).\n        - `buttonText`: Text displayed on the submit button.\n        - `choices`: An array of choices for the question.\n        - `shuffleOptions`: Whether to shuffle the order of the choices (`boolean`).\n        - `hasOpenChoice`: Whether the question allows an open-ended response (`boolean`).\n        - `branching`: Branching logic for the question. See branching types below for details.\n\n        Branching logic can be one of the following types:\n\n        Next question: Proceeds to the next question\n        ```json\n        {\n            \"type\": \"next_question\"\n        }\n        ```\n\n        End: Ends the survey, optionally displaying a confirmation message.\n        ```json\n        {\n            \"type\": \"end\"\n        }\n        ```\n\n        Response-based: Branches based on the response values. Available for the `rating` and `single_choice` question types.\n        ```json\n        {\n            \"type\": \"response_based\",\n            \"responseValues\": {\n                \"responseKey\": \"value\"\n            }\n        }\n        ```\n\n        Specific question: Proceeds to a specific question by index.\n        ```json\n        {\n            \"type\": \"specific_question\",\n            \"index\": 2\n        }\n        ```\n\n        Translations: Each question can include inline translations.\n        - `translations`: Object mapping language codes to translated fields.\n        - Language codes: Any string - allows customers to use their own language keys (e.g., \"es\", \"es-MX\", \"english\", \"french\")\n        - Translatable fields: `question`, `description`, `buttonText`, `choices`, `lowerBoundLabel`, `upperBoundLabel`, `link`\n\n        Example with translations:\n        ```json\n        {\n            \"id\": \"uuid\",\n            \"type\": \"rating\",\n            \"question\": \"How satisfied are you?\",\n            \"lowerBoundLabel\": \"Not satisfied\",\n            \"upperBoundLabel\": \"Very satisfied\",\n            \"translations\": {\n                \"es\": {\n                    \"question\": \"¿Qué tan satisfecho estás?\",\n                    \"lowerBoundLabel\": \"No satisfecho\",\n                    \"upperBoundLabel\": \"Muy satisfecho\"\n                },\n                \"fr\": {\n                    \"question\": \"Dans quelle mesure êtes-vous satisfait?\"\n                }\n            }\n        }\n        ```\n        "
+        conditions:
+          allOf:
+          - $ref: '#/components/schemas/SurveyConditionsSchema'
+          description: Display and targeting conditions for the survey.
+        appearance:
+          allOf:
+          - $ref: '#/components/schemas/SurveyAppearanceSchema'
+          description: Survey appearance customization.
+        created_at:
+          type: string
+          format: date-time
+          readOnly: true
+        created_by:
+          allOf:
+          - $ref: '#/components/schemas/UserBasic'
+          readOnly: true
+        start_date:
+          type:
+          - string
+          - 'null'
+          format: date-time
+          description: Setting this will launch the survey immediately. Don't add a start_date unless explicitly requested to do so.
+        end_date:
+          type:
+          - string
+          - 'null'
+          format: date-time
+          description: When the survey stopped being shown to users. Setting this will complete the survey.
+        archived:
+          type: boolean
+          description: Archive state for the survey.
+        responses_limit:
+          type:
+          - integer
+          - 'null'
+          description: The maximum number of responses before automatically stopping the survey.
+        iteration_count:
+          type:
+          - integer
+          - 'null'
+          maximum: 500
+          minimum: 1
+          description: For a recurring schedule, this field specifies the number of times the survey should be shown to the user. Use 1 for 'once every X days', higher numbers for multiple repetitions. Works together with iteration_frequency_days to determine the overall survey schedule.
+        iteration_frequency_days:
+          type:
+          - integer
+          - 'null'
+          maximum: 365
+          minimum: 1
+          description: For a recurring schedule, this field specifies the interval in days between each survey instance shown to the user, used alongside iteration_count for precise scheduling.
+        iteration_start_dates:
+          type:
+          - array
+          - 'null'
+          items:
+            type:
+            - string
+            - 'null'
+            format: date-time
+        current_iteration:
+          type:
+          - integer
+          - 'null'
+          maximum: 2147483647
+          minimum: 0
+        current_iteration_start_date:
+          type:
+          - string
+          - 'null'
+          format: date-time
+        response_sampling_start_date:
+          type:
+          - string
+          - 'null'
+          format: date-time
+        response_sampling_interval_type:
+          oneOf:
+          - $ref: '#/components/schemas/ResponseSamplingIntervalTypeEnum'
+          - $ref: '#/components/schemas/BlankEnum'
+          - $ref: '#/components/schemas/NullEnum'
+        response_sampling_interval:
+          type:
+          - integer
+          - 'null'
+          maximum: 2147483647
+          minimum: 0
+        response_sampling_limit:
+          type:
+          - integer
+          - 'null'
+          maximum: 2147483647
+          minimum: 0
+        response_sampling_daily_limits: {}
+        enable_partial_responses:
+          type:
+          - boolean
+          - 'null'
+          description: When at least one question is answered, the response is stored (true). The response is stored when all questions are answered (false).
+        enable_iframe_embedding:
+          type:
+          - boolean
+          - 'null'
+        translations: {}
+        _create_in_folder:
+          type: string
+          writeOnly: true
+          title: ' create in folder'
+        form_content: {}
+    SurveySingleChoiceQuestionSchema:
+      type: object
+      properties:
+        type:
+          $ref: '#/components/schemas/SurveySingleChoiceQuestionSchemaTypeEnum'
+        question:
+          type: string
+          description: Question text shown to respondents.
+        description:
+          type: string
+          description: Optional helper text.
+        descriptionContentType:
+          allOf:
+          - $ref: '#/components/schemas/DescriptionContentTypeEnum'
+          description: 'Format for the description field.
+
+
+            * `text` - text
+
+            * `html` - html'
+        optional:
+          type: boolean
+          description: Whether respondents may skip this question.
+        buttonText:
+          type: string
+          description: Custom button label.
+        choices:
+          type: array
+          items:
+            type: string
+          description: Array of choice options. Choice indices (0, 1, 2, ...) are used for branching logic.
+          maxItems: 20
+          minItems: 2
+        shuffleOptions:
+          type: boolean
+          description: Whether to randomize the order of choices for each respondent.
+        hasOpenChoice:
+          type: boolean
+          description: Whether the final option should be an open-text choice (for example, 'Other').
+        branching:
+          allOf:
+          - $ref: '#/components/schemas/SurveyBranchingSchema'
+      required:
+      - choices
+      - question
+      - type
+    PaginatedSurveyList:
+      type: object
+      required:
+      - count
+      - results
+      properties:
+        count:
+          type: integer
+          example: 123
+        next:
+          type:
+          - string
+          - 'null'
+          format: uri
+          example: http://api.example.org/accounts/?offset=400&limit=100
+        previous:
+          type:
+          - string
+          - 'null'
+          format: uri
+          example: http://api.example.org/accounts/?offset=200&limit=100
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/Survey'
+    FeatureFlagFilterPropertyFlagEvaluatesSchemaOperatorEnum:
+      enum:
+      - flag_evaluates_to
+      type: string
+      description: '* `flag_evaluates_to` - flag_evaluates_to'
+    GeneratedSurveyQuestionTranslationPatch:
+      type: object
+      properties:
+        id:
+          type: string
+          description: Survey question id this patch applies to.
+        translations:
+          type: object
+          additionalProperties:
+            $ref: '#/components/schemas/GeneratedSurveyQuestionTranslation'
+          description: Question translation patch keyed by target language.
+      required:
+      - id
+      - translations
+    FeatureFlagConditionGroupSchema:
+      type: object
+      properties:
+        properties:
+          type: array
+          items:
+            $ref: '#/components/schemas/FeatureFlagFilterPropertySchema'
+          description: Property conditions for this release condition group.
+        rollout_percentage:
+          type: number
+          format: double
+          description: Rollout percentage for this release condition group.
+        variant:
+          type:
+          - string
+          - 'null'
+          description: Variant key override for multivariate flags.
+        aggregation_group_type_index:
+          type:
+          - integer
+          - 'null'
+          description: Group type index for this condition set. None means person-level aggregation.
+    SurveyQuestionInputSchema:
+      oneOf:
+      - $ref: '#/components/schemas/SurveyOpenQuestionSchema'
+      - $ref: '#/components/schemas/SurveyLinkQuestionSchema'
+      - $ref: '#/components/schemas/SurveyRatingQuestionSchema'
+      - $ref: '#/components/schemas/SurveySingleChoiceQuestionSchema'
+      - $ref: '#/components/schemas/SurveyMultipleChoiceQuestionSchema'
+    FeatureFlagFilterPropertyDateSchema:
+      type: object
+      properties:
+        key:
+          type: string
+          description: Property key used in this feature flag condition.
+        type:
+          allOf:
+          - $ref: '#/components/schemas/PropertyGroupTypeEnum'
+          description: 'Property filter type. Common values are ''person'' and ''cohort''.
+
+
+            * `cohort` - cohort
+
+            * `person` - person
+
+            * `group` - group'
+        cohort_name:
+          type:
+          - string
+          - 'null'
+          description: Resolved cohort name for cohort-type filters.
+        group_type_index:
+          type:
+          - integer
+          - 'null'
+          description: Group type index when using group-based filters.
+        operator:
+          allOf:
+          - $ref: '#/components/schemas/DateOperatorEnum'
+          description: 'Date comparison operator.
+
+
+            * `is_date_exact` - is_date_exact
+
+            * `is_date_after` - is_date_after
+
+            * `is_date_before` - is_date_before'
+        value:
+          type: string
+          description: Date value in ISO format or relative date expression.
+      required:
+      - key
+      - operator
+      - value
+    SurveySerializerCreateUpdateOnly:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+          readOnly: true
+        name:
+          type: string
+          maxLength: 400
+        description:
+          type: string
+        type:
+          $ref: '#/components/schemas/SurveyType'
+        schedule:
+          type:
+          - string
+          - 'null'
+        linked_flag:
+          allOf:
+          - $ref: '#/components/schemas/MinimalFeatureFlag'
+          readOnly: true
+        linked_flag_id:
+          type:
+          - integer
+          - 'null'
+          writeOnly: true
+        linked_insight_id:
+          type:
+          - integer
+          - 'null'
+          writeOnly: true
+        targeting_flag_id:
+          type: integer
+          writeOnly: true
+        targeting_flag:
+          allOf:
+          - $ref: '#/components/schemas/MinimalFeatureFlag'
+          readOnly: true
+        internal_targeting_flag:
+          allOf:
+          - $ref: '#/components/schemas/MinimalFeatureFlag'
+          readOnly: true
+        targeting_flag_filters:
+          writeOnly: true
+        remove_targeting_flag:
+          type:
+          - boolean
+          - 'null'
+          writeOnly: true
+        questions:
+          description: "\n        The `array` of questions included in the survey. Each question must conform to one of the defined question types: Basic, Link, Rating, or Multiple Choice.\n\n        Basic (open-ended question)\n        - `id`: The question ID\n        - `type`: `open`\n        - `question`: The text of the question.\n        - `description`: Optional description of the question.\n        - `descriptionContentType`: Content type of the description (`html` or `text`).\n        - `optional`: Whether the question is optional (`boolean`).\n        - `buttonText`: Text displayed on the submit button.\n        - `branching`: Branching logic for the question. See branching types below for details.\n\n        Link (a question with a link)\n        - `id`: The question ID\n        - `type`: `link`\n        - `question`: The text of the question.\n        - `description`: Optional description of the question.\n        - `descriptionContentType`: Content type of the description (`html` or `text`).\n        - `optional`: Whether the question is optional (`boolean`).\n        - `buttonText`: Text displayed on the submit button.\n        - `link`: The URL associated with the question.\n        - `branching`: Branching logic for the question. See branching types below for details.\n\n        Rating (a question with a rating scale)\n        - `id`: The question ID\n        - `type`: `rating`\n        - `question`: The text of the question.\n        - `description`: Optional description of the question.\n        - `descriptionContentType`: Content type of the description (`html` or `text`).\n        - `optional`: Whether the question is optional (`boolean`).\n        - `buttonText`: Text displayed on the submit button.\n        - `display`: Display style of the rating (`number` or `emoji`).\n        - `scale`: The scale of the rating (`number`).\n        - `lowerBoundLabel`: Label for the lower bound of the scale.\n        - `upperBoundLabel`: Label for the upper bound of the scale.\n        - `isNpsQuestion`: Whether the question is an NPS rating.\n        - `branching`: Branching logic for the question. See branching types below for details.\n\n        Multiple choice\n        - `id`: The question ID\n        - `type`: `single_choice` or `multiple_choice`\n        - `question`: The text of the question.\n        - `description`: Optional description of the question.\n        - `descriptionContentType`: Content type of the description (`html` or `text`).\n        - `optional`: Whether the question is optional (`boolean`).\n        - `buttonText`: Text displayed on the submit button.\n        - `choices`: An array of choices for the question.\n        - `shuffleOptions`: Whether to shuffle the order of the choices (`boolean`).\n        - `hasOpenChoice`: Whether the question allows an open-ended response (`boolean`).\n        - `branching`: Branching logic for the question. See branching types below for details.\n\n        Branching logic can be one of the following types:\n\n        Next question: Proceeds to the next question\n        ```json\n        {\n            \"type\": \"next_question\"\n        }\n        ```\n\n        End: Ends the survey, optionally displaying a confirmation message.\n        ```json\n        {\n            \"type\": \"end\"\n        }\n        ```\n\n        Response-based: Branches based on the response values. Available for the `rating` and `single_choice` question types.\n        ```json\n        {\n            \"type\": \"response_based\",\n            \"responseValues\": {\n                \"responseKey\": \"value\"\n            }\n        }\n        ```\n\n        Specific question: Proceeds to a specific question by index.\n        ```json\n        {\n            \"type\": \"specific_question\",\n            \"index\": 2\n        }\n        ```\n\n        Translations: Each question can include inline translations.\n        - `translations`: Object mapping language codes to translated fields.\n        - Language codes: Any string - allows customers to use their own language keys (e.g., \"es\", \"es-MX\", \"english\", \"french\")\n        - Translatable fields: `question`, `description`, `buttonText`, `choices`, `lowerBoundLabel`, `upperBoundLabel`, `link`\n\n        Example with translations:\n        ```json\n        {\n            \"id\": \"uuid\",\n            \"type\": \"rating\",\n            \"question\": \"How satisfied are you?\",\n            \"lowerBoundLabel\": \"Not satisfied\",\n            \"upperBoundLabel\": \"Very satisfied\",\n            \"translations\": {\n                \"es\": {\n                    \"question\": \"¿Qué tan satisfecho estás?\",\n                    \"lowerBoundLabel\": \"No satisfecho\",\n                    \"upperBoundLabel\": \"Muy satisfecho\"\n                },\n                \"fr\": {\n                    \"question\": \"Dans quelle mesure êtes-vous satisfait?\"\n                }\n            }\n        }\n        ```\n        "
+        conditions: {}
+        appearance: {}
+        created_at:
+          type: string
+          format: date-time
+          readOnly: true
+        created_by:
+          allOf:
+          - $ref: '#/components/schemas/UserBasic'
+          readOnly: true
+        start_date:
+          type:
+          - string
+          - 'null'
+          format: date-time
+        end_date:
+          type:
+          - string
+          - 'null'
+          format: date-time
+        archived:
+          type: boolean
+        responses_limit:
+          type:
+          - integer
+          - 'null'
+          maximum: 2147483647
+          minimum: 0
+        iteration_count:
+          type:
+          - integer
+          - 'null'
+          maximum: 500
+          minimum: 0
+        iteration_frequency_days:
+          type:
+          - integer
+          - 'null'
+          maximum: 2147483647
+          minimum: 0
+        iteration_start_dates:
+          type:
+          - array
+          - 'null'
+          items:
+            type:
+            - string
+            - 'null'
+            format: date-time
+        current_iteration:
+          type:
+          - integer
+          - 'null'
+          maximum: 2147483647
+          minimum: 0
+        current_iteration_start_date:
+          type:
+          - string
+          - 'null'
+          format: date-time
+        response_sampling_start_date:
+          type:
+          - string
+          - 'null'
+          format: date-time
+        response_sampling_interval_type:
+          oneOf:
+          - $ref: '#/components/schemas/ResponseSamplingIntervalTypeEnum'
+          - $ref: '#/components/schemas/BlankEnum'
+          - $ref: '#/components/schemas/NullEnum'
+        response_sampling_interval:
+          type:
+          - integer
+          - 'null'
+          maximum: 2147483647
+          minimum: 0
+        response_sampling_limit:
+          type:
+          - integer
+          - 'null'
+          maximum: 2147483647
+          minimum: 0
+        response_sampling_daily_limits: {}
+        enable_partial_responses:
+          type:
+          - boolean
+          - 'null'
+        enable_iframe_embedding:
+          type:
+          - boolean
+          - 'null'
+        translations: {}
+        _create_in_folder:
+          type: string
+          writeOnly: true
+          title: ' create in folder'
+        form_content: {}
+      required:
+      - created_at
+      - created_by
+      - id
+      - internal_targeting_flag
+      - linked_flag
+      - name
+      - targeting_flag
+      - type
+    FeatureFlagFilterPropertyCohortInSchema:
+      type: object
+      properties:
+        key:
+          type: string
+          description: Property key used in this feature flag condition.
+        type:
+          allOf:
+          - $ref: '#/components/schemas/FeatureFlagFilterPropertyCohortInSchemaTypeEnum'
+          description: 'Cohort property type required for in/not_in operators.
+
+
+            * `cohort` - cohort'
+        cohort_name:
+          type:
+          - string
+          - 'null'
+          description: Resolved cohort name for cohort-type filters.
+        group_type_index:
+          type:
+          - integer
+          - 'null'
+          description: Group type index when using group-based filters.
+        operator:
+          allOf:
+          - $ref: '#/components/schemas/FeatureFlagFilterPropertyCohortInSchemaOperatorEnum'
+          description: 'Membership operator for cohort properties.
+
+
+            * `in` - in
+
+            * `not_in` - not_in'
+        value:
+          description: Cohort comparison value (single or list, depending on usage).
+      required:
+      - key
+      - operator
+      - type
+      - value
     SurveyMultipleChoiceQuestionSchema:
       type: object
       properties:
@@ -2675,129 +2581,223 @@ components:
       - choices
       - question
       - type
-    GeneratedSurveyQuestionTranslation:
-      type: object
-      properties:
-        question:
-          type: string
-          description: Translated question text.
-        description:
-          type: string
-          description: Translated question description.
-        buttonText:
-          type: string
-          description: Translated submit button text.
-        choices:
-          type: array
-          items:
-            type: string
-          description: Translated choices in the same order as the source choices.
-        lowerBoundLabel:
-          type: string
-          description: Translated lower rating bound label.
-        upperBoundLabel:
-          type: string
-          description: Translated upper rating bound label.
-        link:
-          type: string
-          description: Translated link text or localized URL.
-    SurveyQuestionInputSchema:
-      oneOf:
-      - $ref: '#/components/schemas/SurveyOpenQuestionSchema'
-      - $ref: '#/components/schemas/SurveyLinkQuestionSchema'
-      - $ref: '#/components/schemas/SurveyRatingQuestionSchema'
-      - $ref: '#/components/schemas/SurveySingleChoiceQuestionSchema'
-      - $ref: '#/components/schemas/SurveyMultipleChoiceQuestionSchema'
-    SurveyType:
+    SurveyEndBranchingTypeEnum:
       enum:
-      - popover
-      - widget
-      - external_survey
-      - api
+      - end
       type: string
-      description: '* `popover` - popover
-
-        * `widget` - widget
-
-        * `external_survey` - external survey
-
-        * `api` - api'
-    FeatureFlagFiltersSchema:
-      type: object
-      properties:
-        groups:
-          type: array
-          items:
-            $ref: '#/components/schemas/FeatureFlagConditionGroupSchema'
-          description: Release condition groups for the feature flag.
-        multivariate:
-          allOf:
-          - $ref: '#/components/schemas/FeatureFlagMultivariateSchema'
-          description: Multivariate configuration for variant-based rollouts.
-        aggregation_group_type_index:
-          type:
-          - integer
-          - 'null'
-          description: Group type index for group-based feature flags.
-        payloads:
-          type: object
-          additionalProperties:
-            type: string
-          description: Optional payload values keyed by variant key.
-        super_groups:
-          type: array
-          items:
-            type: object
-            additionalProperties: true
-          description: Additional super condition groups used by experiments.
-        feature_enrollment:
-          type:
-          - boolean
-          - 'null'
-          description: Whether this flag has early access feature enrollment enabled. When true, the flag is evaluated against the person property $feature_enrollment/{flag_key}.
-    SurveyEndBranching:
+      description: '* `end` - end'
+    SurveyRatingQuestionSchema:
       type: object
       properties:
         type:
+          $ref: '#/components/schemas/SurveyRatingQuestionSchemaTypeEnum'
+        question:
+          type: string
+          description: Question text shown to respondents.
+        description:
+          type: string
+          description: Optional helper text.
+        descriptionContentType:
           allOf:
-          - $ref: '#/components/schemas/SurveyEndBranchingTypeEnum'
-          description: 'End the survey.
+          - $ref: '#/components/schemas/DescriptionContentTypeEnum'
+          description: 'Format for the description field.
 
 
-            * `end` - end'
+            * `text` - text
+
+            * `html` - html'
+        optional:
+          type: boolean
+          description: Whether respondents may skip this question.
+        buttonText:
+          type: string
+          description: Custom button label.
+        display:
+          allOf:
+          - $ref: '#/components/schemas/SurveyRatingQuestionSchemaDisplayEnum'
+          description: 'Display format: ''number'' shows numeric scale, ''emoji'' shows emoji scale.
+
+
+            * `number` - number
+
+            * `emoji` - emoji'
+        scale:
+          type: integer
+          minimum: 1
+          description: Rating scale can be one of 3, 5, or 7
+        lowerBoundLabel:
+          type: string
+          description: Label for the lowest rating (e.g., 'Very Poor')
+        upperBoundLabel:
+          type: string
+          description: Label for the highest rating (e.g., 'Excellent')
+        branching:
+          allOf:
+          - $ref: '#/components/schemas/SurveyBranchingSchema'
       required:
+      - question
       - type
-    RoleAtOrganizationEnum:
+    EvaluationRuntimeEnum:
       enum:
-      - engineering
-      - data
-      - product
-      - founder
-      - leadership
-      - marketing
-      - sales
-      - other
+      - server
+      - client
+      - all
       type: string
-      description: '* `engineering` - Engineering
+      description: '* `server` - Server
 
-        * `data` - Data
+        * `client` - Client
 
-        * `product` - Product Management
-
-        * `founder` - Founder
-
-        * `leadership` - Leadership
-
-        * `marketing` - Marketing
-
-        * `sales` - Sales / Success
-
-        * `other` - Other'
-    SurveyNextQuestionBranchingTypeEnum:
+        * `all` - All'
+    ExistenceOperatorEnum:
       enum:
-      - next_question
+      - is_set
+      - is_not_set
       type: string
-      description: '* `next_question` - next_question'
+      description: '* `is_set` - is_set
+
+        * `is_not_set` - is_not_set'
+    FeatureFlagFilterPropertyFlagEvaluatesSchema:
+      type: object
+      properties:
+        key:
+          type: string
+          description: Property key used in this feature flag condition.
+        type:
+          allOf:
+          - $ref: '#/components/schemas/FeatureFlagFilterPropertyFlagEvaluatesSchemaTypeEnum'
+          description: 'Flag property type required for flag dependency checks.
+
+
+            * `flag` - flag'
+        cohort_name:
+          type:
+          - string
+          - 'null'
+          description: Resolved cohort name for cohort-type filters.
+        group_type_index:
+          type:
+          - integer
+          - 'null'
+          description: Group type index when using group-based filters.
+        operator:
+          allOf:
+          - $ref: '#/components/schemas/FeatureFlagFilterPropertyFlagEvaluatesSchemaOperatorEnum'
+          description: 'Operator for feature flag dependency evaluation.
+
+
+            * `flag_evaluates_to` - flag_evaluates_to'
+        value:
+          description: Value to compare flag evaluation against.
+      required:
+      - key
+      - operator
+      - type
+      - value
+    GeneratedSurveyRootTranslation:
+      type: object
+      properties:
+        name:
+          type: string
+          description: Translated survey name.
+        thankYouMessageHeader:
+          type: string
+          description: Translated thank-you header.
+        thankYouMessageDescription:
+          type: string
+          description: Translated thank-you description.
+        thankYouMessageCloseButtonText:
+          type: string
+          description: Translated thank-you close button text.
+    FeatureFlagMultivariateSchema:
+      type: object
+      properties:
+        variants:
+          type: array
+          items:
+            $ref: '#/components/schemas/FeatureFlagMultivariateVariantSchema'
+          description: Variant definitions for multivariate feature flags.
+      required:
+      - variants
+    FeatureFlagFilterPropertySchema:
+      oneOf:
+      - $ref: '#/components/schemas/FeatureFlagFilterPropertyGenericSchema'
+      - $ref: '#/components/schemas/FeatureFlagFilterPropertyExistsSchema'
+      - $ref: '#/components/schemas/FeatureFlagFilterPropertyDateSchema'
+      - $ref: '#/components/schemas/FeatureFlagFilterPropertySemverSchema'
+      - $ref: '#/components/schemas/FeatureFlagFilterPropertyMultiContainsSchema'
+      - $ref: '#/components/schemas/FeatureFlagFilterPropertyCohortInSchema'
+      - $ref: '#/components/schemas/FeatureFlagFilterPropertyFlagEvaluatesSchema'
+    FeatureFlagFilterPropertyCohortInSchemaOperatorEnum:
+      enum:
+      - in
+      - not_in
+      type: string
+      description: '* `in` - in
+
+        * `not_in` - not_in'
+    SurveyResponseBasedBranchingTypeEnum:
+      enum:
+      - response_based
+      type: string
+      description: '* `response_based` - response_based'
+    FeatureFlagFilterPropertyGenericSchema:
+      type: object
+      properties:
+        key:
+          type: string
+          description: Property key used in this feature flag condition.
+        type:
+          allOf:
+          - $ref: '#/components/schemas/PropertyGroupTypeEnum'
+          description: 'Property filter type. Common values are ''person'' and ''cohort''.
+
+
+            * `cohort` - cohort
+
+            * `person` - person
+
+            * `group` - group'
+        cohort_name:
+          type:
+          - string
+          - 'null'
+          description: Resolved cohort name for cohort-type filters.
+        group_type_index:
+          type:
+          - integer
+          - 'null'
+          description: Group type index when using group-based filters.
+        value:
+          description: Comparison value for the property filter. Supports strings, numbers, booleans, and arrays.
+        operator:
+          allOf:
+          - $ref: '#/components/schemas/FeatureFlagFilterPropertyGenericSchemaOperatorEnum'
+          description: 'Operator used to compare the property value.
+
+
+            * `exact` - exact
+
+            * `is_not` - is_not
+
+            * `icontains` - icontains
+
+            * `not_icontains` - not_icontains
+
+            * `regex` - regex
+
+            * `not_regex` - not_regex
+
+            * `gt` - gt
+
+            * `gte` - gte
+
+            * `lt` - lt
+
+            * `lte` - lte'
+      required:
+      - key
+      - operator
+      - value
   parameters:
     ProjectIdPath:
       in: path
