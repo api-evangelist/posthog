@@ -362,43 +362,20 @@ paths:
       x-summary-source: derived
 components:
   schemas:
-    RoleAtOrganizationEnum:
+    HeatmapScreenshotResponseStatusEnum:
       enum:
-      - engineering
-      - data
-      - product
-      - founder
-      - leadership
-      - marketing
-      - sales
-      - other
+      - processing
+      - completed
+      - failed
       type: string
-      description: '* `engineering` - Engineering
+      description: '* `processing` - Processing
 
-        * `data` - Data
+        * `completed` - Completed
 
-        * `product` - Product Management
-
-        * `founder` - Founder
-
-        * `leadership` - Leadership
-
-        * `marketing` - Marketing
-
-        * `sales` - Sales / Success
-
-        * `other` - Other'
-    HeatmapScreenshotResponseTypeEnum:
+        * `failed` - Failed'
+    BlankEnum:
       enum:
-      - screenshot
-      - iframe
-      - recording
-      type: string
-      description: '* `screenshot` - Screenshot
-
-        * `iframe` - Iframe
-
-        * `recording` - Recording'
+      - ''
     PatchedHeatmapScreenshotResponse:
       type: object
       properties:
@@ -460,88 +437,6 @@ components:
           - string
           - 'null'
           readOnly: true
-    UserBasic:
-      type: object
-      properties:
-        id:
-          type: integer
-          readOnly: true
-        uuid:
-          type: string
-          format: uuid
-          readOnly: true
-        distinct_id:
-          type:
-          - string
-          - 'null'
-          maxLength: 200
-        first_name:
-          type: string
-          maxLength: 150
-        last_name:
-          type: string
-          maxLength: 150
-        email:
-          type: string
-          format: email
-          title: Email address
-          maxLength: 254
-        is_email_verified:
-          type:
-          - boolean
-          - 'null'
-        hedgehog_config:
-          type:
-          - object
-          - 'null'
-          additionalProperties: true
-          readOnly: true
-        role_at_organization:
-          oneOf:
-          - $ref: '#/components/schemas/RoleAtOrganizationEnum'
-          - $ref: '#/components/schemas/BlankEnum'
-          - $ref: '#/components/schemas/NullEnum'
-      required:
-      - email
-      - hedgehog_config
-      - id
-      - uuid
-    PaginatedHeatmapScreenshotResponseList:
-      type: object
-      required:
-      - count
-      - results
-      properties:
-        count:
-          type: integer
-          example: 123
-        next:
-          type:
-          - string
-          - 'null'
-          format: uri
-          example: http://api.example.org/accounts/?offset=400&limit=100
-        previous:
-          type:
-          - string
-          - 'null'
-          format: uri
-          example: http://api.example.org/accounts/?offset=200&limit=100
-        results:
-          type: array
-          items:
-            $ref: '#/components/schemas/HeatmapScreenshotResponse'
-    HeatmapScreenshotResponseStatusEnum:
-      enum:
-      - processing
-      - completed
-      - failed
-      type: string
-      description: '* `processing` - Processing
-
-        * `completed` - Completed
-
-        * `failed` - Failed'
     HeatmapScreenshotResponse:
       type: object
       properties:
@@ -614,12 +509,117 @@ components:
       - status
       - updated_at
       - url
+    UserBasic:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        uuid:
+          type: string
+          format: uuid
+          readOnly: true
+        distinct_id:
+          type:
+          - string
+          - 'null'
+          maxLength: 200
+        first_name:
+          type: string
+          maxLength: 150
+        last_name:
+          type: string
+          maxLength: 150
+        email:
+          type: string
+          format: email
+          title: Email address
+          maxLength: 254
+        is_email_verified:
+          type:
+          - boolean
+          - 'null'
+        hedgehog_config:
+          type:
+          - object
+          - 'null'
+          additionalProperties: true
+          readOnly: true
+        role_at_organization:
+          oneOf:
+          - $ref: '#/components/schemas/RoleAtOrganizationEnum'
+          - $ref: '#/components/schemas/BlankEnum'
+          - $ref: '#/components/schemas/NullEnum'
+      required:
+      - email
+      - hedgehog_config
+      - id
+      - uuid
     NullEnum:
       enum:
       - null
-    BlankEnum:
+    RoleAtOrganizationEnum:
       enum:
-      - ''
+      - engineering
+      - data
+      - product
+      - founder
+      - leadership
+      - marketing
+      - sales
+      - other
+      type: string
+      description: '* `engineering` - Engineering
+
+        * `data` - Data
+
+        * `product` - Product Management
+
+        * `founder` - Founder
+
+        * `leadership` - Leadership
+
+        * `marketing` - Marketing
+
+        * `sales` - Sales / Success
+
+        * `other` - Other'
+    HeatmapScreenshotResponseTypeEnum:
+      enum:
+      - screenshot
+      - iframe
+      - recording
+      type: string
+      description: '* `screenshot` - Screenshot
+
+        * `iframe` - Iframe
+
+        * `recording` - Recording'
+    PaginatedHeatmapScreenshotResponseList:
+      type: object
+      required:
+      - count
+      - results
+      properties:
+        count:
+          type: integer
+          example: 123
+        next:
+          type:
+          - string
+          - 'null'
+          format: uri
+          example: http://api.example.org/accounts/?offset=400&limit=100
+        previous:
+          type:
+          - string
+          - 'null'
+          format: uri
+          example: http://api.example.org/accounts/?offset=200&limit=100
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/HeatmapScreenshotResponse'
   parameters:
     EnvironmentIdPath:
       in: path

@@ -495,161 +495,54 @@ paths:
       - tasks
 components:
   schemas:
-    TaskStagedArtifactsPrepareUploadRequest:
+    TaskStagedArtifactsFinalizeUploadRequest:
       type: object
       properties:
         artifacts:
           type: array
           items:
-            $ref: '#/components/schemas/TaskStagedArtifactPrepareUpload'
-          description: Array of staged artifacts to prepare before creating a run
+            $ref: '#/components/schemas/TaskStagedArtifactFinalizeUpload'
+          description: Array of staged artifacts to finalize after upload
       required:
       - artifacts
-    CapabilityState:
+    RunSourceEnum:
+      enum:
+      - manual
+      - signal_report
+      type: string
+      description: '* `manual` - manual
+
+        * `signal_report` - signal_report'
+    PaginatedTaskList:
       type: object
-      properties:
-        state:
-          allOf:
-          - $ref: '#/components/schemas/CapabilityStateStateEnum'
-          description: 'Current state of the capability
-
-
-            * `needs_setup` - needs_setup
-
-            * `detected` - detected
-
-            * `waiting_for_data` - waiting_for_data
-
-            * `ready` - ready
-
-            * `not_applicable` - not_applicable
-
-            * `unknown` - unknown'
-        estimated:
-          type: boolean
-          description: Whether the state is estimated from static analysis
-        reason:
-          type: string
-          description: Human-readable explanation
-        evidence:
-          type: object
-          additionalProperties: true
-          description: Supporting evidence
       required:
-      - estimated
-      - reason
-      - state
-    TaskRunCreateRequestSchema:
-      oneOf:
-      - $ref: '#/components/schemas/ClaudeTaskRunCreateSchema'
-      - $ref: '#/components/schemas/CodexTaskRunCreateSchema'
-      - $ref: '#/components/schemas/TaskRunResumeRequestSchema'
-    PatchedTask:
-      type: object
+      - count
+      - results
       properties:
-        id:
-          type: string
-          format: uuid
-          readOnly: true
-        task_number:
-          type:
-          - integer
-          - 'null'
-          readOnly: true
-        slug:
-          type: string
-          readOnly: true
-        title:
-          type: string
-          maxLength: 255
-        title_manually_set:
-          type: boolean
-        description:
-          type: string
-        origin_product:
-          $ref: '#/components/schemas/OriginProductEnum'
-        repository:
+        count:
+          type: integer
+          example: 123
+        next:
           type:
           - string
           - 'null'
-          maxLength: 255
-        github_integration:
-          type:
-          - integer
-          - 'null'
-          description: GitHub integration for this task
-        github_user_integration:
+          format: uri
+          example: http://api.example.org/accounts/?offset=400&limit=100
+        previous:
           type:
           - string
           - 'null'
-          format: uuid
-          description: User-scoped GitHub integration to use for user-authored cloud runs.
-        signal_report:
-          type:
-          - string
-          - 'null'
-          format: uuid
-        signal_report_task_relationship:
-          allOf:
-          - $ref: '#/components/schemas/SignalReportTaskRelationshipEnum'
-          writeOnly: true
-        json_schema:
-          description: JSON schema for the task. This is used to validate the output of the task.
-        internal:
-          type: boolean
-          description: If true, this task is for internal use and should not be exposed to end users.
-        latest_run:
-          type:
-          - object
-          - 'null'
-          additionalProperties: true
-          description: Latest run details for this task
-          readOnly: true
-        created_at:
-          type: string
-          format: date-time
-          readOnly: true
-        updated_at:
-          type: string
-          format: date-time
-          readOnly: true
-        created_by:
-          allOf:
-          - $ref: '#/components/schemas/UserBasic'
-          readOnly: true
-        ci_prompt:
-          type:
-          - string
-          - 'null'
-          description: Custom prompt for CI fixes. If blank, a default prompt will be used.
+          format: uri
+          example: http://api.example.org/accounts/?offset=200&limit=100
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/Task'
     ClaudeRuntimeAdapterEnum:
       enum:
       - claude
       type: string
       description: '* `claude` - claude'
-    TaskRunArtifactTypeEnum:
-      enum:
-      - plan
-      - context
-      - reference
-      - output
-      - artifact
-      - tree_snapshot
-      - user_attachment
-      type: string
-      description: '* `plan` - plan
-
-        * `context` - context
-
-        * `reference` - reference
-
-        * `output` - output
-
-        * `artifact` - artifact
-
-        * `tree_snapshot` - tree_snapshot
-
-        * `user_attachment` - user_attachment'
     TaskRunErrorResponse:
       type: object
       properties:
@@ -673,11 +566,105 @@ components:
           items:
             type: string
           description: Artifact ids that could not be resolved for the run
-    CodexRuntimeAdapterEnum:
+    TaskExecutionModeEnum:
       enum:
-      - codex
+      - interactive
+      - background
       type: string
-      description: '* `codex` - codex'
+      description: '* `interactive` - interactive
+
+        * `background` - background'
+    TaskRunCreateRequestSchema:
+      oneOf:
+      - $ref: '#/components/schemas/ClaudeTaskRunCreateSchema'
+      - $ref: '#/components/schemas/CodexTaskRunCreateSchema'
+      - $ref: '#/components/schemas/TaskRunResumeRequestSchema'
+    NullEnum:
+      enum:
+      - null
+    CapabilityStateStateEnum:
+      enum:
+      - needs_setup
+      - detected
+      - waiting_for_data
+      - ready
+      - not_applicable
+      - unknown
+      type: string
+      description: '* `needs_setup` - needs_setup
+
+        * `detected` - detected
+
+        * `waiting_for_data` - waiting_for_data
+
+        * `ready` - ready
+
+        * `not_applicable` - not_applicable
+
+        * `unknown` - unknown'
+    CodexTaskRunCreateSchemaInitialPermissionModeEnum:
+      enum:
+      - auto
+      - read-only
+      - full-access
+      type: string
+      description: '* `auto` - auto
+
+        * `read-only` - read-only
+
+        * `full-access` - full-access'
+    TaskRunArtifactResponse:
+      type: object
+      properties:
+        id:
+          type: string
+          description: Stable identifier for the artifact within this run
+        name:
+          type: string
+          description: Artifact file name
+        type:
+          type: string
+          description: Artifact classification (plan, context, etc.)
+        source:
+          type: string
+          description: Source of the artifact, such as agent_output or user_attachment
+        size:
+          type: integer
+          description: Artifact size in bytes
+        content_type:
+          type: string
+          description: Optional MIME type
+        storage_path:
+          type: string
+          description: S3 object key for the artifact
+        uploaded_at:
+          type: string
+          description: Timestamp when the artifact was uploaded
+      required:
+      - name
+      - storage_path
+      - type
+      - uploaded_at
+    TaskStagedArtifactsFinalizeUploadResponse:
+      type: object
+      properties:
+        artifacts:
+          type: array
+          items:
+            $ref: '#/components/schemas/TaskRunArtifactResponse'
+          description: Finalized staged artifacts available for attachment to a new run
+      required:
+      - artifacts
+    TaskRepositoriesResponse:
+      type: object
+      properties:
+        repositories:
+          type: array
+          items:
+            type: string
+          description: Distinct repositories in use by non-deleted, non-internal tasks for the current team.
+      required:
+      - repositories
     ClaudeTaskRunCreateSchema:
       type: object
       description: Request body for creating a new task run
@@ -783,255 +770,115 @@ components:
       required:
       - model
       - runtime_adapter
-    RepositoryReadinessResponse:
-      type: object
-      properties:
-        repository:
-          type: string
-          description: Normalized repository identifier
-        classification:
-          type: string
-          description: Repository classification
-        excluded:
-          type: boolean
-          description: Whether the repository is excluded from readiness checks
-        coreSuggestions:
-          allOf:
-          - $ref: '#/components/schemas/CapabilityState'
-          description: Tracking capability state
-        replayInsights:
-          allOf:
-          - $ref: '#/components/schemas/CapabilityState'
-          description: Computer vision capability state
-        errorInsights:
-          allOf:
-          - $ref: '#/components/schemas/CapabilityState'
-          description: Error tracking capability state
-        overall:
-          type: string
-          description: Overall readiness state
-        evidenceTaskCount:
-          type: integer
-          description: Count of replay-derived evidence tasks
-        windowDays:
-          type: integer
-          description: Lookback window in days
-        generatedAt:
-          type: string
-          description: ISO timestamp when the response was generated
-        cacheAgeSeconds:
-          type: integer
-          description: Age of cached response in seconds
-        scan:
-          allOf:
-          - $ref: '#/components/schemas/ScanEvidence'
-          description: Scan evidence details
-      required:
-      - cacheAgeSeconds
-      - classification
-      - coreSuggestions
-      - errorInsights
-      - evidenceTaskCount
-      - excluded
-      - generatedAt
-      - overall
-      - replayInsights
-      - repository
-      - windowDays
-    RoleAtOrganizationEnum:
+    TaskRunArtifactTypeEnum:
       enum:
-      - engineering
-      - data
-      - product
-      - founder
-      - leadership
-      - marketing
-      - sales
-      - other
-      type: string
-      description: '* `engineering` - Engineering
-
-        * `data` - Data
-
-        * `product` - Product Management
-
-        * `founder` - Founder
-
-        * `leadership` - Leadership
-
-        * `marketing` - Marketing
-
-        * `sales` - Sales / Success
-
-        * `other` - Other'
-    ClaudeTaskRunCreateSchemaInitialPermissionModeEnum:
-      enum:
-      - default
-      - acceptEdits
       - plan
-      - bypassPermissions
-      - auto
+      - context
+      - reference
+      - output
+      - artifact
+      - tree_snapshot
+      - user_attachment
       type: string
-      description: '* `default` - default
+      description: '* `plan` - plan
 
-        * `acceptEdits` - acceptEdits
+        * `context` - context
 
-        * `plan` - plan
+        * `reference` - reference
 
-        * `bypassPermissions` - bypassPermissions
+        * `output` - output
 
-        * `auto` - auto'
-    ErrorResponse:
-      type: object
-      properties:
-        error:
-          type: string
-          description: Error message
-      required:
-      - error
-    TaskRunArtifactResponse:
+        * `artifact` - artifact
+
+        * `tree_snapshot` - tree_snapshot
+
+        * `user_attachment` - user_attachment'
+    Task:
       type: object
       properties:
         id:
           type: string
-          description: Stable identifier for the artifact within this run
-        name:
+          format: uuid
+          readOnly: true
+        task_number:
+          type:
+          - integer
+          - 'null'
+          readOnly: true
+        slug:
           type: string
-          description: Artifact file name
-        type:
+          readOnly: true
+        title:
           type: string
-          description: Artifact classification (plan, context, etc.)
-        source:
-          type: string
-          description: Source of the artifact, such as agent_output or user_attachment
-        size:
-          type: integer
-          description: Artifact size in bytes
-        content_type:
-          type: string
-          description: Optional MIME type
-        storage_path:
-          type: string
-          description: S3 object key for the artifact
-        uploaded_at:
-          type: string
-          description: Timestamp when the artifact was uploaded
-      required:
-      - name
-      - storage_path
-      - type
-      - uploaded_at
-    TaskStagedArtifactsPrepareUploadResponse:
-      type: object
-      properties:
-        artifacts:
-          type: array
-          items:
-            $ref: '#/components/schemas/TaskStagedArtifactPrepareUploadResponse'
-          description: Prepared staged uploads for the requested artifacts
-      required:
-      - artifacts
-    RunSourceEnum:
-      enum:
-      - manual
-      - signal_report
-      type: string
-      description: '* `manual` - manual
-
-        * `signal_report` - signal_report'
-    TaskRepositoriesResponse:
-      type: object
-      properties:
-        repositories:
-          type: array
-          items:
-            type: string
-          description: Distinct repositories in use by non-deleted, non-internal tasks for the current team.
-      required:
-      - repositories
-    NullEnum:
-      enum:
-      - null
-    BlankEnum:
-      enum:
-      - ''
-    TaskStagedArtifactPrepareUpload:
-      type: object
-      properties:
-        name:
-          type: string
-          description: File name to associate with the staged artifact
           maxLength: 255
-        type:
+        title_manually_set:
+          type: boolean
+        description:
+          type: string
+        origin_product:
+          $ref: '#/components/schemas/OriginProductEnum'
+        repository:
+          type:
+          - string
+          - 'null'
+          maxLength: 255
+        github_integration:
+          type:
+          - integer
+          - 'null'
+          description: GitHub integration for this task
+        github_user_integration:
+          type:
+          - string
+          - 'null'
+          format: uuid
+          description: User-scoped GitHub integration to use for user-authored cloud runs.
+        signal_report:
+          type:
+          - string
+          - 'null'
+          format: uuid
+        signal_report_task_relationship:
           allOf:
-          - $ref: '#/components/schemas/TaskRunArtifactTypeEnum'
-          description: 'Classification for the artifact
-
-
-            * `plan` - plan
-
-            * `context` - context
-
-            * `reference` - reference
-
-            * `output` - output
-
-            * `artifact` - artifact
-
-            * `tree_snapshot` - tree_snapshot
-
-            * `user_attachment` - user_attachment'
-        source:
+          - $ref: '#/components/schemas/SignalReportTaskRelationshipEnum'
+          writeOnly: true
+        json_schema:
+          description: JSON schema for the task. This is used to validate the output of the task.
+        internal:
+          type: boolean
+          description: If true, this task is for internal use and should not be exposed to end users.
+        latest_run:
+          type:
+          - object
+          - 'null'
+          additionalProperties: true
+          description: Latest run details for this task
+          readOnly: true
+        created_at:
           type: string
-          default: ''
-          description: Optional source label for the artifact, such as agent_output or user_attachment
-          maxLength: 64
-        size:
-          type: integer
-          maximum: 31457280
-          minimum: 1
-          description: Expected upload size in bytes (max 31457280 bytes)
-        content_type:
+          format: date-time
+          readOnly: true
+        updated_at:
           type: string
-          description: Optional MIME type for the artifact upload
-          maxLength: 255
+          format: date-time
+          readOnly: true
+        created_by:
+          allOf:
+          - $ref: '#/components/schemas/UserBasic'
+          readOnly: true
+        ci_prompt:
+          type:
+          - string
+          - 'null'
+          description: Custom prompt for CI fixes. If blank, a default prompt will be used.
       required:
-      - name
-      - size
-      - type
-    SignalReportTaskRelationshipEnum:
-      enum:
-      - implementation
-      type: string
-      description: '* `implementation` - Implementation'
-    CodexTaskRunCreateSchemaInitialPermissionModeEnum:
-      enum:
-      - auto
-      - read-only
-      - full-access
-      type: string
-      description: '* `auto` - auto
-
-        * `read-only` - read-only
-
-        * `full-access` - full-access'
-    ReasoningEffortEnum:
-      enum:
-      - low
-      - medium
-      - high
-      - xhigh
-      - max
-      type: string
-      description: '* `low` - low
-
-        * `medium` - medium
-
-        * `high` - high
-
-        * `xhigh` - xhigh
-
-        * `max` - max'
+      - created_at
+      - created_by
+      - id
+      - latest_run
+      - slug
+      - task_number
+      - updated_at
     CodexTaskRunCreateSchema:
       type: object
       description: Request body for creating a new task run
@@ -1133,78 +980,23 @@ components:
       required:
       - model
       - runtime_adapter
-    UserBasic:
-      type: object
-      properties:
-        id:
-          type: integer
-          readOnly: true
-        uuid:
-          type: string
-          format: uuid
-          readOnly: true
-        distinct_id:
-          type:
-          - string
-          - 'null'
-          maxLength: 200
-        first_name:
-          type: string
-          maxLength: 150
-        last_name:
-          type: string
-          maxLength: 150
-        email:
-          type: string
-          format: email
-          title: Email address
-          maxLength: 254
-        is_email_verified:
-          type:
-          - boolean
-          - 'null'
-        hedgehog_config:
-          type:
-          - object
-          - 'null'
-          additionalProperties: true
-          readOnly: true
-        role_at_organization:
-          oneOf:
-          - $ref: '#/components/schemas/RoleAtOrganizationEnum'
-          - $ref: '#/components/schemas/BlankEnum'
-          - $ref: '#/components/schemas/NullEnum'
-      required:
-      - email
-      - hedgehog_config
-      - id
-      - uuid
-    TaskExecutionModeEnum:
+    ReasoningEffortEnum:
       enum:
-      - interactive
-      - background
+      - low
+      - medium
+      - high
+      - xhigh
+      - max
       type: string
-      description: '* `interactive` - interactive
+      description: '* `low` - low
 
-        * `background` - background'
-    TaskStagedArtifactsFinalizeUploadRequest:
-      type: object
-      properties:
-        artifacts:
-          type: array
-          items:
-            $ref: '#/components/schemas/TaskStagedArtifactFinalizeUpload'
-          description: Array of staged artifacts to finalize after upload
-      required:
-      - artifacts
-    PrAuthorshipModeEnum:
-      enum:
-      - user
-      - bot
-      type: string
-      description: '* `user` - user
+        * `medium` - medium
 
-        * `bot` - bot'
+        * `high` - high
+
+        * `xhigh` - xhigh
+
+        * `max` - max'
     OriginProductEnum:
       enum:
       - error_tracking
@@ -1231,36 +1023,96 @@ components:
         * `session_summaries` - Session Summaries
 
         * `signal_report` - Signal Report'
-    CapabilityStateStateEnum:
-      enum:
-      - needs_setup
-      - detected
-      - waiting_for_data
-      - ready
-      - not_applicable
-      - unknown
-      type: string
-      description: '* `needs_setup` - needs_setup
-
-        * `detected` - detected
-
-        * `waiting_for_data` - waiting_for_data
-
-        * `ready` - ready
-
-        * `not_applicable` - not_applicable
-
-        * `unknown` - unknown'
-    TaskStagedArtifactsFinalizeUploadResponse:
+    TaskStagedArtifactsPrepareUploadRequest:
       type: object
       properties:
         artifacts:
           type: array
           items:
-            $ref: '#/components/schemas/TaskRunArtifactResponse'
-          description: Finalized staged artifacts available for attachment to a new run
+            $ref: '#/components/schemas/TaskStagedArtifactPrepareUpload'
+          description: Array of staged artifacts to prepare before creating a run
       required:
       - artifacts
+    PrAuthorshipModeEnum:
+      enum:
+      - user
+      - bot
+      type: string
+      description: '* `user` - user
+
+        * `bot` - bot'
+    BlankEnum:
+      enum:
+      - ''
+    TaskStagedArtifactPrepareUpload:
+      type: object
+      properties:
+        name:
+          type: string
+          description: File name to associate with the staged artifact
+          maxLength: 255
+        type:
+          allOf:
+          - $ref: '#/components/schemas/TaskRunArtifactTypeEnum'
+          description: 'Classification for the artifact
+
+
+            * `plan` - plan
+
+            * `context` - context
+
+            * `reference` - reference
+
+            * `output` - output
+
+            * `artifact` - artifact
+
+            * `tree_snapshot` - tree_snapshot
+
+            * `user_attachment` - user_attachment'
+        source:
+          type: string
+          default: ''
+          description: Optional source label for the artifact, such as agent_output or user_attachment
+          maxLength: 64
+        size:
+          type: integer
+          maximum: 31457280
+          minimum: 1
+          description: Expected upload size in bytes (max 31457280 bytes)
+        content_type:
+          type: string
+          description: Optional MIME type for the artifact upload
+          maxLength: 255
+      required:
+      - name
+      - size
+      - type
+    ErrorResponse:
+      type: object
+      properties:
+        error:
+          type: string
+          description: Error message
+      required:
+      - error
+    ClaudeTaskRunCreateSchemaInitialPermissionModeEnum:
+      enum:
+      - default
+      - acceptEdits
+      - plan
+      - bypassPermissions
+      - auto
+      type: string
+      description: '* `default` - default
+
+        * `acceptEdits` - acceptEdits
+
+        * `plan` - plan
+
+        * `bypassPermissions` - bypassPermissions
+
+        * `auto` - auto'
     TaskStagedArtifactPrepareUploadResponse:
       type: object
       properties:
@@ -1300,6 +1152,61 @@ components:
       - size
       - storage_path
       - type
+    RepositoryReadinessResponse:
+      type: object
+      properties:
+        repository:
+          type: string
+          description: Normalized repository identifier
+        classification:
+          type: string
+          description: Repository classification
+        excluded:
+          type: boolean
+          description: Whether the repository is excluded from readiness checks
+        coreSuggestions:
+          allOf:
+          - $ref: '#/components/schemas/CapabilityState'
+          description: Tracking capability state
+        replayInsights:
+          allOf:
+          - $ref: '#/components/schemas/CapabilityState'
+          description: Computer vision capability state
+        errorInsights:
+          allOf:
+          - $ref: '#/components/schemas/CapabilityState'
+          description: Error tracking capability state
+        overall:
+          type: string
+          description: Overall readiness state
+        evidenceTaskCount:
+          type: integer
+          description: Count of replay-derived evidence tasks
+        windowDays:
+          type: integer
+          description: Lookback window in days
+        generatedAt:
+          type: string
+          description: ISO timestamp when the response was generated
+        cacheAgeSeconds:
+          type: integer
+          description: Age of cached response in seconds
+        scan:
+          allOf:
+          - $ref: '#/components/schemas/ScanEvidence'
+          description: Scan evidence details
+      required:
+      - cacheAgeSeconds
+      - classification
+      - coreSuggestions
+      - errorInsights
+      - evidenceTaskCount
+      - excluded
+      - generatedAt
+      - overall
+      - replayInsights
+      - repository
+      - windowDays
     TaskRunResumeRequestSchema:
       type: object
       properties:
@@ -1355,75 +1262,17 @@ components:
           type: string
           writeOnly: true
           description: Optional GitHub user token from PostHog Code for user-authored cloud pull requests. Prefer linking GitHub from Settings → Linked accounts so the server can manage tokens; this field remains supported for callers that still manage their own tokens.
-    ScanEvidence:
+    TaskStagedArtifactsPrepareUploadResponse:
       type: object
       properties:
-        filesScanned:
-          type: integer
-          description: Number of files scanned
-        detectedFilesCount:
-          type: integer
-          description: Total candidate files detected
-        eventNameCount:
-          type: integer
-          description: Number of distinct event names found
-        foundPosthogInit:
-          type: boolean
-          description: Whether posthog.init() was found in scanned files
-        foundPosthogCapture:
-          type: boolean
-          description: Whether posthog.capture() was found in scanned files
-        foundErrorSignal:
-          type: boolean
-          description: Whether error tracking signals were found in scanned files
-      required:
-      - detectedFilesCount
-      - eventNameCount
-      - filesScanned
-      - foundErrorSignal
-      - foundPosthogCapture
-      - foundPosthogInit
-    PaginatedTaskList:
-      type: object
-      required:
-      - count
-      - results
-      properties:
-        count:
-          type: integer
-          example: 123
-        next:
-          type:
-          - string
-          - 'null'
-          format: uri
-          example: http://api.example.org/accounts/?offset=400&limit=100
-        previous:
-          type:
-          - string
-          - 'null'
-          format: uri
-          example: http://api.example.org/accounts/?offset=200&limit=100
-        results:
+        artifacts:
           type: array
           items:
-            $ref: '#/components/schemas/Task'
-    S3PresignedPost:
-      type: object
-      properties:
-        url:
-          type: string
-          format: uri
-          description: Presigned S3 POST URL
-        fields:
-          type: object
-          additionalProperties:
-            type: string
-          description: Form fields that must be submitted verbatim with the file upload
+            $ref: '#/components/schemas/TaskStagedArtifactPrepareUploadResponse'
+          description: Prepared staged uploads for the requested artifacts
       required:
-      - fields
-      - url
-    Task:
+      - artifacts
+    PatchedTask:
       type: object
       properties:
         id:
@@ -1501,14 +1350,40 @@ components:
           - string
           - 'null'
           description: Custom prompt for CI fixes. If blank, a default prompt will be used.
+    CapabilityState:
+      type: object
+      properties:
+        state:
+          allOf:
+          - $ref: '#/components/schemas/CapabilityStateStateEnum'
+          description: 'Current state of the capability
+
+
+            * `needs_setup` - needs_setup
+
+            * `detected` - detected
+
+            * `waiting_for_data` - waiting_for_data
+
+            * `ready` - ready
+
+            * `not_applicable` - not_applicable
+
+            * `unknown` - unknown'
+        estimated:
+          type: boolean
+          description: Whether the state is estimated from static analysis
+        reason:
+          type: string
+          description: Human-readable explanation
+        evidence:
+          type: object
+          additionalProperties: true
+          description: Supporting evidence
       required:
-      - created_at
-      - created_by
-      - id
-      - latest_run
-      - slug
-      - task_number
-      - updated_at
+      - estimated
+      - reason
+      - state
     TaskStagedArtifactFinalizeUpload:
       type: object
       properties:
@@ -1556,6 +1431,131 @@ components:
       - name
       - storage_path
       - type
+    SignalReportTaskRelationshipEnum:
+      enum:
+      - implementation
+      type: string
+      description: '* `implementation` - Implementation'
+    ScanEvidence:
+      type: object
+      properties:
+        filesScanned:
+          type: integer
+          description: Number of files scanned
+        detectedFilesCount:
+          type: integer
+          description: Total candidate files detected
+        eventNameCount:
+          type: integer
+          description: Number of distinct event names found
+        foundPosthogInit:
+          type: boolean
+          description: Whether posthog.init() was found in scanned files
+        foundPosthogCapture:
+          type: boolean
+          description: Whether posthog.capture() was found in scanned files
+        foundErrorSignal:
+          type: boolean
+          description: Whether error tracking signals were found in scanned files
+      required:
+      - detectedFilesCount
+      - eventNameCount
+      - filesScanned
+      - foundErrorSignal
+      - foundPosthogCapture
+      - foundPosthogInit
+    UserBasic:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        uuid:
+          type: string
+          format: uuid
+          readOnly: true
+        distinct_id:
+          type:
+          - string
+          - 'null'
+          maxLength: 200
+        first_name:
+          type: string
+          maxLength: 150
+        last_name:
+          type: string
+          maxLength: 150
+        email:
+          type: string
+          format: email
+          title: Email address
+          maxLength: 254
+        is_email_verified:
+          type:
+          - boolean
+          - 'null'
+        hedgehog_config:
+          type:
+          - object
+          - 'null'
+          additionalProperties: true
+          readOnly: true
+        role_at_organization:
+          oneOf:
+          - $ref: '#/components/schemas/RoleAtOrganizationEnum'
+          - $ref: '#/components/schemas/BlankEnum'
+          - $ref: '#/components/schemas/NullEnum'
+      required:
+      - email
+      - hedgehog_config
+      - id
+      - uuid
+    CodexRuntimeAdapterEnum:
+      enum:
+      - codex
+      type: string
+      description: '* `codex` - codex'
+    RoleAtOrganizationEnum:
+      enum:
+      - engineering
+      - data
+      - product
+      - founder
+      - leadership
+      - marketing
+      - sales
+      - other
+      type: string
+      description: '* `engineering` - Engineering
+
+        * `data` - Data
+
+        * `product` - Product Management
+
+        * `founder` - Founder
+
+        * `leadership` - Leadership
+
+        * `marketing` - Marketing
+
+        * `sales` - Sales / Success
+
+        * `other` - Other'
+    S3PresignedPost:
+      type: object
+      properties:
+        url:
+          type: string
+          format: uri
+          description: Presigned S3 POST URL
+        fields:
+          type: object
+          additionalProperties:
+            type: string
+          description: Form fields that must be submitted verbatim with the file upload
+      required:
+      - fields
+      - url
   parameters:
     ProjectIdPath:
       in: path

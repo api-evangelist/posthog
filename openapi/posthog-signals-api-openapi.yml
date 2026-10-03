@@ -387,6 +387,65 @@ paths:
       x-summary-source: derived
 components:
   schemas:
+    PaginatedSignalReportList:
+      type: object
+      required:
+      - count
+      - results
+      properties:
+        count:
+          type: integer
+          example: 123
+        next:
+          type:
+          - string
+          - 'null'
+          format: uri
+          example: http://api.example.org/accounts/?offset=400&limit=100
+        previous:
+          type:
+          - string
+          - 'null'
+          format: uri
+          example: http://api.example.org/accounts/?offset=200&limit=100
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/SignalReport'
+    SignalSourceConfig:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+          readOnly: true
+        source_product:
+          $ref: '#/components/schemas/SourceProductEnum'
+        source_type:
+          $ref: '#/components/schemas/SignalSourceConfigSourceTypeEnum'
+        enabled:
+          type: boolean
+        config: {}
+        created_at:
+          type: string
+          format: date-time
+          readOnly: true
+        updated_at:
+          type: string
+          format: date-time
+          readOnly: true
+        status:
+          type:
+          - string
+          - 'null'
+          readOnly: true
+      required:
+      - created_at
+      - id
+      - source_product
+      - source_type
+      - status
+      - updated_at
     PatchedSignalSourceConfig:
       type: object
       properties:
@@ -439,32 +498,65 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/PauseStateResponse'
-    SignalReportStatusEnum:
+    SignalSourceConfigSourceTypeEnum:
       enum:
-      - potential
-      - candidate
-      - in_progress
-      - pending_input
-      - ready
-      - failed
-      - deleted
-      - suppressed
+      - session_analysis_cluster
+      - evaluation
+      - issue
+      - ticket
+      - issue_created
+      - issue_reopened
+      - issue_spiking
       type: string
-      description: '* `potential` - Potential
+      description: '* `session_analysis_cluster` - Session analysis cluster
 
-        * `candidate` - Candidate
+        * `evaluation` - Evaluation
 
-        * `in_progress` - In Progress
+        * `issue` - Issue
 
-        * `pending_input` - Pending Input
+        * `ticket` - Ticket
 
-        * `ready` - Ready
+        * `issue_created` - Issue created
 
-        * `failed` - Failed
+        * `issue_reopened` - Issue reopened
 
-        * `deleted` - Deleted
-
-        * `suppressed` - Suppressed'
+        * `issue_spiking` - Issue spiking'
+    PauseStateResponse:
+      type: object
+      properties:
+        paused_until:
+          type:
+          - string
+          - 'null'
+          format: date-time
+          description: The timestamp the pipeline is paused until, or null if not paused/not running.
+      required:
+      - paused_until
+    PaginatedSignalSourceConfigList:
+      type: object
+      required:
+      - count
+      - results
+      properties:
+        count:
+          type: integer
+          example: 123
+        next:
+          type:
+          - string
+          - 'null'
+          format: uri
+          example: http://api.example.org/accounts/?offset=400&limit=100
+        previous:
+          type:
+          - string
+          - 'null'
+          format: uri
+          example: http://api.example.org/accounts/?offset=200&limit=100
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/SignalSourceConfig'
     SignalReport:
       type: object
       properties:
@@ -558,6 +650,19 @@ components:
       - title
       - total_weight
       - updated_at
+    PauseResponse:
+      type: object
+      properties:
+        status:
+          type: string
+          description: Always 'paused'.
+        paused_until:
+          type: string
+          format: date-time
+          description: The timestamp the pipeline is paused until.
+      required:
+      - paused_until
+      - status
     SourceProductEnum:
       enum:
       - session_replay
@@ -581,6 +686,32 @@ components:
         * `conversations` - Conversations
 
         * `error_tracking` - Error tracking'
+    SignalReportStatusEnum:
+      enum:
+      - potential
+      - candidate
+      - in_progress
+      - pending_input
+      - ready
+      - failed
+      - deleted
+      - suppressed
+      type: string
+      description: '* `potential` - Potential
+
+        * `candidate` - Candidate
+
+        * `in_progress` - In Progress
+
+        * `pending_input` - Pending Input
+
+        * `ready` - Ready
+
+        * `failed` - Failed
+
+        * `deleted` - Deleted
+
+        * `suppressed` - Suppressed'
     PauseUntilRequest:
       type: object
       properties:
@@ -590,137 +721,6 @@ components:
           description: Pause the grouping pipeline until this timestamp (ISO 8601).
       required:
       - timestamp
-    PauseResponse:
-      type: object
-      properties:
-        status:
-          type: string
-          description: Always 'paused'.
-        paused_until:
-          type: string
-          format: date-time
-          description: The timestamp the pipeline is paused until.
-      required:
-      - paused_until
-      - status
-    SignalSourceConfigSourceTypeEnum:
-      enum:
-      - session_analysis_cluster
-      - evaluation
-      - issue
-      - ticket
-      - issue_created
-      - issue_reopened
-      - issue_spiking
-      type: string
-      description: '* `session_analysis_cluster` - Session analysis cluster
-
-        * `evaluation` - Evaluation
-
-        * `issue` - Issue
-
-        * `ticket` - Ticket
-
-        * `issue_created` - Issue created
-
-        * `issue_reopened` - Issue reopened
-
-        * `issue_spiking` - Issue spiking'
-    PauseStateResponse:
-      type: object
-      properties:
-        paused_until:
-          type:
-          - string
-          - 'null'
-          format: date-time
-          description: The timestamp the pipeline is paused until, or null if not paused/not running.
-      required:
-      - paused_until
-    SignalSourceConfig:
-      type: object
-      properties:
-        id:
-          type: string
-          format: uuid
-          readOnly: true
-        source_product:
-          $ref: '#/components/schemas/SourceProductEnum'
-        source_type:
-          $ref: '#/components/schemas/SignalSourceConfigSourceTypeEnum'
-        enabled:
-          type: boolean
-        config: {}
-        created_at:
-          type: string
-          format: date-time
-          readOnly: true
-        updated_at:
-          type: string
-          format: date-time
-          readOnly: true
-        status:
-          type:
-          - string
-          - 'null'
-          readOnly: true
-      required:
-      - created_at
-      - id
-      - source_product
-      - source_type
-      - status
-      - updated_at
-    PaginatedSignalReportList:
-      type: object
-      required:
-      - count
-      - results
-      properties:
-        count:
-          type: integer
-          example: 123
-        next:
-          type:
-          - string
-          - 'null'
-          format: uri
-          example: http://api.example.org/accounts/?offset=400&limit=100
-        previous:
-          type:
-          - string
-          - 'null'
-          format: uri
-          example: http://api.example.org/accounts/?offset=200&limit=100
-        results:
-          type: array
-          items:
-            $ref: '#/components/schemas/SignalReport'
-    PaginatedSignalSourceConfigList:
-      type: object
-      required:
-      - count
-      - results
-      properties:
-        count:
-          type: integer
-          example: 123
-        next:
-          type:
-          - string
-          - 'null'
-          format: uri
-          example: http://api.example.org/accounts/?offset=400&limit=100
-        previous:
-          type:
-          - string
-          - 'null'
-          format: uri
-          example: http://api.example.org/accounts/?offset=200&limit=100
-        results:
-          type: array
-          items:
-            $ref: '#/components/schemas/SignalSourceConfig'
   parameters:
     ProjectIdPath:
       in: path

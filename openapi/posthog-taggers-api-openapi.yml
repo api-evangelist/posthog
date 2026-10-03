@@ -278,32 +278,6 @@ paths:
       x-summary-source: derived
 components:
   schemas:
-    RoleAtOrganizationEnum:
-      enum:
-      - engineering
-      - data
-      - product
-      - founder
-      - leadership
-      - marketing
-      - sales
-      - other
-      type: string
-      description: '* `engineering` - Engineering
-
-        * `data` - Data
-
-        * `product` - Product Management
-
-        * `founder` - Founder
-
-        * `leadership` - Leadership
-
-        * `marketing` - Marketing
-
-        * `sales` - Sales / Success
-
-        * `other` - Other'
     LLMProviderEnum:
       enum:
       - openai
@@ -327,29 +301,6 @@ components:
         * `azure_openai` - Azure OpenAI
 
         * `together_ai` - Together AI'
-    TaggerModelConfiguration:
-      type: object
-      description: Nested serializer for model configuration.
-      properties:
-        provider:
-          $ref: '#/components/schemas/LLMProviderEnum'
-        model:
-          type: string
-          maxLength: 100
-        provider_key_id:
-          type:
-          - string
-          - 'null'
-          format: uuid
-        provider_key_name:
-          type:
-          - string
-          - 'null'
-          readOnly: true
-      required:
-      - model
-      - provider
-      - provider_key_name
     PaginatedTaggerList:
       type: object
       required:
@@ -375,6 +326,120 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/Tagger'
+    PatchedTagger:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+          readOnly: true
+        name:
+          type: string
+          maxLength: 400
+        description:
+          type: string
+        enabled:
+          type: boolean
+        tagger_type:
+          allOf:
+          - $ref: '#/components/schemas/TaggerTypeEnum'
+          default: llm
+        tagger_config:
+          description: Tagger configuration (varies by tagger_type)
+        conditions:
+          type: array
+          items:
+            $ref: '#/components/schemas/TaggerCondition'
+          description: Conditions that scope when the tagger runs
+        model_configuration:
+          allOf:
+          - $ref: '#/components/schemas/TaggerModelConfiguration'
+        created_at:
+          type: string
+          format: date-time
+          readOnly: true
+        updated_at:
+          type: string
+          format: date-time
+          readOnly: true
+        created_by:
+          allOf:
+          - $ref: '#/components/schemas/UserBasic'
+          readOnly: true
+        deleted:
+          type: boolean
+    TaggerModelConfiguration:
+      type: object
+      description: Nested serializer for model configuration.
+      properties:
+        provider:
+          $ref: '#/components/schemas/LLMProviderEnum'
+        model:
+          type: string
+          maxLength: 100
+        provider_key_id:
+          type:
+          - string
+          - 'null'
+          format: uuid
+        provider_key_name:
+          type:
+          - string
+          - 'null'
+          readOnly: true
+      required:
+      - model
+      - provider
+      - provider_key_name
+    BlankEnum:
+      enum:
+      - ''
+    UserBasic:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        uuid:
+          type: string
+          format: uuid
+          readOnly: true
+        distinct_id:
+          type:
+          - string
+          - 'null'
+          maxLength: 200
+        first_name:
+          type: string
+          maxLength: 150
+        last_name:
+          type: string
+          maxLength: 150
+        email:
+          type: string
+          format: email
+          title: Email address
+          maxLength: 254
+        is_email_verified:
+          type:
+          - boolean
+          - 'null'
+        hedgehog_config:
+          type:
+          - object
+          - 'null'
+          additionalProperties: true
+          readOnly: true
+        role_at_organization:
+          oneOf:
+          - $ref: '#/components/schemas/RoleAtOrganizationEnum'
+          - $ref: '#/components/schemas/BlankEnum'
+          - $ref: '#/components/schemas/NullEnum'
+      required:
+      - email
+      - hedgehog_config
+      - id
+      - uuid
     Tagger:
       type: object
       properties:
@@ -424,52 +489,35 @@ components:
       - name
       - tagger_config
       - updated_at
-    UserBasic:
-      type: object
-      properties:
-        id:
-          type: integer
-          readOnly: true
-        uuid:
-          type: string
-          format: uuid
-          readOnly: true
-        distinct_id:
-          type:
-          - string
-          - 'null'
-          maxLength: 200
-        first_name:
-          type: string
-          maxLength: 150
-        last_name:
-          type: string
-          maxLength: 150
-        email:
-          type: string
-          format: email
-          title: Email address
-          maxLength: 254
-        is_email_verified:
-          type:
-          - boolean
-          - 'null'
-        hedgehog_config:
-          type:
-          - object
-          - 'null'
-          additionalProperties: true
-          readOnly: true
-        role_at_organization:
-          oneOf:
-          - $ref: '#/components/schemas/RoleAtOrganizationEnum'
-          - $ref: '#/components/schemas/BlankEnum'
-          - $ref: '#/components/schemas/NullEnum'
-      required:
-      - email
-      - hedgehog_config
-      - id
-      - uuid
+    NullEnum:
+      enum:
+      - null
+    RoleAtOrganizationEnum:
+      enum:
+      - engineering
+      - data
+      - product
+      - founder
+      - leadership
+      - marketing
+      - sales
+      - other
+      type: string
+      description: '* `engineering` - Engineering
+
+        * `data` - Data
+
+        * `product` - Product Management
+
+        * `founder` - Founder
+
+        * `leadership` - Leadership
+
+        * `marketing` - Marketing
+
+        * `sales` - Sales / Success
+
+        * `other` - Other'
     TaggerCondition:
       type: object
       properties:
@@ -499,54 +547,6 @@ components:
       description: '* `llm` - LLM
 
         * `hog` - Hog'
-    PatchedTagger:
-      type: object
-      properties:
-        id:
-          type: string
-          format: uuid
-          readOnly: true
-        name:
-          type: string
-          maxLength: 400
-        description:
-          type: string
-        enabled:
-          type: boolean
-        tagger_type:
-          allOf:
-          - $ref: '#/components/schemas/TaggerTypeEnum'
-          default: llm
-        tagger_config:
-          description: Tagger configuration (varies by tagger_type)
-        conditions:
-          type: array
-          items:
-            $ref: '#/components/schemas/TaggerCondition'
-          description: Conditions that scope when the tagger runs
-        model_configuration:
-          allOf:
-          - $ref: '#/components/schemas/TaggerModelConfiguration'
-        created_at:
-          type: string
-          format: date-time
-          readOnly: true
-        updated_at:
-          type: string
-          format: date-time
-          readOnly: true
-        created_by:
-          allOf:
-          - $ref: '#/components/schemas/UserBasic'
-          readOnly: true
-        deleted:
-          type: boolean
-    NullEnum:
-      enum:
-      - null
-    BlankEnum:
-      enum:
-      - ''
   parameters:
     ProjectIdPath:
       in: path

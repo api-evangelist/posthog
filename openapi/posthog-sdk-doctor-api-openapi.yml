@@ -33,7 +33,34 @@ paths:
       x-explicit-tags:
       - sdk_doctor
 components:
+  parameters:
+    ProjectIdPath:
+      in: path
+      name: project_id
+      required: true
+      schema:
+        type: string
+      description: Project ID of the project you're trying to access. To find the ID of the project, make a call to /api/projects/.
   schemas:
+    SdkAssessmentSeverityEnum:
+      enum:
+      - none
+      - warning
+      - danger
+      type: string
+      description: '* `none` - none
+
+        * `warning` - warning
+
+        * `danger` - danger'
+    OverallHealthEnum:
+      enum:
+      - healthy
+      - needs_attention
+      type: string
+      description: '* `healthy` - healthy
+
+        * `needs_attention` - needs_attention'
     SdkReleaseAssessment:
       type: object
       properties:
@@ -96,14 +123,6 @@ components:
       - sql_query
       - status_reason
       - version
-    OverallHealthEnum:
-      enum:
-      - healthy
-      - needs_attention
-      type: string
-      description: '* `healthy` - healthy
-
-        * `needs_attention` - needs_attention'
     OutdatedTrafficAlert:
       type: object
       properties:
@@ -117,6 +136,46 @@ components:
       required:
       - threshold_percent
       - version
+    SdkHealthReport:
+      type: object
+      properties:
+        overall_health:
+          allOf:
+          - $ref: '#/components/schemas/OverallHealthEnum'
+          description: '''healthy'' when no SDKs need updating, ''needs_attention'' otherwise.
+
+
+            * `healthy` - healthy
+
+            * `needs_attention` - needs_attention'
+        health:
+          allOf:
+          - $ref: '#/components/schemas/HealthEnum'
+          description: 'UI-level status — ''success'' when healthy, ''warning'' when some SDKs are outdated, ''danger'' when the majority are outdated.
+
+
+            * `success` - success
+
+            * `warning` - warning
+
+            * `danger` - danger'
+        needs_updating_count:
+          type: integer
+          description: Number of SDKs that need updating.
+        team_sdk_count:
+          type: integer
+          description: Number of distinct PostHog SDKs the project is actively using.
+        sdks:
+          type: array
+          items:
+            $ref: '#/components/schemas/SdkAssessment'
+          description: Per-SDK health assessments.
+      required:
+      - health
+      - needs_updating_count
+      - overall_health
+      - sdks
+      - team_sdk_count
     SdkAssessment:
       type: object
       properties:
@@ -190,65 +249,6 @@ components:
         * `warning` - warning
 
         * `danger` - danger'
-    SdkHealthReport:
-      type: object
-      properties:
-        overall_health:
-          allOf:
-          - $ref: '#/components/schemas/OverallHealthEnum'
-          description: '''healthy'' when no SDKs need updating, ''needs_attention'' otherwise.
-
-
-            * `healthy` - healthy
-
-            * `needs_attention` - needs_attention'
-        health:
-          allOf:
-          - $ref: '#/components/schemas/HealthEnum'
-          description: 'UI-level status — ''success'' when healthy, ''warning'' when some SDKs are outdated, ''danger'' when the majority are outdated.
-
-
-            * `success` - success
-
-            * `warning` - warning
-
-            * `danger` - danger'
-        needs_updating_count:
-          type: integer
-          description: Number of SDKs that need updating.
-        team_sdk_count:
-          type: integer
-          description: Number of distinct PostHog SDKs the project is actively using.
-        sdks:
-          type: array
-          items:
-            $ref: '#/components/schemas/SdkAssessment'
-          description: Per-SDK health assessments.
-      required:
-      - health
-      - needs_updating_count
-      - overall_health
-      - sdks
-      - team_sdk_count
-    SdkAssessmentSeverityEnum:
-      enum:
-      - none
-      - warning
-      - danger
-      type: string
-      description: '* `none` - none
-
-        * `warning` - warning
-
-        * `danger` - danger'
-  parameters:
-    ProjectIdPath:
-      in: path
-      name: project_id
-      required: true
-      schema:
-        type: string
-      description: Project ID of the project you're trying to access. To find the ID of the project, make a call to /api/projects/.
   securitySchemes:
     PersonalAPIKeyAuth:
       type: http

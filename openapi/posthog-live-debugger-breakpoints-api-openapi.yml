@@ -295,17 +295,6 @@ paths:
       - live_debugger
 components:
   schemas:
-    ActiveBreakpointsResponse:
-      type: object
-      description: Response schema for active breakpoints endpoint
-      properties:
-        breakpoints:
-          type: array
-          items:
-            $ref: '#/components/schemas/ActiveBreakpoint'
-          description: List of active breakpoints
-      required:
-      - breakpoints
     BreakpointHit:
       type: object
       description: Schema for a single breakpoint hit event
@@ -348,25 +337,6 @@ components:
       - stackTrace
       - timestamp
       - variables
-    BreakpointHitsResponse:
-      type: object
-      description: Response schema for breakpoint hits endpoint
-      properties:
-        results:
-          type: array
-          items:
-            $ref: '#/components/schemas/BreakpointHit'
-          description: List of breakpoint hit events
-        count:
-          type: integer
-          description: Number of results returned
-        has_more:
-          type: boolean
-          description: Whether there are more results available
-      required:
-      - count
-      - has_more
-      - results
     LiveDebuggerBreakpoint:
       type: object
       properties:
@@ -404,6 +374,81 @@ components:
       - id
       - line_number
       - updated_at
+    BreakpointHitsResponse:
+      type: object
+      description: Response schema for breakpoint hits endpoint
+      properties:
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/BreakpointHit'
+          description: List of breakpoint hit events
+        count:
+          type: integer
+          description: Number of results returned
+        has_more:
+          type: boolean
+          description: Whether there are more results available
+      required:
+      - count
+      - has_more
+      - results
+    PaginatedLiveDebuggerBreakpointList:
+      type: object
+      required:
+      - count
+      - results
+      properties:
+        count:
+          type: integer
+          example: 123
+        next:
+          type:
+          - string
+          - 'null'
+          format: uri
+          example: http://api.example.org/accounts/?offset=400&limit=100
+        previous:
+          type:
+          - string
+          - 'null'
+          format: uri
+          example: http://api.example.org/accounts/?offset=200&limit=100
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/LiveDebuggerBreakpoint'
+    PatchedLiveDebuggerBreakpoint:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+          readOnly: true
+        repository:
+          type:
+          - string
+          - 'null'
+        filename:
+          type: string
+        line_number:
+          type: integer
+          maximum: 2147483647
+          minimum: 0
+        enabled:
+          type: boolean
+        condition:
+          type:
+          - string
+          - 'null'
+        created_at:
+          type: string
+          format: date-time
+          readOnly: true
+        updated_at:
+          type: string
+          format: date-time
+          readOnly: true
     ActiveBreakpoint:
       type: object
       description: Schema for a single active breakpoint
@@ -436,62 +481,17 @@ components:
       - filename
       - id
       - line_number
-    PatchedLiveDebuggerBreakpoint:
+    ActiveBreakpointsResponse:
       type: object
+      description: Response schema for active breakpoints endpoint
       properties:
-        id:
-          type: string
-          format: uuid
-          readOnly: true
-        repository:
-          type:
-          - string
-          - 'null'
-        filename:
-          type: string
-        line_number:
-          type: integer
-          maximum: 2147483647
-          minimum: 0
-        enabled:
-          type: boolean
-        condition:
-          type:
-          - string
-          - 'null'
-        created_at:
-          type: string
-          format: date-time
-          readOnly: true
-        updated_at:
-          type: string
-          format: date-time
-          readOnly: true
-    PaginatedLiveDebuggerBreakpointList:
-      type: object
-      required:
-      - count
-      - results
-      properties:
-        count:
-          type: integer
-          example: 123
-        next:
-          type:
-          - string
-          - 'null'
-          format: uri
-          example: http://api.example.org/accounts/?offset=400&limit=100
-        previous:
-          type:
-          - string
-          - 'null'
-          format: uri
-          example: http://api.example.org/accounts/?offset=200&limit=100
-        results:
+        breakpoints:
           type: array
           items:
-            $ref: '#/components/schemas/LiveDebuggerBreakpoint'
+            $ref: '#/components/schemas/ActiveBreakpoint'
+          description: List of active breakpoints
+      required:
+      - breakpoints
   parameters:
     ProjectIdPath:
       in: path

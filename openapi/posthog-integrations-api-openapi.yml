@@ -1485,6 +1485,28 @@ paths:
       summary: Integrations github oauth authorize create
       x-summary-source: derived
 components:
+  parameters:
+    EnvironmentIdPath:
+      in: path
+      name: environment_id
+      required: true
+      schema:
+        type: string
+      description: Deprecated. Use /api/projects/{project_id}/ instead.
+    ProjectIdPath:
+      in: path
+      name: project_id
+      required: true
+      schema:
+        type: string
+      description: Project ID of the project you're trying to access. To find the ID of the project, make a call to /api/projects/.
+    OrganizationIdPath:
+      in: path
+      name: organization_id
+      required: true
+      schema:
+        type: string
+      description: ID of the organization you're trying to access. To find the ID of the organization, make a call to /api/organizations/.
   schemas:
     GitHubBranchesResponse:
       type: object
@@ -1505,74 +1527,16 @@ components:
       required:
       - branches
       - has_more
-    RoleLookupResponse:
+    PatchedIntegrationConfig:
       type: object
-      properties:
-        reference:
-          allOf:
-          - $ref: '#/components/schemas/RoleExternalReference'
-          description: Matching reference, or null if none exists.
-      required:
-      - reference
-    RoleAtOrganizationEnum:
-      enum:
-      - engineering
-      - data
-      - product
-      - founder
-      - leadership
-      - marketing
-      - sales
-      - other
-      type: string
-      description: '* `engineering` - Engineering
-
-        * `data` - Data
-
-        * `product` - Product Management
-
-        * `founder` - Founder
-
-        * `leadership` - Leadership
-
-        * `marketing` - Marketing
-
-        * `sales` - Sales / Success
-
-        * `other` - Other'
-    RoleExternalReference:
-      type: object
+      description: Standard Integration serializer.
       properties:
         id:
-          type: string
-          format: uuid
+          type: integer
           readOnly: true
-        provider:
-          type: string
-          description: Integration kind (e.g., github, linear, jira, slack).
-          maxLength: 32
-        provider_organization_id:
-          type: string
-          description: Provider organization/workspace/site identifier.
-          maxLength: 255
-        provider_role_id:
-          type: string
-          description: Stable provider role identifier.
-          maxLength: 255
-        provider_role_slug:
-          type:
-          - string
-          - 'null'
-          description: Human-friendly provider role identifier.
-          maxLength: 255
-        provider_role_name:
-          type: string
-          description: Display name of the provider role.
-          maxLength: 255
-        role:
-          type: string
-          format: uuid
-          description: PostHog role UUID this external role maps to.
+        kind:
+          $ref: '#/components/schemas/IntegrationKindEnum'
+        config: {}
         created_at:
           type: string
           format: date-time
@@ -1581,15 +1545,15 @@ components:
           allOf:
           - $ref: '#/components/schemas/UserBasic'
           readOnly: true
-      required:
-      - created_at
-      - created_by
-      - id
-      - provider
-      - provider_organization_id
-      - provider_role_id
-      - provider_role_name
-      - role
+        errors:
+          type: string
+          readOnly: true
+        display_name:
+          type: string
+          readOnly: true
+    NullEnum:
+      enum:
+      - null
     IntegrationKindEnum:
       enum:
       - apns
@@ -1694,7 +1658,7 @@ components:
         * `twilio` - Twilio
 
         * `vercel` - Vercel'
-    PaginatedRoleExternalReferenceList:
+    PaginatedIntegrationConfigList:
       type: object
       required:
       - count
@@ -1718,17 +1682,7 @@ components:
         results:
           type: array
           items:
-            $ref: '#/components/schemas/RoleExternalReference'
-    GitHubReposRefreshResponse:
-      type: object
-      properties:
-        repositories:
-          type: array
-          items:
-            $ref: '#/components/schemas/GitHubRepo'
-          description: The refreshed repository cache.
-      required:
-      - repositories
+            $ref: '#/components/schemas/IntegrationConfig'
     SlackChannel:
       type: object
       properties:
@@ -1757,28 +1711,120 @@ components:
       - is_private
       - is_private_without_access
       - name
-    NullEnum:
-      enum:
-      - null
+    GitHubReposResponse:
+      type: object
+      properties:
+        repositories:
+          type: array
+          items:
+            $ref: '#/components/schemas/GitHubRepo'
+        has_more:
+          type: boolean
+          description: Whether more repositories are available beyond this page.
+      required:
+      - has_more
+      - repositories
+    GitHubRepo:
+      type: object
+      properties:
+        id:
+          type: integer
+        name:
+          type: string
+        full_name:
+          type: string
+      required:
+      - full_name
+      - id
+      - name
+    RoleLookupResponse:
+      type: object
+      properties:
+        reference:
+          allOf:
+          - $ref: '#/components/schemas/RoleExternalReference'
+          description: Matching reference, or null if none exists.
+      required:
+      - reference
     BlankEnum:
       enum:
       - ''
-    SlackChannelsResponse:
+    RoleExternalReference:
       type: object
       properties:
-        channels:
-          type: array
-          items:
-            $ref: '#/components/schemas/SlackChannel'
-          description: Slack channels visible to the PostHog Slack app.
-        lastRefreshedAt:
+        id:
+          type: string
+          format: uuid
+          readOnly: true
+        provider:
+          type: string
+          description: Integration kind (e.g., github, linear, jira, slack).
+          maxLength: 32
+        provider_organization_id:
+          type: string
+          description: Provider organization/workspace/site identifier.
+          maxLength: 255
+        provider_role_id:
+          type: string
+          description: Stable provider role identifier.
+          maxLength: 255
+        provider_role_slug:
           type:
           - string
           - 'null'
-          description: ISO 8601 timestamp of the last full Slack API refresh (only set on full lists, not single-channel lookups).
+          description: Human-friendly provider role identifier.
+          maxLength: 255
+        provider_role_name:
+          type: string
+          description: Display name of the provider role.
+          maxLength: 255
+        role:
+          type: string
+          format: uuid
+          description: PostHog role UUID this external role maps to.
+        created_at:
+          type: string
+          format: date-time
+          readOnly: true
+        created_by:
+          allOf:
+          - $ref: '#/components/schemas/UserBasic'
+          readOnly: true
       required:
-      - channels
-    PatchedIntegrationConfig:
+      - created_at
+      - created_by
+      - id
+      - provider
+      - provider_organization_id
+      - provider_role_id
+      - provider_role_name
+      - role
+    PaginatedRoleExternalReferenceList:
+      type: object
+      required:
+      - count
+      - results
+      properties:
+        count:
+          type: integer
+          example: 123
+        next:
+          type:
+          - string
+          - 'null'
+          format: uri
+          example: http://api.example.org/accounts/?offset=400&limit=100
+        previous:
+          type:
+          - string
+          - 'null'
+          format: uri
+          example: http://api.example.org/accounts/?offset=200&limit=100
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/RoleExternalReference'
+    IntegrationConfig:
       type: object
       description: Standard Integration serializer.
       properties:
@@ -1802,6 +1848,38 @@ components:
         display_name:
           type: string
           readOnly: true
+      required:
+      - created_at
+      - created_by
+      - display_name
+      - errors
+      - id
+      - kind
+    SlackChannelsResponse:
+      type: object
+      properties:
+        channels:
+          type: array
+          items:
+            $ref: '#/components/schemas/SlackChannel'
+          description: Slack channels visible to the PostHog Slack app.
+        lastRefreshedAt:
+          type:
+          - string
+          - 'null'
+          description: ISO 8601 timestamp of the last full Slack API refresh (only set on full lists, not single-channel lookups).
+      required:
+      - channels
+    GitHubReposRefreshResponse:
+      type: object
+      properties:
+        repositories:
+          type: array
+          items:
+            $ref: '#/components/schemas/GitHubRepo'
+          description: The refreshed repository cache.
+      required:
+      - repositories
     UserBasic:
       type: object
       properties:
@@ -1848,110 +1926,32 @@ components:
       - hedgehog_config
       - id
       - uuid
-    GitHubRepo:
-      type: object
-      properties:
-        id:
-          type: integer
-        name:
-          type: string
-        full_name:
-          type: string
-      required:
-      - full_name
-      - id
-      - name
-    GitHubReposResponse:
-      type: object
-      properties:
-        repositories:
-          type: array
-          items:
-            $ref: '#/components/schemas/GitHubRepo'
-        has_more:
-          type: boolean
-          description: Whether more repositories are available beyond this page.
-      required:
-      - has_more
-      - repositories
-    IntegrationConfig:
-      type: object
-      description: Standard Integration serializer.
-      properties:
-        id:
-          type: integer
-          readOnly: true
-        kind:
-          $ref: '#/components/schemas/IntegrationKindEnum'
-        config: {}
-        created_at:
-          type: string
-          format: date-time
-          readOnly: true
-        created_by:
-          allOf:
-          - $ref: '#/components/schemas/UserBasic'
-          readOnly: true
-        errors:
-          type: string
-          readOnly: true
-        display_name:
-          type: string
-          readOnly: true
-      required:
-      - created_at
-      - created_by
-      - display_name
-      - errors
-      - id
-      - kind
-    PaginatedIntegrationConfigList:
-      type: object
-      required:
-      - count
-      - results
-      properties:
-        count:
-          type: integer
-          example: 123
-        next:
-          type:
-          - string
-          - 'null'
-          format: uri
-          example: http://api.example.org/accounts/?offset=400&limit=100
-        previous:
-          type:
-          - string
-          - 'null'
-          format: uri
-          example: http://api.example.org/accounts/?offset=200&limit=100
-        results:
-          type: array
-          items:
-            $ref: '#/components/schemas/IntegrationConfig'
-  parameters:
-    ProjectIdPath:
-      in: path
-      name: project_id
-      required: true
-      schema:
-        type: string
-      description: Project ID of the project you're trying to access. To find the ID of the project, make a call to /api/projects/.
-    OrganizationIdPath:
-      in: path
-      name: organization_id
-      required: true
-      schema:
-        type: string
-      description: ID of the organization you're trying to access. To find the ID of the organization, make a call to /api/organizations/.
-    EnvironmentIdPath:
-      in: path
-      name: environment_id
-      required: true
-      schema:
-        type: string
-      description: Deprecated. Use /api/projects/{project_id}/ instead.
+    RoleAtOrganizationEnum:
+      enum:
+      - engineering
+      - data
+      - product
+      - founder
+      - leadership
+      - marketing
+      - sales
+      - other
+      type: string
+      description: '* `engineering` - Engineering
+
+        * `data` - Data
+
+        * `product` - Product Management
+
+        * `founder` - Founder
+
+        * `leadership` - Leadership
+
+        * `marketing` - Marketing
+
+        * `sales` - Sales / Success
+
+        * `other` - Other'
   securitySchemes:
     PersonalAPIKeyAuth:
       type: http

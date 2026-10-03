@@ -152,6 +152,42 @@ components:
         type: string
       description: ID of the organization you're trying to access. To find the ID of the organization, make a call to /api/organizations/.
   schemas:
+    ProxyRecordStatusEnum:
+      enum:
+      - waiting
+      - issuing
+      - valid
+      - warning
+      - erroring
+      - deleting
+      - timed_out
+      type: string
+      description: '* `waiting` - Waiting
+
+        * `issuing` - Issuing
+
+        * `valid` - Valid
+
+        * `warning` - Warning
+
+        * `erroring` - Erroring
+
+        * `deleting` - Deleting
+
+        * `timed_out` - Timed Out'
+    ProxyRecordListResponse:
+      type: object
+      properties:
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/ProxyRecord'
+        max_proxy_records:
+          type: integer
+          description: Maximum number of proxy records allowed for this organization's current plan.
+      required:
+      - max_proxy_records
+      - results
     ProxyRecord:
       type: object
       properties:
@@ -216,42 +252,6 @@ components:
       - status
       - target_cname
       - updated_at
-    ProxyRecordStatusEnum:
-      enum:
-      - waiting
-      - issuing
-      - valid
-      - warning
-      - erroring
-      - deleting
-      - timed_out
-      type: string
-      description: '* `waiting` - Waiting
-
-        * `issuing` - Issuing
-
-        * `valid` - Valid
-
-        * `warning` - Warning
-
-        * `erroring` - Erroring
-
-        * `deleting` - Deleting
-
-        * `timed_out` - Timed Out'
-    ProxyRecordListResponse:
-      type: object
-      properties:
-        results:
-          type: array
-          items:
-            $ref: '#/components/schemas/ProxyRecord'
-        max_proxy_records:
-          type: integer
-          description: Maximum number of proxy records allowed for this organization's current plan.
-      required:
-      - max_proxy_records
-      - results
   securitySchemes:
     PersonalAPIKeyAuth:
       type: http

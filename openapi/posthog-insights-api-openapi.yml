@@ -148,6 +148,303 @@ paths:
       x-summary-source: derived
 components:
   schemas:
+    InvestigationInconclusiveActionEnum:
+      enum:
+      - notify
+      - suppress
+      type: string
+      description: '* `notify` - Notify
+
+        * `suppress` - Suppress'
+    PreprocessingConfig:
+      additionalProperties: false
+      properties:
+        diffs_n:
+          default: null
+          description: 'Order of differencing. 0 = raw values, 1 = first-order diffs (default: 0)'
+          title: Diffs N
+          type:
+          - integer
+          - 'null'
+        lags_n:
+          default: null
+          description: 'Number of lag features. 0 = none, >0 = include n lagged values (default: 0)'
+          title: Lags N
+          type:
+          - integer
+          - 'null'
+        smooth_n:
+          default: null
+          description: 'Moving average window size. 0 = no smoothing, >1 = smooth over n points (default: 0)'
+          title: Smooth N
+          type:
+          - integer
+          - 'null'
+      title: PreprocessingConfig
+      type: object
+    LOFDetectorConfig:
+      additionalProperties: false
+      properties:
+        n_neighbors:
+          default: null
+          description: 'Number of neighbors for LOF (default: 20)'
+          title: N Neighbors
+          type:
+          - integer
+          - 'null'
+        preprocessing:
+          default: null
+          description: Preprocessing transforms applied before detection
+          allOf:
+          - $ref: '#/components/schemas/PreprocessingConfig'
+        threshold:
+          default: null
+          description: 'Anomaly probability threshold (default: 0.9)'
+          title: Threshold
+          type:
+          - number
+          - 'null'
+        type:
+          default: lof
+          title: Type
+          type: string
+          enum:
+          - lof
+        window:
+          default: null
+          description: 'Rolling window size — how many historical data points to train on (default: based on calculation interval)'
+          title: Window
+          type:
+          - integer
+          - 'null'
+      title: LOFDetectorConfig
+      type: object
+    COPODDetectorConfig:
+      additionalProperties: false
+      properties:
+        preprocessing:
+          default: null
+          description: Preprocessing transforms applied before detection
+          allOf:
+          - $ref: '#/components/schemas/PreprocessingConfig'
+        threshold:
+          default: null
+          description: 'Anomaly probability threshold (default: 0.9)'
+          title: Threshold
+          type:
+          - number
+          - 'null'
+        type:
+          default: copod
+          title: Type
+          type: string
+          enum:
+          - copod
+        window:
+          default: null
+          description: 'Rolling window size — how many historical data points to train on (default: based on calculation interval)'
+          title: Window
+          type:
+          - integer
+          - 'null'
+      title: COPODDetectorConfig
+      type: object
+    IQRDetectorConfig:
+      additionalProperties: false
+      properties:
+        multiplier:
+          default: null
+          description: 'IQR multiplier for fence calculation (default: 1.5, use 3.0 for far outliers)'
+          title: Multiplier
+          type:
+          - number
+          - 'null'
+        preprocessing:
+          default: null
+          description: Preprocessing transforms applied before detection
+          allOf:
+          - $ref: '#/components/schemas/PreprocessingConfig'
+        type:
+          default: iqr
+          title: Type
+          type: string
+          enum:
+          - iqr
+        window:
+          default: null
+          description: 'Rolling window size for calculating quartiles (default: 30)'
+          title: Window
+          type:
+          - integer
+          - 'null'
+      title: IQRDetectorConfig
+      type: object
+    PaginatedThresholdWithAlertList:
+      type: object
+      required:
+      - count
+      - results
+      properties:
+        count:
+          type: integer
+          example: 123
+        next:
+          type:
+          - string
+          - 'null'
+          format: uri
+          example: http://api.example.org/accounts/?offset=400&limit=100
+        previous:
+          type:
+          - string
+          - 'null'
+          format: uri
+          example: http://api.example.org/accounts/?offset=200&limit=100
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/ThresholdWithAlert'
+    AlertCondition:
+      additionalProperties: false
+      properties:
+        type:
+          $ref: '#/components/schemas/AlertConditionType'
+      required:
+      - type
+      title: AlertCondition
+      type: object
+    OCSVMDetectorConfig:
+      additionalProperties: false
+      properties:
+        kernel:
+          default: null
+          description: 'SVM kernel type (default: "rbf")'
+          title: Kernel
+          type:
+          - string
+          - 'null'
+        nu:
+          default: null
+          description: 'Upper bound on training errors fraction (default: 0.1)'
+          title: Nu
+          type:
+          - number
+          - 'null'
+        preprocessing:
+          default: null
+          description: Preprocessing transforms applied before detection
+          allOf:
+          - $ref: '#/components/schemas/PreprocessingConfig'
+        threshold:
+          default: null
+          description: 'Anomaly probability threshold (default: 0.9)'
+          title: Threshold
+          type:
+          - number
+          - 'null'
+        type:
+          default: ocsvm
+          title: Type
+          type: string
+          enum:
+          - ocsvm
+        window:
+          default: null
+          description: 'Rolling window size — how many historical data points to train on (default: based on calculation interval)'
+          title: Window
+          type:
+          - integer
+          - 'null'
+      title: OCSVMDetectorConfig
+      type: object
+    NullEnum:
+      enum:
+      - null
+    InsightsThresholdBounds:
+      additionalProperties: false
+      properties:
+        lower:
+          default: null
+          description: Alert fires when the value drops below this number.
+          title: Lower
+          type:
+          - number
+          - 'null'
+        upper:
+          default: null
+          description: Alert fires when the value exceeds this number.
+          title: Upper
+          type:
+          - number
+          - 'null'
+      title: InsightsThresholdBounds
+      type: object
+    KNNDetectorConfig:
+      additionalProperties: false
+      properties:
+        method:
+          default: null
+          description: 'Distance method: ''largest'', ''mean'', ''median'' (default: ''largest'')'
+          allOf:
+          - $ref: '#/components/schemas/Method'
+        n_neighbors:
+          default: null
+          description: 'Number of neighbors to consider (default: 5)'
+          title: N Neighbors
+          type:
+          - integer
+          - 'null'
+        preprocessing:
+          default: null
+          description: Preprocessing transforms applied before detection
+          allOf:
+          - $ref: '#/components/schemas/PreprocessingConfig'
+        threshold:
+          default: null
+          description: 'Anomaly probability threshold (default: 0.9)'
+          title: Threshold
+          type:
+          - number
+          - 'null'
+        type:
+          default: knn
+          title: Type
+          type: string
+          enum:
+          - knn
+        window:
+          default: null
+          description: 'Rolling window size — how many historical data points to train on (default: based on calculation interval)'
+          title: Window
+          type:
+          - integer
+          - 'null'
+      title: KNNDetectorConfig
+      type: object
+    TrendsAlertConfig:
+      additionalProperties: false
+      properties:
+        check_ongoing_interval:
+          default: null
+          description: When true, evaluate the current (still incomplete) time interval in addition to completed ones.
+          title: Check Ongoing Interval
+          type:
+          - boolean
+          - 'null'
+        series_index:
+          description: Zero-based index of the series in the insight's query to monitor.
+          title: Series Index
+          type: integer
+        type:
+          default: TrendsAlertConfig
+          title: Type
+          type: string
+          enum:
+          - TrendsAlertConfig
+      required:
+      - series_index
+      title: TrendsAlertConfig
+      type: object
     ThresholdWithAlert:
       type: object
       properties:
@@ -176,33 +473,7 @@ components:
       - configuration
       - created_at
       - id
-    PreprocessingConfig:
-      additionalProperties: false
-      properties:
-        diffs_n:
-          default: null
-          description: 'Order of differencing. 0 = raw values, 1 = first-order diffs (default: 0)'
-          title: Diffs N
-          type:
-          - integer
-          - 'null'
-        lags_n:
-          default: null
-          description: 'Number of lag features. 0 = none, >0 = include n lagged values (default: 0)'
-          title: Lags N
-          type:
-          - integer
-          - 'null'
-        smooth_n:
-          default: null
-          description: 'Moving average window size. 0 = no smoothing, >1 = smooth over n points (default: 0)'
-          title: Smooth N
-          type:
-          - integer
-          - 'null'
-      title: PreprocessingConfig
-      type: object
-    PCADetectorConfig:
+    MADDetectorConfig:
       additionalProperties: false
       properties:
         preprocessing:
@@ -212,76 +483,229 @@ components:
           - $ref: '#/components/schemas/PreprocessingConfig'
         threshold:
           default: null
-          description: 'Anomaly probability threshold (default: 0.9)'
+          description: 'Anomaly probability threshold [0-1]. Points above this probability are flagged (default: 0.9)'
           title: Threshold
           type:
           - number
           - 'null'
         type:
-          default: pca
+          default: mad
           title: Type
           type: string
           enum:
-          - pca
+          - mad
         window:
           default: null
-          description: 'Rolling window size — how many historical data points to train on (default: based on calculation interval)'
+          description: 'Rolling window size for calculating median/MAD (default: 30)'
           title: Window
           type:
           - integer
           - 'null'
-      title: PCADetectorConfig
+      title: MADDetectorConfig
       type: object
-    HBOSDetectorConfig:
-      additionalProperties: false
+    EnsembleOperator:
+      enum:
+      - and
+      - or
+      title: EnsembleOperator
+      type: string
+    DetectorConfig:
+      anyOf:
+      - $ref: '#/components/schemas/EnsembleDetectorConfig'
+      - $ref: '#/components/schemas/ZScoreDetectorConfig'
+      - $ref: '#/components/schemas/MADDetectorConfig'
+      - $ref: '#/components/schemas/IQRDetectorConfig'
+      - $ref: '#/components/schemas/ThresholdDetectorConfig'
+      - $ref: '#/components/schemas/ECODDetectorConfig'
+      - $ref: '#/components/schemas/COPODDetectorConfig'
+      - $ref: '#/components/schemas/IsolationForestDetectorConfig'
+      - $ref: '#/components/schemas/KNNDetectorConfig'
+      - $ref: '#/components/schemas/HBOSDetectorConfig'
+      - $ref: '#/components/schemas/LOFDetectorConfig'
+      - $ref: '#/components/schemas/OCSVMDetectorConfig'
+      - $ref: '#/components/schemas/PCADetectorConfig'
+      description: Detector configuration types
+      title: DetectorConfig
+    Threshold:
+      type: object
       properties:
-        n_bins:
-          default: null
-          description: 'Number of histogram bins (default: 10)'
-          title: N Bins
-          type:
-          - integer
-          - 'null'
-        preprocessing:
-          default: null
-          description: Preprocessing transforms applied before detection
+        id:
+          type: string
+          format: uuid
+          readOnly: true
+        created_at:
+          type: string
+          format: date-time
+          readOnly: true
+        name:
+          type: string
+          description: Optional name for the threshold.
+        configuration:
           allOf:
-          - $ref: '#/components/schemas/PreprocessingConfig'
-        threshold:
-          default: null
-          description: 'Anomaly probability threshold (default: 0.9)'
-          title: Threshold
-          type:
-          - number
-          - 'null'
-        type:
-          default: hbos
-          title: Type
-          type: string
-          enum:
-          - hbos
-        window:
-          default: null
-          description: 'Rolling window size — how many historical data points to train on (default: based on calculation interval)'
-          title: Window
-          type:
-          - integer
-          - 'null'
-      title: HBOSDetectorConfig
-      type: object
-    AlertScheduleRestriction:
-      additionalProperties: false
-      properties:
-        blocked_windows:
-          description: Blocked local time windows when the alert must not run. Overlapping or identical windows are merged when saved. At most five windows before normalization; empty array clears quiet hours.
-          items:
-            $ref: '#/components/schemas/AlertScheduleRestrictionWindow'
-          title: Blocked Windows
-          type: array
+          - $ref: '#/components/schemas/InsightThreshold'
+          description: Threshold bounds and type. Includes bounds (lower/upper floats) and type (absolute or percentage).
       required:
-      - blocked_windows
-      title: AlertScheduleRestriction
+      - configuration
+      - created_at
+      - id
+    IsolationForestDetectorConfig:
+      additionalProperties: false
+      properties:
+        n_estimators:
+          default: null
+          description: 'Number of trees in the forest (default: 100)'
+          title: N Estimators
+          type:
+          - integer
+          - 'null'
+        preprocessing:
+          default: null
+          description: Preprocessing transforms applied before detection
+          allOf:
+          - $ref: '#/components/schemas/PreprocessingConfig'
+        threshold:
+          default: null
+          description: 'Anomaly probability threshold (default: 0.9)'
+          title: Threshold
+          type:
+          - number
+          - 'null'
+        type:
+          default: isolation_forest
+          title: Type
+          type: string
+          enum:
+          - isolation_forest
+        window:
+          default: null
+          description: 'Rolling window size — how many historical data points to train on (default: based on calculation interval)'
+          title: Window
+          type:
+          - integer
+          - 'null'
+      title: IsolationForestDetectorConfig
       type: object
+    ThresholdDetectorConfig:
+      additionalProperties: false
+      properties:
+        lower_bound:
+          default: null
+          description: Lower bound - values below this are anomalies
+          title: Lower Bound
+          type:
+          - number
+          - 'null'
+        preprocessing:
+          default: null
+          description: Preprocessing transforms applied before detection
+          allOf:
+          - $ref: '#/components/schemas/PreprocessingConfig'
+        type:
+          default: threshold
+          title: Type
+          type: string
+          enum:
+          - threshold
+        upper_bound:
+          default: null
+          description: Upper bound - values above this are anomalies
+          title: Upper Bound
+          type:
+          - number
+          - 'null'
+      title: ThresholdDetectorConfig
+      type: object
+    Method:
+      enum:
+      - largest
+      - mean
+      - median
+      title: Method
+      type: string
+    ZScoreDetectorConfig:
+      additionalProperties: false
+      properties:
+        preprocessing:
+          default: null
+          description: Preprocessing transforms applied before detection
+          allOf:
+          - $ref: '#/components/schemas/PreprocessingConfig'
+        threshold:
+          default: null
+          description: 'Anomaly probability threshold [0-1]. Points above this probability are flagged (default: 0.9)'
+          title: Threshold
+          type:
+          - number
+          - 'null'
+        type:
+          default: zscore
+          title: Type
+          type: string
+          enum:
+          - zscore
+        window:
+          default: null
+          description: 'Rolling window size for calculating mean/std (default: 30)'
+          title: Window
+          type:
+          - integer
+          - 'null'
+      title: ZScoreDetectorConfig
+      type: object
+    EnsembleDetectorConfig:
+      additionalProperties: false
+      properties:
+        detectors:
+          description: Sub-detector configurations (minimum 2)
+          items:
+            anyOf:
+            - $ref: '#/components/schemas/ZScoreDetectorConfig'
+            - $ref: '#/components/schemas/MADDetectorConfig'
+            - $ref: '#/components/schemas/IQRDetectorConfig'
+            - $ref: '#/components/schemas/ThresholdDetectorConfig'
+            - $ref: '#/components/schemas/ECODDetectorConfig'
+            - $ref: '#/components/schemas/COPODDetectorConfig'
+            - $ref: '#/components/schemas/IsolationForestDetectorConfig'
+            - $ref: '#/components/schemas/KNNDetectorConfig'
+            - $ref: '#/components/schemas/HBOSDetectorConfig'
+            - $ref: '#/components/schemas/LOFDetectorConfig'
+            - $ref: '#/components/schemas/OCSVMDetectorConfig'
+            - $ref: '#/components/schemas/PCADetectorConfig'
+          title: Detectors
+          type: array
+        operator:
+          description: How to combine sub-detector results
+          allOf:
+          - $ref: '#/components/schemas/EnsembleOperator'
+        type:
+          default: ensemble
+          title: Type
+          type: string
+          enum:
+          - ensemble
+      required:
+      - detectors
+      - operator
+      title: EnsembleDetectorConfig
+      type: object
+    InsightThreshold:
+      additionalProperties: false
+      properties:
+        bounds:
+          default: null
+          allOf:
+          - $ref: '#/components/schemas/InsightsThresholdBounds'
+        type:
+          description: Whether bounds are compared as absolute values or as percentage change from the previous interval.
+          allOf:
+          - $ref: '#/components/schemas/InsightThresholdType'
+      required:
+      - type
+      title: InsightThreshold
+      type: object
+    BlankEnum:
+      enum:
+      - ''
     AlertCheck:
       type: object
       properties:
@@ -366,117 +790,6 @@ components:
       - triggered_dates
       - triggered_metadata
       - triggered_points
-    COPODDetectorConfig:
-      additionalProperties: false
-      properties:
-        preprocessing:
-          default: null
-          description: Preprocessing transforms applied before detection
-          allOf:
-          - $ref: '#/components/schemas/PreprocessingConfig'
-        threshold:
-          default: null
-          description: 'Anomaly probability threshold (default: 0.9)'
-          title: Threshold
-          type:
-          - number
-          - 'null'
-        type:
-          default: copod
-          title: Type
-          type: string
-          enum:
-          - copod
-        window:
-          default: null
-          description: 'Rolling window size — how many historical data points to train on (default: based on calculation interval)'
-          title: Window
-          type:
-          - integer
-          - 'null'
-      title: COPODDetectorConfig
-      type: object
-    EnsembleOperator:
-      enum:
-      - and
-      - or
-      title: EnsembleOperator
-      type: string
-    InsightsThresholdBounds:
-      additionalProperties: false
-      properties:
-        lower:
-          default: null
-          description: Alert fires when the value drops below this number.
-          title: Lower
-          type:
-          - number
-          - 'null'
-        upper:
-          default: null
-          description: Alert fires when the value exceeds this number.
-          title: Upper
-          type:
-          - number
-          - 'null'
-      title: InsightsThresholdBounds
-      type: object
-    RoleAtOrganizationEnum:
-      enum:
-      - engineering
-      - data
-      - product
-      - founder
-      - leadership
-      - marketing
-      - sales
-      - other
-      type: string
-      description: '* `engineering` - Engineering
-
-        * `data` - Data
-
-        * `product` - Product Management
-
-        * `founder` - Founder
-
-        * `leadership` - Leadership
-
-        * `marketing` - Marketing
-
-        * `sales` - Sales / Success
-
-        * `other` - Other'
-    ThresholdDetectorConfig:
-      additionalProperties: false
-      properties:
-        lower_bound:
-          default: null
-          description: Lower bound - values below this are anomalies
-          title: Lower Bound
-          type:
-          - number
-          - 'null'
-        preprocessing:
-          default: null
-          description: Preprocessing transforms applied before detection
-          allOf:
-          - $ref: '#/components/schemas/PreprocessingConfig'
-        type:
-          default: threshold
-          title: Type
-          type: string
-          enum:
-          - threshold
-        upper_bound:
-          default: null
-          description: Upper bound - values above this are anomalies
-          title: Upper Bound
-          type:
-          - number
-          - 'null'
-      title: ThresholdDetectorConfig
-      type: object
     InvestigationVerdictEnum:
       enum:
       - true_positive
@@ -488,21 +801,23 @@ components:
         * `false_positive` - false_positive
 
         * `inconclusive` - inconclusive'
-    KNNDetectorConfig:
+    CalculationIntervalEnum:
+      enum:
+      - hourly
+      - daily
+      - weekly
+      - monthly
+      type: string
+      description: '* `hourly` - hourly
+
+        * `daily` - daily
+
+        * `weekly` - weekly
+
+        * `monthly` - monthly'
+    PCADetectorConfig:
       additionalProperties: false
       properties:
-        method:
-          default: null
-          description: 'Distance method: ''largest'', ''mean'', ''median'' (default: ''largest'')'
-          allOf:
-          - $ref: '#/components/schemas/Method'
-        n_neighbors:
-          default: null
-          description: 'Number of neighbors to consider (default: 5)'
-          title: N Neighbors
-          type:
-          - integer
-          - 'null'
         preprocessing:
           default: null
           description: Preprocessing transforms applied before detection
@@ -516,11 +831,11 @@ components:
           - number
           - 'null'
         type:
-          default: knn
+          default: pca
           title: Type
           type: string
           enum:
-          - knn
+          - pca
         window:
           default: null
           description: 'Rolling window size — how many historical data points to train on (default: based on calculation interval)'
@@ -528,58 +843,28 @@ components:
           type:
           - integer
           - 'null'
-      title: KNNDetectorConfig
+      title: PCADetectorConfig
       type: object
-    AlertCondition:
+    AlertScheduleRestriction:
       additionalProperties: false
       properties:
-        type:
-          $ref: '#/components/schemas/AlertConditionType'
+        blocked_windows:
+          description: Blocked local time windows when the alert must not run. Overlapping or identical windows are merged when saved. At most five windows before normalization; empty array clears quiet hours.
+          items:
+            $ref: '#/components/schemas/AlertScheduleRestrictionWindow'
+          title: Blocked Windows
+          type: array
       required:
-      - type
-      title: AlertCondition
+      - blocked_windows
+      title: AlertScheduleRestriction
       type: object
-    TrendsAlertConfig:
-      additionalProperties: false
-      properties:
-        check_ongoing_interval:
-          default: null
-          description: When true, evaluate the current (still incomplete) time interval in addition to completed ones.
-          title: Check Ongoing Interval
-          type:
-          - boolean
-          - 'null'
-        series_index:
-          description: Zero-based index of the series in the insight's query to monitor.
-          title: Series Index
-          type: integer
-        type:
-          default: TrendsAlertConfig
-          title: Type
-          type: string
-          enum:
-          - TrendsAlertConfig
-      required:
-      - series_index
-      title: TrendsAlertConfig
-      type: object
-    NullEnum:
+    AlertConditionType:
       enum:
-      - null
-    AlertCheckStateEnum:
-      enum:
-      - Firing
-      - Not firing
-      - Errored
-      - Snoozed
+      - absolute_value
+      - relative_increase
+      - relative_decrease
+      title: AlertConditionType
       type: string
-      description: '* `Firing` - Firing
-
-        * `Not firing` - Not firing
-
-        * `Errored` - Errored
-
-        * `Snoozed` - Snoozed'
     ECODDetectorConfig:
       additionalProperties: false
       properties:
@@ -610,346 +895,6 @@ components:
           - 'null'
       title: ECODDetectorConfig
       type: object
-    ZScoreDetectorConfig:
-      additionalProperties: false
-      properties:
-        preprocessing:
-          default: null
-          description: Preprocessing transforms applied before detection
-          allOf:
-          - $ref: '#/components/schemas/PreprocessingConfig'
-        threshold:
-          default: null
-          description: 'Anomaly probability threshold [0-1]. Points above this probability are flagged (default: 0.9)'
-          title: Threshold
-          type:
-          - number
-          - 'null'
-        type:
-          default: zscore
-          title: Type
-          type: string
-          enum:
-          - zscore
-        window:
-          default: null
-          description: 'Rolling window size for calculating mean/std (default: 30)'
-          title: Window
-          type:
-          - integer
-          - 'null'
-      title: ZScoreDetectorConfig
-      type: object
-    BlankEnum:
-      enum:
-      - ''
-    Method:
-      enum:
-      - largest
-      - mean
-      - median
-      title: Method
-      type: string
-    Threshold:
-      type: object
-      properties:
-        id:
-          type: string
-          format: uuid
-          readOnly: true
-        created_at:
-          type: string
-          format: date-time
-          readOnly: true
-        name:
-          type: string
-          description: Optional name for the threshold.
-        configuration:
-          allOf:
-          - $ref: '#/components/schemas/InsightThreshold'
-          description: Threshold bounds and type. Includes bounds (lower/upper floats) and type (absolute or percentage).
-      required:
-      - configuration
-      - created_at
-      - id
-    UserBasic:
-      type: object
-      properties:
-        id:
-          type: integer
-          readOnly: true
-        uuid:
-          type: string
-          format: uuid
-          readOnly: true
-        distinct_id:
-          type:
-          - string
-          - 'null'
-          maxLength: 200
-        first_name:
-          type: string
-          maxLength: 150
-        last_name:
-          type: string
-          maxLength: 150
-        email:
-          type: string
-          format: email
-          title: Email address
-          maxLength: 254
-        is_email_verified:
-          type:
-          - boolean
-          - 'null'
-        hedgehog_config:
-          type:
-          - object
-          - 'null'
-          additionalProperties: true
-          readOnly: true
-        role_at_organization:
-          oneOf:
-          - $ref: '#/components/schemas/RoleAtOrganizationEnum'
-          - $ref: '#/components/schemas/BlankEnum'
-          - $ref: '#/components/schemas/NullEnum'
-      required:
-      - email
-      - hedgehog_config
-      - id
-      - uuid
-    LOFDetectorConfig:
-      additionalProperties: false
-      properties:
-        n_neighbors:
-          default: null
-          description: 'Number of neighbors for LOF (default: 20)'
-          title: N Neighbors
-          type:
-          - integer
-          - 'null'
-        preprocessing:
-          default: null
-          description: Preprocessing transforms applied before detection
-          allOf:
-          - $ref: '#/components/schemas/PreprocessingConfig'
-        threshold:
-          default: null
-          description: 'Anomaly probability threshold (default: 0.9)'
-          title: Threshold
-          type:
-          - number
-          - 'null'
-        type:
-          default: lof
-          title: Type
-          type: string
-          enum:
-          - lof
-        window:
-          default: null
-          description: 'Rolling window size — how many historical data points to train on (default: based on calculation interval)'
-          title: Window
-          type:
-          - integer
-          - 'null'
-      title: LOFDetectorConfig
-      type: object
-    EnsembleDetectorConfig:
-      additionalProperties: false
-      properties:
-        detectors:
-          description: Sub-detector configurations (minimum 2)
-          items:
-            anyOf:
-            - $ref: '#/components/schemas/ZScoreDetectorConfig'
-            - $ref: '#/components/schemas/MADDetectorConfig'
-            - $ref: '#/components/schemas/IQRDetectorConfig'
-            - $ref: '#/components/schemas/ThresholdDetectorConfig'
-            - $ref: '#/components/schemas/ECODDetectorConfig'
-            - $ref: '#/components/schemas/COPODDetectorConfig'
-            - $ref: '#/components/schemas/IsolationForestDetectorConfig'
-            - $ref: '#/components/schemas/KNNDetectorConfig'
-            - $ref: '#/components/schemas/HBOSDetectorConfig'
-            - $ref: '#/components/schemas/LOFDetectorConfig'
-            - $ref: '#/components/schemas/OCSVMDetectorConfig'
-            - $ref: '#/components/schemas/PCADetectorConfig'
-          title: Detectors
-          type: array
-        operator:
-          description: How to combine sub-detector results
-          allOf:
-          - $ref: '#/components/schemas/EnsembleOperator'
-        type:
-          default: ensemble
-          title: Type
-          type: string
-          enum:
-          - ensemble
-      required:
-      - detectors
-      - operator
-      title: EnsembleDetectorConfig
-      type: object
-    AlertScheduleRestrictionWindow:
-      additionalProperties: false
-      properties:
-        start:
-          description: Start time HH:MM (24-hour, project timezone). Inclusive. Each window must span ≥ 30 minutes on the local daily timeline (half-open [start, end)).
-          title: Start
-          type: string
-        end:
-          description: End time HH:MM (24-hour). Exclusive (half-open interval). Each window must span ≥ 30 minutes locally.
-          title: End
-          type: string
-      required:
-      - start
-      - end
-      title: AlertScheduleRestrictionWindow
-      type: object
-    MADDetectorConfig:
-      additionalProperties: false
-      properties:
-        preprocessing:
-          default: null
-          description: Preprocessing transforms applied before detection
-          allOf:
-          - $ref: '#/components/schemas/PreprocessingConfig'
-        threshold:
-          default: null
-          description: 'Anomaly probability threshold [0-1]. Points above this probability are flagged (default: 0.9)'
-          title: Threshold
-          type:
-          - number
-          - 'null'
-        type:
-          default: mad
-          title: Type
-          type: string
-          enum:
-          - mad
-        window:
-          default: null
-          description: 'Rolling window size for calculating median/MAD (default: 30)'
-          title: Window
-          type:
-          - integer
-          - 'null'
-      title: MADDetectorConfig
-      type: object
-    InsightThreshold:
-      additionalProperties: false
-      properties:
-        bounds:
-          default: null
-          allOf:
-          - $ref: '#/components/schemas/InsightsThresholdBounds'
-        type:
-          description: Whether bounds are compared as absolute values or as percentage change from the previous interval.
-          allOf:
-          - $ref: '#/components/schemas/InsightThresholdType'
-      required:
-      - type
-      title: InsightThreshold
-      type: object
-    IsolationForestDetectorConfig:
-      additionalProperties: false
-      properties:
-        n_estimators:
-          default: null
-          description: 'Number of trees in the forest (default: 100)'
-          title: N Estimators
-          type:
-          - integer
-          - 'null'
-        preprocessing:
-          default: null
-          description: Preprocessing transforms applied before detection
-          allOf:
-          - $ref: '#/components/schemas/PreprocessingConfig'
-        threshold:
-          default: null
-          description: 'Anomaly probability threshold (default: 0.9)'
-          title: Threshold
-          type:
-          - number
-          - 'null'
-        type:
-          default: isolation_forest
-          title: Type
-          type: string
-          enum:
-          - isolation_forest
-        window:
-          default: null
-          description: 'Rolling window size — how many historical data points to train on (default: based on calculation interval)'
-          title: Window
-          type:
-          - integer
-          - 'null'
-      title: IsolationForestDetectorConfig
-      type: object
-    IQRDetectorConfig:
-      additionalProperties: false
-      properties:
-        multiplier:
-          default: null
-          description: 'IQR multiplier for fence calculation (default: 1.5, use 3.0 for far outliers)'
-          title: Multiplier
-          type:
-          - number
-          - 'null'
-        preprocessing:
-          default: null
-          description: Preprocessing transforms applied before detection
-          allOf:
-          - $ref: '#/components/schemas/PreprocessingConfig'
-        type:
-          default: iqr
-          title: Type
-          type: string
-          enum:
-          - iqr
-        window:
-          default: null
-          description: 'Rolling window size for calculating quartiles (default: 30)'
-          title: Window
-          type:
-          - integer
-          - 'null'
-      title: IQRDetectorConfig
-      type: object
-    CalculationIntervalEnum:
-      enum:
-      - hourly
-      - daily
-      - weekly
-      - monthly
-      type: string
-      description: '* `hourly` - hourly
-
-        * `daily` - daily
-
-        * `weekly` - weekly
-
-        * `monthly` - monthly'
-    InvestigationStatusEnum:
-      enum:
-      - pending
-      - running
-      - done
-      - failed
-      - skipped
-      type: string
-      description: '* `pending` - pending
-
-        * `running` - running
-
-        * `done` - done
-
-        * `failed` - failed
-
-        * `skipped` - skipped'
     InsightThresholdType:
       enum:
       - absolute
@@ -1097,79 +1042,15 @@ components:
       - state
       - subscribed_users
       - threshold
-    PaginatedThresholdWithAlertList:
-      type: object
-      required:
-      - count
-      - results
-      properties:
-        count:
-          type: integer
-          example: 123
-        next:
-          type:
-          - string
-          - 'null'
-          format: uri
-          example: http://api.example.org/accounts/?offset=400&limit=100
-        previous:
-          type:
-          - string
-          - 'null'
-          format: uri
-          example: http://api.example.org/accounts/?offset=200&limit=100
-        results:
-          type: array
-          items:
-            $ref: '#/components/schemas/ThresholdWithAlert'
-    InvestigationInconclusiveActionEnum:
-      enum:
-      - notify
-      - suppress
-      type: string
-      description: '* `notify` - Notify
-
-        * `suppress` - Suppress'
-    AlertConditionType:
-      enum:
-      - absolute_value
-      - relative_increase
-      - relative_decrease
-      title: AlertConditionType
-      type: string
-    DetectorConfig:
-      anyOf:
-      - $ref: '#/components/schemas/EnsembleDetectorConfig'
-      - $ref: '#/components/schemas/ZScoreDetectorConfig'
-      - $ref: '#/components/schemas/MADDetectorConfig'
-      - $ref: '#/components/schemas/IQRDetectorConfig'
-      - $ref: '#/components/schemas/ThresholdDetectorConfig'
-      - $ref: '#/components/schemas/ECODDetectorConfig'
-      - $ref: '#/components/schemas/COPODDetectorConfig'
-      - $ref: '#/components/schemas/IsolationForestDetectorConfig'
-      - $ref: '#/components/schemas/KNNDetectorConfig'
-      - $ref: '#/components/schemas/HBOSDetectorConfig'
-      - $ref: '#/components/schemas/LOFDetectorConfig'
-      - $ref: '#/components/schemas/OCSVMDetectorConfig'
-      - $ref: '#/components/schemas/PCADetectorConfig'
-      description: Detector configuration types
-      title: DetectorConfig
-    OCSVMDetectorConfig:
+    HBOSDetectorConfig:
       additionalProperties: false
       properties:
-        kernel:
+        n_bins:
           default: null
-          description: 'SVM kernel type (default: "rbf")'
-          title: Kernel
+          description: 'Number of histogram bins (default: 10)'
+          title: N Bins
           type:
-          - string
-          - 'null'
-        nu:
-          default: null
-          description: 'Upper bound on training errors fraction (default: 0.1)'
-          title: Nu
-          type:
-          - number
+          - integer
           - 'null'
         preprocessing:
           default: null
@@ -1184,11 +1065,11 @@ components:
           - number
           - 'null'
         type:
-          default: ocsvm
+          default: hbos
           title: Type
           type: string
           enum:
-          - ocsvm
+          - hbos
         window:
           default: null
           description: 'Rolling window size — how many historical data points to train on (default: based on calculation interval)'
@@ -1196,16 +1077,128 @@ components:
           type:
           - integer
           - 'null'
-      title: OCSVMDetectorConfig
+      title: HBOSDetectorConfig
       type: object
+    InvestigationStatusEnum:
+      enum:
+      - pending
+      - running
+      - done
+      - failed
+      - skipped
+      type: string
+      description: '* `pending` - pending
+
+        * `running` - running
+
+        * `done` - done
+
+        * `failed` - failed
+
+        * `skipped` - skipped'
+    AlertScheduleRestrictionWindow:
+      additionalProperties: false
+      properties:
+        start:
+          description: Start time HH:MM (24-hour, project timezone). Inclusive. Each window must span ≥ 30 minutes on the local daily timeline (half-open [start, end)).
+          title: Start
+          type: string
+        end:
+          description: End time HH:MM (24-hour). Exclusive (half-open interval). Each window must span ≥ 30 minutes locally.
+          title: End
+          type: string
+      required:
+      - start
+      - end
+      title: AlertScheduleRestrictionWindow
+      type: object
+    UserBasic:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        uuid:
+          type: string
+          format: uuid
+          readOnly: true
+        distinct_id:
+          type:
+          - string
+          - 'null'
+          maxLength: 200
+        first_name:
+          type: string
+          maxLength: 150
+        last_name:
+          type: string
+          maxLength: 150
+        email:
+          type: string
+          format: email
+          title: Email address
+          maxLength: 254
+        is_email_verified:
+          type:
+          - boolean
+          - 'null'
+        hedgehog_config:
+          type:
+          - object
+          - 'null'
+          additionalProperties: true
+          readOnly: true
+        role_at_organization:
+          oneOf:
+          - $ref: '#/components/schemas/RoleAtOrganizationEnum'
+          - $ref: '#/components/schemas/BlankEnum'
+          - $ref: '#/components/schemas/NullEnum'
+      required:
+      - email
+      - hedgehog_config
+      - id
+      - uuid
+    AlertCheckStateEnum:
+      enum:
+      - Firing
+      - Not firing
+      - Errored
+      - Snoozed
+      type: string
+      description: '* `Firing` - Firing
+
+        * `Not firing` - Not firing
+
+        * `Errored` - Errored
+
+        * `Snoozed` - Snoozed'
+    RoleAtOrganizationEnum:
+      enum:
+      - engineering
+      - data
+      - product
+      - founder
+      - leadership
+      - marketing
+      - sales
+      - other
+      type: string
+      description: '* `engineering` - Engineering
+
+        * `data` - Data
+
+        * `product` - Product Management
+
+        * `founder` - Founder
+
+        * `leadership` - Leadership
+
+        * `marketing` - Marketing
+
+        * `sales` - Sales / Success
+
+        * `other` - Other'
   parameters:
-    ProjectIdPath:
-      in: path
-      name: project_id
-      required: true
-      schema:
-        type: string
-      description: Project ID of the project you're trying to access. To find the ID of the project, make a call to /api/projects/.
     EnvironmentIdPath:
       in: path
       name: environment_id
@@ -1213,6 +1206,13 @@ components:
       schema:
         type: string
       description: Deprecated. Use /api/projects/{project_id}/ instead.
+    ProjectIdPath:
+      in: path
+      name: project_id
+      required: true
+      schema:
+        type: string
+      description: Project ID of the project you're trying to access. To find the ID of the project, make a call to /api/projects/.
   securitySchemes:
     PersonalAPIKeyAuth:
       type: http

@@ -183,31 +183,6 @@ paths:
       x-summary-source: derived
 components:
   schemas:
-    PaginatedOrganizationIntegrationList:
-      type: object
-      required:
-      - count
-      - results
-      properties:
-        count:
-          type: integer
-          example: 123
-        next:
-          type:
-          - string
-          - 'null'
-          format: uri
-          example: http://api.example.org/accounts/?offset=400&limit=100
-        previous:
-          type:
-          - string
-          - 'null'
-          format: uri
-          example: http://api.example.org/accounts/?offset=200&limit=100
-        results:
-          type: array
-          items:
-            $ref: '#/components/schemas/OrganizationIntegration'
     RoleAtOrganizationEnum:
       enum:
       - engineering
@@ -234,11 +209,70 @@ components:
         * `sales` - Sales / Success
 
         * `other` - Other'
+    PaginatedOrganizationIntegrationList:
+      type: object
+      required:
+      - count
+      - results
+      properties:
+        count:
+          type: integer
+          example: 123
+        next:
+          type:
+          - string
+          - 'null'
+          format: uri
+          example: http://api.example.org/accounts/?offset=400&limit=100
+        previous:
+          type:
+          - string
+          - 'null'
+          format: uri
+          example: http://api.example.org/accounts/?offset=200&limit=100
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/OrganizationIntegration'
+    BlankEnum:
+      enum:
+      - ''
     OrganizationIntegrationKindEnum:
       enum:
       - vercel
       type: string
       description: '* `vercel` - Vercel'
+    PatchedOrganizationIntegration:
+      type: object
+      description: Serializer for organization-level integrations.
+      properties:
+        id:
+          type: string
+          format: uuid
+          readOnly: true
+        kind:
+          allOf:
+          - $ref: '#/components/schemas/OrganizationIntegrationKindEnum'
+          readOnly: true
+        integration_id:
+          type:
+          - string
+          - 'null'
+          readOnly: true
+        config:
+          readOnly: true
+        created_at:
+          type: string
+          format: date-time
+          readOnly: true
+        updated_at:
+          type: string
+          format: date-time
+          readOnly: true
+        created_by:
+          allOf:
+          - $ref: '#/components/schemas/UserBasic'
+          readOnly: true
     UserBasic:
       type: object
       properties:
@@ -285,37 +319,9 @@ components:
       - hedgehog_config
       - id
       - uuid
-    PatchedOrganizationIntegration:
-      type: object
-      description: Serializer for organization-level integrations.
-      properties:
-        id:
-          type: string
-          format: uuid
-          readOnly: true
-        kind:
-          allOf:
-          - $ref: '#/components/schemas/OrganizationIntegrationKindEnum'
-          readOnly: true
-        integration_id:
-          type:
-          - string
-          - 'null'
-          readOnly: true
-        config:
-          readOnly: true
-        created_at:
-          type: string
-          format: date-time
-          readOnly: true
-        updated_at:
-          type: string
-          format: date-time
-          readOnly: true
-        created_by:
-          allOf:
-          - $ref: '#/components/schemas/UserBasic'
-          readOnly: true
+    NullEnum:
+      enum:
+      - null
     OrganizationIntegration:
       type: object
       description: Serializer for organization-level integrations.
@@ -355,12 +361,6 @@ components:
       - integration_id
       - kind
       - updated_at
-    NullEnum:
-      enum:
-      - null
-    BlankEnum:
-      enum:
-      - ''
   parameters:
     OrganizationIdPath:
       in: path

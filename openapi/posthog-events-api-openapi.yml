@@ -327,59 +327,147 @@ paths:
       x-summary-source: derived
 components:
   schemas:
-    EventElement:
+    PropertyItem:
       type: object
       properties:
-        event:
+        key:
           type: string
-        text:
-          type:
-          - string
-          - 'null'
-          maxLength: 10000
-        tag_name:
-          type:
-          - string
-          - 'null'
-          maxLength: 1000
-        attr_class:
-          type:
-          - array
-          - 'null'
-          items:
-            type: string
-            maxLength: 200
-        href:
-          type:
-          - string
-          - 'null'
-          maxLength: 10000
-        attr_id:
-          type:
-          - string
-          - 'null'
-          maxLength: 10000
-        nth_child:
-          type:
-          - integer
-          - 'null'
-          maximum: 2147483647
-          minimum: -2147483648
-        nth_of_type:
-          type:
-          - integer
-          - 'null'
-          maximum: 2147483647
-          minimum: -2147483648
-        attributes: {}
-        order:
-          type:
-          - integer
-          - 'null'
-          maximum: 2147483647
-          minimum: -2147483648
+          description: Key of the property you're filtering on. For example `email` or `$current_url`
+        value:
+          oneOf:
+          - type: string
+          - type: number
+          - type: boolean
+          - type: array
+            items:
+              oneOf:
+              - type: string
+              - type: number
+          description: Value of your filter. For example `test@example.com` or `https://example.com/test/`. Can be an array for an OR query, like `["test@example.com","ok@example.com"]`
+        operator:
+          default: exact
+          oneOf:
+          - $ref: '#/components/schemas/PropertyItemOperatorEnum'
+          - $ref: '#/components/schemas/BlankEnum'
+          - $ref: '#/components/schemas/NullEnum'
+        type:
+          default: event
+          oneOf:
+          - $ref: '#/components/schemas/PropertyFilterTypeEnum'
+          - $ref: '#/components/schemas/BlankEnum'
       required:
+      - key
+      - value
+    PaginatedClickhouseEventList:
+      type: object
+      properties:
+        next:
+          type:
+          - string
+          - 'null'
+          format: uri
+          example: http://api.example.org/accounts/?offset=400&limit=100
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/ClickhouseEvent'
+    Property:
+      type: object
+      properties:
+        type:
+          allOf:
+          - $ref: '#/components/schemas/PropertyGroupOperator'
+          default: AND
+          description: "\n You can use a simplified version:\n```json\n{\n    \"properties\": [\n        {\n            \"key\": \"email\",\n            \"value\": \"x@y.com\",\n            \"operator\": \"exact\",\n            \"type\": \"event\"\n        }\n    ]\n}\n```\n\nOr you can create more complicated queries with AND and OR:\n```json\n{\n    \"properties\": {\n        \"type\": \"AND\",\n        \"values\": [\n            {\n                \"type\": \"OR\",\n                \"values\": [\n                    {\"key\": \"email\", ...},\n                    {\"key\": \"email\", ...}\n                ]\n            },\n            {\n                \"type\": \"AND\",\n                \"values\": [\n                    {\"key\": \"email\", ...},\n                    {\"key\": \"email\", ...}\n                ]\n            }\n        ]\n    ]\n}\n```\n\n\n* `AND` - AND\n* `OR` - OR"
+        values:
+          type: array
+          items:
+            $ref: '#/components/schemas/PropertyItem'
+      required:
+      - values
+    PropertyFilterTypeEnum:
+      enum:
       - event
+      - event_metadata
+      - feature
+      - person
+      - cohort
+      - element
+      - static-cohort
+      - dynamic-cohort
+      - precalculated-cohort
+      - group
+      - recording
+      - log_entry
+      - behavioral
+      - session
+      - hogql
+      - data_warehouse
+      - data_warehouse_person_property
+      - error_tracking_issue
+      - log
+      - log_attribute
+      - log_resource_attribute
+      - span
+      - span_attribute
+      - span_resource_attribute
+      - revenue_analytics
+      - flag
+      - workflow_variable
+      type: string
+      description: '* `event` - event
+
+        * `event_metadata` - event_metadata
+
+        * `feature` - feature
+
+        * `person` - person
+
+        * `cohort` - cohort
+
+        * `element` - element
+
+        * `static-cohort` - static-cohort
+
+        * `dynamic-cohort` - dynamic-cohort
+
+        * `precalculated-cohort` - precalculated-cohort
+
+        * `group` - group
+
+        * `recording` - recording
+
+        * `log_entry` - log_entry
+
+        * `behavioral` - behavioral
+
+        * `session` - session
+
+        * `hogql` - hogql
+
+        * `data_warehouse` - data_warehouse
+
+        * `data_warehouse_person_property` - data_warehouse_person_property
+
+        * `error_tracking_issue` - error_tracking_issue
+
+        * `log` - log
+
+        * `log_attribute` - log_attribute
+
+        * `log_resource_attribute` - log_resource_attribute
+
+        * `span` - span
+
+        * `span_attribute` - span_attribute
+
+        * `span_resource_attribute` - span_resource_attribute
+
+        * `revenue_analytics` - revenue_analytics
+
+        * `flag` - flag
+
+        * `workflow_variable` - workflow_variable'
     PropertyItemOperatorEnum:
       enum:
       - exact
@@ -476,133 +564,62 @@ components:
       - person
       - properties
       - timestamp
-    PaginatedClickhouseEventList:
+    EventElement:
       type: object
       properties:
-        next:
+        event:
+          type: string
+        text:
           type:
           - string
           - 'null'
-          format: uri
-          example: http://api.example.org/accounts/?offset=400&limit=100
-        results:
-          type: array
+          maxLength: 10000
+        tag_name:
+          type:
+          - string
+          - 'null'
+          maxLength: 1000
+        attr_class:
+          type:
+          - array
+          - 'null'
           items:
-            $ref: '#/components/schemas/ClickhouseEvent'
-    PropertyFilterTypeEnum:
-      enum:
-      - event
-      - event_metadata
-      - feature
-      - person
-      - cohort
-      - element
-      - static-cohort
-      - dynamic-cohort
-      - precalculated-cohort
-      - group
-      - recording
-      - log_entry
-      - behavioral
-      - session
-      - hogql
-      - data_warehouse
-      - data_warehouse_person_property
-      - error_tracking_issue
-      - log
-      - log_attribute
-      - log_resource_attribute
-      - span
-      - span_attribute
-      - span_resource_attribute
-      - revenue_analytics
-      - flag
-      - workflow_variable
-      type: string
-      description: '* `event` - event
-
-        * `event_metadata` - event_metadata
-
-        * `feature` - feature
-
-        * `person` - person
-
-        * `cohort` - cohort
-
-        * `element` - element
-
-        * `static-cohort` - static-cohort
-
-        * `dynamic-cohort` - dynamic-cohort
-
-        * `precalculated-cohort` - precalculated-cohort
-
-        * `group` - group
-
-        * `recording` - recording
-
-        * `log_entry` - log_entry
-
-        * `behavioral` - behavioral
-
-        * `session` - session
-
-        * `hogql` - hogql
-
-        * `data_warehouse` - data_warehouse
-
-        * `data_warehouse_person_property` - data_warehouse_person_property
-
-        * `error_tracking_issue` - error_tracking_issue
-
-        * `log` - log
-
-        * `log_attribute` - log_attribute
-
-        * `log_resource_attribute` - log_resource_attribute
-
-        * `span` - span
-
-        * `span_attribute` - span_attribute
-
-        * `span_resource_attribute` - span_resource_attribute
-
-        * `revenue_analytics` - revenue_analytics
-
-        * `flag` - flag
-
-        * `workflow_variable` - workflow_variable'
-    PropertyItem:
-      type: object
-      properties:
-        key:
-          type: string
-          description: Key of the property you're filtering on. For example `email` or `$current_url`
-        value:
-          oneOf:
-          - type: string
-          - type: number
-          - type: boolean
-          - type: array
-            items:
-              oneOf:
-              - type: string
-              - type: number
-          description: Value of your filter. For example `test@example.com` or `https://example.com/test/`. Can be an array for an OR query, like `["test@example.com","ok@example.com"]`
-        operator:
-          default: exact
-          oneOf:
-          - $ref: '#/components/schemas/PropertyItemOperatorEnum'
-          - $ref: '#/components/schemas/BlankEnum'
-          - $ref: '#/components/schemas/NullEnum'
-        type:
-          default: event
-          oneOf:
-          - $ref: '#/components/schemas/PropertyFilterTypeEnum'
-          - $ref: '#/components/schemas/BlankEnum'
+            type: string
+            maxLength: 200
+        href:
+          type:
+          - string
+          - 'null'
+          maxLength: 10000
+        attr_id:
+          type:
+          - string
+          - 'null'
+          maxLength: 10000
+        nth_child:
+          type:
+          - integer
+          - 'null'
+          maximum: 2147483647
+          minimum: -2147483648
+        nth_of_type:
+          type:
+          - integer
+          - 'null'
+          maximum: 2147483647
+          minimum: -2147483648
+        attributes: {}
+        order:
+          type:
+          - integer
+          - 'null'
+          maximum: 2147483647
+          minimum: -2147483648
       required:
-      - key
-      - value
+      - event
+    BlankEnum:
+      enum:
+      - ''
     NullEnum:
       enum:
       - null
@@ -611,23 +628,6 @@ components:
       - AND
       - OR
       type: string
-    BlankEnum:
-      enum:
-      - ''
-    Property:
-      type: object
-      properties:
-        type:
-          allOf:
-          - $ref: '#/components/schemas/PropertyGroupOperator'
-          default: AND
-          description: "\n You can use a simplified version:\n```json\n{\n    \"properties\": [\n        {\n            \"key\": \"email\",\n            \"value\": \"x@y.com\",\n            \"operator\": \"exact\",\n            \"type\": \"event\"\n        }\n    ]\n}\n```\n\nOr you can create more complicated queries with AND and OR:\n```json\n{\n    \"properties\": {\n        \"type\": \"AND\",\n        \"values\": [\n            {\n                \"type\": \"OR\",\n                \"values\": [\n                    {\"key\": \"email\", ...},\n                    {\"key\": \"email\", ...}\n                ]\n            },\n            {\n                \"type\": \"AND\",\n                \"values\": [\n                    {\"key\": \"email\", ...},\n                    {\"key\": \"email\", ...}\n                ]\n            }\n        ]\n    ]\n}\n```\n\n\n* `AND` - AND\n* `OR` - OR"
-        values:
-          type: array
-          items:
-            $ref: '#/components/schemas/PropertyItem'
-      required:
-      - values
   parameters:
     EnvironmentIdPath:
       in: path

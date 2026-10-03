@@ -382,23 +382,6 @@ paths:
       x-summary-source: derived
 components:
   schemas:
-    ProductTourSerializerCreateUpdateOnlyCreationContextEnum:
-      enum:
-      - app
-      - toolbar
-      type: string
-      description: '* `app` - app
-
-        * `toolbar` - toolbar'
-    GenerateResponse:
-      type: object
-      properties:
-        steps:
-          type: array
-          items:
-            $ref: '#/components/schemas/GenerateStepResponse'
-      required:
-      - steps
     GenerateStepResponse:
       type: object
       properties:
@@ -412,32 +395,253 @@ components:
       - description
       - step_id
       - title
-    RoleAtOrganizationEnum:
+    ProductTour:
+      type: object
+      description: Read-only serializer for ProductTour.
+      properties:
+        id:
+          type: string
+          format: uuid
+          readOnly: true
+        name:
+          type: string
+          maxLength: 400
+        description:
+          type: string
+        internal_targeting_flag:
+          allOf:
+          - $ref: '#/components/schemas/MinimalFeatureFlag'
+          readOnly: true
+        linked_flag:
+          allOf:
+          - $ref: '#/components/schemas/MinimalFeatureFlag'
+          readOnly: true
+        targeting_flag_filters:
+          type:
+          - object
+          - 'null'
+          additionalProperties: true
+          description: Return the targeting flag filters, excluding the base exclusion properties.
+          readOnly: true
+        content: {}
+        draft_content:
+          readOnly: true
+        has_draft:
+          type: boolean
+          readOnly: true
+        auto_launch:
+          type: boolean
+        start_date:
+          type:
+          - string
+          - 'null'
+          format: date-time
+        end_date:
+          type:
+          - string
+          - 'null'
+          format: date-time
+        created_at:
+          type: string
+          format: date-time
+          readOnly: true
+        created_by:
+          allOf:
+          - $ref: '#/components/schemas/UserBasic'
+          readOnly: true
+        updated_at:
+          type: string
+          format: date-time
+          readOnly: true
+        archived:
+          type: boolean
+      required:
+      - created_at
+      - created_by
+      - draft_content
+      - has_draft
+      - id
+      - internal_targeting_flag
+      - linked_flag
+      - name
+      - targeting_flag_filters
+      - updated_at
+    GenerateResponse:
+      type: object
+      properties:
+        steps:
+          type: array
+          items:
+            $ref: '#/components/schemas/GenerateStepResponse'
+      required:
+      - steps
+    PatchedProductTourSerializerCreateUpdateOnly:
+      type: object
+      description: Serializer for creating and updating ProductTour.
+      properties:
+        id:
+          type: string
+          format: uuid
+          readOnly: true
+        name:
+          type: string
+          maxLength: 400
+        description:
+          type: string
+        internal_targeting_flag:
+          allOf:
+          - $ref: '#/components/schemas/MinimalFeatureFlag'
+          readOnly: true
+        linked_flag:
+          allOf:
+          - $ref: '#/components/schemas/MinimalFeatureFlag'
+          readOnly: true
+        linked_flag_id:
+          type:
+          - integer
+          - 'null'
+          writeOnly: true
+        targeting_flag_filters:
+          writeOnly: true
+        content: {}
+        auto_launch:
+          type: boolean
+        start_date:
+          type:
+          - string
+          - 'null'
+          format: date-time
+        end_date:
+          type:
+          - string
+          - 'null'
+          format: date-time
+        created_at:
+          type: string
+          format: date-time
+          readOnly: true
+        created_by:
+          allOf:
+          - $ref: '#/components/schemas/UserBasic'
+          readOnly: true
+        updated_at:
+          type: string
+          format: date-time
+          readOnly: true
+        archived:
+          type: boolean
+        creation_context:
+          allOf:
+          - $ref: '#/components/schemas/ProductTourSerializerCreateUpdateOnlyCreationContextEnum'
+          writeOnly: true
+          default: app
+          description: 'Where the tour was created/updated from
+
+
+            * `app` - app
+
+            * `toolbar` - toolbar'
+    DraftStatusResponse:
+      type: object
+      properties:
+        updated_at:
+          type: string
+          format: date-time
+        has_draft:
+          type: boolean
+      required:
+      - has_draft
+      - updated_at
+    PaginatedProductTourList:
+      type: object
+      required:
+      - count
+      - results
+      properties:
+        count:
+          type: integer
+          example: 123
+        next:
+          type:
+          - string
+          - 'null'
+          format: uri
+          example: http://api.example.org/accounts/?offset=400&limit=100
+        previous:
+          type:
+          - string
+          - 'null'
+          format: uri
+          example: http://api.example.org/accounts/?offset=200&limit=100
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/ProductTour'
+    BucketingIdentifierEnum:
       enum:
-      - engineering
-      - data
-      - product
-      - founder
-      - leadership
-      - marketing
-      - sales
-      - other
+      - distinct_id
+      - device_id
       type: string
-      description: '* `engineering` - Engineering
+      description: '* `distinct_id` - User ID (default)
 
-        * `data` - Data
+        * `device_id` - Device ID'
+    BlankEnum:
+      enum:
+      - ''
+    ProductTourSerializerCreateUpdateOnlyCreationContextEnum:
+      enum:
+      - app
+      - toolbar
+      type: string
+      description: '* `app` - app
 
-        * `product` - Product Management
-
-        * `founder` - Founder
-
-        * `leadership` - Leadership
-
-        * `marketing` - Marketing
-
-        * `sales` - Sales / Success
-
-        * `other` - Other'
+        * `toolbar` - toolbar'
+    UserBasic:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        uuid:
+          type: string
+          format: uuid
+          readOnly: true
+        distinct_id:
+          type:
+          - string
+          - 'null'
+          maxLength: 200
+        first_name:
+          type: string
+          maxLength: 150
+        last_name:
+          type: string
+          maxLength: 150
+        email:
+          type: string
+          format: email
+          title: Email address
+          maxLength: 254
+        is_email_verified:
+          type:
+          - boolean
+          - 'null'
+        hedgehog_config:
+          type:
+          - object
+          - 'null'
+          additionalProperties: true
+          readOnly: true
+        role_at_organization:
+          oneOf:
+          - $ref: '#/components/schemas/RoleAtOrganizationEnum'
+          - $ref: '#/components/schemas/BlankEnum'
+          - $ref: '#/components/schemas/NullEnum'
+      required:
+      - email
+      - hedgehog_config
+      - id
+      - uuid
     ProductTourSerializerCreateUpdateOnly:
       type: object
       description: Serializer for creating and updating ProductTour.
@@ -512,247 +716,35 @@ components:
       - linked_flag
       - name
       - updated_at
-    PaginatedProductTourList:
-      type: object
-      required:
-      - count
-      - results
-      properties:
-        count:
-          type: integer
-          example: 123
-        next:
-          type:
-          - string
-          - 'null'
-          format: uri
-          example: http://api.example.org/accounts/?offset=400&limit=100
-        previous:
-          type:
-          - string
-          - 'null'
-          format: uri
-          example: http://api.example.org/accounts/?offset=200&limit=100
-        results:
-          type: array
-          items:
-            $ref: '#/components/schemas/ProductTour'
-    EvaluationRuntimeEnum:
+    NullEnum:
       enum:
-      - server
-      - client
-      - all
-      type: string
-      description: '* `server` - Server
-
-        * `client` - Client
-
-        * `all` - All'
-    BucketingIdentifierEnum:
+      - null
+    RoleAtOrganizationEnum:
       enum:
-      - distinct_id
-      - device_id
+      - engineering
+      - data
+      - product
+      - founder
+      - leadership
+      - marketing
+      - sales
+      - other
       type: string
-      description: '* `distinct_id` - User ID (default)
+      description: '* `engineering` - Engineering
 
-        * `device_id` - Device ID'
-    UserBasic:
-      type: object
-      properties:
-        id:
-          type: integer
-          readOnly: true
-        uuid:
-          type: string
-          format: uuid
-          readOnly: true
-        distinct_id:
-          type:
-          - string
-          - 'null'
-          maxLength: 200
-        first_name:
-          type: string
-          maxLength: 150
-        last_name:
-          type: string
-          maxLength: 150
-        email:
-          type: string
-          format: email
-          title: Email address
-          maxLength: 254
-        is_email_verified:
-          type:
-          - boolean
-          - 'null'
-        hedgehog_config:
-          type:
-          - object
-          - 'null'
-          additionalProperties: true
-          readOnly: true
-        role_at_organization:
-          oneOf:
-          - $ref: '#/components/schemas/RoleAtOrganizationEnum'
-          - $ref: '#/components/schemas/BlankEnum'
-          - $ref: '#/components/schemas/NullEnum'
-      required:
-      - email
-      - hedgehog_config
-      - id
-      - uuid
-    PatchedProductTourSerializerCreateUpdateOnly:
-      type: object
-      description: Serializer for creating and updating ProductTour.
-      properties:
-        id:
-          type: string
-          format: uuid
-          readOnly: true
-        name:
-          type: string
-          maxLength: 400
-        description:
-          type: string
-        internal_targeting_flag:
-          allOf:
-          - $ref: '#/components/schemas/MinimalFeatureFlag'
-          readOnly: true
-        linked_flag:
-          allOf:
-          - $ref: '#/components/schemas/MinimalFeatureFlag'
-          readOnly: true
-        linked_flag_id:
-          type:
-          - integer
-          - 'null'
-          writeOnly: true
-        targeting_flag_filters:
-          writeOnly: true
-        content: {}
-        auto_launch:
-          type: boolean
-        start_date:
-          type:
-          - string
-          - 'null'
-          format: date-time
-        end_date:
-          type:
-          - string
-          - 'null'
-          format: date-time
-        created_at:
-          type: string
-          format: date-time
-          readOnly: true
-        created_by:
-          allOf:
-          - $ref: '#/components/schemas/UserBasic'
-          readOnly: true
-        updated_at:
-          type: string
-          format: date-time
-          readOnly: true
-        archived:
-          type: boolean
-        creation_context:
-          allOf:
-          - $ref: '#/components/schemas/ProductTourSerializerCreateUpdateOnlyCreationContextEnum'
-          writeOnly: true
-          default: app
-          description: 'Where the tour was created/updated from
+        * `data` - Data
 
+        * `product` - Product Management
 
-            * `app` - app
+        * `founder` - Founder
 
-            * `toolbar` - toolbar'
-    ProductTour:
-      type: object
-      description: Read-only serializer for ProductTour.
-      properties:
-        id:
-          type: string
-          format: uuid
-          readOnly: true
-        name:
-          type: string
-          maxLength: 400
-        description:
-          type: string
-        internal_targeting_flag:
-          allOf:
-          - $ref: '#/components/schemas/MinimalFeatureFlag'
-          readOnly: true
-        linked_flag:
-          allOf:
-          - $ref: '#/components/schemas/MinimalFeatureFlag'
-          readOnly: true
-        targeting_flag_filters:
-          type:
-          - object
-          - 'null'
-          additionalProperties: true
-          description: Return the targeting flag filters, excluding the base exclusion properties.
-          readOnly: true
-        content: {}
-        draft_content:
-          readOnly: true
-        has_draft:
-          type: boolean
-          readOnly: true
-        auto_launch:
-          type: boolean
-        start_date:
-          type:
-          - string
-          - 'null'
-          format: date-time
-        end_date:
-          type:
-          - string
-          - 'null'
-          format: date-time
-        created_at:
-          type: string
-          format: date-time
-          readOnly: true
-        created_by:
-          allOf:
-          - $ref: '#/components/schemas/UserBasic'
-          readOnly: true
-        updated_at:
-          type: string
-          format: date-time
-          readOnly: true
-        archived:
-          type: boolean
-      required:
-      - created_at
-      - created_by
-      - draft_content
-      - has_draft
-      - id
-      - internal_targeting_flag
-      - linked_flag
-      - name
-      - targeting_flag_filters
-      - updated_at
-    GenerateRequest:
-      type: object
-      properties:
-        title:
-          type: string
-          default: ''
-        goal:
-          type: string
-          default: ''
-        steps:
-          type: array
-          items:
-            type: object
-            additionalProperties: true
+        * `leadership` - Leadership
+
+        * `marketing` - Marketing
+
+        * `sales` - Sales / Success
+
+        * `other` - Other'
     MinimalFeatureFlag:
       type: object
       properties:
@@ -822,23 +814,31 @@ components:
       - id
       - key
       - team_id
-    NullEnum:
-      enum:
-      - null
-    DraftStatusResponse:
+    GenerateRequest:
       type: object
       properties:
-        updated_at:
+        title:
           type: string
-          format: date-time
-        has_draft:
-          type: boolean
-      required:
-      - has_draft
-      - updated_at
-    BlankEnum:
+          default: ''
+        goal:
+          type: string
+          default: ''
+        steps:
+          type: array
+          items:
+            type: object
+            additionalProperties: true
+    EvaluationRuntimeEnum:
       enum:
-      - ''
+      - server
+      - client
+      - all
+      type: string
+      description: '* `server` - Server
+
+        * `client` - Client
+
+        * `all` - All'
   parameters:
     ProjectIdPath:
       in: path

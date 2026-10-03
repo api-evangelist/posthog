@@ -575,6 +575,79 @@ paths:
       x-summary-source: derived
 components:
   schemas:
+    DataColorTheme:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        name:
+          type: string
+          maxLength: 100
+        colors: {}
+        is_global:
+          type: boolean
+          readOnly: true
+        created_at:
+          type:
+          - string
+          - 'null'
+          format: date-time
+          readOnly: true
+        created_by:
+          allOf:
+          - $ref: '#/components/schemas/UserBasic'
+          readOnly: true
+      required:
+      - created_at
+      - created_by
+      - id
+      - is_global
+      - name
+    RestrictionLevelEnum:
+      enum:
+      - 21
+      - 37
+      type: integer
+      description: '* `21` - Everyone in the project can edit
+
+        * `37` - Only those invited to this dashboard can edit'
+    DashboardCollaborator:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+          readOnly: true
+        dashboard_id:
+          type: integer
+          readOnly: true
+        user:
+          allOf:
+          - $ref: '#/components/schemas/UserBasic'
+          readOnly: true
+        level:
+          $ref: '#/components/schemas/RestrictionLevelEnum'
+        added_at:
+          type: string
+          format: date-time
+          readOnly: true
+        updated_at:
+          type: string
+          format: date-time
+          readOnly: true
+        user_uuid:
+          type: string
+          format: uuid
+          writeOnly: true
+      required:
+      - added_at
+      - dashboard_id
+      - id
+      - level
+      - updated_at
+      - user
+      - user_uuid
     PaginatedDataColorThemeList:
       type: object
       required:
@@ -600,32 +673,9 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/DataColorTheme'
-    RoleAtOrganizationEnum:
+    BlankEnum:
       enum:
-      - engineering
-      - data
-      - product
-      - founder
-      - leadership
-      - marketing
-      - sales
-      - other
-      type: string
-      description: '* `engineering` - Engineering
-
-        * `data` - Data
-
-        * `product` - Product Management
-
-        * `founder` - Founder
-
-        * `leadership` - Leadership
-
-        * `marketing` - Marketing
-
-        * `sales` - Sales / Success
-
-        * `other` - Other'
+      - ''
     UserBasic:
       type: object
       properties:
@@ -672,6 +722,35 @@ components:
       - hedgehog_config
       - id
       - uuid
+    NullEnum:
+      enum:
+      - null
+    RoleAtOrganizationEnum:
+      enum:
+      - engineering
+      - data
+      - product
+      - founder
+      - leadership
+      - marketing
+      - sales
+      - other
+      type: string
+      description: '* `engineering` - Engineering
+
+        * `data` - Data
+
+        * `product` - Product Management
+
+        * `founder` - Founder
+
+        * `leadership` - Leadership
+
+        * `marketing` - Marketing
+
+        * `sales` - Sales / Success
+
+        * `other` - Other'
     PatchedDataColorTheme:
       type: object
       properties:
@@ -695,85 +774,6 @@ components:
           allOf:
           - $ref: '#/components/schemas/UserBasic'
           readOnly: true
-    DashboardCollaborator:
-      type: object
-      properties:
-        id:
-          type: string
-          format: uuid
-          readOnly: true
-        dashboard_id:
-          type: integer
-          readOnly: true
-        user:
-          allOf:
-          - $ref: '#/components/schemas/UserBasic'
-          readOnly: true
-        level:
-          $ref: '#/components/schemas/RestrictionLevelEnum'
-        added_at:
-          type: string
-          format: date-time
-          readOnly: true
-        updated_at:
-          type: string
-          format: date-time
-          readOnly: true
-        user_uuid:
-          type: string
-          format: uuid
-          writeOnly: true
-      required:
-      - added_at
-      - dashboard_id
-      - id
-      - level
-      - updated_at
-      - user
-      - user_uuid
-    DataColorTheme:
-      type: object
-      properties:
-        id:
-          type: integer
-          readOnly: true
-        name:
-          type: string
-          maxLength: 100
-        colors: {}
-        is_global:
-          type: boolean
-          readOnly: true
-        created_at:
-          type:
-          - string
-          - 'null'
-          format: date-time
-          readOnly: true
-        created_by:
-          allOf:
-          - $ref: '#/components/schemas/UserBasic'
-          readOnly: true
-      required:
-      - created_at
-      - created_by
-      - id
-      - is_global
-      - name
-    NullEnum:
-      enum:
-      - null
-    RestrictionLevelEnum:
-      enum:
-      - 21
-      - 37
-      type: integer
-      description: '* `21` - Everyone in the project can edit
-
-        * `37` - Only those invited to this dashboard can edit'
-    BlankEnum:
-      enum:
-      - ''
   parameters:
     EnvironmentIdPath:
       in: path

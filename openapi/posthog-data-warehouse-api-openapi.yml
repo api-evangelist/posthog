@@ -4680,7 +4680,55 @@ paths:
       x-summary-source: derived
 components:
   schemas:
-    PaginatedExternalDataSchemaList:
+    PatchedInsightVariable:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+          readOnly: true
+          description: UUID of the SQL variable.
+        name:
+          type: string
+          description: Human-readable name for the SQL variable.
+          maxLength: 400
+        type:
+          allOf:
+          - $ref: '#/components/schemas/InsightVariableTypeEnum'
+          description: 'Variable type. Controls how the value is rendered and substituted in HogQL.
+
+
+            * `String` - String
+
+            * `Number` - Number
+
+            * `Boolean` - Boolean
+
+            * `List` - List
+
+            * `Date` - Date'
+        default_value:
+          description: Default value used when a query references this variable.
+        created_by:
+          type:
+          - integer
+          - 'null'
+          readOnly: true
+          description: ID of the user who created the SQL variable.
+        created_at:
+          type: string
+          format: date-time
+          readOnly: true
+          description: Timestamp when the SQL variable was created.
+        code_name:
+          type:
+          - string
+          - 'null'
+          readOnly: true
+          description: Generated code-safe name used in HogQL as {variables.code_name}. Derived from name.
+        values:
+          description: Allowed values for List variables. Null for other variable types.
+    PaginatedInsightVariableList:
       type: object
       required:
       - count
@@ -4694,226 +4742,503 @@ components:
           - string
           - 'null'
           format: uri
-          example: http://api.example.org/accounts/?offset=400&limit=100
+          example: http://api.example.org/accounts/?page=4
         previous:
           type:
           - string
           - 'null'
           format: uri
-          example: http://api.example.org/accounts/?offset=200&limit=100
+          example: http://api.example.org/accounts/?page=2
         results:
           type: array
           items:
-            $ref: '#/components/schemas/ExternalDataSchema'
-    ExternalDataSourceRevenueAnalyticsConfig:
+            $ref: '#/components/schemas/InsightVariable'
+    PatchedExternalDataSourceBulkUpdateSchemas:
       type: object
       properties:
-        enabled:
-          type: boolean
-        include_invoiceless_charges:
-          type: boolean
-    DataModelingJobStatusEnum:
-      enum:
-      - Cancelled
-      - Completed
-      - Failed
-      - Running
-      type: string
-      description: '* `Cancelled` - Cancelled
-
-        * `Completed` - Completed
-
-        * `Failed` - Failed
-
-        * `Running` - Running'
-    PatchedDataWarehouseSavedQuery:
+        schemas:
+          type: array
+          items:
+            $ref: '#/components/schemas/ExternalDataSourceBulkUpdateSchema'
+          description: Schema updates to apply in a single batch.
+    DataModelingJob:
       type: object
-      description: 'Shared methods for DataWarehouseSavedQuery serializers.
-
-
-        This mixin is intended to be used with serializers.ModelSerializer subclasses.'
       properties:
         id:
           type: string
           format: uuid
           readOnly: true
-        deleted:
+        saved_query_id:
           type:
-          - boolean
+          - string
           - 'null'
-        name:
-          type: string
-          description: Unique name for the view. Used as the table name in HogQL queries and the node name in the data modeling Node.
-          maxLength: 128
-        query:
-          description: 'HogQL query definition as a JSON object with a "query" key containing the SQL string and a "kind" key containing the query type. Example: {"query": "SELECT * FROM events LIMIT 100", "kind": "HogQLQuery"}'
-        created_by:
+          format: uuid
+          readOnly: true
+        status:
           allOf:
-          - $ref: '#/components/schemas/UserBasic'
+          - $ref: '#/components/schemas/DataModelingJobStatusEnum'
+          readOnly: true
+        rows_materialized:
+          type: integer
+          readOnly: true
+        error:
+          type:
+          - string
+          - 'null'
           readOnly: true
         created_at:
           type: string
           format: date-time
           readOnly: true
-        sync_frequency:
-          type:
-          - string
-          - 'null'
-          readOnly: true
-        columns:
-          type: array
-          items:
-            type: object
-            additionalProperties: true
-          readOnly: true
-        status:
-          readOnly: true
-          description: 'The status of when this SavedQuery last ran.
-
-
-            * `Cancelled` - Cancelled
-
-            * `Modified` - Modified
-
-            * `Completed` - Completed
-
-            * `Failed` - Failed
-
-            * `Running` - Running'
-          oneOf:
-          - $ref: '#/components/schemas/SavedQueryStatusEnum'
-          - $ref: '#/components/schemas/NullEnum'
         last_run_at:
-          type:
-          - string
-          - 'null'
+          type: string
           format: date-time
           readOnly: true
-        managed_viewset_kind:
+        workflow_id:
           type:
           - string
           - 'null'
           readOnly: true
-        folder_id:
+        workflow_run_id:
           type:
           - string
           - 'null'
+          readOnly: true
+        rows_expected:
+          type:
+          - integer
+          - 'null'
+          readOnly: true
+          description: Total rows expected to be materialized
+      required:
+      - created_at
+      - error
+      - id
+      - last_run_at
+      - rows_expected
+      - rows_materialized
+      - saved_query_id
+      - status
+      - workflow_id
+      - workflow_run_id
+    DatabaseSchemaRequest:
+      type: object
+      description: 'Validate credentials and preview available tables from a remote database.
+
+
+        The request body contains source_type plus flat source-specific credential fields
+
+        (e.g. host, port, database, user, password, schema for Postgres). The credential
+
+        fields vary per source_type and are validated dynamically by the source registry.'
+      properties:
+        source_type:
+          allOf:
+          - $ref: '#/components/schemas/ExternalDataSourceTypeEnum'
+          description: 'The source type to validate against.
+
+
+            * `Ashby` - Ashby
+
+            * `Supabase` - Supabase
+
+            * `CustomerIO` - CustomerIO
+
+            * `Github` - Github
+
+            * `Stripe` - Stripe
+
+            * `Hubspot` - Hubspot
+
+            * `Postgres` - Postgres
+
+            * `Zendesk` - Zendesk
+
+            * `Snowflake` - Snowflake
+
+            * `Salesforce` - Salesforce
+
+            * `MySQL` - MySQL
+
+            * `MongoDB` - MongoDB
+
+            * `MSSQL` - MSSQL
+
+            * `Vitally` - Vitally
+
+            * `BigQuery` - BigQuery
+
+            * `Chargebee` - Chargebee
+
+            * `Clerk` - Clerk
+
+            * `GoogleAds` - GoogleAds
+
+            * `TemporalIO` - TemporalIO
+
+            * `DoIt` - DoIt
+
+            * `GoogleSheets` - GoogleSheets
+
+            * `MetaAds` - MetaAds
+
+            * `Klaviyo` - Klaviyo
+
+            * `Mailchimp` - Mailchimp
+
+            * `Braze` - Braze
+
+            * `Mailjet` - Mailjet
+
+            * `Redshift` - Redshift
+
+            * `Polar` - Polar
+
+            * `RevenueCat` - RevenueCat
+
+            * `LinkedinAds` - LinkedinAds
+
+            * `RedditAds` - RedditAds
+
+            * `TikTokAds` - TikTokAds
+
+            * `BingAds` - BingAds
+
+            * `Shopify` - Shopify
+
+            * `Attio` - Attio
+
+            * `SnapchatAds` - SnapchatAds
+
+            * `Linear` - Linear
+
+            * `Intercom` - Intercom
+
+            * `Amplitude` - Amplitude
+
+            * `Mixpanel` - Mixpanel
+
+            * `Jira` - Jira
+
+            * `ActiveCampaign` - ActiveCampaign
+
+            * `Marketo` - Marketo
+
+            * `Adjust` - Adjust
+
+            * `AppsFlyer` - AppsFlyer
+
+            * `Freshdesk` - Freshdesk
+
+            * `GoogleAnalytics` - GoogleAnalytics
+
+            * `Pipedrive` - Pipedrive
+
+            * `SendGrid` - SendGrid
+
+            * `Slack` - Slack
+
+            * `PagerDuty` - PagerDuty
+
+            * `Asana` - Asana
+
+            * `Notion` - Notion
+
+            * `Airtable` - Airtable
+
+            * `Greenhouse` - Greenhouse
+
+            * `BambooHR` - BambooHR
+
+            * `Lever` - Lever
+
+            * `GitLab` - GitLab
+
+            * `Datadog` - Datadog
+
+            * `Sentry` - Sentry
+
+            * `Pendo` - Pendo
+
+            * `FullStory` - FullStory
+
+            * `AmazonAds` - AmazonAds
+
+            * `PinterestAds` - PinterestAds
+
+            * `AppleSearchAds` - AppleSearchAds
+
+            * `QuickBooks` - QuickBooks
+
+            * `Xero` - Xero
+
+            * `NetSuite` - NetSuite
+
+            * `WooCommerce` - WooCommerce
+
+            * `BigCommerce` - BigCommerce
+
+            * `PayPal` - PayPal
+
+            * `Square` - Square
+
+            * `Zoom` - Zoom
+
+            * `Trello` - Trello
+
+            * `Monday` - Monday
+
+            * `ClickUp` - ClickUp
+
+            * `Confluence` - Confluence
+
+            * `Recurly` - Recurly
+
+            * `SalesLoft` - SalesLoft
+
+            * `Outreach` - Outreach
+
+            * `Gong` - Gong
+
+            * `Calendly` - Calendly
+
+            * `Typeform` - Typeform
+
+            * `Iterable` - Iterable
+
+            * `ZohoCRM` - ZohoCRM
+
+            * `Close` - Close
+
+            * `Oracle` - Oracle
+
+            * `DynamoDB` - DynamoDB
+
+            * `Elasticsearch` - Elasticsearch
+
+            * `Kafka` - Kafka
+
+            * `LaunchDarkly` - LaunchDarkly
+
+            * `Braintree` - Braintree
+
+            * `Recharge` - Recharge
+
+            * `HelpScout` - HelpScout
+
+            * `Gorgias` - Gorgias
+
+            * `Instagram` - Instagram
+
+            * `YouTubeAnalytics` - YouTubeAnalytics
+
+            * `FacebookPages` - FacebookPages
+
+            * `TwitterAds` - TwitterAds
+
+            * `Workday` - Workday
+
+            * `ServiceNow` - ServiceNow
+
+            * `Pardot` - Pardot
+
+            * `Copper` - Copper
+
+            * `Front` - Front
+
+            * `ChartMogul` - ChartMogul
+
+            * `Zuora` - Zuora
+
+            * `Paddle` - Paddle
+
+            * `CircleCI` - CircleCI
+
+            * `CockroachDB` - CockroachDB
+
+            * `Firebase` - Firebase
+
+            * `AzureBlob` - AzureBlob
+
+            * `GoogleDrive` - GoogleDrive
+
+            * `OneDrive` - OneDrive
+
+            * `SharePoint` - SharePoint
+
+            * `Box` - Box
+
+            * `SFTP` - SFTP
+
+            * `MicrosoftTeams` - MicrosoftTeams
+
+            * `Aircall` - Aircall
+
+            * `Webflow` - Webflow
+
+            * `Okta` - Okta
+
+            * `Auth0` - Auth0
+
+            * `Productboard` - Productboard
+
+            * `Smartsheet` - Smartsheet
+
+            * `Wrike` - Wrike
+
+            * `Plaid` - Plaid
+
+            * `SurveyMonkey` - SurveyMonkey
+
+            * `Eventbrite` - Eventbrite
+
+            * `RingCentral` - RingCentral
+
+            * `Twilio` - Twilio
+
+            * `Freshsales` - Freshsales
+
+            * `Shortcut` - Shortcut
+
+            * `ConvertKit` - ConvertKit
+
+            * `Drip` - Drip
+
+            * `CampaignMonitor` - CampaignMonitor
+
+            * `MailerLite` - MailerLite
+
+            * `Omnisend` - Omnisend
+
+            * `Brevo` - Brevo
+
+            * `Postmark` - Postmark
+
+            * `Granola` - Granola
+
+            * `BuildBetter` - BuildBetter
+
+            * `Convex` - Convex
+
+            * `ClickHouse` - ClickHouse
+
+            * `Plain` - Plain
+
+            * `Resend` - Resend'
+      required:
+      - source_type
+    ExternalDataSourceSerializers:
+      type: object
+      description: Mixin for serializers to add user access control fields
+      properties:
+        id:
+          type: string
           format: uuid
-          description: Optional folder ID used to organize this view in the SQL editor sidebar.
-        folder_name:
+          readOnly: true
+        created_at:
+          type: string
+          format: date-time
+          readOnly: true
+        created_by:
           type:
           - string
           - 'null'
           readOnly: true
-          description: Folder name used to organize this view in the SQL editor sidebar.
+        created_via:
+          allOf:
+          - $ref: '#/components/schemas/CreatedViaEnum'
+          description: 'How this source was created. Defaults to `api` on create when omitted. `web` for the in-app UI, `api` for direct API callers, `mcp` for agent/MCP tool calls. Ignored on update.
+
+
+            * `web` - web
+
+            * `api` - api
+
+            * `mcp` - mcp'
+        status:
+          type: string
+          readOnly: true
+        client_secret:
+          type: string
+          writeOnly: true
+        account_id:
+          type: string
+          writeOnly: true
+        source_type:
+          allOf:
+          - $ref: '#/components/schemas/ExternalDataSourceTypeEnum'
+          readOnly: true
         latest_error:
           type:
           - string
           - 'null'
           readOnly: true
-        edited_history_id:
+        prefix:
           type:
           - string
           - 'null'
-          writeOnly: true
-          description: Activity log ID from the last known edit. Used for conflict detection.
-        latest_history_id:
-          type:
-          - integer
-          - 'null'
-          readOnly: true
-        soft_update:
-          type:
-          - boolean
-          - 'null'
-          writeOnly: true
-          description: If true, skip column inference and validation. For saving drafts.
-        dag_id:
+          maxLength: 100
+        description:
           type:
           - string
           - 'null'
-          format: uuid
-          writeOnly: true
-          description: Optional DAG to place this view into
-        is_materialized:
-          type:
-          - boolean
-          - 'null'
+          maxLength: 400
+        access_method:
+          allOf:
+          - $ref: '#/components/schemas/AccessMethodEnum'
           readOnly: true
-        origin:
+        engine:
           readOnly: true
-          description: 'Where this SavedQuery is created.
+          description: 'Backend engine detected for the direct connection.
 
 
-            * `data_warehouse` - Data Warehouse
+            * `duckdb` - duckdb
 
-            * `endpoint` - Endpoint
-
-            * `managed_viewset` - Managed Viewset'
+            * `postgres` - postgres'
           oneOf:
-          - $ref: '#/components/schemas/OriginEnum'
+          - $ref: '#/components/schemas/EngineEnum'
           - $ref: '#/components/schemas/NullEnum'
-        is_test:
-          type: boolean
-          description: Whether this view is for testing only and will auto-expire.
-        expires_at:
+        last_run_at:
           type:
           - string
           - 'null'
-          format: date-time
           readOnly: true
-          description: When this test view should be automatically deleted.
+        schemas:
+          type: array
+          items:
+            type: object
+            additionalProperties: true
+          readOnly: true
+        job_inputs: {}
+        revenue_analytics_config:
+          allOf:
+          - $ref: '#/components/schemas/ExternalDataSourceRevenueAnalyticsConfig'
+          readOnly: true
         user_access_level:
           type:
           - string
           - 'null'
           readOnly: true
           description: The effective access level the user has for this object
-    WarehouseStatusResponse:
-      type: object
-      properties:
-        team_name:
-          type: string
-        state:
-          $ref: '#/components/schemas/WarehouseStatusResponseStateEnum'
-        status_message:
-          type: string
-        ready_at:
-          type:
-          - string
-          - 'null'
-          format: date-time
-        failed_at:
-          type:
-          - string
-          - 'null'
-          format: date-time
+        supports_webhooks:
+          type: boolean
+          readOnly: true
       required:
-      - failed_at
-      - ready_at
-      - state
-      - status_message
-      - team_name
-    WarehouseStatusResponseStateEnum:
-      enum:
-      - pending
-      - provisioning
-      - ready
-      - failed
-      - deleting
-      - deleted
-      type: string
-      description: '* `pending` - pending
-
-        * `provisioning` - provisioning
-
-        * `ready` - ready
-
-        * `failed` - failed
-
-        * `deleting` - deleting
-
-        * `deleted` - deleted'
+      - access_method
+      - account_id
+      - client_secret
+      - created_at
+      - created_by
+      - engine
+      - id
+      - last_run_at
+      - latest_error
+      - revenue_analytics_config
+      - schemas
+      - source_type
+      - status
+      - supports_webhooks
+      - user_access_level
     DataWarehouseSavedQuery:
       type: object
       description: 'Shared methods for DataWarehouseSavedQuery serializers.
@@ -5074,66 +5399,255 @@ components:
       - status
       - sync_frequency
       - user_access_level
-    DataModelingJob:
+    NullEnum:
+      enum:
+      - null
+    PaginatedDataWarehouseSavedQueryMinimalList:
+      type: object
+      required:
+      - count
+      - results
+      properties:
+        count:
+          type: integer
+          example: 123
+        next:
+          type:
+          - string
+          - 'null'
+          format: uri
+          example: http://api.example.org/accounts/?page=4
+        previous:
+          type:
+          - string
+          - 'null'
+          format: uri
+          example: http://api.example.org/accounts/?page=2
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/DataWarehouseSavedQueryMinimal'
+    SavedQueryStatusEnum:
+      enum:
+      - Cancelled
+      - Modified
+      - Completed
+      - Failed
+      - Running
+      type: string
+      description: '* `Cancelled` - Cancelled
+
+        * `Modified` - Modified
+
+        * `Completed` - Completed
+
+        * `Failed` - Failed
+
+        * `Running` - Running'
+    ProvisionWarehouseRequest:
+      type: object
+      properties:
+        database_name:
+          type: string
+          description: Name for the new database
+      required:
+      - database_name
+    ExternalDataSchema:
       type: object
       properties:
         id:
           type: string
           format: uuid
           readOnly: true
-        saved_query_id:
+        name:
+          type: string
+          readOnly: true
+        label:
           type:
           - string
           - 'null'
-          format: uuid
+          readOnly: true
+        table:
+          type:
+          - object
+          - 'null'
+          additionalProperties: true
+          readOnly: true
+        should_sync:
+          type: boolean
+        last_synced_at:
+          type:
+          - string
+          - 'null'
+          format: date-time
+          readOnly: true
+        latest_error:
+          type:
+          - string
+          - 'null'
+          readOnly: true
+          description: The latest error that occurred when syncing this schema.
+        incremental:
+          type: boolean
           readOnly: true
         status:
-          allOf:
-          - $ref: '#/components/schemas/DataModelingJobStatusEnum'
-          readOnly: true
-        rows_materialized:
-          type: integer
-          readOnly: true
-        error:
           type:
           - string
           - 'null'
           readOnly: true
-        created_at:
-          type: string
-          format: date-time
-          readOnly: true
-        last_run_at:
-          type: string
-          format: date-time
-          readOnly: true
-        workflow_id:
+        sync_type:
+          description: 'Sync strategy: incremental, full_refresh, append, or cdc.
+
+
+            * `full_refresh` - full_refresh
+
+            * `incremental` - incremental
+
+            * `append` - append
+
+            * `webhook` - webhook
+
+            * `cdc` - cdc'
+          oneOf:
+          - $ref: '#/components/schemas/SyncTypeEnum'
+          - $ref: '#/components/schemas/NullEnum'
+        incremental_field:
+          type:
+          - string
+          - 'null'
+          description: Column name used to track sync progress.
+        incremental_field_type:
+          description: 'Data type of the incremental field.
+
+
+            * `integer` - integer
+
+            * `numeric` - numeric
+
+            * `datetime` - datetime
+
+            * `date` - date
+
+            * `timestamp` - timestamp
+
+            * `objectid` - objectid'
+          oneOf:
+          - $ref: '#/components/schemas/IncrementalFieldTypeEnum'
+          - $ref: '#/components/schemas/NullEnum'
+        sync_frequency:
+          description: 'How often to sync.
+
+
+            * `never` - never
+
+            * `1min` - 1min
+
+            * `5min` - 5min
+
+            * `15min` - 15min
+
+            * `30min` - 30min
+
+            * `1hour` - 1hour
+
+            * `6hour` - 6hour
+
+            * `12hour` - 12hour
+
+            * `24hour` - 24hour
+
+            * `7day` - 7day
+
+            * `30day` - 30day'
+          oneOf:
+          - $ref: '#/components/schemas/SyncFrequencyEnum'
+          - $ref: '#/components/schemas/NullEnum'
+        sync_time_of_day:
+          type:
+          - string
+          - 'null'
+          format: time
+          description: UTC time of day to run the sync (HH:MM:SS).
+        description:
           type:
           - string
           - 'null'
           readOnly: true
-        workflow_run_id:
+        primary_key_columns:
           type:
-          - string
+          - array
           - 'null'
-          readOnly: true
-        rows_expected:
-          type:
-          - integer
-          - 'null'
-          readOnly: true
-          description: Total rows expected to be materialized
+          items:
+            type: string
+          description: Column names for primary key deduplication.
+        cdc_table_mode:
+          description: 'For CDC syncs: consolidated, cdc_only, or both.
+
+
+            * `consolidated` - consolidated
+
+            * `cdc_only` - cdc_only
+
+            * `both` - both'
+          oneOf:
+          - $ref: '#/components/schemas/CdcTableModeEnum'
+          - $ref: '#/components/schemas/NullEnum'
       required:
-      - created_at
-      - error
+      - description
       - id
-      - last_run_at
-      - rows_expected
-      - rows_materialized
-      - saved_query_id
+      - incremental
+      - label
+      - last_synced_at
+      - latest_error
+      - name
       - status
-      - workflow_id
-      - workflow_run_id
+      - table
+    CdcTableModeEnum:
+      enum:
+      - consolidated
+      - cdc_only
+      - both
+      type: string
+      description: '* `consolidated` - consolidated
+
+        * `cdc_only` - cdc_only
+
+        * `both` - both'
+    SyncFrequencyEnum:
+      enum:
+      - never
+      - 1min
+      - 5min
+      - 15min
+      - 30min
+      - 1hour
+      - 6hour
+      - 12hour
+      - 24hour
+      - 7day
+      - 30day
+      type: string
+      description: '* `never` - never
+
+        * `1min` - 1min
+
+        * `5min` - 5min
+
+        * `15min` - 15min
+
+        * `30min` - 30min
+
+        * `1hour` - 1hour
+
+        * `6hour` - 6hour
+
+        * `12hour` - 12hour
+
+        * `24hour` - 24hour
+
+        * `7day` - 7day
+
+        * `30day` - 30day'
     ExternalDataSourceTypeEnum:
       enum:
       - Ashby
@@ -5568,48 +6082,263 @@ components:
         * `Plain` - Plain
 
         * `Resend` - Resend'
-    InsightVariableTypeEnum:
-      enum:
-      - String
-      - Number
-      - Boolean
-      - List
-      - Date
-      type: string
-      description: '* `String` - String
-
-        * `Number` - Number
-
-        * `Boolean` - Boolean
-
-        * `List` - List
-
-        * `Date` - Date'
-    PaginatedExternalDataSourceConnectionOptionList:
+    DeprovisionWarehouseResponse:
       type: object
-      required:
-      - count
-      - results
       properties:
-        count:
-          type: integer
-          example: 123
-        next:
+        status:
+          type: string
+        team:
+          type: string
+      required:
+      - status
+      - team
+    PatchedExternalDataSchema:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+          readOnly: true
+        name:
+          type: string
+          readOnly: true
+        label:
           type:
           - string
           - 'null'
-          format: uri
-          example: http://api.example.org/accounts/?offset=400&limit=100
-        previous:
+          readOnly: true
+        table:
+          type:
+          - object
+          - 'null'
+          additionalProperties: true
+          readOnly: true
+        should_sync:
+          type: boolean
+        last_synced_at:
           type:
           - string
           - 'null'
-          format: uri
-          example: http://api.example.org/accounts/?offset=200&limit=100
-        results:
+          format: date-time
+          readOnly: true
+        latest_error:
+          type:
+          - string
+          - 'null'
+          readOnly: true
+          description: The latest error that occurred when syncing this schema.
+        incremental:
+          type: boolean
+          readOnly: true
+        status:
+          type:
+          - string
+          - 'null'
+          readOnly: true
+        sync_type:
+          description: 'Sync strategy: incremental, full_refresh, append, or cdc.
+
+
+            * `full_refresh` - full_refresh
+
+            * `incremental` - incremental
+
+            * `append` - append
+
+            * `webhook` - webhook
+
+            * `cdc` - cdc'
+          oneOf:
+          - $ref: '#/components/schemas/SyncTypeEnum'
+          - $ref: '#/components/schemas/NullEnum'
+        incremental_field:
+          type:
+          - string
+          - 'null'
+          description: Column name used to track sync progress.
+        incremental_field_type:
+          description: 'Data type of the incremental field.
+
+
+            * `integer` - integer
+
+            * `numeric` - numeric
+
+            * `datetime` - datetime
+
+            * `date` - date
+
+            * `timestamp` - timestamp
+
+            * `objectid` - objectid'
+          oneOf:
+          - $ref: '#/components/schemas/IncrementalFieldTypeEnum'
+          - $ref: '#/components/schemas/NullEnum'
+        sync_frequency:
+          description: 'How often to sync.
+
+
+            * `never` - never
+
+            * `1min` - 1min
+
+            * `5min` - 5min
+
+            * `15min` - 15min
+
+            * `30min` - 30min
+
+            * `1hour` - 1hour
+
+            * `6hour` - 6hour
+
+            * `12hour` - 12hour
+
+            * `24hour` - 24hour
+
+            * `7day` - 7day
+
+            * `30day` - 30day'
+          oneOf:
+          - $ref: '#/components/schemas/SyncFrequencyEnum'
+          - $ref: '#/components/schemas/NullEnum'
+        sync_time_of_day:
+          type:
+          - string
+          - 'null'
+          format: time
+          description: UTC time of day to run the sync (HH:MM:SS).
+        description:
+          type:
+          - string
+          - 'null'
+          readOnly: true
+        primary_key_columns:
+          type:
+          - array
+          - 'null'
+          items:
+            type: string
+          description: Column names for primary key deduplication.
+        cdc_table_mode:
+          description: 'For CDC syncs: consolidated, cdc_only, or both.
+
+
+            * `consolidated` - consolidated
+
+            * `cdc_only` - cdc_only
+
+            * `both` - both'
+          oneOf:
+          - $ref: '#/components/schemas/CdcTableModeEnum'
+          - $ref: '#/components/schemas/NullEnum'
+    PatchedExternalDataSourceSerializers:
+      type: object
+      description: Mixin for serializers to add user access control fields
+      properties:
+        id:
+          type: string
+          format: uuid
+          readOnly: true
+        created_at:
+          type: string
+          format: date-time
+          readOnly: true
+        created_by:
+          type:
+          - string
+          - 'null'
+          readOnly: true
+        created_via:
+          allOf:
+          - $ref: '#/components/schemas/CreatedViaEnum'
+          description: 'How this source was created. Defaults to `api` on create when omitted. `web` for the in-app UI, `api` for direct API callers, `mcp` for agent/MCP tool calls. Ignored on update.
+
+
+            * `web` - web
+
+            * `api` - api
+
+            * `mcp` - mcp'
+        status:
+          type: string
+          readOnly: true
+        client_secret:
+          type: string
+          writeOnly: true
+        account_id:
+          type: string
+          writeOnly: true
+        source_type:
+          allOf:
+          - $ref: '#/components/schemas/ExternalDataSourceTypeEnum'
+          readOnly: true
+        latest_error:
+          type:
+          - string
+          - 'null'
+          readOnly: true
+        prefix:
+          type:
+          - string
+          - 'null'
+          maxLength: 100
+        description:
+          type:
+          - string
+          - 'null'
+          maxLength: 400
+        access_method:
+          allOf:
+          - $ref: '#/components/schemas/AccessMethodEnum'
+          readOnly: true
+        engine:
+          readOnly: true
+          description: 'Backend engine detected for the direct connection.
+
+
+            * `duckdb` - duckdb
+
+            * `postgres` - postgres'
+          oneOf:
+          - $ref: '#/components/schemas/EngineEnum'
+          - $ref: '#/components/schemas/NullEnum'
+        last_run_at:
+          type:
+          - string
+          - 'null'
+          readOnly: true
+        schemas:
           type: array
           items:
-            $ref: '#/components/schemas/ExternalDataSourceConnectionOption'
+            type: object
+            additionalProperties: true
+          readOnly: true
+        job_inputs: {}
+        revenue_analytics_config:
+          allOf:
+          - $ref: '#/components/schemas/ExternalDataSourceRevenueAnalyticsConfig'
+          readOnly: true
+        user_access_level:
+          type:
+          - string
+          - 'null'
+          readOnly: true
+          description: The effective access level the user has for this object
+        supports_webhooks:
+          type: boolean
+          readOnly: true
+    CreatedViaEnum:
+      enum:
+      - web
+      - api
+      - mcp
+      type: string
+      description: '* `web` - web
+
+        * `api` - api
+
+        * `mcp` - mcp'
     ExternalDataSourceCreate:
       type: object
       properties:
@@ -5947,89 +6676,386 @@ components:
       required:
       - payload
       - source_type
-    RoleAtOrganizationEnum:
+    PaginatedDataModelingJobList:
+      type: object
+      required:
+      - results
+      properties:
+        next:
+          type:
+          - string
+          - 'null'
+          format: uri
+          example: http://api.example.org/accounts/?cursor=cD00ODY%3D"
+        previous:
+          type:
+          - string
+          - 'null'
+          format: uri
+          example: http://api.example.org/accounts/?cursor=cj0xJnA9NDg3
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/DataModelingJob'
+    ExternalDataSourceBulkUpdateSchema:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+          description: Schema identifier to update.
+        should_sync:
+          type: boolean
+          description: Whether the schema should be queryable/synced.
+        sync_type:
+          description: 'Requested sync mode for the schema.
+
+
+            * `full_refresh` - full_refresh
+
+            * `incremental` - incremental
+
+            * `append` - append
+
+            * `webhook` - webhook
+
+            * `cdc` - cdc'
+          oneOf:
+          - $ref: '#/components/schemas/SyncTypeEnum'
+          - $ref: '#/components/schemas/NullEnum'
+        incremental_field:
+          type:
+          - string
+          - 'null'
+          description: Incremental cursor field for incremental or append syncs.
+        incremental_field_type:
+          type:
+          - string
+          - 'null'
+          description: Type of the incremental cursor field.
+        sync_frequency:
+          type:
+          - string
+          - 'null'
+          description: Human-readable sync frequency value.
+        sync_time_of_day:
+          type:
+          - string
+          - 'null'
+          format: time
+          description: UTC anchor time for scheduled syncs.
+        cdc_table_mode:
+          description: 'How CDC-backed tables should be exposed.
+
+
+            * `consolidated` - consolidated
+
+            * `cdc_only` - cdc_only
+
+            * `both` - both'
+          oneOf:
+          - $ref: '#/components/schemas/CdcTableModeEnum'
+          - $ref: '#/components/schemas/NullEnum'
+      required:
+      - id
+    AccessMethodEnum:
       enum:
-      - engineering
-      - data
-      - product
-      - founder
-      - leadership
-      - marketing
-      - sales
-      - other
+      - warehouse
+      - direct
       type: string
-      description: '* `engineering` - Engineering
+      description: '* `warehouse` - warehouse
 
-        * `data` - Data
-
-        * `product` - Product Management
-
-        * `founder` - Founder
-
-        * `leadership` - Leadership
-
-        * `marketing` - Marketing
-
-        * `sales` - Sales / Success
-
-        * `other` - Other'
-    SyncFrequencyEnum:
+        * `direct` - direct'
+    IncrementalFieldTypeEnum:
       enum:
-      - never
-      - 1min
-      - 5min
-      - 15min
-      - 30min
-      - 1hour
-      - 6hour
-      - 12hour
-      - 24hour
-      - 7day
-      - 30day
+      - integer
+      - numeric
+      - datetime
+      - date
+      - timestamp
+      - objectid
       type: string
-      description: '* `never` - never
+      description: '* `integer` - integer
 
-        * `1min` - 1min
+        * `numeric` - numeric
 
-        * `5min` - 5min
+        * `datetime` - datetime
 
-        * `15min` - 15min
+        * `date` - date
 
-        * `30min` - 30min
+        * `timestamp` - timestamp
 
-        * `1hour` - 1hour
-
-        * `6hour` - 6hour
-
-        * `12hour` - 12hour
-
-        * `24hour` - 24hour
-
-        * `7day` - 7day
-
-        * `30day` - 30day'
-    CreatedViaEnum:
+        * `objectid` - objectid'
+    CheckDatabaseNameResponse:
+      type: object
+      properties:
+        name:
+          type: string
+        available:
+          type: boolean
+      required:
+      - available
+      - name
+    InsightVariableTypeEnum:
       enum:
-      - web
-      - api
-      - mcp
+      - String
+      - Number
+      - Boolean
+      - List
+      - Date
       type: string
-      description: '* `web` - web
+      description: '* `String` - String
 
-        * `api` - api
+        * `Number` - Number
 
-        * `mcp` - mcp'
-    CdcTableModeEnum:
+        * `Boolean` - Boolean
+
+        * `List` - List
+
+        * `Date` - Date'
+    BlankEnum:
       enum:
-      - consolidated
-      - cdc_only
-      - both
+      - ''
+    PaginatedExternalDataSourceConnectionOptionList:
+      type: object
+      required:
+      - count
+      - results
+      properties:
+        count:
+          type: integer
+          example: 123
+        next:
+          type:
+          - string
+          - 'null'
+          format: uri
+          example: http://api.example.org/accounts/?offset=400&limit=100
+        previous:
+          type:
+          - string
+          - 'null'
+          format: uri
+          example: http://api.example.org/accounts/?offset=200&limit=100
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/ExternalDataSourceConnectionOption'
+    DataWarehouseSavedQueryFolder:
+      type: object
+      description: Mixin for serializers to add user access control fields
+      properties:
+        id:
+          type: string
+          format: uuid
+          readOnly: true
+        name:
+          type: string
+          description: Display name for the folder used to organize saved queries in the SQL editor sidebar.
+          maxLength: 128
+        created_at:
+          type: string
+          format: date-time
+          readOnly: true
+        created_by:
+          allOf:
+          - $ref: '#/components/schemas/UserBasic'
+          readOnly: true
+        view_count:
+          type: integer
+          readOnly: true
+        user_access_level:
+          type:
+          - string
+          - 'null'
+          readOnly: true
+          description: The effective access level the user has for this object
+      required:
+      - created_at
+      - created_by
+      - id
+      - name
+      - user_access_level
+      - view_count
+    ExternalDataSourceRevenueAnalyticsConfig:
+      type: object
+      properties:
+        enabled:
+          type: boolean
+        include_invoiceless_charges:
+          type: boolean
+    ProvisionWarehouseResponse:
+      type: object
+      properties:
+        status:
+          type: string
+        team:
+          type: string
+      required:
+      - status
+      - team
+    PatchedDataWarehouseSavedQueryFolder:
+      type: object
+      description: Mixin for serializers to add user access control fields
+      properties:
+        id:
+          type: string
+          format: uuid
+          readOnly: true
+        name:
+          type: string
+          description: Display name for the folder used to organize saved queries in the SQL editor sidebar.
+          maxLength: 128
+        created_at:
+          type: string
+          format: date-time
+          readOnly: true
+        created_by:
+          allOf:
+          - $ref: '#/components/schemas/UserBasic'
+          readOnly: true
+        view_count:
+          type: integer
+          readOnly: true
+        user_access_level:
+          type:
+          - string
+          - 'null'
+          readOnly: true
+          description: The effective access level the user has for this object
+    ExternalDataSourceConnectionOption:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+          readOnly: true
+        prefix:
+          type:
+          - string
+          - 'null'
+          readOnly: true
+        engine:
+          readOnly: true
+          description: 'Backend engine detected for the direct connection.
+
+
+            * `duckdb` - duckdb
+
+            * `postgres` - postgres'
+          oneOf:
+          - $ref: '#/components/schemas/EngineEnum'
+          - $ref: '#/components/schemas/NullEnum'
+      required:
+      - engine
+      - id
+      - prefix
+    DataModelingJobStatusEnum:
+      enum:
+      - Cancelled
+      - Completed
+      - Failed
+      - Running
       type: string
-      description: '* `consolidated` - consolidated
+      description: '* `Cancelled` - Cancelled
 
-        * `cdc_only` - cdc_only
+        * `Completed` - Completed
 
-        * `both` - both'
+        * `Failed` - Failed
+
+        * `Running` - Running'
+    WarehouseStatusResponseStateEnum:
+      enum:
+      - pending
+      - provisioning
+      - ready
+      - failed
+      - deleting
+      - deleted
+      type: string
+      description: '* `pending` - pending
+
+        * `provisioning` - provisioning
+
+        * `ready` - ready
+
+        * `failed` - failed
+
+        * `deleting` - deleting
+
+        * `deleted` - deleted'
+    SyncTypeEnum:
+      enum:
+      - full_refresh
+      - incremental
+      - append
+      - webhook
+      - cdc
+      type: string
+      description: '* `full_refresh` - full_refresh
+
+        * `incremental` - incremental
+
+        * `append` - append
+
+        * `webhook` - webhook
+
+        * `cdc` - cdc'
+    InsightVariable:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+          readOnly: true
+          description: UUID of the SQL variable.
+        name:
+          type: string
+          description: Human-readable name for the SQL variable.
+          maxLength: 400
+        type:
+          allOf:
+          - $ref: '#/components/schemas/InsightVariableTypeEnum'
+          description: 'Variable type. Controls how the value is rendered and substituted in HogQL.
+
+
+            * `String` - String
+
+            * `Number` - Number
+
+            * `Boolean` - Boolean
+
+            * `List` - List
+
+            * `Date` - Date'
+        default_value:
+          description: Default value used when a query references this variable.
+        created_by:
+          type:
+          - integer
+          - 'null'
+          readOnly: true
+          description: ID of the user who created the SQL variable.
+        created_at:
+          type: string
+          format: date-time
+          readOnly: true
+          description: Timestamp when the SQL variable was created.
+        code_name:
+          type:
+          - string
+          - 'null'
+          readOnly: true
+          description: Generated code-safe name used in HogQL as {variables.code_name}. Derived from name.
+        values:
+          description: Allowed values for List variables. Null for other variable types.
+      required:
+      - code_name
+      - created_at
+      - created_by
+      - id
+      - name
+      - type
     DataWarehouseSavedQueryMinimal:
       type: object
       description: Lightweight serializer for list views - excludes large query field to reduce memory usage.
@@ -6163,171 +7189,159 @@ components:
       - status
       - sync_frequency
       - user_access_level
-    ExternalDataSourceConnectionOption:
+    ResetPasswordResponse:
       type: object
+      properties:
+        username:
+          type: string
+        password:
+          type: string
+      required:
+      - password
+      - username
+    PatchedDataWarehouseSavedQuery:
+      type: object
+      description: 'Shared methods for DataWarehouseSavedQuery serializers.
+
+
+        This mixin is intended to be used with serializers.ModelSerializer subclasses.'
       properties:
         id:
           type: string
           format: uuid
           readOnly: true
-        prefix:
+        deleted:
+          type:
+          - boolean
+          - 'null'
+        name:
+          type: string
+          description: Unique name for the view. Used as the table name in HogQL queries and the node name in the data modeling Node.
+          maxLength: 128
+        query:
+          description: 'HogQL query definition as a JSON object with a "query" key containing the SQL string and a "kind" key containing the query type. Example: {"query": "SELECT * FROM events LIMIT 100", "kind": "HogQLQuery"}'
+        created_by:
+          allOf:
+          - $ref: '#/components/schemas/UserBasic'
+          readOnly: true
+        created_at:
+          type: string
+          format: date-time
+          readOnly: true
+        sync_frequency:
           type:
           - string
           - 'null'
           readOnly: true
-        engine:
-          readOnly: true
-          description: 'Backend engine detected for the direct connection.
-
-
-            * `duckdb` - duckdb
-
-            * `postgres` - postgres'
-          oneOf:
-          - $ref: '#/components/schemas/EngineEnum'
-          - $ref: '#/components/schemas/NullEnum'
-      required:
-      - engine
-      - id
-      - prefix
-    PaginatedDataModelingJobList:
-      type: object
-      required:
-      - results
-      properties:
-        next:
-          type:
-          - string
-          - 'null'
-          format: uri
-          example: http://api.example.org/accounts/?cursor=cD00ODY%3D"
-        previous:
-          type:
-          - string
-          - 'null'
-          format: uri
-          example: http://api.example.org/accounts/?cursor=cj0xJnA9NDg3
-        results:
+        columns:
           type: array
           items:
-            $ref: '#/components/schemas/DataModelingJob'
-    PatchedInsightVariable:
-      type: object
-      properties:
-        id:
-          type: string
-          format: uuid
+            type: object
+            additionalProperties: true
           readOnly: true
-          description: UUID of the SQL variable.
-        name:
-          type: string
-          description: Human-readable name for the SQL variable.
-          maxLength: 400
-        type:
-          allOf:
-          - $ref: '#/components/schemas/InsightVariableTypeEnum'
-          description: 'Variable type. Controls how the value is rendered and substituted in HogQL.
+        status:
+          readOnly: true
+          description: 'The status of when this SavedQuery last ran.
 
 
-            * `String` - String
+            * `Cancelled` - Cancelled
 
-            * `Number` - Number
+            * `Modified` - Modified
 
-            * `Boolean` - Boolean
+            * `Completed` - Completed
 
-            * `List` - List
+            * `Failed` - Failed
 
-            * `Date` - Date'
-        default_value:
-          description: Default value used when a query references this variable.
-        created_by:
+            * `Running` - Running'
+          oneOf:
+          - $ref: '#/components/schemas/SavedQueryStatusEnum'
+          - $ref: '#/components/schemas/NullEnum'
+        last_run_at:
           type:
-          - integer
+          - string
           - 'null'
-          readOnly: true
-          description: ID of the user who created the SQL variable.
-        created_at:
-          type: string
           format: date-time
           readOnly: true
-          description: Timestamp when the SQL variable was created.
-        code_name:
+        managed_viewset_kind:
           type:
           - string
           - 'null'
           readOnly: true
-          description: Generated code-safe name used in HogQL as {variables.code_name}. Derived from name.
-        values:
-          description: Allowed values for List variables. Null for other variable types.
-    NullEnum:
-      enum:
-      - null
-    ProvisionWarehouseRequest:
-      type: object
-      properties:
-        database_name:
-          type: string
-          description: Name for the new database
-      required:
-      - database_name
-    InsightVariable:
-      type: object
-      properties:
-        id:
-          type: string
-          format: uuid
-          readOnly: true
-          description: UUID of the SQL variable.
-        name:
-          type: string
-          description: Human-readable name for the SQL variable.
-          maxLength: 400
-        type:
-          allOf:
-          - $ref: '#/components/schemas/InsightVariableTypeEnum'
-          description: 'Variable type. Controls how the value is rendered and substituted in HogQL.
-
-
-            * `String` - String
-
-            * `Number` - Number
-
-            * `Boolean` - Boolean
-
-            * `List` - List
-
-            * `Date` - Date'
-        default_value:
-          description: Default value used when a query references this variable.
-        created_by:
+        folder_id:
           type:
-          - integer
+          - string
           - 'null'
-          readOnly: true
-          description: ID of the user who created the SQL variable.
-        created_at:
-          type: string
-          format: date-time
-          readOnly: true
-          description: Timestamp when the SQL variable was created.
-        code_name:
+          format: uuid
+          description: Optional folder ID used to organize this view in the SQL editor sidebar.
+        folder_name:
           type:
           - string
           - 'null'
           readOnly: true
-          description: Generated code-safe name used in HogQL as {variables.code_name}. Derived from name.
-        values:
-          description: Allowed values for List variables. Null for other variable types.
-      required:
-      - code_name
-      - created_at
-      - created_by
-      - id
-      - name
-      - type
-    BlankEnum:
-      enum:
-      - ''
+          description: Folder name used to organize this view in the SQL editor sidebar.
+        latest_error:
+          type:
+          - string
+          - 'null'
+          readOnly: true
+        edited_history_id:
+          type:
+          - string
+          - 'null'
+          writeOnly: true
+          description: Activity log ID from the last known edit. Used for conflict detection.
+        latest_history_id:
+          type:
+          - integer
+          - 'null'
+          readOnly: true
+        soft_update:
+          type:
+          - boolean
+          - 'null'
+          writeOnly: true
+          description: If true, skip column inference and validation. For saving drafts.
+        dag_id:
+          type:
+          - string
+          - 'null'
+          format: uuid
+          writeOnly: true
+          description: Optional DAG to place this view into
+        is_materialized:
+          type:
+          - boolean
+          - 'null'
+          readOnly: true
+        origin:
+          readOnly: true
+          description: 'Where this SavedQuery is created.
+
+
+            * `data_warehouse` - Data Warehouse
+
+            * `endpoint` - Endpoint
+
+            * `managed_viewset` - Managed Viewset'
+          oneOf:
+          - $ref: '#/components/schemas/OriginEnum'
+          - $ref: '#/components/schemas/NullEnum'
+        is_test:
+          type: boolean
+          description: Whether this view is for testing only and will auto-expire.
+        expires_at:
+          type:
+          - string
+          - 'null'
+          format: date-time
+          readOnly: true
+          description: When this test view should be automatically deleted.
+        user_access_level:
+          type:
+          - string
+          - 'null'
+          readOnly: true
+          description: The effective access level the user has for this object
     PaginatedExternalDataSourceSerializersList:
       type: object
       required:
@@ -6353,191 +7367,42 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/ExternalDataSourceSerializers'
-    PatchedDataWarehouseSavedQueryFolder:
+    PaginatedExternalDataSchemaList:
       type: object
-      description: Mixin for serializers to add user access control fields
+      required:
+      - count
+      - results
       properties:
-        id:
-          type: string
-          format: uuid
-          readOnly: true
-        name:
-          type: string
-          description: Display name for the folder used to organize saved queries in the SQL editor sidebar.
-          maxLength: 128
-        created_at:
-          type: string
-          format: date-time
-          readOnly: true
-        created_by:
-          allOf:
-          - $ref: '#/components/schemas/UserBasic'
-          readOnly: true
-        view_count:
+        count:
           type: integer
-          readOnly: true
-        user_access_level:
+          example: 123
+        next:
           type:
           - string
           - 'null'
-          readOnly: true
-          description: The effective access level the user has for this object
-    PatchedExternalDataSchema:
-      type: object
-      properties:
-        id:
-          type: string
-          format: uuid
-          readOnly: true
-        name:
-          type: string
-          readOnly: true
-        label:
+          format: uri
+          example: http://api.example.org/accounts/?offset=400&limit=100
+        previous:
           type:
           - string
           - 'null'
-          readOnly: true
-        table:
-          type:
-          - object
-          - 'null'
-          additionalProperties: true
-          readOnly: true
-        should_sync:
-          type: boolean
-        last_synced_at:
-          type:
-          - string
-          - 'null'
-          format: date-time
-          readOnly: true
-        latest_error:
-          type:
-          - string
-          - 'null'
-          readOnly: true
-          description: The latest error that occurred when syncing this schema.
-        incremental:
-          type: boolean
-          readOnly: true
-        status:
-          type:
-          - string
-          - 'null'
-          readOnly: true
-        sync_type:
-          description: 'Sync strategy: incremental, full_refresh, append, or cdc.
-
-
-            * `full_refresh` - full_refresh
-
-            * `incremental` - incremental
-
-            * `append` - append
-
-            * `webhook` - webhook
-
-            * `cdc` - cdc'
-          oneOf:
-          - $ref: '#/components/schemas/SyncTypeEnum'
-          - $ref: '#/components/schemas/NullEnum'
-        incremental_field:
-          type:
-          - string
-          - 'null'
-          description: Column name used to track sync progress.
-        incremental_field_type:
-          description: 'Data type of the incremental field.
-
-
-            * `integer` - integer
-
-            * `numeric` - numeric
-
-            * `datetime` - datetime
-
-            * `date` - date
-
-            * `timestamp` - timestamp
-
-            * `objectid` - objectid'
-          oneOf:
-          - $ref: '#/components/schemas/IncrementalFieldTypeEnum'
-          - $ref: '#/components/schemas/NullEnum'
-        sync_frequency:
-          description: 'How often to sync.
-
-
-            * `never` - never
-
-            * `1min` - 1min
-
-            * `5min` - 5min
-
-            * `15min` - 15min
-
-            * `30min` - 30min
-
-            * `1hour` - 1hour
-
-            * `6hour` - 6hour
-
-            * `12hour` - 12hour
-
-            * `24hour` - 24hour
-
-            * `7day` - 7day
-
-            * `30day` - 30day'
-          oneOf:
-          - $ref: '#/components/schemas/SyncFrequencyEnum'
-          - $ref: '#/components/schemas/NullEnum'
-        sync_time_of_day:
-          type:
-          - string
-          - 'null'
-          format: time
-          description: UTC time of day to run the sync (HH:MM:SS).
-        description:
-          type:
-          - string
-          - 'null'
-          readOnly: true
-        primary_key_columns:
-          type:
-          - array
-          - 'null'
+          format: uri
+          example: http://api.example.org/accounts/?offset=200&limit=100
+        results:
+          type: array
           items:
-            type: string
-          description: Column names for primary key deduplication.
-        cdc_table_mode:
-          description: 'For CDC syncs: consolidated, cdc_only, or both.
-
-
-            * `consolidated` - consolidated
-
-            * `cdc_only` - cdc_only
-
-            * `both` - both'
-          oneOf:
-          - $ref: '#/components/schemas/CdcTableModeEnum'
-          - $ref: '#/components/schemas/NullEnum'
-    AccessMethodEnum:
+            $ref: '#/components/schemas/ExternalDataSchema'
+    OriginEnum:
       enum:
-      - warehouse
-      - direct
+      - data_warehouse
+      - endpoint
+      - managed_viewset
       type: string
-      description: '* `warehouse` - warehouse
+      description: '* `data_warehouse` - Data Warehouse
 
-        * `direct` - direct'
-    EngineEnum:
-      enum:
-      - duckdb
-      - postgres
-      type: string
-      description: '* `duckdb` - duckdb
+        * `endpoint` - Endpoint
 
-        * `postgres` - postgres'
+        * `managed_viewset` - Managed Viewset'
     UserBasic:
       type: object
       properties:
@@ -6584,938 +7449,66 @@ components:
       - hedgehog_config
       - id
       - uuid
-    SavedQueryStatusEnum:
-      enum:
-      - Cancelled
-      - Modified
-      - Completed
-      - Failed
-      - Running
-      type: string
-      description: '* `Cancelled` - Cancelled
-
-        * `Modified` - Modified
-
-        * `Completed` - Completed
-
-        * `Failed` - Failed
-
-        * `Running` - Running'
-    ExternalDataSchema:
+    WarehouseStatusResponse:
       type: object
       properties:
-        id:
+        team_name:
           type: string
-          format: uuid
-          readOnly: true
-        name:
+        state:
+          $ref: '#/components/schemas/WarehouseStatusResponseStateEnum'
+        status_message:
           type: string
-          readOnly: true
-        label:
-          type:
-          - string
-          - 'null'
-          readOnly: true
-        table:
-          type:
-          - object
-          - 'null'
-          additionalProperties: true
-          readOnly: true
-        should_sync:
-          type: boolean
-        last_synced_at:
+        ready_at:
           type:
           - string
           - 'null'
           format: date-time
-          readOnly: true
-        latest_error:
+        failed_at:
           type:
           - string
           - 'null'
-          readOnly: true
-          description: The latest error that occurred when syncing this schema.
-        incremental:
-          type: boolean
-          readOnly: true
-        status:
-          type:
-          - string
-          - 'null'
-          readOnly: true
-        sync_type:
-          description: 'Sync strategy: incremental, full_refresh, append, or cdc.
-
-
-            * `full_refresh` - full_refresh
-
-            * `incremental` - incremental
-
-            * `append` - append
-
-            * `webhook` - webhook
-
-            * `cdc` - cdc'
-          oneOf:
-          - $ref: '#/components/schemas/SyncTypeEnum'
-          - $ref: '#/components/schemas/NullEnum'
-        incremental_field:
-          type:
-          - string
-          - 'null'
-          description: Column name used to track sync progress.
-        incremental_field_type:
-          description: 'Data type of the incremental field.
-
-
-            * `integer` - integer
-
-            * `numeric` - numeric
-
-            * `datetime` - datetime
-
-            * `date` - date
-
-            * `timestamp` - timestamp
-
-            * `objectid` - objectid'
-          oneOf:
-          - $ref: '#/components/schemas/IncrementalFieldTypeEnum'
-          - $ref: '#/components/schemas/NullEnum'
-        sync_frequency:
-          description: 'How often to sync.
-
-
-            * `never` - never
-
-            * `1min` - 1min
-
-            * `5min` - 5min
-
-            * `15min` - 15min
-
-            * `30min` - 30min
-
-            * `1hour` - 1hour
-
-            * `6hour` - 6hour
-
-            * `12hour` - 12hour
-
-            * `24hour` - 24hour
-
-            * `7day` - 7day
-
-            * `30day` - 30day'
-          oneOf:
-          - $ref: '#/components/schemas/SyncFrequencyEnum'
-          - $ref: '#/components/schemas/NullEnum'
-        sync_time_of_day:
-          type:
-          - string
-          - 'null'
-          format: time
-          description: UTC time of day to run the sync (HH:MM:SS).
-        description:
-          type:
-          - string
-          - 'null'
-          readOnly: true
-        primary_key_columns:
-          type:
-          - array
-          - 'null'
-          items:
-            type: string
-          description: Column names for primary key deduplication.
-        cdc_table_mode:
-          description: 'For CDC syncs: consolidated, cdc_only, or both.
-
-
-            * `consolidated` - consolidated
-
-            * `cdc_only` - cdc_only
-
-            * `both` - both'
-          oneOf:
-          - $ref: '#/components/schemas/CdcTableModeEnum'
-          - $ref: '#/components/schemas/NullEnum'
-      required:
-      - description
-      - id
-      - incremental
-      - label
-      - last_synced_at
-      - latest_error
-      - name
-      - status
-      - table
-    CheckDatabaseNameResponse:
-      type: object
-      properties:
-        name:
-          type: string
-        available:
-          type: boolean
-      required:
-      - available
-      - name
-    ResetPasswordResponse:
-      type: object
-      properties:
-        username:
-          type: string
-        password:
-          type: string
-      required:
-      - password
-      - username
-    OriginEnum:
-      enum:
-      - data_warehouse
-      - endpoint
-      - managed_viewset
-      type: string
-      description: '* `data_warehouse` - Data Warehouse
-
-        * `endpoint` - Endpoint
-
-        * `managed_viewset` - Managed Viewset'
-    PatchedExternalDataSourceSerializers:
-      type: object
-      description: Mixin for serializers to add user access control fields
-      properties:
-        id:
-          type: string
-          format: uuid
-          readOnly: true
-        created_at:
-          type: string
           format: date-time
-          readOnly: true
-        created_by:
-          type:
-          - string
-          - 'null'
-          readOnly: true
-        created_via:
-          allOf:
-          - $ref: '#/components/schemas/CreatedViaEnum'
-          description: 'How this source was created. Defaults to `api` on create when omitted. `web` for the in-app UI, `api` for direct API callers, `mcp` for agent/MCP tool calls. Ignored on update.
-
-
-            * `web` - web
-
-            * `api` - api
-
-            * `mcp` - mcp'
-        status:
-          type: string
-          readOnly: true
-        client_secret:
-          type: string
-          writeOnly: true
-        account_id:
-          type: string
-          writeOnly: true
-        source_type:
-          allOf:
-          - $ref: '#/components/schemas/ExternalDataSourceTypeEnum'
-          readOnly: true
-        latest_error:
-          type:
-          - string
-          - 'null'
-          readOnly: true
-        prefix:
-          type:
-          - string
-          - 'null'
-          maxLength: 100
-        description:
-          type:
-          - string
-          - 'null'
-          maxLength: 400
-        access_method:
-          allOf:
-          - $ref: '#/components/schemas/AccessMethodEnum'
-          readOnly: true
-        engine:
-          readOnly: true
-          description: 'Backend engine detected for the direct connection.
-
-
-            * `duckdb` - duckdb
-
-            * `postgres` - postgres'
-          oneOf:
-          - $ref: '#/components/schemas/EngineEnum'
-          - $ref: '#/components/schemas/NullEnum'
-        last_run_at:
-          type:
-          - string
-          - 'null'
-          readOnly: true
-        schemas:
-          type: array
-          items:
-            type: object
-            additionalProperties: true
-          readOnly: true
-        job_inputs: {}
-        revenue_analytics_config:
-          allOf:
-          - $ref: '#/components/schemas/ExternalDataSourceRevenueAnalyticsConfig'
-          readOnly: true
-        user_access_level:
-          type:
-          - string
-          - 'null'
-          readOnly: true
-          description: The effective access level the user has for this object
-        supports_webhooks:
-          type: boolean
-          readOnly: true
-    ProvisionWarehouseResponse:
-      type: object
-      properties:
-        status:
-          type: string
-        team:
-          type: string
       required:
-      - status
-      - team
-    PaginatedInsightVariableList:
-      type: object
-      required:
-      - count
-      - results
-      properties:
-        count:
-          type: integer
-          example: 123
-        next:
-          type:
-          - string
-          - 'null'
-          format: uri
-          example: http://api.example.org/accounts/?page=4
-        previous:
-          type:
-          - string
-          - 'null'
-          format: uri
-          example: http://api.example.org/accounts/?page=2
-        results:
-          type: array
-          items:
-            $ref: '#/components/schemas/InsightVariable'
-    DataWarehouseSavedQueryFolder:
-      type: object
-      description: Mixin for serializers to add user access control fields
-      properties:
-        id:
-          type: string
-          format: uuid
-          readOnly: true
-        name:
-          type: string
-          description: Display name for the folder used to organize saved queries in the SQL editor sidebar.
-          maxLength: 128
-        created_at:
-          type: string
-          format: date-time
-          readOnly: true
-        created_by:
-          allOf:
-          - $ref: '#/components/schemas/UserBasic'
-          readOnly: true
-        view_count:
-          type: integer
-          readOnly: true
-        user_access_level:
-          type:
-          - string
-          - 'null'
-          readOnly: true
-          description: The effective access level the user has for this object
-      required:
-      - created_at
-      - created_by
-      - id
-      - name
-      - user_access_level
-      - view_count
-    PatchedExternalDataSourceBulkUpdateSchemas:
-      type: object
-      properties:
-        schemas:
-          type: array
-          items:
-            $ref: '#/components/schemas/ExternalDataSourceBulkUpdateSchema'
-          description: Schema updates to apply in a single batch.
-    ExternalDataSourceSerializers:
-      type: object
-      description: Mixin for serializers to add user access control fields
-      properties:
-        id:
-          type: string
-          format: uuid
-          readOnly: true
-        created_at:
-          type: string
-          format: date-time
-          readOnly: true
-        created_by:
-          type:
-          - string
-          - 'null'
-          readOnly: true
-        created_via:
-          allOf:
-          - $ref: '#/components/schemas/CreatedViaEnum'
-          description: 'How this source was created. Defaults to `api` on create when omitted. `web` for the in-app UI, `api` for direct API callers, `mcp` for agent/MCP tool calls. Ignored on update.
-
-
-            * `web` - web
-
-            * `api` - api
-
-            * `mcp` - mcp'
-        status:
-          type: string
-          readOnly: true
-        client_secret:
-          type: string
-          writeOnly: true
-        account_id:
-          type: string
-          writeOnly: true
-        source_type:
-          allOf:
-          - $ref: '#/components/schemas/ExternalDataSourceTypeEnum'
-          readOnly: true
-        latest_error:
-          type:
-          - string
-          - 'null'
-          readOnly: true
-        prefix:
-          type:
-          - string
-          - 'null'
-          maxLength: 100
-        description:
-          type:
-          - string
-          - 'null'
-          maxLength: 400
-        access_method:
-          allOf:
-          - $ref: '#/components/schemas/AccessMethodEnum'
-          readOnly: true
-        engine:
-          readOnly: true
-          description: 'Backend engine detected for the direct connection.
-
-
-            * `duckdb` - duckdb
-
-            * `postgres` - postgres'
-          oneOf:
-          - $ref: '#/components/schemas/EngineEnum'
-          - $ref: '#/components/schemas/NullEnum'
-        last_run_at:
-          type:
-          - string
-          - 'null'
-          readOnly: true
-        schemas:
-          type: array
-          items:
-            type: object
-            additionalProperties: true
-          readOnly: true
-        job_inputs: {}
-        revenue_analytics_config:
-          allOf:
-          - $ref: '#/components/schemas/ExternalDataSourceRevenueAnalyticsConfig'
-          readOnly: true
-        user_access_level:
-          type:
-          - string
-          - 'null'
-          readOnly: true
-          description: The effective access level the user has for this object
-        supports_webhooks:
-          type: boolean
-          readOnly: true
-      required:
-      - access_method
-      - account_id
-      - client_secret
-      - created_at
-      - created_by
-      - engine
-      - id
-      - last_run_at
-      - latest_error
-      - revenue_analytics_config
-      - schemas
-      - source_type
-      - status
-      - supports_webhooks
-      - user_access_level
-    PaginatedDataWarehouseSavedQueryMinimalList:
-      type: object
-      required:
-      - count
-      - results
-      properties:
-        count:
-          type: integer
-          example: 123
-        next:
-          type:
-          - string
-          - 'null'
-          format: uri
-          example: http://api.example.org/accounts/?page=4
-        previous:
-          type:
-          - string
-          - 'null'
-          format: uri
-          example: http://api.example.org/accounts/?page=2
-        results:
-          type: array
-          items:
-            $ref: '#/components/schemas/DataWarehouseSavedQueryMinimal'
-    SyncTypeEnum:
+      - failed_at
+      - ready_at
+      - state
+      - status_message
+      - team_name
+    RoleAtOrganizationEnum:
       enum:
-      - full_refresh
-      - incremental
-      - append
-      - webhook
-      - cdc
+      - engineering
+      - data
+      - product
+      - founder
+      - leadership
+      - marketing
+      - sales
+      - other
       type: string
-      description: '* `full_refresh` - full_refresh
+      description: '* `engineering` - Engineering
 
-        * `incremental` - incremental
+        * `data` - Data
 
-        * `append` - append
+        * `product` - Product Management
 
-        * `webhook` - webhook
+        * `founder` - Founder
 
-        * `cdc` - cdc'
-    IncrementalFieldTypeEnum:
+        * `leadership` - Leadership
+
+        * `marketing` - Marketing
+
+        * `sales` - Sales / Success
+
+        * `other` - Other'
+    EngineEnum:
       enum:
-      - integer
-      - numeric
-      - datetime
-      - date
-      - timestamp
-      - objectid
+      - duckdb
+      - postgres
       type: string
-      description: '* `integer` - integer
+      description: '* `duckdb` - duckdb
 
-        * `numeric` - numeric
-
-        * `datetime` - datetime
-
-        * `date` - date
-
-        * `timestamp` - timestamp
-
-        * `objectid` - objectid'
-    DatabaseSchemaRequest:
-      type: object
-      description: 'Validate credentials and preview available tables from a remote database.
-
-
-        The request body contains source_type plus flat source-specific credential fields
-
-        (e.g. host, port, database, user, password, schema for Postgres). The credential
-
-        fields vary per source_type and are validated dynamically by the source registry.'
-      properties:
-        source_type:
-          allOf:
-          - $ref: '#/components/schemas/ExternalDataSourceTypeEnum'
-          description: 'The source type to validate against.
-
-
-            * `Ashby` - Ashby
-
-            * `Supabase` - Supabase
-
-            * `CustomerIO` - CustomerIO
-
-            * `Github` - Github
-
-            * `Stripe` - Stripe
-
-            * `Hubspot` - Hubspot
-
-            * `Postgres` - Postgres
-
-            * `Zendesk` - Zendesk
-
-            * `Snowflake` - Snowflake
-
-            * `Salesforce` - Salesforce
-
-            * `MySQL` - MySQL
-
-            * `MongoDB` - MongoDB
-
-            * `MSSQL` - MSSQL
-
-            * `Vitally` - Vitally
-
-            * `BigQuery` - BigQuery
-
-            * `Chargebee` - Chargebee
-
-            * `Clerk` - Clerk
-
-            * `GoogleAds` - GoogleAds
-
-            * `TemporalIO` - TemporalIO
-
-            * `DoIt` - DoIt
-
-            * `GoogleSheets` - GoogleSheets
-
-            * `MetaAds` - MetaAds
-
-            * `Klaviyo` - Klaviyo
-
-            * `Mailchimp` - Mailchimp
-
-            * `Braze` - Braze
-
-            * `Mailjet` - Mailjet
-
-            * `Redshift` - Redshift
-
-            * `Polar` - Polar
-
-            * `RevenueCat` - RevenueCat
-
-            * `LinkedinAds` - LinkedinAds
-
-            * `RedditAds` - RedditAds
-
-            * `TikTokAds` - TikTokAds
-
-            * `BingAds` - BingAds
-
-            * `Shopify` - Shopify
-
-            * `Attio` - Attio
-
-            * `SnapchatAds` - SnapchatAds
-
-            * `Linear` - Linear
-
-            * `Intercom` - Intercom
-
-            * `Amplitude` - Amplitude
-
-            * `Mixpanel` - Mixpanel
-
-            * `Jira` - Jira
-
-            * `ActiveCampaign` - ActiveCampaign
-
-            * `Marketo` - Marketo
-
-            * `Adjust` - Adjust
-
-            * `AppsFlyer` - AppsFlyer
-
-            * `Freshdesk` - Freshdesk
-
-            * `GoogleAnalytics` - GoogleAnalytics
-
-            * `Pipedrive` - Pipedrive
-
-            * `SendGrid` - SendGrid
-
-            * `Slack` - Slack
-
-            * `PagerDuty` - PagerDuty
-
-            * `Asana` - Asana
-
-            * `Notion` - Notion
-
-            * `Airtable` - Airtable
-
-            * `Greenhouse` - Greenhouse
-
-            * `BambooHR` - BambooHR
-
-            * `Lever` - Lever
-
-            * `GitLab` - GitLab
-
-            * `Datadog` - Datadog
-
-            * `Sentry` - Sentry
-
-            * `Pendo` - Pendo
-
-            * `FullStory` - FullStory
-
-            * `AmazonAds` - AmazonAds
-
-            * `PinterestAds` - PinterestAds
-
-            * `AppleSearchAds` - AppleSearchAds
-
-            * `QuickBooks` - QuickBooks
-
-            * `Xero` - Xero
-
-            * `NetSuite` - NetSuite
-
-            * `WooCommerce` - WooCommerce
-
-            * `BigCommerce` - BigCommerce
-
-            * `PayPal` - PayPal
-
-            * `Square` - Square
-
-            * `Zoom` - Zoom
-
-            * `Trello` - Trello
-
-            * `Monday` - Monday
-
-            * `ClickUp` - ClickUp
-
-            * `Confluence` - Confluence
-
-            * `Recurly` - Recurly
-
-            * `SalesLoft` - SalesLoft
-
-            * `Outreach` - Outreach
-
-            * `Gong` - Gong
-
-            * `Calendly` - Calendly
-
-            * `Typeform` - Typeform
-
-            * `Iterable` - Iterable
-
-            * `ZohoCRM` - ZohoCRM
-
-            * `Close` - Close
-
-            * `Oracle` - Oracle
-
-            * `DynamoDB` - DynamoDB
-
-            * `Elasticsearch` - Elasticsearch
-
-            * `Kafka` - Kafka
-
-            * `LaunchDarkly` - LaunchDarkly
-
-            * `Braintree` - Braintree
-
-            * `Recharge` - Recharge
-
-            * `HelpScout` - HelpScout
-
-            * `Gorgias` - Gorgias
-
-            * `Instagram` - Instagram
-
-            * `YouTubeAnalytics` - YouTubeAnalytics
-
-            * `FacebookPages` - FacebookPages
-
-            * `TwitterAds` - TwitterAds
-
-            * `Workday` - Workday
-
-            * `ServiceNow` - ServiceNow
-
-            * `Pardot` - Pardot
-
-            * `Copper` - Copper
-
-            * `Front` - Front
-
-            * `ChartMogul` - ChartMogul
-
-            * `Zuora` - Zuora
-
-            * `Paddle` - Paddle
-
-            * `CircleCI` - CircleCI
-
-            * `CockroachDB` - CockroachDB
-
-            * `Firebase` - Firebase
-
-            * `AzureBlob` - AzureBlob
-
-            * `GoogleDrive` - GoogleDrive
-
-            * `OneDrive` - OneDrive
-
-            * `SharePoint` - SharePoint
-
-            * `Box` - Box
-
-            * `SFTP` - SFTP
-
-            * `MicrosoftTeams` - MicrosoftTeams
-
-            * `Aircall` - Aircall
-
-            * `Webflow` - Webflow
-
-            * `Okta` - Okta
-
-            * `Auth0` - Auth0
-
-            * `Productboard` - Productboard
-
-            * `Smartsheet` - Smartsheet
-
-            * `Wrike` - Wrike
-
-            * `Plaid` - Plaid
-
-            * `SurveyMonkey` - SurveyMonkey
-
-            * `Eventbrite` - Eventbrite
-
-            * `RingCentral` - RingCentral
-
-            * `Twilio` - Twilio
-
-            * `Freshsales` - Freshsales
-
-            * `Shortcut` - Shortcut
-
-            * `ConvertKit` - ConvertKit
-
-            * `Drip` - Drip
-
-            * `CampaignMonitor` - CampaignMonitor
-
-            * `MailerLite` - MailerLite
-
-            * `Omnisend` - Omnisend
-
-            * `Brevo` - Brevo
-
-            * `Postmark` - Postmark
-
-            * `Granola` - Granola
-
-            * `BuildBetter` - BuildBetter
-
-            * `Convex` - Convex
-
-            * `ClickHouse` - ClickHouse
-
-            * `Plain` - Plain
-
-            * `Resend` - Resend'
-      required:
-      - source_type
-    DeprovisionWarehouseResponse:
-      type: object
-      properties:
-        status:
-          type: string
-        team:
-          type: string
-      required:
-      - status
-      - team
-    ExternalDataSourceBulkUpdateSchema:
-      type: object
-      properties:
-        id:
-          type: string
-          format: uuid
-          description: Schema identifier to update.
-        should_sync:
-          type: boolean
-          description: Whether the schema should be queryable/synced.
-        sync_type:
-          description: 'Requested sync mode for the schema.
-
-
-            * `full_refresh` - full_refresh
-
-            * `incremental` - incremental
-
-            * `append` - append
-
-            * `webhook` - webhook
-
-            * `cdc` - cdc'
-          oneOf:
-          - $ref: '#/components/schemas/SyncTypeEnum'
-          - $ref: '#/components/schemas/NullEnum'
-        incremental_field:
-          type:
-          - string
-          - 'null'
-          description: Incremental cursor field for incremental or append syncs.
-        incremental_field_type:
-          type:
-          - string
-          - 'null'
-          description: Type of the incremental cursor field.
-        sync_frequency:
-          type:
-          - string
-          - 'null'
-          description: Human-readable sync frequency value.
-        sync_time_of_day:
-          type:
-          - string
-          - 'null'
-          format: time
-          description: UTC anchor time for scheduled syncs.
-        cdc_table_mode:
-          description: 'How CDC-backed tables should be exposed.
-
-
-            * `consolidated` - consolidated
-
-            * `cdc_only` - cdc_only
-
-            * `both` - both'
-          oneOf:
-          - $ref: '#/components/schemas/CdcTableModeEnum'
-          - $ref: '#/components/schemas/NullEnum'
-      required:
-      - id
+        * `postgres` - postgres'
   parameters:
-    ProjectIdPath:
-      in: path
-      name: project_id
-      required: true
-      schema:
-        type: string
-      description: Project ID of the project you're trying to access. To find the ID of the project, make a call to /api/projects/.
     EnvironmentIdPath:
       in: path
       name: environment_id
@@ -7523,6 +7516,13 @@ components:
       schema:
         type: string
       description: Deprecated. Use /api/projects/{project_id}/ instead.
+    ProjectIdPath:
+      in: path
+      name: project_id
+      required: true
+      schema:
+        type: string
+      description: Project ID of the project you're trying to access. To find the ID of the project, make a call to /api/projects/.
   securitySchemes:
     PersonalAPIKeyAuth:
       type: http

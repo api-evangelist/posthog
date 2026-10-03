@@ -4226,50 +4226,6 @@ paths:
       x-summary-source: derived
 components:
   schemas:
-    SummarizeTypeEnum:
-      enum:
-      - trace
-      - event
-      type: string
-      description: '* `trace` - trace
-
-        * `event` - event'
-    SentimentRequest:
-      type: object
-      properties:
-        ids:
-          type: array
-          items:
-            type: string
-          description: Trace IDs or generation IDs to classify, depending on analysis_level.
-          maxItems: 5
-          minItems: 1
-        analysis_level:
-          allOf:
-          - $ref: '#/components/schemas/SentimentRequestAnalysisLevelEnum'
-          default: trace
-          description: 'Whether the IDs are ''trace'' IDs or ''generation'' IDs.
-
-
-            * `trace` - trace
-
-            * `generation` - generation'
-        force_refresh:
-          type: boolean
-          default: false
-          description: If true, bypass cache and reclassify.
-        date_from:
-          type:
-          - string
-          - 'null'
-          description: Start of date range for the lookup (e.g. '-7d' or '2026-01-01'). Defaults to -30d.
-        date_to:
-          type:
-          - string
-          - 'null'
-          description: End of date range for the lookup. Defaults to now.
-      required:
-      - ids
     TextReprOptions:
       type: object
       properties:
@@ -4303,275 +4259,6 @@ components:
         include_line_numbers:
           type: boolean
           description: 'Prefix each line with line number (default: false)'
-    SentimentRequestAnalysisLevelEnum:
-      enum:
-      - trace
-      - generation
-      type: string
-      description: '* `trace` - trace
-
-        * `generation` - generation'
-    EvaluationPattern:
-      type: object
-      properties:
-        title:
-          type: string
-        description:
-          type: string
-        frequency:
-          type: string
-        example_generation_ids:
-          type: array
-          items:
-            type: string
-      required:
-      - description
-      - example_generation_ids
-      - frequency
-      - title
-    EvaluationSummaryRequest:
-      type: object
-      description: Request serializer for evaluation summary - accepts IDs only, fetches data server-side.
-      properties:
-        evaluation_id:
-          type: string
-          format: uuid
-          description: UUID of the evaluation config to summarize
-        filter:
-          allOf:
-          - $ref: '#/components/schemas/FilterEnum'
-          default: all
-          description: 'Filter type to apply (''all'', ''pass'', ''fail'', or ''na'')
-
-
-            * `all` - all
-
-            * `pass` - pass
-
-            * `fail` - fail
-
-            * `na` - na'
-        generation_ids:
-          type: array
-          items:
-            type: string
-            format: uuid
-          description: 'Optional: specific generation IDs to include in summary (max 250)'
-          maxItems: 250
-        force_refresh:
-          type: boolean
-          default: false
-          description: If true, bypass cache and generate a fresh summary
-      required:
-      - evaluation_id
-    TextReprResponse:
-      type: object
-      properties:
-        text:
-          type: string
-          description: Generated text representation of the event
-        metadata:
-          allOf:
-          - $ref: '#/components/schemas/TextReprMetadata'
-          description: Metadata about the text representation
-      required:
-      - metadata
-      - text
-    EvaluationSummaryResponse:
-      type: object
-      properties:
-        overall_assessment:
-          type: string
-        pass_patterns:
-          type: array
-          items:
-            $ref: '#/components/schemas/EvaluationPattern'
-        fail_patterns:
-          type: array
-          items:
-            $ref: '#/components/schemas/EvaluationPattern'
-        na_patterns:
-          type: array
-          items:
-            $ref: '#/components/schemas/EvaluationPattern'
-        recommendations:
-          type: array
-          items:
-            type: string
-        statistics:
-          $ref: '#/components/schemas/EvaluationSummaryStatistics'
-      required:
-      - fail_patterns
-      - na_patterns
-      - overall_assessment
-      - pass_patterns
-      - recommendations
-      - statistics
-    FilterEnum:
-      enum:
-      - all
-      - pass
-      - fail
-      - na
-      type: string
-      description: '* `all` - all
-
-        * `pass` - pass
-
-        * `fail` - fail
-
-        * `na` - na'
-    InterestingNote:
-      type: object
-      properties:
-        text:
-          type: string
-        line_refs:
-          type: string
-      required:
-      - line_refs
-      - text
-    StructuredSummary:
-      type: object
-      properties:
-        title:
-          type: string
-          description: Concise title (no longer than 10 words) summarizing the trace/event
-        flow_diagram:
-          type: string
-          description: Mermaid flowchart code showing the main flow
-        summary_bullets:
-          type: array
-          items:
-            $ref: '#/components/schemas/SummaryBullet'
-          description: Main summary bullets
-        interesting_notes:
-          type: array
-          items:
-            $ref: '#/components/schemas/InterestingNote'
-          description: Interesting notes (0-2 for minimal, more for detailed)
-      required:
-      - flow_diagram
-      - interesting_notes
-      - summary_bullets
-      - title
-    BatchCheckResponse:
-      type: object
-      properties:
-        summaries:
-          type: array
-          items:
-            $ref: '#/components/schemas/CachedSummary'
-      required:
-      - summaries
-    SummarizeResponse:
-      type: object
-      properties:
-        summary:
-          allOf:
-          - $ref: '#/components/schemas/StructuredSummary'
-          description: Structured AI-generated summary with flow, bullets, and optional notes
-        text_repr:
-          type: string
-          description: Line-numbered text representation that the summary references
-        metadata:
-          description: Metadata about the summarization
-      required:
-      - summary
-      - text_repr
-    TextReprRequest:
-      type: object
-      properties:
-        event_type:
-          allOf:
-          - $ref: '#/components/schemas/EventTypeEnum'
-          description: 'Type of LLM event to stringify
-
-
-            * `$ai_generation` - $ai_generation
-
-            * `$ai_span` - $ai_span
-
-            * `$ai_embedding` - $ai_embedding
-
-            * `$ai_trace` - $ai_trace'
-        data:
-          description: Event data to stringify. For traces, should include 'trace' and 'hierarchy' fields.
-        options:
-          allOf:
-          - $ref: '#/components/schemas/TextReprOptions'
-          description: Optional configuration for text generation
-      required:
-      - data
-      - event_type
-    SentimentResult:
-      type: object
-      properties:
-        label:
-          type: string
-        score:
-          type: number
-          format: double
-        scores:
-          type: object
-          additionalProperties:
-            type: number
-            format: double
-        messages:
-          type: object
-          additionalProperties:
-            $ref: '#/components/schemas/MessageSentiment'
-        message_count:
-          type: integer
-      required:
-      - label
-      - message_count
-      - messages
-      - score
-      - scores
-    MessageSentiment:
-      type: object
-      properties:
-        label:
-          type: string
-        score:
-          type: number
-          format: double
-        scores:
-          type: object
-          additionalProperties:
-            type: number
-            format: double
-      required:
-      - label
-      - score
-      - scores
-    BatchCheckRequest:
-      type: object
-      properties:
-        trace_ids:
-          type: array
-          items:
-            type: string
-          description: List of trace IDs to check for cached summaries
-          maxItems: 100
-        mode:
-          allOf:
-          - $ref: '#/components/schemas/DetailModeValueEnum'
-          default: minimal
-          description: 'Summary detail level to check for
-
-
-            * `minimal` - minimal
-
-            * `detailed` - detailed'
-        model:
-          type:
-          - string
-          - 'null'
-          description: LLM model used for cached summaries
-      required:
-      - trace_ids
     DetailModeValueEnum:
       enum:
       - minimal
@@ -4580,41 +4267,20 @@ components:
       description: '* `minimal` - minimal
 
         * `detailed` - detailed'
-    SentimentBatchResponse:
-      type: object
-      properties:
-        results:
-          type: object
-          additionalProperties:
-            $ref: '#/components/schemas/SentimentResult'
-      required:
-      - results
-    EvaluationSummaryStatistics:
-      type: object
-      properties:
-        total_analyzed:
-          type: integer
-        pass_count:
-          type: integer
-        fail_count:
-          type: integer
-        na_count:
-          type: integer
-      required:
-      - fail_count
-      - na_count
-      - pass_count
-      - total_analyzed
-    SummaryBullet:
-      type: object
-      properties:
-        text:
-          type: string
-        line_refs:
-          type: string
-      required:
-      - line_refs
-      - text
+    EventTypeEnum:
+      enum:
+      - $ai_generation
+      - $ai_span
+      - $ai_embedding
+      - $ai_trace
+      type: string
+      description: '* `$ai_generation` - $ai_generation
+
+        * `$ai_span` - $ai_span
+
+        * `$ai_embedding` - $ai_embedding
+
+        * `$ai_trace` - $ai_trace'
     CachedSummary:
       type: object
       properties:
@@ -4628,27 +4294,6 @@ components:
       required:
       - title
       - trace_id
-    TextReprMetadata:
-      type: object
-      properties:
-        event_type:
-          type: string
-        event_id:
-          type: string
-        trace_id:
-          type: string
-        rendering:
-          type: string
-        char_count:
-          type: integer
-        truncated:
-          type: boolean
-        error:
-          type: string
-      required:
-      - char_count
-      - rendering
-      - truncated
     SummarizeRequest:
       type: object
       properties:
@@ -4698,1320 +4343,375 @@ components:
           - string
           - 'null'
           description: End of date range for ID-based lookup. Defaults to now.
-    EventTypeEnum:
-      enum:
-      - $ai_generation
-      - $ai_span
-      - $ai_embedding
-      - $ai_trace
-      type: string
-      description: '* `$ai_generation` - $ai_generation
-
-        * `$ai_span` - $ai_span
-
-        * `$ai_embedding` - $ai_embedding
-
-        * `$ai_trace` - $ai_trace'
-    PaginatedLLMPromptListList:
-      type: object
-      required:
-      - count
-      - results
-      properties:
-        count:
-          type: integer
-          example: 123
-        next:
-          type:
-          - string
-          - 'null'
-          format: uri
-          example: http://api.example.org/accounts/?offset=400&limit=100
-        previous:
-          type:
-          - string
-          - 'null'
-          format: uri
-          example: http://api.example.org/accounts/?offset=200&limit=100
-        results:
-          type: array
-          items:
-            $ref: '#/components/schemas/LLMPromptList'
-    LLMSkillResolveResponse:
-      type: object
-      properties:
-        skill:
-          $ref: '#/components/schemas/LLMSkill'
-        versions:
-          type: array
-          items:
-            $ref: '#/components/schemas/LLMSkillVersionSummary'
-        has_more:
-          type: boolean
-      required:
-      - has_more
-      - skill
-      - versions
-    StatusReasonEnum:
-      enum:
-      - trial_limit_reached
-      - model_not_allowed
-      - provider_key_deleted
-      type: string
-      description: '* `trial_limit_reached` - Trial evaluation limit reached
-
-        * `model_not_allowed` - Model not available on the trial plan
-
-        * `provider_key_deleted` - Provider API key was deleted'
-    TranslateRequest:
+    InterestingNote:
       type: object
       properties:
         text:
           type: string
-          description: The text to translate
-          maxLength: 10000
-        target_language:
+        line_refs:
           type: string
-          default: en
-          description: 'Target language code (default: ''en'' for English)'
-          maxLength: 10
       required:
+      - line_refs
       - text
-    SelectionModeEnum:
-      enum:
-      - single
-      - multiple
-      type: string
-      description: '* `single` - single
-
-        * `multiple` - multiple'
-    LLMProviderKey:
+    BatchCheckResponse:
       type: object
       properties:
-        id:
-          type: string
-          format: uuid
-          readOnly: true
-        provider:
-          $ref: '#/components/schemas/LLMProviderEnum'
-        name:
-          type: string
-          maxLength: 255
-        state:
-          allOf:
-          - $ref: '#/components/schemas/LLMProviderKeyStateEnum'
-          readOnly: true
-        error_message:
-          type:
-          - string
-          - 'null'
-          readOnly: true
-        api_key:
-          type: string
-          writeOnly: true
-        api_key_masked:
-          type: string
-          readOnly: true
-        azure_endpoint:
-          type: string
-          format: uri
-          writeOnly: true
-          description: Azure OpenAI endpoint URL
-        api_version:
-          type: string
-          writeOnly: true
-          description: Azure OpenAI API version
-          maxLength: 20
-        azure_endpoint_display:
-          type:
-          - string
-          - 'null'
-          readOnly: true
-          description: Azure endpoint (read-only, for display)
-        api_version_display:
-          type:
-          - string
-          - 'null'
-          readOnly: true
-          description: Azure API version (read-only, for display)
-        set_as_active:
-          type: boolean
-          writeOnly: true
-          default: false
-        created_at:
-          type: string
-          format: date-time
-          readOnly: true
-        created_by:
-          allOf:
-          - $ref: '#/components/schemas/UserBasic'
-          readOnly: true
-        last_used_at:
-          type:
-          - string
-          - 'null'
-          format: date-time
-          readOnly: true
-      required:
-      - api_key_masked
-      - api_version_display
-      - azure_endpoint_display
-      - created_at
-      - created_by
-      - error_message
-      - id
-      - last_used_at
-      - name
-      - provider
-      - state
-    ScoreDefinitionConfig:
-      oneOf:
-      - $ref: '#/components/schemas/CategoricalScoreDefinitionConfig'
-      - $ref: '#/components/schemas/NumericScoreDefinitionConfig'
-      - $ref: '#/components/schemas/BooleanScoreDefinitionConfig'
-    PaginatedEvaluationReportList:
-      type: object
-      required:
-      - count
-      - results
-      properties:
-        count:
-          type: integer
-          example: 123
-        next:
-          type:
-          - string
-          - 'null'
-          format: uri
-          example: http://api.example.org/accounts/?offset=400&limit=100
-        previous:
-          type:
-          - string
-          - 'null'
-          format: uri
-          example: http://api.example.org/accounts/?offset=200&limit=100
-        results:
+        summaries:
           type: array
           items:
-            $ref: '#/components/schemas/EvaluationReport'
-    PatchedLLMPromptPublish:
-      type: object
-      properties:
-        prompt:
-          description: Full prompt payload to publish as a new version. Mutually exclusive with edits.
-        edits:
-          type: array
-          items:
-            $ref: '#/components/schemas/LLMPromptEditOperation'
-          description: List of find/replace operations to apply to the current prompt version. Each edit's 'old' text must match exactly once. Edits are applied sequentially. Mutually exclusive with prompt.
-        base_version:
-          type: integer
-          minimum: 1
-          description: Latest version you are editing from. Used for optimistic concurrency checks.
-    NullEnum:
-      enum:
-      - null
-    ReviewQueueCreate:
-      type: object
-      properties:
-        name:
-          type: string
-          description: Human-readable queue name.
-          maxLength: 255
+            $ref: '#/components/schemas/CachedSummary'
       required:
-      - name
-    PaginatedDatasetList:
-      type: object
-      required:
-      - count
-      - results
-      properties:
-        count:
-          type: integer
-          example: 123
-        next:
-          type:
-          - string
-          - 'null'
-          format: uri
-          example: http://api.example.org/accounts/?offset=400&limit=100
-        previous:
-          type:
-          - string
-          - 'null'
-          format: uri
-          example: http://api.example.org/accounts/?offset=200&limit=100
-        results:
-          type: array
-          items:
-            $ref: '#/components/schemas/Dataset'
-    LLMProviderEnum:
-      enum:
-      - openai
-      - anthropic
-      - gemini
-      - openrouter
-      - fireworks
-      - azure_openai
-      - together_ai
-      type: string
-      description: '* `openai` - Openai
-
-        * `anthropic` - Anthropic
-
-        * `gemini` - Gemini
-
-        * `openrouter` - Openrouter
-
-        * `fireworks` - Fireworks
-
-        * `azure_openai` - Azure OpenAI
-
-        * `together_ai` - Together AI'
-    LLMSkillEditOperation:
-      type: object
-      properties:
-        old:
-          type: string
-          description: Text to find in the target content. Must match exactly once.
-        new:
-          type: string
-          description: Replacement text.
-      required:
-      - new
-      - old
-    PaginatedLLMSkillListList:
-      type: object
-      required:
-      - count
-      - results
-      properties:
-        count:
-          type: integer
-          example: 123
-        next:
-          type:
-          - string
-          - 'null'
-          format: uri
-          example: http://api.example.org/accounts/?offset=400&limit=100
-        previous:
-          type:
-          - string
-          - 'null'
-          format: uri
-          example: http://api.example.org/accounts/?offset=200&limit=100
-        results:
-          type: array
-          items:
-            $ref: '#/components/schemas/LLMSkillList'
-    TestHogResultItem:
-      type: object
-      properties:
-        event_uuid:
-          type: string
-          description: UUID of the $ai_generation event.
-        trace_id:
-          type:
-          - string
-          - 'null'
-          description: Trace ID if available.
-        input_preview:
-          type: string
-          description: First 200 chars of the generation input.
-        output_preview:
-          type: string
-          description: First 200 chars of the generation output.
-        result:
-          type:
-          - boolean
-          - 'null'
-          description: True = pass, False = fail, null = N/A or error.
-        reasoning:
-          type:
-          - string
-          - 'null'
-          description: Hog evaluation reasoning string, if any.
-        error:
-          type:
-          - string
-          - 'null'
-          description: Error message if the Hog code raised an exception.
-      required:
-      - error
-      - event_uuid
-      - input_preview
-      - output_preview
-      - reasoning
-      - result
-    PatchedEvaluation:
-      type: object
-      properties:
-        id:
-          type: string
-          format: uuid
-          readOnly: true
-        name:
-          type: string
-          description: Name of the evaluation.
-          maxLength: 400
-        description:
-          type: string
-          description: Optional description of what this evaluation checks.
-        enabled:
-          type: boolean
-          description: Whether the evaluation runs automatically on new $ai_generation events.
-        status:
-          allOf:
-          - $ref: '#/components/schemas/EvaluationStatusEnum'
-          readOnly: true
-        status_reason:
-          readOnly: true
-          oneOf:
-          - $ref: '#/components/schemas/StatusReasonEnum'
-          - $ref: '#/components/schemas/NullEnum'
-        evaluation_type:
-          allOf:
-          - $ref: '#/components/schemas/EvaluationTypeEnum'
-          description: '''llm_judge'' uses an LLM to score outputs against a prompt; ''hog'' runs deterministic Hog code.
-
-
-            * `llm_judge` - LLM as a judge
-
-            * `hog` - Hog'
-        evaluation_config:
-          oneOf:
-          - type: object
-            title: LLM judge config
-            required:
-            - prompt
-            properties:
-              prompt:
-                type: string
-                description: Evaluation criteria for the LLM judge. Describe what makes a good vs bad response.
-                minLength: 1
-            additionalProperties: false
-          - type: object
-            title: Hog config
-            required:
-            - source
-            properties:
-              source:
-                type: string
-                description: Hog source code. Must return true (pass), false (fail), or null for N/A.
-                minLength: 1
-            additionalProperties: false
-          description: 'Configuration dict. For ''llm_judge'': {prompt}. For ''hog'': {source}.'
-        output_type:
-          allOf:
-          - $ref: '#/components/schemas/OutputTypeEnum'
-          description: 'Output format. Currently only ''boolean'' is supported.
-
-
-            * `boolean` - Boolean (Pass/Fail)'
-        output_config:
-          type: object
-          properties:
-            allows_na:
-              type: boolean
-              description: Whether the evaluation can return N/A for non-applicable generations.
-              default: false
-          additionalProperties: false
-          description: 'Output config. For ''boolean'' output_type: {allows_na} to permit N/A results.'
-        conditions:
-          description: Optional trigger conditions to filter which events are evaluated. OR between condition sets, AND within each.
-        model_configuration:
-          allOf:
-          - $ref: '#/components/schemas/ModelConfiguration'
-        created_at:
-          type: string
-          format: date-time
-          readOnly: true
-        updated_at:
-          type: string
-          format: date-time
-          readOnly: true
-        created_by:
-          allOf:
-          - $ref: '#/components/schemas/UserBasic'
-          readOnly: true
-        deleted:
-          type: boolean
-          description: Set to true to soft-delete the evaluation.
-    CategoricalScoreOption:
-      type: object
-      properties:
-        key:
-          type: string
-          description: Stable option key. Use lowercase letters, numbers, underscores, or hyphens.
-          maxLength: 128
-        label:
-          type: string
-          description: Human-readable option label.
-          maxLength: 256
-      required:
-      - key
-      - label
-    PaginatedEvaluationList:
-      type: object
-      required:
-      - count
-      - results
-      properties:
-        count:
-          type: integer
-          example: 123
-        next:
-          type:
-          - string
-          - 'null'
-          format: uri
-          example: http://api.example.org/accounts/?offset=400&limit=100
-        previous:
-          type:
-          - string
-          - 'null'
-          format: uri
-          example: http://api.example.org/accounts/?offset=200&limit=100
-        results:
-          type: array
-          items:
-            $ref: '#/components/schemas/Evaluation'
-    ClusteringJobAnalysisLevelEnum:
+      - summaries
+    SummarizeTypeEnum:
       enum:
       - trace
-      - generation
-      - evaluation
+      - event
       type: string
       description: '* `trace` - trace
 
-        * `generation` - generation
-
-        * `evaluation` - evaluation'
-    PaginatedLLMProviderKeyList:
-      type: object
-      required:
-      - count
-      - results
-      properties:
-        count:
-          type: integer
-          example: 123
-        next:
-          type:
-          - string
-          - 'null'
-          format: uri
-          example: http://api.example.org/accounts/?offset=400&limit=100
-        previous:
-          type:
-          - string
-          - 'null'
-          format: uri
-          example: http://api.example.org/accounts/?offset=200&limit=100
-        results:
-          type: array
-          items:
-            $ref: '#/components/schemas/LLMProviderKey'
-    LLMSkillFileManifest:
+        * `event` - event'
+    EvaluationPattern:
       type: object
       properties:
-        path:
+        title:
           type: string
-          maxLength: 500
-        content_type:
-          type: string
-          maxLength: 100
-      required:
-      - path
-    PaginatedClusteringJobList:
-      type: object
-      required:
-      - count
-      - results
-      properties:
-        count:
-          type: integer
-          example: 123
-        next:
-          type:
-          - string
-          - 'null'
-          format: uri
-          example: http://api.example.org/accounts/?offset=400&limit=100
-        previous:
-          type:
-          - string
-          - 'null'
-          format: uri
-          example: http://api.example.org/accounts/?offset=200&limit=100
-        results:
-          type: array
-          items:
-            $ref: '#/components/schemas/ClusteringJob'
-    ExperimentMetricKindEnum:
-      enum:
-      - categorical
-      - numeric
-      - boolean
-      type: string
-      description: '* `categorical` - categorical
-
-        * `numeric` - numeric
-
-        * `boolean` - boolean'
-    ModelConfiguration:
-      type: object
-      description: Nested serializer for model configuration.
-      properties:
-        provider:
-          $ref: '#/components/schemas/LLMProviderEnum'
-        model:
-          type: string
-          maxLength: 100
-        provider_key_id:
-          type:
-          - string
-          - 'null'
-          format: uuid
-        provider_key_name:
-          type:
-          - string
-          - 'null'
-          readOnly: true
-      required:
-      - model
-      - provider
-      - provider_key_name
-    PatchedDataset:
-      type: object
-      properties:
-        id:
-          type: string
-          format: uuid
-          readOnly: true
-        name:
-          type: string
-          maxLength: 400
         description:
-          type:
-          - string
-          - 'null'
-        metadata: {}
-        created_at:
           type: string
-          format: date-time
-          readOnly: true
-        updated_at:
-          type:
-          - string
-          - 'null'
-          format: date-time
-          readOnly: true
-        deleted:
-          type:
-          - boolean
-          - 'null'
-        created_by:
-          allOf:
-          - $ref: '#/components/schemas/UserBasic'
-          readOnly: true
-        team:
-          type: integer
-          readOnly: true
-    LLMSkillDuplicate:
-      type: object
-      properties:
-        new_name:
-          type: string
-          description: Name for the duplicated skill. Must be unique.
-          maxLength: 64
-      required:
-      - new_name
-    EvaluationReport:
-      type: object
-      properties:
-        id:
-          type: string
-          format: uuid
-          readOnly: true
-        evaluation:
-          type: string
-          format: uuid
-          description: UUID of the evaluation this report config belongs to.
         frequency:
-          allOf:
-          - $ref: '#/components/schemas/EvaluationReportFrequencyEnum'
-          description: 'How report generation is triggered. ''every_n'' fires once N new evaluation results have accumulated (subject to cooldown_minutes and daily_run_cap). ''scheduled'' fires on the cadence defined by rrule + starts_at + timezone_name.
-
-
-            * `scheduled` - Scheduled
-
-            * `every_n` - Every N'
-        rrule:
           type: string
-          description: RFC 5545 recurrence rule string (e.g. 'FREQ=WEEKLY;BYDAY=MO'). Must not contain DTSTART — the anchor is set via starts_at. Required when frequency is 'scheduled'; ignored otherwise.
-        starts_at:
-          type:
-          - string
-          - 'null'
-          format: date-time
-          description: Anchor datetime for the rrule (ISO 8601, UTC — must end in 'Z'). Local-time interpretation is controlled by timezone_name. Required when frequency is 'scheduled'; ignored otherwise.
-        timezone_name:
-          type: string
-          description: IANA timezone name used to expand the rrule in local time so e.g. '9am' stays at 9am across DST transitions (e.g. 'America/New_York'). Defaults to 'UTC'.
-          maxLength: 64
-        next_delivery_date:
-          type:
-          - string
-          - 'null'
-          format: date-time
-          readOnly: true
-        delivery_targets:
-          description: 'List of delivery targets. Each entry is either {type: ''email'', value: ''user@example.com''} or {type: ''slack'', integration_id: <int>, channel: ''<channel>''}. Slack integration_id must belong to this team.'
-        max_sample_size:
-          type: integer
-          maximum: 2147483647
-          minimum: -2147483648
-          description: Maximum number of evaluation runs included in each report. Defaults to 200.
-        enabled:
-          type: boolean
-          description: Whether report delivery is active. Disabled configs do not fire.
-        deleted:
-          type: boolean
-          description: Set to true to soft-delete this report config.
-        last_delivered_at:
-          type:
-          - string
-          - 'null'
-          format: date-time
-          readOnly: true
-        report_prompt_guidance:
-          type: string
-          description: Optional custom instructions appended to the AI report prompt to steer focus, scope, or section choices without modifying the base prompt.
-        trigger_threshold:
-          type:
-          - integer
-          - 'null'
-          maximum: 10000
-          minimum: 10
-          description: Number of new evaluation results that triggers a report (every_n mode only). Min 10, max 10000. Defaults to 100. Required when frequency is 'every_n'.
-        cooldown_minutes:
-          type: integer
-          maximum: 1440
-          minimum: 60
-          description: Minimum minutes between count-triggered reports to prevent spam (every_n mode only). Min 60, max 1440 (24 hours). Defaults to 60.
-        daily_run_cap:
-          type: integer
-          maximum: 24
-          minimum: 1
-          description: Maximum count-triggered report runs per calendar day (UTC). Min 1, max 24 (one per cooldown window). Defaults to 10.
-        created_by:
-          type:
-          - integer
-          - 'null'
-          readOnly: true
-        created_at:
-          type: string
-          format: date-time
-          readOnly: true
-      required:
-      - created_at
-      - created_by
-      - evaluation
-      - id
-      - last_delivered_at
-      - next_delivery_date
-    PaginatedTraceReviewList:
-      type: object
-      required:
-      - count
-      - results
-      properties:
-        count:
-          type: integer
-          example: 123
-        next:
-          type:
-          - string
-          - 'null'
-          format: uri
-          example: http://api.example.org/accounts/?offset=400&limit=100
-        previous:
-          type:
-          - string
-          - 'null'
-          format: uri
-          example: http://api.example.org/accounts/?offset=200&limit=100
-        results:
-          type: array
-          items:
-            $ref: '#/components/schemas/TraceReview'
-    LLMProviderKeyStateEnum:
-      enum:
-      - unknown
-      - ok
-      - invalid
-      - error
-      type: string
-      description: '* `unknown` - Unknown
-
-        * `ok` - Ok
-
-        * `invalid` - Invalid
-
-        * `error` - Error'
-    PaginatedReviewQueueList:
-      type: object
-      required:
-      - count
-      - results
-      properties:
-        count:
-          type: integer
-          example: 123
-        next:
-          type:
-          - string
-          - 'null'
-          format: uri
-          example: http://api.example.org/accounts/?offset=400&limit=100
-        previous:
-          type:
-          - string
-          - 'null'
-          format: uri
-          example: http://api.example.org/accounts/?offset=200&limit=100
-        results:
-          type: array
-          items:
-            $ref: '#/components/schemas/ReviewQueue'
-    PaginatedReviewQueueItemList:
-      type: object
-      required:
-      - count
-      - results
-      properties:
-        count:
-          type: integer
-          example: 123
-        next:
-          type:
-          - string
-          - 'null'
-          format: uri
-          example: http://api.example.org/accounts/?offset=400&limit=100
-        previous:
-          type:
-          - string
-          - 'null'
-          format: uri
-          example: http://api.example.org/accounts/?offset=200&limit=100
-        results:
-          type: array
-          items:
-            $ref: '#/components/schemas/ReviewQueueItem'
-    LLMPromptVersionSummary:
-      type: object
-      properties:
-        id:
-          type: string
-          format: uuid
-          readOnly: true
-        version:
-          type: integer
-          readOnly: true
-        created_by:
-          allOf:
-          - $ref: '#/components/schemas/UserBasic'
-          readOnly: true
-        created_at:
-          type: string
-          format: date-time
-          readOnly: true
-        is_latest:
-          type: boolean
-          readOnly: true
-      required:
-      - created_at
-      - created_by
-      - id
-      - is_latest
-      - version
-    LLMModelInfo:
-      type: object
-      properties:
-        id:
-          type: string
-          description: Provider-specific model identifier (e.g. 'gpt-4o-mini', 'claude-3-5-sonnet-20241022').
-        posthog_available:
-          type: boolean
-          description: Whether this model is available on PostHog's trial credits without bringing a provider key.
-      required:
-      - id
-      - posthog_available
-    RoleAtOrganizationEnum:
-      enum:
-      - engineering
-      - data
-      - product
-      - founder
-      - leadership
-      - marketing
-      - sales
-      - other
-      type: string
-      description: '* `engineering` - Engineering
-
-        * `data` - Data
-
-        * `product` - Product Management
-
-        * `founder` - Founder
-
-        * `leadership` - Leadership
-
-        * `marketing` - Marketing
-
-        * `sales` - Sales / Success
-
-        * `other` - Other'
-    ReviewQueue:
-      type: object
-      properties:
-        id:
-          type: string
-          format: uuid
-          readOnly: true
-        name:
-          type: string
-          readOnly: true
-          description: Human-readable queue name.
-        pending_item_count:
-          type: integer
-          readOnly: true
-          description: Number of pending traces currently assigned to this queue.
-        created_at:
-          type: string
-          format: date-time
-          readOnly: true
-        updated_at:
-          type:
-          - string
-          - 'null'
-          format: date-time
-          readOnly: true
-        created_by:
-          allOf:
-          - $ref: '#/components/schemas/UserBasic'
-          readOnly: true
-          description: User who created this review queue.
-        team:
-          type: integer
-          readOnly: true
-      required:
-      - created_at
-      - created_by
-      - id
-      - name
-      - pending_item_count
-      - team
-      - updated_at
-    OutputTypeEnum:
-      enum:
-      - boolean
-      type: string
-      description: '* `boolean` - Boolean (Pass/Fail)'
-    BooleanScoreDefinitionConfig:
-      type: object
-      properties:
-        true_label:
-          type: string
-          description: Optional label for a true value.
-        false_label:
-          type: string
-          description: Optional label for a false value.
-    PaginatedDatasetItemList:
-      type: object
-      required:
-      - count
-      - results
-      properties:
-        count:
-          type: integer
-          example: 123
-        next:
-          type:
-          - string
-          - 'null'
-          format: uri
-          example: http://api.example.org/accounts/?offset=400&limit=100
-        previous:
-          type:
-          - string
-          - 'null'
-          format: uri
-          example: http://api.example.org/accounts/?offset=200&limit=100
-        results:
-          type: array
-          items:
-            $ref: '#/components/schemas/DatasetItem'
-    UserBasic:
-      type: object
-      properties:
-        id:
-          type: integer
-          readOnly: true
-        uuid:
-          type: string
-          format: uuid
-          readOnly: true
-        distinct_id:
-          type:
-          - string
-          - 'null'
-          maxLength: 200
-        first_name:
-          type: string
-          maxLength: 150
-        last_name:
-          type: string
-          maxLength: 150
-        email:
-          type: string
-          format: email
-          title: Email address
-          maxLength: 254
-        is_email_verified:
-          type:
-          - boolean
-          - 'null'
-        hedgehog_config:
-          type:
-          - object
-          - 'null'
-          additionalProperties: true
-          readOnly: true
-        role_at_organization:
-          oneOf:
-          - $ref: '#/components/schemas/RoleAtOrganizationEnum'
-          - $ref: '#/components/schemas/BlankEnum'
-          - $ref: '#/components/schemas/NullEnum'
-      required:
-      - email
-      - hedgehog_config
-      - id
-      - uuid
-    LLMSkillList:
-      type: object
-      description: List serializer that omits body and file manifest — progressive disclosure (Level 1).
-      properties:
-        id:
-          type: string
-          format: uuid
-          readOnly: true
-        name:
-          type: string
-          description: Unique skill name. Lowercase letters, numbers, and hyphens only. Max 64 characters.
-          maxLength: 64
-        description:
-          type: string
-          description: What this skill does and when to use it. Max 4096 characters.
-          maxLength: 4096
-        license:
-          type: string
-          description: License name or reference to a bundled license file.
-          maxLength: 255
-        compatibility:
-          type: string
-          description: Environment requirements (intended product, system packages, network access, etc.).
-          maxLength: 500
-        allowed_tools:
+        example_generation_ids:
           type: array
           items:
             type: string
-          description: List of pre-approved tools the skill may use.
-        metadata:
-          type: object
-          additionalProperties: true
-          description: Arbitrary key-value metadata.
-        outline:
-          type: array
-          items:
-            $ref: '#/components/schemas/LLMSkillOutlineEntry'
-          readOnly: true
-          description: Flat list of markdown headings parsed from the skill body. Useful as a lightweight table of contents.
-        version:
-          type: integer
-          readOnly: true
-        created_by:
-          allOf:
-          - $ref: '#/components/schemas/UserBasic'
-          readOnly: true
-        created_at:
-          type: string
-          format: date-time
-          readOnly: true
-        updated_at:
-          type: string
-          format: date-time
-          readOnly: true
-        deleted:
-          type: boolean
-          readOnly: true
-        is_latest:
-          type: boolean
-          readOnly: true
-        latest_version:
-          type: integer
-          readOnly: true
-        version_count:
-          type: integer
-          readOnly: true
-        first_version_created_at:
-          type: string
-          readOnly: true
       required:
-      - created_at
-      - created_by
-      - deleted
       - description
-      - first_version_created_at
-      - id
-      - is_latest
-      - latest_version
-      - name
-      - outline
-      - updated_at
-      - version
-      - version_count
-    LLMSkillOutlineEntry:
+      - example_generation_ids
+      - frequency
+      - title
+    BatchCheckRequest:
       type: object
       properties:
-        level:
+        trace_ids:
+          type: array
+          items:
+            type: string
+          description: List of trace IDs to check for cached summaries
+          maxItems: 100
+        mode:
+          allOf:
+          - $ref: '#/components/schemas/DetailModeValueEnum'
+          default: minimal
+          description: 'Summary detail level to check for
+
+
+            * `minimal` - minimal
+
+            * `detailed` - detailed'
+        model:
+          type:
+          - string
+          - 'null'
+          description: LLM model used for cached summaries
+      required:
+      - trace_ids
+    SentimentRequestAnalysisLevelEnum:
+      enum:
+      - trace
+      - generation
+      type: string
+      description: '* `trace` - trace
+
+        * `generation` - generation'
+    EvaluationSummaryResponse:
+      type: object
+      properties:
+        overall_assessment:
+          type: string
+        pass_patterns:
+          type: array
+          items:
+            $ref: '#/components/schemas/EvaluationPattern'
+        fail_patterns:
+          type: array
+          items:
+            $ref: '#/components/schemas/EvaluationPattern'
+        na_patterns:
+          type: array
+          items:
+            $ref: '#/components/schemas/EvaluationPattern'
+        recommendations:
+          type: array
+          items:
+            type: string
+        statistics:
+          $ref: '#/components/schemas/EvaluationSummaryStatistics'
+      required:
+      - fail_patterns
+      - na_patterns
+      - overall_assessment
+      - pass_patterns
+      - recommendations
+      - statistics
+    SentimentResult:
+      type: object
+      properties:
+        label:
+          type: string
+        score:
+          type: number
+          format: double
+        scores:
+          type: object
+          additionalProperties:
+            type: number
+            format: double
+        messages:
+          type: object
+          additionalProperties:
+            $ref: '#/components/schemas/MessageSentiment'
+        message_count:
           type: integer
-          maximum: 6
-          minimum: 1
-          description: Markdown heading level (1-6).
+      required:
+      - label
+      - message_count
+      - messages
+      - score
+      - scores
+    MessageSentiment:
+      type: object
+      properties:
+        label:
+          type: string
+        score:
+          type: number
+          format: double
+        scores:
+          type: object
+          additionalProperties:
+            type: number
+            format: double
+      required:
+      - label
+      - score
+      - scores
+    StructuredSummary:
+      type: object
+      properties:
+        title:
+          type: string
+          description: Concise title (no longer than 10 words) summarizing the trace/event
+        flow_diagram:
+          type: string
+          description: Mermaid flowchart code showing the main flow
+        summary_bullets:
+          type: array
+          items:
+            $ref: '#/components/schemas/SummaryBullet'
+          description: Main summary bullets
+        interesting_notes:
+          type: array
+          items:
+            $ref: '#/components/schemas/InterestingNote'
+          description: Interesting notes (0-2 for minimal, more for detailed)
+      required:
+      - flow_diagram
+      - interesting_notes
+      - summary_bullets
+      - title
+    SummarizeResponse:
+      type: object
+      properties:
+        summary:
+          allOf:
+          - $ref: '#/components/schemas/StructuredSummary'
+          description: Structured AI-generated summary with flow, bullets, and optional notes
+        text_repr:
+          type: string
+          description: Line-numbered text representation that the summary references
+        metadata:
+          description: Metadata about the summarization
+      required:
+      - summary
+      - text_repr
+    SummaryBullet:
+      type: object
+      properties:
         text:
           type: string
-          description: Heading text.
+        line_refs:
+          type: string
       required:
-      - level
+      - line_refs
       - text
-    LLMPrompt:
+    TextReprResponse:
       type: object
       properties:
-        id:
+        text:
           type: string
-          format: uuid
-          readOnly: true
-        name:
-          type: string
-          description: Unique prompt name using letters, numbers, hyphens, and underscores only.
-          maxLength: 255
-        prompt:
-          description: Prompt payload as JSON or string data.
-        version:
-          type: integer
-          readOnly: true
-        created_by:
+          description: Generated text representation of the event
+        metadata:
           allOf:
-          - $ref: '#/components/schemas/UserBasic'
-          readOnly: true
-        created_at:
-          type: string
-          format: date-time
-          readOnly: true
-        updated_at:
-          type: string
-          format: date-time
-          readOnly: true
-        deleted:
-          type: boolean
-          readOnly: true
-        is_latest:
-          type: boolean
-          readOnly: true
-        latest_version:
-          type: integer
-          readOnly: true
-        version_count:
-          type: integer
-          readOnly: true
-        first_version_created_at:
-          type: string
-          readOnly: true
-        outline:
+          - $ref: '#/components/schemas/TextReprMetadata'
+          description: Metadata about the text representation
+      required:
+      - metadata
+      - text
+    FilterEnum:
+      enum:
+      - all
+      - pass
+      - fail
+      - na
+      type: string
+      description: '* `all` - all
+
+        * `pass` - pass
+
+        * `fail` - fail
+
+        * `na` - na'
+    TextReprRequest:
+      type: object
+      properties:
+        event_type:
+          allOf:
+          - $ref: '#/components/schemas/EventTypeEnum'
+          description: 'Type of LLM event to stringify
+
+
+            * `$ai_generation` - $ai_generation
+
+            * `$ai_span` - $ai_span
+
+            * `$ai_embedding` - $ai_embedding
+
+            * `$ai_trace` - $ai_trace'
+        data:
+          description: Event data to stringify. For traces, should include 'trace' and 'hierarchy' fields.
+        options:
+          allOf:
+          - $ref: '#/components/schemas/TextReprOptions'
+          description: Optional configuration for text generation
+      required:
+      - data
+      - event_type
+    SentimentRequest:
+      type: object
+      properties:
+        ids:
           type: array
           items:
-            $ref: '#/components/schemas/LLMPromptOutlineEntry'
-          readOnly: true
-      required:
-      - created_at
-      - created_by
-      - deleted
-      - first_version_created_at
-      - id
-      - is_latest
-      - latest_version
-      - name
-      - outline
-      - prompt
-      - updated_at
-      - version
-      - version_count
-    DeliveryStatusEnum:
-      enum:
-      - pending
-      - delivered
-      - partial_failure
-      - failed
-      type: string
-      description: '* `pending` - Pending
-
-        * `delivered` - Delivered
-
-        * `partial_failure` - Partial Failure
-
-        * `failed` - Failed'
-    EvaluationReportRun:
-      type: object
-      properties:
-        id:
-          type: string
-          format: uuid
-          readOnly: true
-          description: UUID of this report run.
-        report:
-          type: string
-          format: uuid
-          readOnly: true
-          description: UUID of the report config that generated this run.
-        content:
-          readOnly: true
-          description: Generated report content (markdown or structured text).
-        metadata:
-          readOnly: true
-          description: Run metadata including model used, token counts, and generation stats.
-        period_start:
-          type: string
-          format: date-time
-          readOnly: true
-          description: Start of the evaluation window covered by this report.
-        period_end:
-          type: string
-          format: date-time
-          readOnly: true
-          description: End of the evaluation window covered by this report.
-        delivery_status:
+            type: string
+          description: Trace IDs or generation IDs to classify, depending on analysis_level.
+          maxItems: 5
+          minItems: 1
+        analysis_level:
           allOf:
-          - $ref: '#/components/schemas/DeliveryStatusEnum'
-          readOnly: true
-          description: '''pending'', ''delivered'', or ''failed''.
+          - $ref: '#/components/schemas/SentimentRequestAnalysisLevelEnum'
+          default: trace
+          description: 'Whether the IDs are ''trace'' IDs or ''generation'' IDs.
 
 
-            * `pending` - Pending
+            * `trace` - trace
 
-            * `delivered` - Delivered
-
-            * `partial_failure` - Partial Failure
-
-            * `failed` - Failed'
-        delivery_errors:
-          readOnly: true
-          description: List of delivery error messages if delivery failed.
-        created_at:
-          type: string
-          format: date-time
-          readOnly: true
+            * `generation` - generation'
+        force_refresh:
+          type: boolean
+          default: false
+          description: If true, bypass cache and reclassify.
+        date_from:
+          type:
+          - string
+          - 'null'
+          description: Start of date range for the lookup (e.g. '-7d' or '2026-01-01'). Defaults to -30d.
+        date_to:
+          type:
+          - string
+          - 'null'
+          description: End of date range for the lookup. Defaults to now.
       required:
-      - content
-      - created_at
-      - delivery_errors
-      - delivery_status
-      - id
-      - metadata
-      - period_end
-      - period_start
-      - report
-    NumericScoreDefinitionConfig:
+      - ids
+    SentimentBatchResponse:
       type: object
       properties:
-        min:
-          type:
-          - number
-          - 'null'
-          format: double
-          description: Optional inclusive minimum score.
-        max:
-          type:
-          - number
-          - 'null'
-          format: double
-          description: Optional inclusive maximum score.
-        step:
-          type:
-          - number
-          - 'null'
-          format: double
-          description: Optional increment step for numeric input, for example 1 or 0.5.
-    DatasetItem:
+        results:
+          type: object
+          additionalProperties:
+            $ref: '#/components/schemas/SentimentResult'
+      required:
+      - results
+    TextReprMetadata:
       type: object
       properties:
-        id:
+        event_type:
           type: string
-          format: uuid
-          readOnly: true
-        dataset:
+        event_id:
           type: string
-          format: uuid
-        input: {}
-        output: {}
-        metadata: {}
-        ref_trace_id:
-          type:
-          - string
-          - 'null'
-          maxLength: 255
-        ref_timestamp:
-          type:
-          - string
-          - 'null'
-          format: date-time
-        ref_source_id:
-          type:
-          - string
-          - 'null'
-          maxLength: 255
-        deleted:
-          type:
-          - boolean
-          - 'null'
-        created_at:
+        trace_id:
           type: string
-          format: date-time
-          readOnly: true
-        updated_at:
-          type:
-          - string
-          - 'null'
-          format: date-time
-          readOnly: true
-        created_by:
-          allOf:
-          - $ref: '#/components/schemas/UserBasic'
-          readOnly: true
-        team:
+        rendering:
+          type: string
+        char_count:
           type: integer
-          readOnly: true
+        truncated:
+          type: boolean
+        error:
+          type: string
       required:
-      - created_at
-      - created_by
-      - dataset
-      - id
-      - team
-      - updated_at
+      - char_count
+      - rendering
+      - truncated
+    EvaluationSummaryStatistics:
+      type: object
+      properties:
+        total_analyzed:
+          type: integer
+        pass_count:
+          type: integer
+        fail_count:
+          type: integer
+        na_count:
+          type: integer
+      required:
+      - fail_count
+      - na_count
+      - pass_count
+      - total_analyzed
+    EvaluationSummaryRequest:
+      type: object
+      description: Request serializer for evaluation summary - accepts IDs only, fetches data server-side.
+      properties:
+        evaluation_id:
+          type: string
+          format: uuid
+          description: UUID of the evaluation config to summarize
+        filter:
+          allOf:
+          - $ref: '#/components/schemas/FilterEnum'
+          default: all
+          description: 'Filter type to apply (''all'', ''pass'', ''fail'', or ''na'')
+
+
+            * `all` - all
+
+            * `pass` - pass
+
+            * `fail` - fail
+
+            * `na` - na'
+        generation_ids:
+          type: array
+          items:
+            type: string
+            format: uuid
+          description: 'Optional: specific generation IDs to include in summary (max 250)'
+          maxItems: 250
+        force_refresh:
+          type: boolean
+          default: false
+          description: If true, bypass cache and generate a fresh summary
+      required:
+      - evaluation_id
     LLMPromptList:
       type: object
       properties:
@@ -6083,33 +4783,21 @@ components:
       - updated_at
       - version
       - version_count
-    LLMSkillVersionSummary:
+    LLMSkillFileEdit:
       type: object
       properties:
-        id:
+        path:
           type: string
-          format: uuid
-          readOnly: true
-        version:
-          type: integer
-          readOnly: true
-        created_by:
-          allOf:
-          - $ref: '#/components/schemas/UserBasic'
-          readOnly: true
-        created_at:
-          type: string
-          format: date-time
-          readOnly: true
-        is_latest:
-          type: boolean
-          readOnly: true
+          description: Path of the bundled file to edit. Must match an existing file on the current skill version.
+          maxLength: 500
+        edits:
+          type: array
+          items:
+            $ref: '#/components/schemas/LLMSkillEditOperation'
+          description: Sequential find/replace operations to apply to this file's content.
       required:
-      - created_at
-      - created_by
-      - id
-      - is_latest
-      - version
+      - edits
+      - path
     Evaluation:
       type: object
       properties:
@@ -6214,1020 +4902,6 @@ components:
       - status
       - status_reason
       - updated_at
-    Dataset:
-      type: object
-      properties:
-        id:
-          type: string
-          format: uuid
-          readOnly: true
-        name:
-          type: string
-          maxLength: 400
-        description:
-          type:
-          - string
-          - 'null'
-        metadata: {}
-        created_at:
-          type: string
-          format: date-time
-          readOnly: true
-        updated_at:
-          type:
-          - string
-          - 'null'
-          format: date-time
-          readOnly: true
-        deleted:
-          type:
-          - boolean
-          - 'null'
-        created_by:
-          allOf:
-          - $ref: '#/components/schemas/UserBasic'
-          readOnly: true
-        team:
-          type: integer
-          readOnly: true
-      required:
-      - created_at
-      - created_by
-      - id
-      - name
-      - team
-      - updated_at
-    LLMModelsListResponse:
-      type: object
-      properties:
-        models:
-          type: array
-          items:
-            $ref: '#/components/schemas/LLMModelInfo'
-          description: Models supported for the requested provider.
-      required:
-      - models
-    LLMSkillFileRename:
-      type: object
-      properties:
-        old_path:
-          type: string
-          description: Current file path to rename.
-          maxLength: 500
-        new_path:
-          type: string
-          description: New file path. Must not already exist in the skill.
-          maxLength: 500
-        base_version:
-          type: integer
-          minimum: 1
-          description: Latest version you are editing from. If provided, the request fails with 409 when another write has landed in the meantime.
-      required:
-      - new_path
-      - old_path
-    TestHogRequest:
-      type: object
-      properties:
-        source:
-          type: string
-          description: Hog source code to test. Must return a boolean (true = pass, false = fail) or null for N/A.
-          minLength: 1
-        sample_count:
-          type: integer
-          maximum: 10
-          minimum: 1
-          default: 5
-          description: Number of recent $ai_generation events to test against (1–10, default 5).
-        allows_na:
-          type: boolean
-          default: false
-          description: Whether the evaluation can return N/A for non-applicable generations.
-        conditions:
-          type: array
-          items:
-            type: object
-            additionalProperties: true
-          description: Optional trigger conditions to filter which events are sampled.
-      required:
-      - source
-    PatchedLLMSkillPublish:
-      type: object
-      properties:
-        body:
-          type: string
-          description: Full skill body (SKILL.md instruction content) to publish as a new version. Mutually exclusive with edits.
-        edits:
-          type: array
-          items:
-            $ref: '#/components/schemas/LLMSkillEditOperation'
-          description: List of find/replace operations to apply to the current skill body. Each edit's 'old' text must match exactly once. Edits are applied sequentially. Mutually exclusive with body.
-        description:
-          type: string
-          description: Updated description for the new version.
-          maxLength: 4096
-        license:
-          type: string
-          description: License name or reference.
-          maxLength: 255
-        compatibility:
-          type: string
-          description: Environment requirements.
-          maxLength: 500
-        allowed_tools:
-          type: array
-          items:
-            type: string
-          description: List of pre-approved tools the skill may use.
-        metadata:
-          type: object
-          additionalProperties: true
-          description: Arbitrary key-value metadata.
-        files:
-          type: array
-          items:
-            $ref: '#/components/schemas/LLMSkillFileInput'
-          description: Bundled files to include with this version. Replaces all files from the previous version. Mutually exclusive with file_edits.
-        file_edits:
-          type: array
-          items:
-            $ref: '#/components/schemas/LLMSkillFileEdit'
-          description: Per-file find/replace updates. Each entry targets one existing file by path and applies sequential edits to its content. Non-targeted files carry forward unchanged. Cannot add, remove, or rename files — use 'files' for that. Mutually exclusive with files.
-        base_version:
-          type: integer
-          minimum: 1
-          description: Latest version you are editing from. Used for optimistic concurrency checks.
-    LLMPromptPublic:
-      type: object
-      properties:
-        id:
-          type: string
-          format: uuid
-        name:
-          type: string
-        prompt:
-          description: Full prompt content. Omitted when 'content=preview' or 'content=none'.
-        prompt_preview:
-          type: string
-          description: First 160 characters of the prompt. Only present when 'content=preview'.
-        outline:
-          type: array
-          items:
-            $ref: '#/components/schemas/LLMPromptOutlineEntry'
-          description: Flat list of markdown headings parsed from the prompt. Useful as a lightweight table of contents.
-        version:
-          type: integer
-        created_at:
-          type: string
-          format: date-time
-        updated_at:
-          type: string
-          format: date-time
-        deleted:
-          type: boolean
-        is_latest:
-          type: boolean
-        latest_version:
-          type: integer
-        version_count:
-          type: integer
-        first_version_created_at:
-          type: string
-          format: date-time
-      required:
-      - created_at
-      - deleted
-      - first_version_created_at
-      - id
-      - is_latest
-      - latest_version
-      - name
-      - outline
-      - updated_at
-      - version
-      - version_count
-    PatchedLLMProviderKey:
-      type: object
-      properties:
-        id:
-          type: string
-          format: uuid
-          readOnly: true
-        provider:
-          $ref: '#/components/schemas/LLMProviderEnum'
-        name:
-          type: string
-          maxLength: 255
-        state:
-          allOf:
-          - $ref: '#/components/schemas/LLMProviderKeyStateEnum'
-          readOnly: true
-        error_message:
-          type:
-          - string
-          - 'null'
-          readOnly: true
-        api_key:
-          type: string
-          writeOnly: true
-        api_key_masked:
-          type: string
-          readOnly: true
-        azure_endpoint:
-          type: string
-          format: uri
-          writeOnly: true
-          description: Azure OpenAI endpoint URL
-        api_version:
-          type: string
-          writeOnly: true
-          description: Azure OpenAI API version
-          maxLength: 20
-        azure_endpoint_display:
-          type:
-          - string
-          - 'null'
-          readOnly: true
-          description: Azure endpoint (read-only, for display)
-        api_version_display:
-          type:
-          - string
-          - 'null'
-          readOnly: true
-          description: Azure API version (read-only, for display)
-        set_as_active:
-          type: boolean
-          writeOnly: true
-          default: false
-        created_at:
-          type: string
-          format: date-time
-          readOnly: true
-        created_by:
-          allOf:
-          - $ref: '#/components/schemas/UserBasic'
-          readOnly: true
-        last_used_at:
-          type:
-          - string
-          - 'null'
-          format: date-time
-          readOnly: true
-    LLMSkillFileInput:
-      type: object
-      properties:
-        path:
-          type: string
-          description: File path relative to skill root, e.g. 'scripts/setup.sh' or 'references/guide.md'.
-          maxLength: 500
-        content:
-          type: string
-          description: Text content of the file.
-        content_type:
-          type: string
-          default: text/plain
-          description: MIME type of the file content.
-          maxLength: 100
-      required:
-      - content
-      - path
-    TraceReviewCreate:
-      type: object
-      properties:
-        trace_id:
-          type: string
-          description: Trace ID for the review. Only one active review can exist per trace and team.
-          maxLength: 255
-        comment:
-          type:
-          - string
-          - 'null'
-          description: Optional comment or reasoning for the review.
-        scores:
-          type: array
-          items:
-            $ref: '#/components/schemas/TraceReviewScoreWrite'
-          description: Full desired score set for this review. Omit scorers you want to leave blank.
-        queue_id:
-          type:
-          - string
-          - 'null'
-          format: uuid
-          description: Optional review queue ID for queue-context saves. When provided, the matching pending queue item is cleared after the review is saved. If omitted, any pending queue item for the same trace is cleared.
-      required:
-      - trace_id
-    PatchedClusteringJob:
-      type: object
-      properties:
-        id:
-          type: string
-          format: uuid
-          readOnly: true
-        name:
-          type: string
-          maxLength: 100
-        analysis_level:
-          $ref: '#/components/schemas/ClusteringJobAnalysisLevelEnum'
-        event_filters: {}
-        enabled:
-          type: boolean
-        created_at:
-          type: string
-          format: date-time
-          readOnly: true
-        updated_at:
-          type: string
-          format: date-time
-          readOnly: true
-    PaginatedEvaluationReportRunList:
-      type: object
-      required:
-      - count
-      - results
-      properties:
-        count:
-          type: integer
-          example: 123
-        next:
-          type:
-          - string
-          - 'null'
-          format: uri
-          example: http://api.example.org/accounts/?offset=400&limit=100
-        previous:
-          type:
-          - string
-          - 'null'
-          format: uri
-          example: http://api.example.org/accounts/?offset=200&limit=100
-        results:
-          type: array
-          items:
-            $ref: '#/components/schemas/EvaluationReportRun'
-    BlankEnum:
-      enum:
-      - ''
-    PatchedReviewQueueItemUpdate:
-      type: object
-      properties:
-        queue_id:
-          type: string
-          format: uuid
-          description: Review queue ID that should own this pending trace.
-    TraceReviewScoreWrite:
-      type: object
-      properties:
-        definition_id:
-          type: string
-          format: uuid
-          description: Stable scorer definition ID.
-        definition_version_id:
-          type:
-          - string
-          - 'null'
-          format: uuid
-          description: Optional immutable scorer version ID. Defaults to the scorer's current version.
-        categorical_values:
-          type:
-          - array
-          - 'null'
-          items:
-            type: string
-            maxLength: 128
-          description: Categorical option keys selected for this score.
-          minItems: 1
-        numeric_value:
-          type:
-          - string
-          - 'null'
-          format: decimal
-          pattern: ^-?\d{0,6}(?:\.\d{0,6})?$
-          description: Numeric value selected for this score.
-        boolean_value:
-          type:
-          - boolean
-          - 'null'
-          description: Boolean value selected for this score.
-      required:
-      - definition_id
-    LLMSkillFileCreate:
-      type: object
-      properties:
-        path:
-          type: string
-          description: File path relative to skill root, e.g. 'scripts/setup.sh' or 'references/guide.md'.
-          maxLength: 500
-        content:
-          type: string
-          description: Text content of the file.
-        content_type:
-          type: string
-          default: text/plain
-          description: MIME type of the file content.
-          maxLength: 100
-        base_version:
-          type: integer
-          minimum: 1
-          description: Latest version you are editing from. If provided, the request fails with 409 when another write has landed in the meantime.
-      required:
-      - content
-      - path
-    PaginatedScoreDefinitionList:
-      type: object
-      required:
-      - count
-      - results
-      properties:
-        count:
-          type: integer
-          example: 123
-        next:
-          type:
-          - string
-          - 'null'
-          format: uri
-          example: http://api.example.org/accounts/?offset=400&limit=100
-        previous:
-          type:
-          - string
-          - 'null'
-          format: uri
-          example: http://api.example.org/accounts/?offset=200&limit=100
-        results:
-          type: array
-          items:
-            $ref: '#/components/schemas/ScoreDefinition'
-    PatchedReviewQueueUpdate:
-      type: object
-      properties:
-        name:
-          type: string
-          description: Human-readable queue name.
-          maxLength: 255
-    ScoreDefinitionCreate:
-      type: object
-      properties:
-        name:
-          type: string
-          description: Human-readable scorer name.
-          maxLength: 255
-        description:
-          type:
-          - string
-          - 'null'
-          description: Optional human-readable description.
-        kind:
-          allOf:
-          - $ref: '#/components/schemas/ExperimentMetricKindEnum'
-          description: 'Scorer kind. This cannot be changed after creation.
-
-
-            * `categorical` - categorical
-
-            * `numeric` - numeric
-
-            * `boolean` - boolean'
-        archived:
-          type: boolean
-          default: false
-          description: New scorers are always created as active.
-        config:
-          allOf:
-          - $ref: '#/components/schemas/ScoreDefinitionConfig'
-          description: Initial immutable scorer configuration.
-      required:
-      - config
-      - kind
-      - name
-    ReviewQueueItemCreate:
-      type: object
-      properties:
-        queue_id:
-          type: string
-          format: uuid
-          description: Review queue ID that should own this pending trace.
-        trace_id:
-          type: string
-          description: Trace ID to add to the selected review queue.
-          maxLength: 255
-      required:
-      - queue_id
-      - trace_id
-    PatchedScoreDefinitionMetadata:
-      type: object
-      properties:
-        name:
-          type: string
-          description: Updated scorer name.
-          maxLength: 255
-        description:
-          type:
-          - string
-          - 'null'
-          description: Updated scorer description.
-        archived:
-          type: boolean
-          description: Whether the scorer is archived.
-    LLMSkillFileEdit:
-      type: object
-      properties:
-        path:
-          type: string
-          description: Path of the bundled file to edit. Must match an existing file on the current skill version.
-          maxLength: 500
-        edits:
-          type: array
-          items:
-            $ref: '#/components/schemas/LLMSkillEditOperation'
-          description: Sequential find/replace operations to apply to this file's content.
-      required:
-      - edits
-      - path
-    LLMSkillFile:
-      type: object
-      properties:
-        path:
-          type: string
-          maxLength: 500
-        content:
-          type: string
-        content_type:
-          type: string
-          maxLength: 100
-      required:
-      - content
-      - path
-    EvaluationConfigSetActiveKeyRequest:
-      type: object
-      properties:
-        key_id:
-          type: string
-          format: uuid
-          description: UUID of an existing LLM provider key (state must be 'ok') to mark as the active key for running llm_judge evaluations team-wide.
-      required:
-      - key_id
-    ReviewQueueItem:
-      type: object
-      properties:
-        id:
-          type: string
-          format: uuid
-          readOnly: true
-        queue_id:
-          type: string
-          format: uuid
-          readOnly: true
-          description: Review queue ID that currently owns this pending trace.
-        queue_name:
-          type: string
-          readOnly: true
-          description: Human-readable name of the queue that currently owns this pending trace.
-        trace_id:
-          type: string
-          readOnly: true
-          description: Trace ID currently pending review.
-        created_at:
-          type: string
-          format: date-time
-          readOnly: true
-        updated_at:
-          type:
-          - string
-          - 'null'
-          format: date-time
-          readOnly: true
-        created_by:
-          allOf:
-          - $ref: '#/components/schemas/UserBasic'
-          readOnly: true
-          description: User who queued this trace.
-        team:
-          type: integer
-          readOnly: true
-      required:
-      - created_at
-      - created_by
-      - id
-      - queue_id
-      - queue_name
-      - team
-      - trace_id
-      - updated_at
-    EvaluationStatusEnum:
-      enum:
-      - active
-      - paused
-      - error
-      type: string
-      description: '* `active` - Active
-
-        * `paused` - Paused
-
-        * `error` - Error'
-    TestHogResponse:
-      type: object
-      properties:
-        results:
-          type: array
-          items:
-            $ref: '#/components/schemas/TestHogResultItem'
-        message:
-          type: string
-          description: Optional message, e.g. when no recent events were found.
-      required:
-      - results
-    LLMPromptOutlineEntry:
-      type: object
-      properties:
-        level:
-          type: integer
-          maximum: 6
-          minimum: 1
-          description: Markdown heading level (1-6).
-        text:
-          type: string
-          description: Heading text with markdown link syntax preserved.
-      required:
-      - level
-      - text
-    ScoreDefinition:
-      type: object
-      properties:
-        id:
-          type: string
-          format: uuid
-          readOnly: true
-        name:
-          type: string
-          readOnly: true
-        description:
-          type: string
-          readOnly: true
-        kind:
-          allOf:
-          - $ref: '#/components/schemas/ExperimentMetricKindEnum'
-          readOnly: true
-        archived:
-          type: boolean
-          readOnly: true
-        current_version:
-          type: integer
-          readOnly: true
-          description: Current immutable configuration version number.
-        config:
-          allOf:
-          - $ref: '#/components/schemas/ScoreDefinitionConfig'
-          readOnly: true
-          description: Current immutable scorer configuration.
-        created_by:
-          allOf:
-          - $ref: '#/components/schemas/UserBasic'
-          readOnly: true
-          description: User who created the scorer.
-        created_at:
-          type: string
-          format: date-time
-          readOnly: true
-        updated_at:
-          type:
-          - string
-          - 'null'
-          format: date-time
-          readOnly: true
-        team:
-          type: integer
-          readOnly: true
-      required:
-      - archived
-      - config
-      - created_at
-      - created_by
-      - current_version
-      - description
-      - id
-      - kind
-      - name
-      - team
-      - updated_at
-    LLMSkillCreate:
-      type: object
-      description: Create serializer — accepts bundled files as write-only input on POST.
-      properties:
-        id:
-          type: string
-          format: uuid
-          readOnly: true
-        name:
-          type: string
-          description: Unique skill name. Lowercase letters, numbers, and hyphens only. Max 64 characters.
-          maxLength: 64
-        description:
-          type: string
-          description: What this skill does and when to use it. Max 4096 characters.
-          maxLength: 4096
-        body:
-          type: string
-          description: The SKILL.md instruction content (markdown).
-        license:
-          type: string
-          description: License name or reference to a bundled license file.
-          maxLength: 255
-        compatibility:
-          type: string
-          description: Environment requirements (intended product, system packages, network access, etc.).
-          maxLength: 500
-        allowed_tools:
-          type: array
-          items:
-            type: string
-          description: List of pre-approved tools the skill may use.
-        metadata:
-          type: object
-          additionalProperties: true
-          description: Arbitrary key-value metadata.
-        files:
-          type: array
-          items:
-            $ref: '#/components/schemas/LLMSkillFileInput'
-          writeOnly: true
-          description: Bundled files to include with the initial version (scripts, references, assets).
-        outline:
-          type: array
-          items:
-            $ref: '#/components/schemas/LLMSkillOutlineEntry'
-          readOnly: true
-          description: Flat list of markdown headings parsed from the skill body. Useful as a lightweight table of contents.
-        version:
-          type: integer
-          readOnly: true
-        created_by:
-          allOf:
-          - $ref: '#/components/schemas/UserBasic'
-          readOnly: true
-        created_at:
-          type: string
-          format: date-time
-          readOnly: true
-        updated_at:
-          type: string
-          format: date-time
-          readOnly: true
-        deleted:
-          type: boolean
-          readOnly: true
-        is_latest:
-          type: boolean
-          readOnly: true
-        latest_version:
-          type: integer
-          readOnly: true
-        version_count:
-          type: integer
-          readOnly: true
-        first_version_created_at:
-          type: string
-          readOnly: true
-      required:
-      - body
-      - created_at
-      - created_by
-      - deleted
-      - description
-      - first_version_created_at
-      - id
-      - is_latest
-      - latest_version
-      - name
-      - outline
-      - updated_at
-      - version
-      - version_count
-    PatchedDatasetItem:
-      type: object
-      properties:
-        id:
-          type: string
-          format: uuid
-          readOnly: true
-        dataset:
-          type: string
-          format: uuid
-        input: {}
-        output: {}
-        metadata: {}
-        ref_trace_id:
-          type:
-          - string
-          - 'null'
-          maxLength: 255
-        ref_timestamp:
-          type:
-          - string
-          - 'null'
-          format: date-time
-        ref_source_id:
-          type:
-          - string
-          - 'null'
-          maxLength: 255
-        deleted:
-          type:
-          - boolean
-          - 'null'
-        created_at:
-          type: string
-          format: date-time
-          readOnly: true
-        updated_at:
-          type:
-          - string
-          - 'null'
-          format: date-time
-          readOnly: true
-        created_by:
-          allOf:
-          - $ref: '#/components/schemas/UserBasic'
-          readOnly: true
-        team:
-          type: integer
-          readOnly: true
-    ScoreDefinitionNewVersion:
-      type: object
-      properties:
-        config:
-          allOf:
-          - $ref: '#/components/schemas/ScoreDefinitionConfig'
-          description: Next immutable scorer configuration.
-      required:
-      - config
-    TraceReviewScore:
-      type: object
-      properties:
-        id:
-          type: string
-          format: uuid
-          readOnly: true
-        definition_id:
-          type: string
-          format: uuid
-          readOnly: true
-          description: Stable scorer definition ID.
-        definition_name:
-          type: string
-          readOnly: true
-          description: Human-readable scorer name.
-        definition_kind:
-          type: string
-          readOnly: true
-          description: Scorer kind for this saved score.
-        definition_archived:
-          type: boolean
-          readOnly: true
-          description: Whether the scorer is currently archived.
-        definition_version_id:
-          type: string
-          format: uuid
-          readOnly: true
-          description: Immutable scorer version ID used to validate this score.
-        definition_version:
-          type: integer
-          readOnly: true
-          description: Immutable scorer version number used to validate this score.
-        definition_config:
-          allOf:
-          - $ref: '#/components/schemas/ScoreDefinitionConfig'
-          readOnly: true
-          description: Immutable scorer configuration snapshot used to validate this score.
-        categorical_values:
-          type:
-          - array
-          - 'null'
-          items:
-            type: string
-          readOnly: true
-          description: Categorical option keys selected for this score.
-        numeric_value:
-          type:
-          - string
-          - 'null'
-          format: decimal
-          pattern: ^-?\d{0,6}(?:\.\d{0,6})?$
-          readOnly: true
-        boolean_value:
-          type:
-          - boolean
-          - 'null'
-          readOnly: true
-        created_at:
-          type: string
-          format: date-time
-          readOnly: true
-        updated_at:
-          type:
-          - string
-          - 'null'
-          format: date-time
-          readOnly: true
-      required:
-      - boolean_value
-      - categorical_values
-      - created_at
-      - definition_archived
-      - definition_config
-      - definition_id
-      - definition_kind
-      - definition_name
-      - definition_version
-      - definition_version_id
-      - id
-      - numeric_value
-      - updated_at
-    PatchedTraceReviewUpdate:
-      type: object
-      properties:
-        trace_id:
-          type: string
-          description: Trace ID for the review. Only one active review can exist per trace and team.
-          maxLength: 255
-        comment:
-          type:
-          - string
-          - 'null'
-          description: Optional comment or reasoning for the review.
-        scores:
-          type: array
-          items:
-            $ref: '#/components/schemas/TraceReviewScoreWrite'
-          description: Full desired score set for this review. Omit scorers you want to leave blank.
-        queue_id:
-          type:
-          - string
-          - 'null'
-          format: uuid
-          description: Optional review queue ID for queue-context saves. When provided, the matching pending queue item is cleared after the review is saved. If omitted, any pending queue item for the same trace is cleared.
-    EvaluationConfig:
-      type: object
-      properties:
-        trial_eval_limit:
-          type: integer
-          readOnly: true
-          description: Maximum number of llm_judge runs the team may execute on PostHog trial credits.
-        trial_evals_used:
-          type: integer
-          readOnly: true
-          description: Number of llm_judge runs already consumed against the trial credit pool.
-        trial_evals_remaining:
-          type: integer
-          readOnly: true
-          description: Number of trial evaluation runs remaining before the team must supply its own provider key.
-        active_provider_key:
-          allOf:
-          - $ref: '#/components/schemas/LLMProviderKey'
-          readOnly: true
-          description: Provider key currently used to run llm_judge evaluations. Null when the team is on trial credits.
-        created_at:
-          type: string
-          format: date-time
-          readOnly: true
-          description: Timestamp when the evaluation config row was created.
-        updated_at:
-          type: string
-          format: date-time
-          readOnly: true
-          description: Timestamp when the evaluation config row was last modified.
-      required:
-      - active_provider_key
-      - created_at
-      - trial_eval_limit
-      - trial_evals_remaining
-      - trial_evals_used
-      - updated_at
-    LLMPromptResolveResponse:
-      type: object
-      properties:
-        prompt:
-          $ref: '#/components/schemas/LLMPrompt'
-        versions:
-          type: array
-          items:
-            $ref: '#/components/schemas/LLMPromptVersionSummary'
-        has_more:
-          type: boolean
-      required:
-      - has_more
-      - prompt
-      - versions
-    LLMPromptEditOperation:
-      type: object
-      properties:
-        old:
-          type: string
-          description: Text to find in the current prompt. Must match exactly once.
-        new:
-          type: string
-          description: Replacement text.
-      required:
-      - new
-      - old
     PatchedEvaluationReport:
       type: object
       properties:
@@ -7315,7 +4989,98 @@ components:
           type: string
           format: date-time
           readOnly: true
-    ClusteringJob:
+    PaginatedClusteringJobList:
+      type: object
+      required:
+      - count
+      - results
+      properties:
+        count:
+          type: integer
+          example: 123
+        next:
+          type:
+          - string
+          - 'null'
+          format: uri
+          example: http://api.example.org/accounts/?offset=400&limit=100
+        previous:
+          type:
+          - string
+          - 'null'
+          format: uri
+          example: http://api.example.org/accounts/?offset=200&limit=100
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/ClusteringJob'
+    LLMModelsListResponse:
+      type: object
+      properties:
+        models:
+          type: array
+          items:
+            $ref: '#/components/schemas/LLMModelInfo'
+          description: Models supported for the requested provider.
+      required:
+      - models
+    ReviewQueueItemCreate:
+      type: object
+      properties:
+        queue_id:
+          type: string
+          format: uuid
+          description: Review queue ID that should own this pending trace.
+        trace_id:
+          type: string
+          description: Trace ID to add to the selected review queue.
+          maxLength: 255
+      required:
+      - queue_id
+      - trace_id
+    ScoreDefinitionConfig:
+      oneOf:
+      - $ref: '#/components/schemas/CategoricalScoreDefinitionConfig'
+      - $ref: '#/components/schemas/NumericScoreDefinitionConfig'
+      - $ref: '#/components/schemas/BooleanScoreDefinitionConfig'
+    EvaluationConfig:
+      type: object
+      properties:
+        trial_eval_limit:
+          type: integer
+          readOnly: true
+          description: Maximum number of llm_judge runs the team may execute on PostHog trial credits.
+        trial_evals_used:
+          type: integer
+          readOnly: true
+          description: Number of llm_judge runs already consumed against the trial credit pool.
+        trial_evals_remaining:
+          type: integer
+          readOnly: true
+          description: Number of trial evaluation runs remaining before the team must supply its own provider key.
+        active_provider_key:
+          allOf:
+          - $ref: '#/components/schemas/LLMProviderKey'
+          readOnly: true
+          description: Provider key currently used to run llm_judge evaluations. Null when the team is on trial credits.
+        created_at:
+          type: string
+          format: date-time
+          readOnly: true
+          description: Timestamp when the evaluation config row was created.
+        updated_at:
+          type: string
+          format: date-time
+          readOnly: true
+          description: Timestamp when the evaluation config row was last modified.
+      required:
+      - active_provider_key
+      - created_at
+      - trial_eval_limit
+      - trial_evals_remaining
+      - trial_evals_used
+      - updated_at
+    PatchedClusteringJob:
       type: object
       properties:
         id:
@@ -7338,76 +5103,129 @@ components:
           type: string
           format: date-time
           readOnly: true
-      required:
-      - analysis_level
-      - created_at
-      - id
-      - name
-      - updated_at
-    LLMPromptDuplicate:
+    LLMProviderKeyStateEnum:
+      enum:
+      - unknown
+      - ok
+      - invalid
+      - error
+      type: string
+      description: '* `unknown` - Unknown
+
+        * `ok` - Ok
+
+        * `invalid` - Invalid
+
+        * `error` - Error'
+    ExperimentMetricKindEnum:
+      enum:
+      - categorical
+      - numeric
+      - boolean
+      type: string
+      description: '* `categorical` - categorical
+
+        * `numeric` - numeric
+
+        * `boolean` - boolean'
+    RoleAtOrganizationEnum:
+      enum:
+      - engineering
+      - data
+      - product
+      - founder
+      - leadership
+      - marketing
+      - sales
+      - other
+      type: string
+      description: '* `engineering` - Engineering
+
+        * `data` - Data
+
+        * `product` - Product Management
+
+        * `founder` - Founder
+
+        * `leadership` - Leadership
+
+        * `marketing` - Marketing
+
+        * `sales` - Sales / Success
+
+        * `other` - Other'
+    PaginatedLLMProviderKeyList:
       type: object
-      properties:
-        new_name:
-          type: string
-          description: Name for the duplicated prompt. Must be unique and use only letters, numbers, hyphens, and underscores.
-          maxLength: 255
       required:
-      - new_name
-    TraceReview:
-      type: object
+      - count
+      - results
       properties:
-        id:
-          type: string
-          format: uuid
-          readOnly: true
-        trace_id:
-          type: string
-          readOnly: true
-          description: Trace ID for the review.
-        comment:
+        count:
+          type: integer
+          example: 123
+        next:
           type:
           - string
           - 'null'
-          readOnly: true
-          description: Optional comment or reasoning for the review.
-        created_at:
-          type: string
-          format: date-time
-          readOnly: true
-        updated_at:
+          format: uri
+          example: http://api.example.org/accounts/?offset=400&limit=100
+        previous:
           type:
           - string
           - 'null'
-          format: date-time
-          readOnly: true
-        created_by:
-          allOf:
-          - $ref: '#/components/schemas/UserBasic'
-          readOnly: true
-        reviewed_by:
-          allOf:
-          - $ref: '#/components/schemas/UserBasic'
-          readOnly: true
-          description: User who last saved this review.
-        scores:
+          format: uri
+          example: http://api.example.org/accounts/?offset=200&limit=100
+        results:
           type: array
           items:
-            $ref: '#/components/schemas/TraceReviewScore'
-          readOnly: true
-          description: Saved scorer values for this review.
-        team:
+            $ref: '#/components/schemas/LLMProviderKey'
+    LLMSkillOutlineEntry:
+      type: object
+      properties:
+        level:
           type: integer
-          readOnly: true
+          maximum: 6
+          minimum: 1
+          description: Markdown heading level (1-6).
+        text:
+          type: string
+          description: Heading text.
       required:
-      - comment
-      - created_at
-      - created_by
-      - id
-      - reviewed_by
-      - scores
-      - team
-      - trace_id
-      - updated_at
+      - level
+      - text
+    EvaluationReportFrequencyEnum:
+      enum:
+      - scheduled
+      - every_n
+      type: string
+      description: '* `scheduled` - Scheduled
+
+        * `every_n` - Every N'
+    PaginatedEvaluationList:
+      type: object
+      required:
+      - count
+      - results
+      properties:
+        count:
+          type: integer
+          example: 123
+        next:
+          type:
+          - string
+          - 'null'
+          format: uri
+          example: http://api.example.org/accounts/?offset=400&limit=100
+        previous:
+          type:
+          - string
+          - 'null'
+          format: uri
+          example: http://api.example.org/accounts/?offset=200&limit=100
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/Evaluation'
     LLMSkill:
       type: object
       properties:
@@ -7501,42 +5319,1187 @@ components:
       - updated_at
       - version
       - version_count
-    EvaluationRunRequest:
+    PaginatedDatasetItemList:
       type: object
+      required:
+      - count
+      - results
       properties:
-        evaluation_id:
-          type: string
-          format: uuid
-          description: UUID of the evaluation to run.
-        target_event_id:
-          type: string
-          format: uuid
-          description: UUID of the $ai_generation event to evaluate.
-        timestamp:
-          type: string
-          format: date-time
-          description: ISO 8601 timestamp of the target event (needed for efficient ClickHouse lookup).
-        event:
-          type: string
-          default: $ai_generation
-          description: Event name. Defaults to '$ai_generation'.
-        distinct_id:
+        count:
+          type: integer
+          example: 123
+        next:
           type:
           - string
           - 'null'
-          description: Distinct ID of the event (optional, improves lookup performance).
+          format: uri
+          example: http://api.example.org/accounts/?offset=400&limit=100
+        previous:
+          type:
+          - string
+          - 'null'
+          format: uri
+          example: http://api.example.org/accounts/?offset=200&limit=100
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/DatasetItem'
+    EvaluationConfigSetActiveKeyRequest:
+      type: object
+      properties:
+        key_id:
+          type: string
+          format: uuid
+          description: UUID of an existing LLM provider key (state must be 'ok') to mark as the active key for running llm_judge evaluations team-wide.
       required:
-      - evaluation_id
-      - target_event_id
-      - timestamp
-    EvaluationReportFrequencyEnum:
+      - key_id
+    NullEnum:
       enum:
-      - scheduled
-      - every_n
+      - null
+    PaginatedReviewQueueList:
+      type: object
+      required:
+      - count
+      - results
+      properties:
+        count:
+          type: integer
+          example: 123
+        next:
+          type:
+          - string
+          - 'null'
+          format: uri
+          example: http://api.example.org/accounts/?offset=400&limit=100
+        previous:
+          type:
+          - string
+          - 'null'
+          format: uri
+          example: http://api.example.org/accounts/?offset=200&limit=100
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/ReviewQueue'
+    PaginatedScoreDefinitionList:
+      type: object
+      required:
+      - count
+      - results
+      properties:
+        count:
+          type: integer
+          example: 123
+        next:
+          type:
+          - string
+          - 'null'
+          format: uri
+          example: http://api.example.org/accounts/?offset=400&limit=100
+        previous:
+          type:
+          - string
+          - 'null'
+          format: uri
+          example: http://api.example.org/accounts/?offset=200&limit=100
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/ScoreDefinition'
+    ReviewQueue:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+          readOnly: true
+        name:
+          type: string
+          readOnly: true
+          description: Human-readable queue name.
+        pending_item_count:
+          type: integer
+          readOnly: true
+          description: Number of pending traces currently assigned to this queue.
+        created_at:
+          type: string
+          format: date-time
+          readOnly: true
+        updated_at:
+          type:
+          - string
+          - 'null'
+          format: date-time
+          readOnly: true
+        created_by:
+          allOf:
+          - $ref: '#/components/schemas/UserBasic'
+          readOnly: true
+          description: User who created this review queue.
+        team:
+          type: integer
+          readOnly: true
+      required:
+      - created_at
+      - created_by
+      - id
+      - name
+      - pending_item_count
+      - team
+      - updated_at
+    LLMProviderEnum:
+      enum:
+      - openai
+      - anthropic
+      - gemini
+      - openrouter
+      - fireworks
+      - azure_openai
+      - together_ai
       type: string
-      description: '* `scheduled` - Scheduled
+      description: '* `openai` - Openai
 
-        * `every_n` - Every N'
+        * `anthropic` - Anthropic
+
+        * `gemini` - Gemini
+
+        * `openrouter` - Openrouter
+
+        * `fireworks` - Fireworks
+
+        * `azure_openai` - Azure OpenAI
+
+        * `together_ai` - Together AI'
+    ScoreDefinitionNewVersion:
+      type: object
+      properties:
+        config:
+          allOf:
+          - $ref: '#/components/schemas/ScoreDefinitionConfig'
+          description: Next immutable scorer configuration.
+      required:
+      - config
+    TraceReviewScoreWrite:
+      type: object
+      properties:
+        definition_id:
+          type: string
+          format: uuid
+          description: Stable scorer definition ID.
+        definition_version_id:
+          type:
+          - string
+          - 'null'
+          format: uuid
+          description: Optional immutable scorer version ID. Defaults to the scorer's current version.
+        categorical_values:
+          type:
+          - array
+          - 'null'
+          items:
+            type: string
+            maxLength: 128
+          description: Categorical option keys selected for this score.
+          minItems: 1
+        numeric_value:
+          type:
+          - string
+          - 'null'
+          format: decimal
+          pattern: ^-?\d{0,6}(?:\.\d{0,6})?$
+          description: Numeric value selected for this score.
+        boolean_value:
+          type:
+          - boolean
+          - 'null'
+          description: Boolean value selected for this score.
+      required:
+      - definition_id
+    TranslateRequest:
+      type: object
+      properties:
+        text:
+          type: string
+          description: The text to translate
+          maxLength: 10000
+        target_language:
+          type: string
+          default: en
+          description: 'Target language code (default: ''en'' for English)'
+          maxLength: 10
+      required:
+      - text
+    PatchedLLMPromptPublish:
+      type: object
+      properties:
+        prompt:
+          description: Full prompt payload to publish as a new version. Mutually exclusive with edits.
+        edits:
+          type: array
+          items:
+            $ref: '#/components/schemas/LLMPromptEditOperation'
+          description: List of find/replace operations to apply to the current prompt version. Each edit's 'old' text must match exactly once. Edits are applied sequentially. Mutually exclusive with prompt.
+        base_version:
+          type: integer
+          minimum: 1
+          description: Latest version you are editing from. Used for optimistic concurrency checks.
+    ModelConfiguration:
+      type: object
+      description: Nested serializer for model configuration.
+      properties:
+        provider:
+          $ref: '#/components/schemas/LLMProviderEnum'
+        model:
+          type: string
+          maxLength: 100
+        provider_key_id:
+          type:
+          - string
+          - 'null'
+          format: uuid
+        provider_key_name:
+          type:
+          - string
+          - 'null'
+          readOnly: true
+      required:
+      - model
+      - provider
+      - provider_key_name
+    PaginatedTraceReviewList:
+      type: object
+      required:
+      - count
+      - results
+      properties:
+        count:
+          type: integer
+          example: 123
+        next:
+          type:
+          - string
+          - 'null'
+          format: uri
+          example: http://api.example.org/accounts/?offset=400&limit=100
+        previous:
+          type:
+          - string
+          - 'null'
+          format: uri
+          example: http://api.example.org/accounts/?offset=200&limit=100
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/TraceReview'
+    SelectionModeEnum:
+      enum:
+      - single
+      - multiple
+      type: string
+      description: '* `single` - single
+
+        * `multiple` - multiple'
+    ClusteringJobAnalysisLevelEnum:
+      enum:
+      - trace
+      - generation
+      - evaluation
+      type: string
+      description: '* `trace` - trace
+
+        * `generation` - generation
+
+        * `evaluation` - evaluation'
+    LLMPromptDuplicate:
+      type: object
+      properties:
+        new_name:
+          type: string
+          description: Name for the duplicated prompt. Must be unique and use only letters, numbers, hyphens, and underscores.
+          maxLength: 255
+      required:
+      - new_name
+    LLMSkillFileRename:
+      type: object
+      properties:
+        old_path:
+          type: string
+          description: Current file path to rename.
+          maxLength: 500
+        new_path:
+          type: string
+          description: New file path. Must not already exist in the skill.
+          maxLength: 500
+        base_version:
+          type: integer
+          minimum: 1
+          description: Latest version you are editing from. If provided, the request fails with 409 when another write has landed in the meantime.
+      required:
+      - new_path
+      - old_path
+    PatchedEvaluation:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+          readOnly: true
+        name:
+          type: string
+          description: Name of the evaluation.
+          maxLength: 400
+        description:
+          type: string
+          description: Optional description of what this evaluation checks.
+        enabled:
+          type: boolean
+          description: Whether the evaluation runs automatically on new $ai_generation events.
+        status:
+          allOf:
+          - $ref: '#/components/schemas/EvaluationStatusEnum'
+          readOnly: true
+        status_reason:
+          readOnly: true
+          oneOf:
+          - $ref: '#/components/schemas/StatusReasonEnum'
+          - $ref: '#/components/schemas/NullEnum'
+        evaluation_type:
+          allOf:
+          - $ref: '#/components/schemas/EvaluationTypeEnum'
+          description: '''llm_judge'' uses an LLM to score outputs against a prompt; ''hog'' runs deterministic Hog code.
+
+
+            * `llm_judge` - LLM as a judge
+
+            * `hog` - Hog'
+        evaluation_config:
+          oneOf:
+          - type: object
+            title: LLM judge config
+            required:
+            - prompt
+            properties:
+              prompt:
+                type: string
+                description: Evaluation criteria for the LLM judge. Describe what makes a good vs bad response.
+                minLength: 1
+            additionalProperties: false
+          - type: object
+            title: Hog config
+            required:
+            - source
+            properties:
+              source:
+                type: string
+                description: Hog source code. Must return true (pass), false (fail), or null for N/A.
+                minLength: 1
+            additionalProperties: false
+          description: 'Configuration dict. For ''llm_judge'': {prompt}. For ''hog'': {source}.'
+        output_type:
+          allOf:
+          - $ref: '#/components/schemas/OutputTypeEnum'
+          description: 'Output format. Currently only ''boolean'' is supported.
+
+
+            * `boolean` - Boolean (Pass/Fail)'
+        output_config:
+          type: object
+          properties:
+            allows_na:
+              type: boolean
+              description: Whether the evaluation can return N/A for non-applicable generations.
+              default: false
+          additionalProperties: false
+          description: 'Output config. For ''boolean'' output_type: {allows_na} to permit N/A results.'
+        conditions:
+          description: Optional trigger conditions to filter which events are evaluated. OR between condition sets, AND within each.
+        model_configuration:
+          allOf:
+          - $ref: '#/components/schemas/ModelConfiguration'
+        created_at:
+          type: string
+          format: date-time
+          readOnly: true
+        updated_at:
+          type: string
+          format: date-time
+          readOnly: true
+        created_by:
+          allOf:
+          - $ref: '#/components/schemas/UserBasic'
+          readOnly: true
+        deleted:
+          type: boolean
+          description: Set to true to soft-delete the evaluation.
+    LLMModelInfo:
+      type: object
+      properties:
+        id:
+          type: string
+          description: Provider-specific model identifier (e.g. 'gpt-4o-mini', 'claude-3-5-sonnet-20241022').
+        posthog_available:
+          type: boolean
+          description: Whether this model is available on PostHog's trial credits without bringing a provider key.
+      required:
+      - id
+      - posthog_available
+    EvaluationTypeEnum:
+      enum:
+      - llm_judge
+      - hog
+      type: string
+      description: '* `llm_judge` - LLM as a judge
+
+        * `hog` - Hog'
+    TraceReviewScore:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+          readOnly: true
+        definition_id:
+          type: string
+          format: uuid
+          readOnly: true
+          description: Stable scorer definition ID.
+        definition_name:
+          type: string
+          readOnly: true
+          description: Human-readable scorer name.
+        definition_kind:
+          type: string
+          readOnly: true
+          description: Scorer kind for this saved score.
+        definition_archived:
+          type: boolean
+          readOnly: true
+          description: Whether the scorer is currently archived.
+        definition_version_id:
+          type: string
+          format: uuid
+          readOnly: true
+          description: Immutable scorer version ID used to validate this score.
+        definition_version:
+          type: integer
+          readOnly: true
+          description: Immutable scorer version number used to validate this score.
+        definition_config:
+          allOf:
+          - $ref: '#/components/schemas/ScoreDefinitionConfig'
+          readOnly: true
+          description: Immutable scorer configuration snapshot used to validate this score.
+        categorical_values:
+          type:
+          - array
+          - 'null'
+          items:
+            type: string
+          readOnly: true
+          description: Categorical option keys selected for this score.
+        numeric_value:
+          type:
+          - string
+          - 'null'
+          format: decimal
+          pattern: ^-?\d{0,6}(?:\.\d{0,6})?$
+          readOnly: true
+        boolean_value:
+          type:
+          - boolean
+          - 'null'
+          readOnly: true
+        created_at:
+          type: string
+          format: date-time
+          readOnly: true
+        updated_at:
+          type:
+          - string
+          - 'null'
+          format: date-time
+          readOnly: true
+      required:
+      - boolean_value
+      - categorical_values
+      - created_at
+      - definition_archived
+      - definition_config
+      - definition_id
+      - definition_kind
+      - definition_name
+      - definition_version
+      - definition_version_id
+      - id
+      - numeric_value
+      - updated_at
+    LLMSkillResolveResponse:
+      type: object
+      properties:
+        skill:
+          $ref: '#/components/schemas/LLMSkill'
+        versions:
+          type: array
+          items:
+            $ref: '#/components/schemas/LLMSkillVersionSummary'
+        has_more:
+          type: boolean
+      required:
+      - has_more
+      - skill
+      - versions
+    TestHogRequest:
+      type: object
+      properties:
+        source:
+          type: string
+          description: Hog source code to test. Must return a boolean (true = pass, false = fail) or null for N/A.
+          minLength: 1
+        sample_count:
+          type: integer
+          maximum: 10
+          minimum: 1
+          default: 5
+          description: Number of recent $ai_generation events to test against (1–10, default 5).
+        allows_na:
+          type: boolean
+          default: false
+          description: Whether the evaluation can return N/A for non-applicable generations.
+        conditions:
+          type: array
+          items:
+            type: object
+            additionalProperties: true
+          description: Optional trigger conditions to filter which events are sampled.
+      required:
+      - source
+    EvaluationStatusEnum:
+      enum:
+      - active
+      - paused
+      - error
+      type: string
+      description: '* `active` - Active
+
+        * `paused` - Paused
+
+        * `error` - Error'
+    TraceReview:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+          readOnly: true
+        trace_id:
+          type: string
+          readOnly: true
+          description: Trace ID for the review.
+        comment:
+          type:
+          - string
+          - 'null'
+          readOnly: true
+          description: Optional comment or reasoning for the review.
+        created_at:
+          type: string
+          format: date-time
+          readOnly: true
+        updated_at:
+          type:
+          - string
+          - 'null'
+          format: date-time
+          readOnly: true
+        created_by:
+          allOf:
+          - $ref: '#/components/schemas/UserBasic'
+          readOnly: true
+        reviewed_by:
+          allOf:
+          - $ref: '#/components/schemas/UserBasic'
+          readOnly: true
+          description: User who last saved this review.
+        scores:
+          type: array
+          items:
+            $ref: '#/components/schemas/TraceReviewScore'
+          readOnly: true
+          description: Saved scorer values for this review.
+        team:
+          type: integer
+          readOnly: true
+      required:
+      - comment
+      - created_at
+      - created_by
+      - id
+      - reviewed_by
+      - scores
+      - team
+      - trace_id
+      - updated_at
+    LLMSkillFileCreate:
+      type: object
+      properties:
+        path:
+          type: string
+          description: File path relative to skill root, e.g. 'scripts/setup.sh' or 'references/guide.md'.
+          maxLength: 500
+        content:
+          type: string
+          description: Text content of the file.
+        content_type:
+          type: string
+          default: text/plain
+          description: MIME type of the file content.
+          maxLength: 100
+        base_version:
+          type: integer
+          minimum: 1
+          description: Latest version you are editing from. If provided, the request fails with 409 when another write has landed in the meantime.
+      required:
+      - content
+      - path
+    TestHogResponse:
+      type: object
+      properties:
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/TestHogResultItem'
+        message:
+          type: string
+          description: Optional message, e.g. when no recent events were found.
+      required:
+      - results
+    PaginatedReviewQueueItemList:
+      type: object
+      required:
+      - count
+      - results
+      properties:
+        count:
+          type: integer
+          example: 123
+        next:
+          type:
+          - string
+          - 'null'
+          format: uri
+          example: http://api.example.org/accounts/?offset=400&limit=100
+        previous:
+          type:
+          - string
+          - 'null'
+          format: uri
+          example: http://api.example.org/accounts/?offset=200&limit=100
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/ReviewQueueItem'
+    LLMPromptEditOperation:
+      type: object
+      properties:
+        old:
+          type: string
+          description: Text to find in the current prompt. Must match exactly once.
+        new:
+          type: string
+          description: Replacement text.
+      required:
+      - new
+      - old
+    PatchedLLMSkillPublish:
+      type: object
+      properties:
+        body:
+          type: string
+          description: Full skill body (SKILL.md instruction content) to publish as a new version. Mutually exclusive with edits.
+        edits:
+          type: array
+          items:
+            $ref: '#/components/schemas/LLMSkillEditOperation'
+          description: List of find/replace operations to apply to the current skill body. Each edit's 'old' text must match exactly once. Edits are applied sequentially. Mutually exclusive with body.
+        description:
+          type: string
+          description: Updated description for the new version.
+          maxLength: 4096
+        license:
+          type: string
+          description: License name or reference.
+          maxLength: 255
+        compatibility:
+          type: string
+          description: Environment requirements.
+          maxLength: 500
+        allowed_tools:
+          type: array
+          items:
+            type: string
+          description: List of pre-approved tools the skill may use.
+        metadata:
+          type: object
+          additionalProperties: true
+          description: Arbitrary key-value metadata.
+        files:
+          type: array
+          items:
+            $ref: '#/components/schemas/LLMSkillFileInput'
+          description: Bundled files to include with this version. Replaces all files from the previous version. Mutually exclusive with file_edits.
+        file_edits:
+          type: array
+          items:
+            $ref: '#/components/schemas/LLMSkillFileEdit'
+          description: Per-file find/replace updates. Each entry targets one existing file by path and applies sequential edits to its content. Non-targeted files carry forward unchanged. Cannot add, remove, or rename files — use 'files' for that. Mutually exclusive with files.
+        base_version:
+          type: integer
+          minimum: 1
+          description: Latest version you are editing from. Used for optimistic concurrency checks.
+    PatchedTraceReviewUpdate:
+      type: object
+      properties:
+        trace_id:
+          type: string
+          description: Trace ID for the review. Only one active review can exist per trace and team.
+          maxLength: 255
+        comment:
+          type:
+          - string
+          - 'null'
+          description: Optional comment or reasoning for the review.
+        scores:
+          type: array
+          items:
+            $ref: '#/components/schemas/TraceReviewScoreWrite'
+          description: Full desired score set for this review. Omit scorers you want to leave blank.
+        queue_id:
+          type:
+          - string
+          - 'null'
+          format: uuid
+          description: Optional review queue ID for queue-context saves. When provided, the matching pending queue item is cleared after the review is saved. If omitted, any pending queue item for the same trace is cleared.
+    Dataset:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+          readOnly: true
+        name:
+          type: string
+          maxLength: 400
+        description:
+          type:
+          - string
+          - 'null'
+        metadata: {}
+        created_at:
+          type: string
+          format: date-time
+          readOnly: true
+        updated_at:
+          type:
+          - string
+          - 'null'
+          format: date-time
+          readOnly: true
+        deleted:
+          type:
+          - boolean
+          - 'null'
+        created_by:
+          allOf:
+          - $ref: '#/components/schemas/UserBasic'
+          readOnly: true
+        team:
+          type: integer
+          readOnly: true
+      required:
+      - created_at
+      - created_by
+      - id
+      - name
+      - team
+      - updated_at
+    ScoreDefinitionCreate:
+      type: object
+      properties:
+        name:
+          type: string
+          description: Human-readable scorer name.
+          maxLength: 255
+        description:
+          type:
+          - string
+          - 'null'
+          description: Optional human-readable description.
+        kind:
+          allOf:
+          - $ref: '#/components/schemas/ExperimentMetricKindEnum'
+          description: 'Scorer kind. This cannot be changed after creation.
+
+
+            * `categorical` - categorical
+
+            * `numeric` - numeric
+
+            * `boolean` - boolean'
+        archived:
+          type: boolean
+          default: false
+          description: New scorers are always created as active.
+        config:
+          allOf:
+          - $ref: '#/components/schemas/ScoreDefinitionConfig'
+          description: Initial immutable scorer configuration.
+      required:
+      - config
+      - kind
+      - name
+    ReviewQueueItem:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+          readOnly: true
+        queue_id:
+          type: string
+          format: uuid
+          readOnly: true
+          description: Review queue ID that currently owns this pending trace.
+        queue_name:
+          type: string
+          readOnly: true
+          description: Human-readable name of the queue that currently owns this pending trace.
+        trace_id:
+          type: string
+          readOnly: true
+          description: Trace ID currently pending review.
+        created_at:
+          type: string
+          format: date-time
+          readOnly: true
+        updated_at:
+          type:
+          - string
+          - 'null'
+          format: date-time
+          readOnly: true
+        created_by:
+          allOf:
+          - $ref: '#/components/schemas/UserBasic'
+          readOnly: true
+          description: User who queued this trace.
+        team:
+          type: integer
+          readOnly: true
+      required:
+      - created_at
+      - created_by
+      - id
+      - queue_id
+      - queue_name
+      - team
+      - trace_id
+      - updated_at
+    LLMSkillList:
+      type: object
+      description: List serializer that omits body and file manifest — progressive disclosure (Level 1).
+      properties:
+        id:
+          type: string
+          format: uuid
+          readOnly: true
+        name:
+          type: string
+          description: Unique skill name. Lowercase letters, numbers, and hyphens only. Max 64 characters.
+          maxLength: 64
+        description:
+          type: string
+          description: What this skill does and when to use it. Max 4096 characters.
+          maxLength: 4096
+        license:
+          type: string
+          description: License name or reference to a bundled license file.
+          maxLength: 255
+        compatibility:
+          type: string
+          description: Environment requirements (intended product, system packages, network access, etc.).
+          maxLength: 500
+        allowed_tools:
+          type: array
+          items:
+            type: string
+          description: List of pre-approved tools the skill may use.
+        metadata:
+          type: object
+          additionalProperties: true
+          description: Arbitrary key-value metadata.
+        outline:
+          type: array
+          items:
+            $ref: '#/components/schemas/LLMSkillOutlineEntry'
+          readOnly: true
+          description: Flat list of markdown headings parsed from the skill body. Useful as a lightweight table of contents.
+        version:
+          type: integer
+          readOnly: true
+        created_by:
+          allOf:
+          - $ref: '#/components/schemas/UserBasic'
+          readOnly: true
+        created_at:
+          type: string
+          format: date-time
+          readOnly: true
+        updated_at:
+          type: string
+          format: date-time
+          readOnly: true
+        deleted:
+          type: boolean
+          readOnly: true
+        is_latest:
+          type: boolean
+          readOnly: true
+        latest_version:
+          type: integer
+          readOnly: true
+        version_count:
+          type: integer
+          readOnly: true
+        first_version_created_at:
+          type: string
+          readOnly: true
+      required:
+      - created_at
+      - created_by
+      - deleted
+      - description
+      - first_version_created_at
+      - id
+      - is_latest
+      - latest_version
+      - name
+      - outline
+      - updated_at
+      - version
+      - version_count
+    LLMPromptPublic:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        name:
+          type: string
+        prompt:
+          description: Full prompt content. Omitted when 'content=preview' or 'content=none'.
+        prompt_preview:
+          type: string
+          description: First 160 characters of the prompt. Only present when 'content=preview'.
+        outline:
+          type: array
+          items:
+            $ref: '#/components/schemas/LLMPromptOutlineEntry'
+          description: Flat list of markdown headings parsed from the prompt. Useful as a lightweight table of contents.
+        version:
+          type: integer
+        created_at:
+          type: string
+          format: date-time
+        updated_at:
+          type: string
+          format: date-time
+        deleted:
+          type: boolean
+        is_latest:
+          type: boolean
+        latest_version:
+          type: integer
+        version_count:
+          type: integer
+        first_version_created_at:
+          type: string
+          format: date-time
+      required:
+      - created_at
+      - deleted
+      - first_version_created_at
+      - id
+      - is_latest
+      - latest_version
+      - name
+      - outline
+      - updated_at
+      - version
+      - version_count
+    TestHogResultItem:
+      type: object
+      properties:
+        event_uuid:
+          type: string
+          description: UUID of the $ai_generation event.
+        trace_id:
+          type:
+          - string
+          - 'null'
+          description: Trace ID if available.
+        input_preview:
+          type: string
+          description: First 200 chars of the generation input.
+        output_preview:
+          type: string
+          description: First 200 chars of the generation output.
+        result:
+          type:
+          - boolean
+          - 'null'
+          description: True = pass, False = fail, null = N/A or error.
+        reasoning:
+          type:
+          - string
+          - 'null'
+          description: Hog evaluation reasoning string, if any.
+        error:
+          type:
+          - string
+          - 'null'
+          description: Error message if the Hog code raised an exception.
+      required:
+      - error
+      - event_uuid
+      - input_preview
+      - output_preview
+      - reasoning
+      - result
+    PatchedReviewQueueUpdate:
+      type: object
+      properties:
+        name:
+          type: string
+          description: Human-readable queue name.
+          maxLength: 255
+    LLMProviderKey:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+          readOnly: true
+        provider:
+          $ref: '#/components/schemas/LLMProviderEnum'
+        name:
+          type: string
+          maxLength: 255
+        state:
+          allOf:
+          - $ref: '#/components/schemas/LLMProviderKeyStateEnum'
+          readOnly: true
+        error_message:
+          type:
+          - string
+          - 'null'
+          readOnly: true
+        api_key:
+          type: string
+          writeOnly: true
+        api_key_masked:
+          type: string
+          readOnly: true
+        azure_endpoint:
+          type: string
+          format: uri
+          writeOnly: true
+          description: Azure OpenAI endpoint URL
+        api_version:
+          type: string
+          writeOnly: true
+          description: Azure OpenAI API version
+          maxLength: 20
+        azure_endpoint_display:
+          type:
+          - string
+          - 'null'
+          readOnly: true
+          description: Azure endpoint (read-only, for display)
+        api_version_display:
+          type:
+          - string
+          - 'null'
+          readOnly: true
+          description: Azure API version (read-only, for display)
+        set_as_active:
+          type: boolean
+          writeOnly: true
+          default: false
+        created_at:
+          type: string
+          format: date-time
+          readOnly: true
+        created_by:
+          allOf:
+          - $ref: '#/components/schemas/UserBasic'
+          readOnly: true
+        last_used_at:
+          type:
+          - string
+          - 'null'
+          format: date-time
+          readOnly: true
+      required:
+      - api_key_masked
+      - api_version_display
+      - azure_endpoint_display
+      - created_at
+      - created_by
+      - error_message
+      - id
+      - last_used_at
+      - name
+      - provider
+      - state
+    LLMSkillFile:
+      type: object
+      properties:
+        path:
+          type: string
+          maxLength: 500
+        content:
+          type: string
+        content_type:
+          type: string
+          maxLength: 100
+      required:
+      - content
+      - path
+    StatusReasonEnum:
+      enum:
+      - trial_limit_reached
+      - model_not_allowed
+      - provider_key_deleted
+      type: string
+      description: '* `trial_limit_reached` - Trial evaluation limit reached
+
+        * `model_not_allowed` - Model not available on the trial plan
+
+        * `provider_key_deleted` - Provider API key was deleted'
+    CategoricalScoreOption:
+      type: object
+      properties:
+        key:
+          type: string
+          description: Stable option key. Use lowercase letters, numbers, underscores, or hyphens.
+          maxLength: 128
+        label:
+          type: string
+          description: Human-readable option label.
+          maxLength: 256
+      required:
+      - key
+      - label
     CategoricalScoreDefinitionConfig:
       type: object
       properties:
@@ -7568,14 +6531,1051 @@ components:
           description: Optional maximum number of options that can be selected when `selection_mode` is `multiple`.
       required:
       - options
-    EvaluationTypeEnum:
+    BlankEnum:
       enum:
-      - llm_judge
-      - hog
+      - ''
+    DatasetItem:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+          readOnly: true
+        dataset:
+          type: string
+          format: uuid
+        input: {}
+        output: {}
+        metadata: {}
+        ref_trace_id:
+          type:
+          - string
+          - 'null'
+          maxLength: 255
+        ref_timestamp:
+          type:
+          - string
+          - 'null'
+          format: date-time
+        ref_source_id:
+          type:
+          - string
+          - 'null'
+          maxLength: 255
+        deleted:
+          type:
+          - boolean
+          - 'null'
+        created_at:
+          type: string
+          format: date-time
+          readOnly: true
+        updated_at:
+          type:
+          - string
+          - 'null'
+          format: date-time
+          readOnly: true
+        created_by:
+          allOf:
+          - $ref: '#/components/schemas/UserBasic'
+          readOnly: true
+        team:
+          type: integer
+          readOnly: true
+      required:
+      - created_at
+      - created_by
+      - dataset
+      - id
+      - team
+      - updated_at
+    ReviewQueueCreate:
+      type: object
+      properties:
+        name:
+          type: string
+          description: Human-readable queue name.
+          maxLength: 255
+      required:
+      - name
+    LLMPrompt:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+          readOnly: true
+        name:
+          type: string
+          description: Unique prompt name using letters, numbers, hyphens, and underscores only.
+          maxLength: 255
+        prompt:
+          description: Prompt payload as JSON or string data.
+        version:
+          type: integer
+          readOnly: true
+        created_by:
+          allOf:
+          - $ref: '#/components/schemas/UserBasic'
+          readOnly: true
+        created_at:
+          type: string
+          format: date-time
+          readOnly: true
+        updated_at:
+          type: string
+          format: date-time
+          readOnly: true
+        deleted:
+          type: boolean
+          readOnly: true
+        is_latest:
+          type: boolean
+          readOnly: true
+        latest_version:
+          type: integer
+          readOnly: true
+        version_count:
+          type: integer
+          readOnly: true
+        first_version_created_at:
+          type: string
+          readOnly: true
+        outline:
+          type: array
+          items:
+            $ref: '#/components/schemas/LLMPromptOutlineEntry'
+          readOnly: true
+      required:
+      - created_at
+      - created_by
+      - deleted
+      - first_version_created_at
+      - id
+      - is_latest
+      - latest_version
+      - name
+      - outline
+      - prompt
+      - updated_at
+      - version
+      - version_count
+    PatchedDatasetItem:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+          readOnly: true
+        dataset:
+          type: string
+          format: uuid
+        input: {}
+        output: {}
+        metadata: {}
+        ref_trace_id:
+          type:
+          - string
+          - 'null'
+          maxLength: 255
+        ref_timestamp:
+          type:
+          - string
+          - 'null'
+          format: date-time
+        ref_source_id:
+          type:
+          - string
+          - 'null'
+          maxLength: 255
+        deleted:
+          type:
+          - boolean
+          - 'null'
+        created_at:
+          type: string
+          format: date-time
+          readOnly: true
+        updated_at:
+          type:
+          - string
+          - 'null'
+          format: date-time
+          readOnly: true
+        created_by:
+          allOf:
+          - $ref: '#/components/schemas/UserBasic'
+          readOnly: true
+        team:
+          type: integer
+          readOnly: true
+    PatchedDataset:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+          readOnly: true
+        name:
+          type: string
+          maxLength: 400
+        description:
+          type:
+          - string
+          - 'null'
+        metadata: {}
+        created_at:
+          type: string
+          format: date-time
+          readOnly: true
+        updated_at:
+          type:
+          - string
+          - 'null'
+          format: date-time
+          readOnly: true
+        deleted:
+          type:
+          - boolean
+          - 'null'
+        created_by:
+          allOf:
+          - $ref: '#/components/schemas/UserBasic'
+          readOnly: true
+        team:
+          type: integer
+          readOnly: true
+    LLMSkillDuplicate:
+      type: object
+      properties:
+        new_name:
+          type: string
+          description: Name for the duplicated skill. Must be unique.
+          maxLength: 64
+      required:
+      - new_name
+    PaginatedLLMPromptListList:
+      type: object
+      required:
+      - count
+      - results
+      properties:
+        count:
+          type: integer
+          example: 123
+        next:
+          type:
+          - string
+          - 'null'
+          format: uri
+          example: http://api.example.org/accounts/?offset=400&limit=100
+        previous:
+          type:
+          - string
+          - 'null'
+          format: uri
+          example: http://api.example.org/accounts/?offset=200&limit=100
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/LLMPromptList'
+    LLMSkillVersionSummary:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+          readOnly: true
+        version:
+          type: integer
+          readOnly: true
+        created_by:
+          allOf:
+          - $ref: '#/components/schemas/UserBasic'
+          readOnly: true
+        created_at:
+          type: string
+          format: date-time
+          readOnly: true
+        is_latest:
+          type: boolean
+          readOnly: true
+      required:
+      - created_at
+      - created_by
+      - id
+      - is_latest
+      - version
+    PatchedLLMProviderKey:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+          readOnly: true
+        provider:
+          $ref: '#/components/schemas/LLMProviderEnum'
+        name:
+          type: string
+          maxLength: 255
+        state:
+          allOf:
+          - $ref: '#/components/schemas/LLMProviderKeyStateEnum'
+          readOnly: true
+        error_message:
+          type:
+          - string
+          - 'null'
+          readOnly: true
+        api_key:
+          type: string
+          writeOnly: true
+        api_key_masked:
+          type: string
+          readOnly: true
+        azure_endpoint:
+          type: string
+          format: uri
+          writeOnly: true
+          description: Azure OpenAI endpoint URL
+        api_version:
+          type: string
+          writeOnly: true
+          description: Azure OpenAI API version
+          maxLength: 20
+        azure_endpoint_display:
+          type:
+          - string
+          - 'null'
+          readOnly: true
+          description: Azure endpoint (read-only, for display)
+        api_version_display:
+          type:
+          - string
+          - 'null'
+          readOnly: true
+          description: Azure API version (read-only, for display)
+        set_as_active:
+          type: boolean
+          writeOnly: true
+          default: false
+        created_at:
+          type: string
+          format: date-time
+          readOnly: true
+        created_by:
+          allOf:
+          - $ref: '#/components/schemas/UserBasic'
+          readOnly: true
+        last_used_at:
+          type:
+          - string
+          - 'null'
+          format: date-time
+          readOnly: true
+    LLMSkillFileManifest:
+      type: object
+      properties:
+        path:
+          type: string
+          maxLength: 500
+        content_type:
+          type: string
+          maxLength: 100
+      required:
+      - path
+    LLMPromptResolveResponse:
+      type: object
+      properties:
+        prompt:
+          $ref: '#/components/schemas/LLMPrompt'
+        versions:
+          type: array
+          items:
+            $ref: '#/components/schemas/LLMPromptVersionSummary'
+        has_more:
+          type: boolean
+      required:
+      - has_more
+      - prompt
+      - versions
+    LLMSkillCreate:
+      type: object
+      description: Create serializer — accepts bundled files as write-only input on POST.
+      properties:
+        id:
+          type: string
+          format: uuid
+          readOnly: true
+        name:
+          type: string
+          description: Unique skill name. Lowercase letters, numbers, and hyphens only. Max 64 characters.
+          maxLength: 64
+        description:
+          type: string
+          description: What this skill does and when to use it. Max 4096 characters.
+          maxLength: 4096
+        body:
+          type: string
+          description: The SKILL.md instruction content (markdown).
+        license:
+          type: string
+          description: License name or reference to a bundled license file.
+          maxLength: 255
+        compatibility:
+          type: string
+          description: Environment requirements (intended product, system packages, network access, etc.).
+          maxLength: 500
+        allowed_tools:
+          type: array
+          items:
+            type: string
+          description: List of pre-approved tools the skill may use.
+        metadata:
+          type: object
+          additionalProperties: true
+          description: Arbitrary key-value metadata.
+        files:
+          type: array
+          items:
+            $ref: '#/components/schemas/LLMSkillFileInput'
+          writeOnly: true
+          description: Bundled files to include with the initial version (scripts, references, assets).
+        outline:
+          type: array
+          items:
+            $ref: '#/components/schemas/LLMSkillOutlineEntry'
+          readOnly: true
+          description: Flat list of markdown headings parsed from the skill body. Useful as a lightweight table of contents.
+        version:
+          type: integer
+          readOnly: true
+        created_by:
+          allOf:
+          - $ref: '#/components/schemas/UserBasic'
+          readOnly: true
+        created_at:
+          type: string
+          format: date-time
+          readOnly: true
+        updated_at:
+          type: string
+          format: date-time
+          readOnly: true
+        deleted:
+          type: boolean
+          readOnly: true
+        is_latest:
+          type: boolean
+          readOnly: true
+        latest_version:
+          type: integer
+          readOnly: true
+        version_count:
+          type: integer
+          readOnly: true
+        first_version_created_at:
+          type: string
+          readOnly: true
+      required:
+      - body
+      - created_at
+      - created_by
+      - deleted
+      - description
+      - first_version_created_at
+      - id
+      - is_latest
+      - latest_version
+      - name
+      - outline
+      - updated_at
+      - version
+      - version_count
+    OutputTypeEnum:
+      enum:
+      - boolean
       type: string
-      description: '* `llm_judge` - LLM as a judge
+      description: '* `boolean` - Boolean (Pass/Fail)'
+    NumericScoreDefinitionConfig:
+      type: object
+      properties:
+        min:
+          type:
+          - number
+          - 'null'
+          format: double
+          description: Optional inclusive minimum score.
+        max:
+          type:
+          - number
+          - 'null'
+          format: double
+          description: Optional inclusive maximum score.
+        step:
+          type:
+          - number
+          - 'null'
+          format: double
+          description: Optional increment step for numeric input, for example 1 or 0.5.
+    DeliveryStatusEnum:
+      enum:
+      - pending
+      - delivered
+      - partial_failure
+      - failed
+      type: string
+      description: '* `pending` - Pending
 
-        * `hog` - Hog'
+        * `delivered` - Delivered
+
+        * `partial_failure` - Partial Failure
+
+        * `failed` - Failed'
+    PatchedReviewQueueItemUpdate:
+      type: object
+      properties:
+        queue_id:
+          type: string
+          format: uuid
+          description: Review queue ID that should own this pending trace.
+    PaginatedEvaluationReportList:
+      type: object
+      required:
+      - count
+      - results
+      properties:
+        count:
+          type: integer
+          example: 123
+        next:
+          type:
+          - string
+          - 'null'
+          format: uri
+          example: http://api.example.org/accounts/?offset=400&limit=100
+        previous:
+          type:
+          - string
+          - 'null'
+          format: uri
+          example: http://api.example.org/accounts/?offset=200&limit=100
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/EvaluationReport'
+    PaginatedDatasetList:
+      type: object
+      required:
+      - count
+      - results
+      properties:
+        count:
+          type: integer
+          example: 123
+        next:
+          type:
+          - string
+          - 'null'
+          format: uri
+          example: http://api.example.org/accounts/?offset=400&limit=100
+        previous:
+          type:
+          - string
+          - 'null'
+          format: uri
+          example: http://api.example.org/accounts/?offset=200&limit=100
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/Dataset'
+    EvaluationReportRun:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+          readOnly: true
+          description: UUID of this report run.
+        report:
+          type: string
+          format: uuid
+          readOnly: true
+          description: UUID of the report config that generated this run.
+        content:
+          readOnly: true
+          description: Generated report content (markdown or structured text).
+        metadata:
+          readOnly: true
+          description: Run metadata including model used, token counts, and generation stats.
+        period_start:
+          type: string
+          format: date-time
+          readOnly: true
+          description: Start of the evaluation window covered by this report.
+        period_end:
+          type: string
+          format: date-time
+          readOnly: true
+          description: End of the evaluation window covered by this report.
+        delivery_status:
+          allOf:
+          - $ref: '#/components/schemas/DeliveryStatusEnum'
+          readOnly: true
+          description: '''pending'', ''delivered'', or ''failed''.
+
+
+            * `pending` - Pending
+
+            * `delivered` - Delivered
+
+            * `partial_failure` - Partial Failure
+
+            * `failed` - Failed'
+        delivery_errors:
+          readOnly: true
+          description: List of delivery error messages if delivery failed.
+        created_at:
+          type: string
+          format: date-time
+          readOnly: true
+      required:
+      - content
+      - created_at
+      - delivery_errors
+      - delivery_status
+      - id
+      - metadata
+      - period_end
+      - period_start
+      - report
+    PaginatedLLMSkillListList:
+      type: object
+      required:
+      - count
+      - results
+      properties:
+        count:
+          type: integer
+          example: 123
+        next:
+          type:
+          - string
+          - 'null'
+          format: uri
+          example: http://api.example.org/accounts/?offset=400&limit=100
+        previous:
+          type:
+          - string
+          - 'null'
+          format: uri
+          example: http://api.example.org/accounts/?offset=200&limit=100
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/LLMSkillList'
+    TraceReviewCreate:
+      type: object
+      properties:
+        trace_id:
+          type: string
+          description: Trace ID for the review. Only one active review can exist per trace and team.
+          maxLength: 255
+        comment:
+          type:
+          - string
+          - 'null'
+          description: Optional comment or reasoning for the review.
+        scores:
+          type: array
+          items:
+            $ref: '#/components/schemas/TraceReviewScoreWrite'
+          description: Full desired score set for this review. Omit scorers you want to leave blank.
+        queue_id:
+          type:
+          - string
+          - 'null'
+          format: uuid
+          description: Optional review queue ID for queue-context saves. When provided, the matching pending queue item is cleared after the review is saved. If omitted, any pending queue item for the same trace is cleared.
+      required:
+      - trace_id
+    PaginatedEvaluationReportRunList:
+      type: object
+      required:
+      - count
+      - results
+      properties:
+        count:
+          type: integer
+          example: 123
+        next:
+          type:
+          - string
+          - 'null'
+          format: uri
+          example: http://api.example.org/accounts/?offset=400&limit=100
+        previous:
+          type:
+          - string
+          - 'null'
+          format: uri
+          example: http://api.example.org/accounts/?offset=200&limit=100
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/EvaluationReportRun'
+    LLMSkillEditOperation:
+      type: object
+      properties:
+        old:
+          type: string
+          description: Text to find in the target content. Must match exactly once.
+        new:
+          type: string
+          description: Replacement text.
+      required:
+      - new
+      - old
+    PatchedScoreDefinitionMetadata:
+      type: object
+      properties:
+        name:
+          type: string
+          description: Updated scorer name.
+          maxLength: 255
+        description:
+          type:
+          - string
+          - 'null'
+          description: Updated scorer description.
+        archived:
+          type: boolean
+          description: Whether the scorer is archived.
+    LLMPromptVersionSummary:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+          readOnly: true
+        version:
+          type: integer
+          readOnly: true
+        created_by:
+          allOf:
+          - $ref: '#/components/schemas/UserBasic'
+          readOnly: true
+        created_at:
+          type: string
+          format: date-time
+          readOnly: true
+        is_latest:
+          type: boolean
+          readOnly: true
+      required:
+      - created_at
+      - created_by
+      - id
+      - is_latest
+      - version
+    EvaluationReport:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+          readOnly: true
+        evaluation:
+          type: string
+          format: uuid
+          description: UUID of the evaluation this report config belongs to.
+        frequency:
+          allOf:
+          - $ref: '#/components/schemas/EvaluationReportFrequencyEnum'
+          description: 'How report generation is triggered. ''every_n'' fires once N new evaluation results have accumulated (subject to cooldown_minutes and daily_run_cap). ''scheduled'' fires on the cadence defined by rrule + starts_at + timezone_name.
+
+
+            * `scheduled` - Scheduled
+
+            * `every_n` - Every N'
+        rrule:
+          type: string
+          description: RFC 5545 recurrence rule string (e.g. 'FREQ=WEEKLY;BYDAY=MO'). Must not contain DTSTART — the anchor is set via starts_at. Required when frequency is 'scheduled'; ignored otherwise.
+        starts_at:
+          type:
+          - string
+          - 'null'
+          format: date-time
+          description: Anchor datetime for the rrule (ISO 8601, UTC — must end in 'Z'). Local-time interpretation is controlled by timezone_name. Required when frequency is 'scheduled'; ignored otherwise.
+        timezone_name:
+          type: string
+          description: IANA timezone name used to expand the rrule in local time so e.g. '9am' stays at 9am across DST transitions (e.g. 'America/New_York'). Defaults to 'UTC'.
+          maxLength: 64
+        next_delivery_date:
+          type:
+          - string
+          - 'null'
+          format: date-time
+          readOnly: true
+        delivery_targets:
+          description: 'List of delivery targets. Each entry is either {type: ''email'', value: ''user@example.com''} or {type: ''slack'', integration_id: <int>, channel: ''<channel>''}. Slack integration_id must belong to this team.'
+        max_sample_size:
+          type: integer
+          maximum: 2147483647
+          minimum: -2147483648
+          description: Maximum number of evaluation runs included in each report. Defaults to 200.
+        enabled:
+          type: boolean
+          description: Whether report delivery is active. Disabled configs do not fire.
+        deleted:
+          type: boolean
+          description: Set to true to soft-delete this report config.
+        last_delivered_at:
+          type:
+          - string
+          - 'null'
+          format: date-time
+          readOnly: true
+        report_prompt_guidance:
+          type: string
+          description: Optional custom instructions appended to the AI report prompt to steer focus, scope, or section choices without modifying the base prompt.
+        trigger_threshold:
+          type:
+          - integer
+          - 'null'
+          maximum: 10000
+          minimum: 10
+          description: Number of new evaluation results that triggers a report (every_n mode only). Min 10, max 10000. Defaults to 100. Required when frequency is 'every_n'.
+        cooldown_minutes:
+          type: integer
+          maximum: 1440
+          minimum: 60
+          description: Minimum minutes between count-triggered reports to prevent spam (every_n mode only). Min 60, max 1440 (24 hours). Defaults to 60.
+        daily_run_cap:
+          type: integer
+          maximum: 24
+          minimum: 1
+          description: Maximum count-triggered report runs per calendar day (UTC). Min 1, max 24 (one per cooldown window). Defaults to 10.
+        created_by:
+          type:
+          - integer
+          - 'null'
+          readOnly: true
+        created_at:
+          type: string
+          format: date-time
+          readOnly: true
+      required:
+      - created_at
+      - created_by
+      - evaluation
+      - id
+      - last_delivered_at
+      - next_delivery_date
+    BooleanScoreDefinitionConfig:
+      type: object
+      properties:
+        true_label:
+          type: string
+          description: Optional label for a true value.
+        false_label:
+          type: string
+          description: Optional label for a false value.
+    ClusteringJob:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+          readOnly: true
+        name:
+          type: string
+          maxLength: 100
+        analysis_level:
+          $ref: '#/components/schemas/ClusteringJobAnalysisLevelEnum'
+        event_filters: {}
+        enabled:
+          type: boolean
+        created_at:
+          type: string
+          format: date-time
+          readOnly: true
+        updated_at:
+          type: string
+          format: date-time
+          readOnly: true
+      required:
+      - analysis_level
+      - created_at
+      - id
+      - name
+      - updated_at
+    ScoreDefinition:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+          readOnly: true
+        name:
+          type: string
+          readOnly: true
+        description:
+          type: string
+          readOnly: true
+        kind:
+          allOf:
+          - $ref: '#/components/schemas/ExperimentMetricKindEnum'
+          readOnly: true
+        archived:
+          type: boolean
+          readOnly: true
+        current_version:
+          type: integer
+          readOnly: true
+          description: Current immutable configuration version number.
+        config:
+          allOf:
+          - $ref: '#/components/schemas/ScoreDefinitionConfig'
+          readOnly: true
+          description: Current immutable scorer configuration.
+        created_by:
+          allOf:
+          - $ref: '#/components/schemas/UserBasic'
+          readOnly: true
+          description: User who created the scorer.
+        created_at:
+          type: string
+          format: date-time
+          readOnly: true
+        updated_at:
+          type:
+          - string
+          - 'null'
+          format: date-time
+          readOnly: true
+        team:
+          type: integer
+          readOnly: true
+      required:
+      - archived
+      - config
+      - created_at
+      - created_by
+      - current_version
+      - description
+      - id
+      - kind
+      - name
+      - team
+      - updated_at
+    EvaluationRunRequest:
+      type: object
+      properties:
+        evaluation_id:
+          type: string
+          format: uuid
+          description: UUID of the evaluation to run.
+        target_event_id:
+          type: string
+          format: uuid
+          description: UUID of the $ai_generation event to evaluate.
+        timestamp:
+          type: string
+          format: date-time
+          description: ISO 8601 timestamp of the target event (needed for efficient ClickHouse lookup).
+        event:
+          type: string
+          default: $ai_generation
+          description: Event name. Defaults to '$ai_generation'.
+        distinct_id:
+          type:
+          - string
+          - 'null'
+          description: Distinct ID of the event (optional, improves lookup performance).
+      required:
+      - evaluation_id
+      - target_event_id
+      - timestamp
+    UserBasic:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        uuid:
+          type: string
+          format: uuid
+          readOnly: true
+        distinct_id:
+          type:
+          - string
+          - 'null'
+          maxLength: 200
+        first_name:
+          type: string
+          maxLength: 150
+        last_name:
+          type: string
+          maxLength: 150
+        email:
+          type: string
+          format: email
+          title: Email address
+          maxLength: 254
+        is_email_verified:
+          type:
+          - boolean
+          - 'null'
+        hedgehog_config:
+          type:
+          - object
+          - 'null'
+          additionalProperties: true
+          readOnly: true
+        role_at_organization:
+          oneOf:
+          - $ref: '#/components/schemas/RoleAtOrganizationEnum'
+          - $ref: '#/components/schemas/BlankEnum'
+          - $ref: '#/components/schemas/NullEnum'
+      required:
+      - email
+      - hedgehog_config
+      - id
+      - uuid
+    LLMPromptOutlineEntry:
+      type: object
+      properties:
+        level:
+          type: integer
+          maximum: 6
+          minimum: 1
+          description: Markdown heading level (1-6).
+        text:
+          type: string
+          description: Heading text with markdown link syntax preserved.
+      required:
+      - level
+      - text
+    LLMSkillFileInput:
+      type: object
+      properties:
+        path:
+          type: string
+          description: File path relative to skill root, e.g. 'scripts/setup.sh' or 'references/guide.md'.
+          maxLength: 500
+        content:
+          type: string
+          description: Text content of the file.
+        content_type:
+          type: string
+          default: text/plain
+          description: MIME type of the file content.
+          maxLength: 100
+      required:
+      - content
+      - path
   parameters:
     ProjectIdPath:
       in: path

@@ -388,28 +388,6 @@ paths:
       x-summary-source: derived
 components:
   schemas:
-    PatchedPersistedFolder:
-      type: object
-      properties:
-        id:
-          type: string
-          format: uuid
-          readOnly: true
-        type:
-          $ref: '#/components/schemas/PersistedFolderTypeEnum'
-        protocol:
-          type: string
-          maxLength: 64
-        path:
-          type: string
-        created_at:
-          type: string
-          format: date-time
-          readOnly: true
-        updated_at:
-          type: string
-          format: date-time
-          readOnly: true
     PersistedFolder:
       type: object
       properties:
@@ -437,6 +415,17 @@ components:
       - id
       - type
       - updated_at
+    PersistedFolderTypeEnum:
+      enum:
+      - home
+      - pinned
+      - custom_products
+      type: string
+      description: '* `home` - Home
+
+        * `pinned` - Pinned
+
+        * `custom_products` - Custom Products'
     PaginatedPersistedFolderList:
       type: object
       required:
@@ -462,17 +451,28 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/PersistedFolder'
-    PersistedFolderTypeEnum:
-      enum:
-      - home
-      - pinned
-      - custom_products
-      type: string
-      description: '* `home` - Home
-
-        * `pinned` - Pinned
-
-        * `custom_products` - Custom Products'
+    PatchedPersistedFolder:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+          readOnly: true
+        type:
+          $ref: '#/components/schemas/PersistedFolderTypeEnum'
+        protocol:
+          type: string
+          maxLength: 64
+        path:
+          type: string
+        created_at:
+          type: string
+          format: date-time
+          readOnly: true
+        updated_at:
+          type: string
+          format: date-time
+          readOnly: true
   parameters:
     EnvironmentIdPath:
       in: path

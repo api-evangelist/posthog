@@ -197,6 +197,43 @@ paths:
       x-summary-source: derived
 components:
   schemas:
+    PatchedExperimentSavedMetric:
+      type: object
+      description: Mixin for serializers to add user access control fields
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        name:
+          type: string
+          maxLength: 400
+        description:
+          type:
+          - string
+          - 'null'
+          maxLength: 400
+        query: {}
+        created_by:
+          allOf:
+          - $ref: '#/components/schemas/UserBasic'
+          readOnly: true
+        created_at:
+          type: string
+          format: date-time
+          readOnly: true
+        updated_at:
+          type: string
+          format: date-time
+          readOnly: true
+        tags:
+          type: array
+          items: {}
+        user_access_level:
+          type:
+          - string
+          - 'null'
+          readOnly: true
+          description: The effective access level the user has for this object
     PaginatedExperimentSavedMetricList:
       type: object
       required:
@@ -222,32 +259,6 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/ExperimentSavedMetric'
-    RoleAtOrganizationEnum:
-      enum:
-      - engineering
-      - data
-      - product
-      - founder
-      - leadership
-      - marketing
-      - sales
-      - other
-      type: string
-      description: '* `engineering` - Engineering
-
-        * `data` - Data
-
-        * `product` - Product Management
-
-        * `founder` - Founder
-
-        * `leadership` - Leadership
-
-        * `marketing` - Marketing
-
-        * `sales` - Sales / Success
-
-        * `other` - Other'
     ExperimentSavedMetric:
       type: object
       description: Mixin for serializers to add user access control fields
@@ -293,6 +304,9 @@ components:
       - query
       - updated_at
       - user_access_level
+    BlankEnum:
+      enum:
+      - ''
     UserBasic:
       type: object
       properties:
@@ -342,46 +356,32 @@ components:
     NullEnum:
       enum:
       - null
-    BlankEnum:
+    RoleAtOrganizationEnum:
       enum:
-      - ''
-    PatchedExperimentSavedMetric:
-      type: object
-      description: Mixin for serializers to add user access control fields
-      properties:
-        id:
-          type: integer
-          readOnly: true
-        name:
-          type: string
-          maxLength: 400
-        description:
-          type:
-          - string
-          - 'null'
-          maxLength: 400
-        query: {}
-        created_by:
-          allOf:
-          - $ref: '#/components/schemas/UserBasic'
-          readOnly: true
-        created_at:
-          type: string
-          format: date-time
-          readOnly: true
-        updated_at:
-          type: string
-          format: date-time
-          readOnly: true
-        tags:
-          type: array
-          items: {}
-        user_access_level:
-          type:
-          - string
-          - 'null'
-          readOnly: true
-          description: The effective access level the user has for this object
+      - engineering
+      - data
+      - product
+      - founder
+      - leadership
+      - marketing
+      - sales
+      - other
+      type: string
+      description: '* `engineering` - Engineering
+
+        * `data` - Data
+
+        * `product` - Product Management
+
+        * `founder` - Founder
+
+        * `leadership` - Leadership
+
+        * `marketing` - Marketing
+
+        * `sales` - Sales / Success
+
+        * `other` - Other'
   parameters:
     ProjectIdPath:
       in: path

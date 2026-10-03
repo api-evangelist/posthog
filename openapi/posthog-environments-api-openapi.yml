@@ -651,220 +651,324 @@ paths:
       x-summary-source: derived
 components:
   schemas:
-    AttributionModeEnum:
+    PatchedTeam:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        uuid:
+          type: string
+          format: uuid
+          readOnly: true
+        name:
+          type: string
+          maxLength: 200
+          minLength: 1
+        access_control:
+          type: boolean
+        organization:
+          type: string
+          format: uuid
+          readOnly: true
+        project_id:
+          type: integer
+          maximum: 9223372036854775807
+          minimum: -9223372036854775808
+          format: int64
+          readOnly: true
+        api_token:
+          type: string
+          readOnly: true
+        secret_api_token:
+          type:
+          - string
+          - 'null'
+          readOnly: true
+        secret_api_token_backup:
+          type:
+          - string
+          - 'null'
+          readOnly: true
+        created_at:
+          type: string
+          format: date-time
+          readOnly: true
+        updated_at:
+          type: string
+          format: date-time
+          readOnly: true
+        ingested_event:
+          type: boolean
+          readOnly: true
+        default_modifiers:
+          type: object
+          additionalProperties: true
+          readOnly: true
+        person_on_events_querying_enabled:
+          type: boolean
+          readOnly: true
+        user_access_level:
+          type:
+          - string
+          - 'null'
+          readOnly: true
+          description: The effective access level the user has for this object
+        app_urls:
+          type: array
+          items:
+            type:
+            - string
+            - 'null'
+            maxLength: 200
+        anonymize_ips:
+          type: boolean
+        completed_snippet_onboarding:
+          type: boolean
+        test_account_filters: {}
+        test_account_filters_default_checked:
+          type:
+          - boolean
+          - 'null'
+        path_cleaning_filters: {}
+        is_demo:
+          type: boolean
+        timezone:
+          $ref: '#/components/schemas/TimezoneEnum'
+        data_attributes: {}
+        person_display_name_properties:
+          type:
+          - array
+          - 'null'
+          items:
+            type: string
+            maxLength: 400
+        correlation_config: {}
+        autocapture_opt_out:
+          type:
+          - boolean
+          - 'null'
+        autocapture_exceptions_opt_in:
+          type:
+          - boolean
+          - 'null'
+        autocapture_web_vitals_opt_in:
+          type:
+          - boolean
+          - 'null'
+        autocapture_web_vitals_allowed_metrics: {}
+        autocapture_exceptions_errors_to_ignore: {}
+        capture_console_log_opt_in:
+          type:
+          - boolean
+          - 'null'
+        logs_settings: {}
+        capture_performance_opt_in:
+          type:
+          - boolean
+          - 'null'
+        session_recording_opt_in:
+          type: boolean
+        session_recording_sample_rate:
+          type:
+          - string
+          - 'null'
+          format: decimal
+          pattern: ^-?\d{0,1}(?:\.\d{0,2})?$
+        session_recording_minimum_duration_milliseconds:
+          type:
+          - integer
+          - 'null'
+          maximum: 30000
+          minimum: 0
+        session_recording_linked_flag: {}
+        session_recording_network_payload_capture_config: {}
+        session_recording_masking_config: {}
+        session_recording_url_trigger_config:
+          type:
+          - array
+          - 'null'
+          items: {}
+        session_recording_url_blocklist_config:
+          type:
+          - array
+          - 'null'
+          items: {}
+        session_recording_event_trigger_config:
+          type:
+          - array
+          - 'null'
+          items:
+            type:
+            - string
+            - 'null'
+        session_recording_trigger_match_type_config:
+          type:
+          - string
+          - 'null'
+          maxLength: 24
+        session_recording_trigger_groups:
+          description: V2 trigger groups configuration for session recording. If present, takes precedence over legacy trigger fields.
+        session_recording_retention_period:
+          $ref: '#/components/schemas/SessionRecordingRetentionPeriodEnum'
+        session_replay_config: {}
+        survey_config: {}
+        week_start_day:
+          oneOf:
+          - $ref: '#/components/schemas/WeekStartDayEnum'
+          - $ref: '#/components/schemas/NullEnum'
+        primary_dashboard:
+          type:
+          - integer
+          - 'null'
+        live_events_columns:
+          type:
+          - array
+          - 'null'
+          items:
+            type: string
+        recording_domains:
+          type:
+          - array
+          - 'null'
+          items:
+            type:
+            - string
+            - 'null'
+            maxLength: 200
+        cookieless_server_hash_mode:
+          oneOf:
+          - $ref: '#/components/schemas/CookielessServerHashModeEnum'
+          - $ref: '#/components/schemas/NullEnum'
+        human_friendly_comparison_periods:
+          type:
+          - boolean
+          - 'null'
+        inject_web_apps:
+          type:
+          - boolean
+          - 'null'
+        extra_settings: {}
+        modifiers: {}
+        has_completed_onboarding_for: {}
+        surveys_opt_in:
+          type:
+          - boolean
+          - 'null'
+        heatmaps_opt_in:
+          type:
+          - boolean
+          - 'null'
+        flags_persistence_default:
+          type:
+          - boolean
+          - 'null'
+        feature_flag_confirmation_enabled:
+          type:
+          - boolean
+          - 'null'
+        feature_flag_confirmation_message:
+          type:
+          - string
+          - 'null'
+        default_evaluation_contexts_enabled:
+          type:
+          - boolean
+          - 'null'
+          description: Whether to automatically apply default evaluation contexts to new feature flags
+        require_evaluation_contexts:
+          type:
+          - boolean
+          - 'null'
+          description: Whether to require at least one evaluation context tag when creating new feature flags
+        capture_dead_clicks:
+          type:
+          - boolean
+          - 'null'
+        default_data_theme:
+          type:
+          - integer
+          - 'null'
+          maximum: 2147483647
+          minimum: -2147483648
+        revenue_analytics_config:
+          $ref: '#/components/schemas/TeamRevenueAnalyticsConfig'
+        marketing_analytics_config:
+          $ref: '#/components/schemas/TeamMarketingAnalyticsConfig'
+        customer_analytics_config:
+          $ref: '#/components/schemas/TeamCustomerAnalyticsConfig'
+        onboarding_tasks: {}
+        base_currency:
+          allOf:
+          - $ref: '#/components/schemas/BaseCurrencyEnum'
+          default: USD
+        web_analytics_pre_aggregated_tables_enabled:
+          type:
+          - boolean
+          - 'null'
+        receive_org_level_activity_logs:
+          type:
+          - boolean
+          - 'null'
+        business_model:
+          description: 'Whether this project serves B2B or B2C customers, used to optimize the UI layout.
+
+
+            * `b2b` - B2B
+
+            * `b2c` - B2C
+
+            * `other` - Other'
+          oneOf:
+          - $ref: '#/components/schemas/BusinessModelEnum'
+          - $ref: '#/components/schemas/BlankEnum'
+          - $ref: '#/components/schemas/NullEnum'
+        conversations_enabled:
+          type:
+          - boolean
+          - 'null'
+        conversations_settings: {}
+        proactive_tasks_enabled:
+          type:
+          - boolean
+          - 'null'
+        effective_membership_level:
+          allOf:
+          - $ref: '#/components/schemas/EffectiveMembershipLevelEnum'
+          readOnly: true
+        has_group_types:
+          type: boolean
+          readOnly: true
+        group_types:
+          type: array
+          items:
+            type: object
+            additionalProperties: true
+          readOnly: true
+        live_events_token:
+          type:
+          - string
+          - 'null'
+          readOnly: true
+        product_intents:
+          type: array
+          items:
+            type: object
+            additionalProperties: true
+          readOnly: true
+        managed_viewsets:
+          type: object
+          additionalProperties:
+            type: boolean
+          readOnly: true
+        available_setup_task_ids:
+          type: array
+          items:
+            $ref: '#/components/schemas/AvailableSetupTaskIdsEnum'
+          readOnly: true
+    NullEnum:
       enum:
-      - first_touch
-      - last_touch
-      - linear
-      - time_decay
-      - position_based
-      type: string
-      description: '* `first_touch` - First Touch
-
-        * `last_touch` - Last Touch
-
-        * `linear` - Linear
-
-        * `time_decay` - Time Decay
-
-        * `position_based` - Position Based'
-    AvailableSetupTaskIdsEnum:
-      enum:
-      - ingest_first_event
-      - set_up_reverse_proxy
-      - create_first_insight
-      - create_first_dashboard
-      - track_custom_events
-      - define_actions
-      - set_up_cohorts
-      - explore_trends_insight
-      - create_funnel
-      - explore_retention_insight
-      - explore_paths_insight
-      - explore_stickiness_insight
-      - explore_lifecycle_insight
-      - add_authorized_domain
-      - set_up_web_vitals
-      - review_web_analytics_dashboard
-      - filter_web_analytics
-      - set_up_web_analytics_conversion_goals
-      - visit_web_vitals_dashboard
-      - setup_session_recordings
-      - watch_session_recording
-      - configure_recording_settings
-      - create_recording_playlist
-      - enable_console_logs
-      - create_feature_flag
-      - implement_flag_in_code
-      - update_feature_flag_release_conditions
-      - create_multivariate_flag
-      - set_up_flag_payloads
-      - set_up_flag_evaluation_runtimes
-      - create_experiment
-      - implement_experiment_variants
-      - launch_experiment
-      - review_experiment_results
-      - create_survey
-      - launch_survey
-      - collect_survey_responses
-      - connect_source
-      - run_first_query
-      - join_external_data
-      - create_saved_view
-      - enable_error_tracking
-      - upload_source_maps
-      - view_first_error
-      - resolve_first_error
-      - ingest_first_llm_event
-      - view_first_trace
-      - track_costs
-      - set_up_llm_evaluation
-      - run_ai_playground
-      - enable_revenue_analytics_viewset
-      - connect_revenue_source
-      - set_up_revenue_goal
-      - enable_log_capture
-      - view_first_logs
-      - create_first_workflow
-      - set_up_first_workflow_channel
-      - configure_workflow_trigger
-      - add_workflow_action
-      - launch_workflow
-      - create_first_endpoint
-      - configure_endpoint
-      - test_endpoint
-      - create_early_access_feature
-      - update_feature_stage
-      type: string
-      description: '* `ingest_first_event` - ingest_first_event
-
-        * `set_up_reverse_proxy` - set_up_reverse_proxy
-
-        * `create_first_insight` - create_first_insight
-
-        * `create_first_dashboard` - create_first_dashboard
-
-        * `track_custom_events` - track_custom_events
-
-        * `define_actions` - define_actions
-
-        * `set_up_cohorts` - set_up_cohorts
-
-        * `explore_trends_insight` - explore_trends_insight
-
-        * `create_funnel` - create_funnel
-
-        * `explore_retention_insight` - explore_retention_insight
-
-        * `explore_paths_insight` - explore_paths_insight
-
-        * `explore_stickiness_insight` - explore_stickiness_insight
-
-        * `explore_lifecycle_insight` - explore_lifecycle_insight
-
-        * `add_authorized_domain` - add_authorized_domain
-
-        * `set_up_web_vitals` - set_up_web_vitals
-
-        * `review_web_analytics_dashboard` - review_web_analytics_dashboard
-
-        * `filter_web_analytics` - filter_web_analytics
-
-        * `set_up_web_analytics_conversion_goals` - set_up_web_analytics_conversion_goals
-
-        * `visit_web_vitals_dashboard` - visit_web_vitals_dashboard
-
-        * `setup_session_recordings` - setup_session_recordings
-
-        * `watch_session_recording` - watch_session_recording
-
-        * `configure_recording_settings` - configure_recording_settings
-
-        * `create_recording_playlist` - create_recording_playlist
-
-        * `enable_console_logs` - enable_console_logs
-
-        * `create_feature_flag` - create_feature_flag
-
-        * `implement_flag_in_code` - implement_flag_in_code
-
-        * `update_feature_flag_release_conditions` - update_feature_flag_release_conditions
-
-        * `create_multivariate_flag` - create_multivariate_flag
-
-        * `set_up_flag_payloads` - set_up_flag_payloads
-
-        * `set_up_flag_evaluation_runtimes` - set_up_flag_evaluation_runtimes
-
-        * `create_experiment` - create_experiment
-
-        * `implement_experiment_variants` - implement_experiment_variants
-
-        * `launch_experiment` - launch_experiment
-
-        * `review_experiment_results` - review_experiment_results
-
-        * `create_survey` - create_survey
-
-        * `launch_survey` - launch_survey
-
-        * `collect_survey_responses` - collect_survey_responses
-
-        * `connect_source` - connect_source
-
-        * `run_first_query` - run_first_query
-
-        * `join_external_data` - join_external_data
-
-        * `create_saved_view` - create_saved_view
-
-        * `enable_error_tracking` - enable_error_tracking
-
-        * `upload_source_maps` - upload_source_maps
-
-        * `view_first_error` - view_first_error
-
-        * `resolve_first_error` - resolve_first_error
-
-        * `ingest_first_llm_event` - ingest_first_llm_event
-
-        * `view_first_trace` - view_first_trace
-
-        * `track_costs` - track_costs
-
-        * `set_up_llm_evaluation` - set_up_llm_evaluation
-
-        * `run_ai_playground` - run_ai_playground
-
-        * `enable_revenue_analytics_viewset` - enable_revenue_analytics_viewset
-
-        * `connect_revenue_source` - connect_revenue_source
-
-        * `set_up_revenue_goal` - set_up_revenue_goal
-
-        * `enable_log_capture` - enable_log_capture
-
-        * `view_first_logs` - view_first_logs
-
-        * `create_first_workflow` - create_first_workflow
-
-        * `set_up_first_workflow_channel` - set_up_first_workflow_channel
-
-        * `configure_workflow_trigger` - configure_workflow_trigger
-
-        * `add_workflow_action` - add_workflow_action
-
-        * `launch_workflow` - launch_workflow
-
-        * `create_first_endpoint` - create_first_endpoint
-
-        * `configure_endpoint` - configure_endpoint
-
-        * `test_endpoint` - test_endpoint
-
-        * `create_early_access_feature` - create_early_access_feature
-
-        * `update_feature_stage` - update_feature_stage'
+      - null
     Team:
       type: object
       properties:
@@ -1201,60 +1305,6 @@ components:
       - updated_at
       - user_access_level
       - uuid
-    PaginatedTeamBasicList:
-      type: object
-      required:
-      - count
-      - results
-      properties:
-        count:
-          type: integer
-          example: 123
-        next:
-          type:
-          - string
-          - 'null'
-          format: uri
-          example: http://api.example.org/accounts/?offset=400&limit=100
-        previous:
-          type:
-          - string
-          - 'null'
-          format: uri
-          example: http://api.example.org/accounts/?offset=200&limit=100
-        results:
-          type: array
-          items:
-            $ref: '#/components/schemas/TeamBasic'
-    EffectiveMembershipLevelEnum:
-      enum:
-      - 1
-      - 8
-      - 15
-      type: integer
-    WeekStartDayEnum:
-      enum:
-      - 0
-      - 1
-      type: integer
-      description: '* `0` - Sunday
-
-        * `1` - Monday'
-    TeamRevenueAnalyticsConfig:
-      type: object
-      properties:
-        base_currency:
-          $ref: '#/components/schemas/BaseCurrencyEnum'
-        events: {}
-        goals: {}
-        filter_test_accounts:
-          type: boolean
-    NullEnum:
-      enum:
-      - null
-    BlankEnum:
-      enum:
-      - ''
     CookielessServerHashModeEnum:
       enum:
       - 0
@@ -1266,839 +1316,25 @@ components:
         * `1` - Stateless
 
         * `2` - Stateful'
-    TeamBasic:
-      type: object
-      description: 'Serializer for `Team` model with minimal attributes to speeed up loading and transfer times.
-
-        Also used for nested serializers.'
-      properties:
-        id:
-          type: integer
-          readOnly: true
-        uuid:
-          type: string
-          format: uuid
-          readOnly: true
-        organization:
-          type: string
-          format: uuid
-          readOnly: true
-        project_id:
-          type: integer
-          maximum: 9223372036854775807
-          minimum: -9223372036854775808
-          format: int64
-          readOnly: true
-        api_token:
-          type: string
-          readOnly: true
-        name:
-          type: string
-          readOnly: true
-        completed_snippet_onboarding:
-          type: boolean
-          readOnly: true
-        has_completed_onboarding_for:
-          readOnly: true
-        ingested_event:
-          type: boolean
-          readOnly: true
-        is_demo:
-          type: boolean
-          readOnly: true
-        timezone:
-          allOf:
-          - $ref: '#/components/schemas/TimezoneEnum'
-          readOnly: true
-        access_control:
-          type: boolean
-          readOnly: true
-      required:
-      - access_control
-      - api_token
-      - completed_snippet_onboarding
-      - has_completed_onboarding_for
-      - id
-      - ingested_event
-      - is_demo
-      - name
-      - organization
-      - project_id
-      - timezone
-      - uuid
-    PatchedTeam:
-      type: object
-      properties:
-        id:
-          type: integer
-          readOnly: true
-        uuid:
-          type: string
-          format: uuid
-          readOnly: true
-        name:
-          type: string
-          maxLength: 200
-          minLength: 1
-        access_control:
-          type: boolean
-        organization:
-          type: string
-          format: uuid
-          readOnly: true
-        project_id:
-          type: integer
-          maximum: 9223372036854775807
-          minimum: -9223372036854775808
-          format: int64
-          readOnly: true
-        api_token:
-          type: string
-          readOnly: true
-        secret_api_token:
-          type:
-          - string
-          - 'null'
-          readOnly: true
-        secret_api_token_backup:
-          type:
-          - string
-          - 'null'
-          readOnly: true
-        created_at:
-          type: string
-          format: date-time
-          readOnly: true
-        updated_at:
-          type: string
-          format: date-time
-          readOnly: true
-        ingested_event:
-          type: boolean
-          readOnly: true
-        default_modifiers:
-          type: object
-          additionalProperties: true
-          readOnly: true
-        person_on_events_querying_enabled:
-          type: boolean
-          readOnly: true
-        user_access_level:
-          type:
-          - string
-          - 'null'
-          readOnly: true
-          description: The effective access level the user has for this object
-        app_urls:
-          type: array
-          items:
-            type:
-            - string
-            - 'null'
-            maxLength: 200
-        anonymize_ips:
-          type: boolean
-        completed_snippet_onboarding:
-          type: boolean
-        test_account_filters: {}
-        test_account_filters_default_checked:
-          type:
-          - boolean
-          - 'null'
-        path_cleaning_filters: {}
-        is_demo:
-          type: boolean
-        timezone:
-          $ref: '#/components/schemas/TimezoneEnum'
-        data_attributes: {}
-        person_display_name_properties:
-          type:
-          - array
-          - 'null'
-          items:
-            type: string
-            maxLength: 400
-        correlation_config: {}
-        autocapture_opt_out:
-          type:
-          - boolean
-          - 'null'
-        autocapture_exceptions_opt_in:
-          type:
-          - boolean
-          - 'null'
-        autocapture_web_vitals_opt_in:
-          type:
-          - boolean
-          - 'null'
-        autocapture_web_vitals_allowed_metrics: {}
-        autocapture_exceptions_errors_to_ignore: {}
-        capture_console_log_opt_in:
-          type:
-          - boolean
-          - 'null'
-        logs_settings: {}
-        capture_performance_opt_in:
-          type:
-          - boolean
-          - 'null'
-        session_recording_opt_in:
-          type: boolean
-        session_recording_sample_rate:
-          type:
-          - string
-          - 'null'
-          format: decimal
-          pattern: ^-?\d{0,1}(?:\.\d{0,2})?$
-        session_recording_minimum_duration_milliseconds:
-          type:
-          - integer
-          - 'null'
-          maximum: 30000
-          minimum: 0
-        session_recording_linked_flag: {}
-        session_recording_network_payload_capture_config: {}
-        session_recording_masking_config: {}
-        session_recording_url_trigger_config:
-          type:
-          - array
-          - 'null'
-          items: {}
-        session_recording_url_blocklist_config:
-          type:
-          - array
-          - 'null'
-          items: {}
-        session_recording_event_trigger_config:
-          type:
-          - array
-          - 'null'
-          items:
-            type:
-            - string
-            - 'null'
-        session_recording_trigger_match_type_config:
-          type:
-          - string
-          - 'null'
-          maxLength: 24
-        session_recording_trigger_groups:
-          description: V2 trigger groups configuration for session recording. If present, takes precedence over legacy trigger fields.
-        session_recording_retention_period:
-          $ref: '#/components/schemas/SessionRecordingRetentionPeriodEnum'
-        session_replay_config: {}
-        survey_config: {}
-        week_start_day:
-          oneOf:
-          - $ref: '#/components/schemas/WeekStartDayEnum'
-          - $ref: '#/components/schemas/NullEnum'
-        primary_dashboard:
-          type:
-          - integer
-          - 'null'
-        live_events_columns:
-          type:
-          - array
-          - 'null'
-          items:
-            type: string
-        recording_domains:
-          type:
-          - array
-          - 'null'
-          items:
-            type:
-            - string
-            - 'null'
-            maxLength: 200
-        cookieless_server_hash_mode:
-          oneOf:
-          - $ref: '#/components/schemas/CookielessServerHashModeEnum'
-          - $ref: '#/components/schemas/NullEnum'
-        human_friendly_comparison_periods:
-          type:
-          - boolean
-          - 'null'
-        inject_web_apps:
-          type:
-          - boolean
-          - 'null'
-        extra_settings: {}
-        modifiers: {}
-        has_completed_onboarding_for: {}
-        surveys_opt_in:
-          type:
-          - boolean
-          - 'null'
-        heatmaps_opt_in:
-          type:
-          - boolean
-          - 'null'
-        flags_persistence_default:
-          type:
-          - boolean
-          - 'null'
-        feature_flag_confirmation_enabled:
-          type:
-          - boolean
-          - 'null'
-        feature_flag_confirmation_message:
-          type:
-          - string
-          - 'null'
-        default_evaluation_contexts_enabled:
-          type:
-          - boolean
-          - 'null'
-          description: Whether to automatically apply default evaluation contexts to new feature flags
-        require_evaluation_contexts:
-          type:
-          - boolean
-          - 'null'
-          description: Whether to require at least one evaluation context tag when creating new feature flags
-        capture_dead_clicks:
-          type:
-          - boolean
-          - 'null'
-        default_data_theme:
-          type:
-          - integer
-          - 'null'
-          maximum: 2147483647
-          minimum: -2147483648
-        revenue_analytics_config:
-          $ref: '#/components/schemas/TeamRevenueAnalyticsConfig'
-        marketing_analytics_config:
-          $ref: '#/components/schemas/TeamMarketingAnalyticsConfig'
-        customer_analytics_config:
-          $ref: '#/components/schemas/TeamCustomerAnalyticsConfig'
-        onboarding_tasks: {}
-        base_currency:
-          allOf:
-          - $ref: '#/components/schemas/BaseCurrencyEnum'
-          default: USD
-        web_analytics_pre_aggregated_tables_enabled:
-          type:
-          - boolean
-          - 'null'
-        receive_org_level_activity_logs:
-          type:
-          - boolean
-          - 'null'
-        business_model:
-          description: 'Whether this project serves B2B or B2C customers, used to optimize the UI layout.
-
-
-            * `b2b` - B2B
-
-            * `b2c` - B2C
-
-            * `other` - Other'
-          oneOf:
-          - $ref: '#/components/schemas/BusinessModelEnum'
-          - $ref: '#/components/schemas/BlankEnum'
-          - $ref: '#/components/schemas/NullEnum'
-        conversations_enabled:
-          type:
-          - boolean
-          - 'null'
-        conversations_settings: {}
-        proactive_tasks_enabled:
-          type:
-          - boolean
-          - 'null'
-        effective_membership_level:
-          allOf:
-          - $ref: '#/components/schemas/EffectiveMembershipLevelEnum'
-          readOnly: true
-        has_group_types:
-          type: boolean
-          readOnly: true
-        group_types:
-          type: array
-          items:
-            type: object
-            additionalProperties: true
-          readOnly: true
-        live_events_token:
-          type:
-          - string
-          - 'null'
-          readOnly: true
-        product_intents:
-          type: array
-          items:
-            type: object
-            additionalProperties: true
-          readOnly: true
-        managed_viewsets:
-          type: object
-          additionalProperties:
-            type: boolean
-          readOnly: true
-        available_setup_task_ids:
-          type: array
-          items:
-            $ref: '#/components/schemas/AvailableSetupTaskIdsEnum'
-          readOnly: true
-    BaseCurrencyEnum:
+    BusinessModelEnum:
       enum:
-      - AED
-      - AFN
-      - ALL
-      - AMD
-      - ANG
-      - AOA
-      - ARS
-      - AUD
-      - AWG
-      - AZN
-      - BAM
-      - BBD
-      - BDT
-      - BGN
-      - BHD
-      - BIF
-      - BMD
-      - BND
-      - BOB
-      - BRL
-      - BSD
-      - BTC
-      - BTN
-      - BWP
-      - BYN
-      - BZD
-      - CAD
-      - CDF
-      - CHF
-      - CLP
-      - CNY
-      - COP
-      - CRC
-      - CVE
-      - CZK
-      - DJF
-      - DKK
-      - DOP
-      - DZD
-      - EGP
-      - ERN
-      - ETB
-      - EUR
-      - FJD
-      - GBP
-      - GEL
-      - GHS
-      - GIP
-      - GMD
-      - GNF
-      - GTQ
-      - GYD
-      - HKD
-      - HNL
-      - HRK
-      - HTG
-      - HUF
-      - IDR
-      - ILS
-      - INR
-      - IQD
-      - IRR
-      - ISK
-      - JMD
-      - JOD
-      - JPY
-      - KES
-      - KGS
-      - KHR
-      - KMF
-      - KRW
-      - KWD
-      - KYD
-      - KZT
-      - LAK
-      - LBP
-      - LKR
-      - LRD
-      - LTL
-      - LVL
-      - LSL
-      - LYD
-      - MAD
-      - MDL
-      - MGA
-      - MKD
-      - MMK
-      - MNT
-      - MOP
-      - MRU
-      - MTL
-      - MUR
-      - MVR
-      - MWK
-      - MXN
-      - MYR
-      - MZN
-      - NAD
-      - NGN
-      - NIO
-      - NOK
-      - NPR
-      - NZD
-      - OMR
-      - PAB
-      - PEN
-      - PGK
-      - PHP
-      - PKR
-      - PLN
-      - PYG
-      - QAR
-      - RON
-      - RSD
-      - RUB
-      - RWF
-      - SAR
-      - SBD
-      - SCR
-      - SDG
-      - SEK
-      - SGD
-      - SRD
-      - SSP
-      - STN
-      - SYP
-      - SZL
-      - THB
-      - TJS
-      - TMT
-      - TND
-      - TOP
-      - TRY
-      - TTD
-      - TWD
-      - TZS
-      - UAH
-      - UGX
-      - USD
-      - UYU
-      - UZS
-      - VES
-      - VND
-      - VUV
-      - WST
-      - XAF
-      - XCD
-      - XOF
-      - XPF
-      - YER
-      - ZAR
-      - ZMW
+      - b2b
+      - b2c
+      - other
       type: string
-      description: '* `AED` - AED
-
-        * `AFN` - AFN
-
-        * `ALL` - ALL
-
-        * `AMD` - AMD
-
-        * `ANG` - ANG
-
-        * `AOA` - AOA
-
-        * `ARS` - ARS
-
-        * `AUD` - AUD
-
-        * `AWG` - AWG
-
-        * `AZN` - AZN
-
-        * `BAM` - BAM
-
-        * `BBD` - BBD
-
-        * `BDT` - BDT
-
-        * `BGN` - BGN
-
-        * `BHD` - BHD
-
-        * `BIF` - BIF
-
-        * `BMD` - BMD
-
-        * `BND` - BND
-
-        * `BOB` - BOB
-
-        * `BRL` - BRL
-
-        * `BSD` - BSD
-
-        * `BTC` - BTC
-
-        * `BTN` - BTN
-
-        * `BWP` - BWP
-
-        * `BYN` - BYN
-
-        * `BZD` - BZD
-
-        * `CAD` - CAD
-
-        * `CDF` - CDF
-
-        * `CHF` - CHF
-
-        * `CLP` - CLP
-
-        * `CNY` - CNY
-
-        * `COP` - COP
-
-        * `CRC` - CRC
-
-        * `CVE` - CVE
-
-        * `CZK` - CZK
-
-        * `DJF` - DJF
-
-        * `DKK` - DKK
-
-        * `DOP` - DOP
-
-        * `DZD` - DZD
-
-        * `EGP` - EGP
-
-        * `ERN` - ERN
-
-        * `ETB` - ETB
-
-        * `EUR` - EUR
-
-        * `FJD` - FJD
-
-        * `GBP` - GBP
-
-        * `GEL` - GEL
-
-        * `GHS` - GHS
-
-        * `GIP` - GIP
-
-        * `GMD` - GMD
-
-        * `GNF` - GNF
-
-        * `GTQ` - GTQ
-
-        * `GYD` - GYD
-
-        * `HKD` - HKD
-
-        * `HNL` - HNL
-
-        * `HRK` - HRK
-
-        * `HTG` - HTG
-
-        * `HUF` - HUF
-
-        * `IDR` - IDR
-
-        * `ILS` - ILS
-
-        * `INR` - INR
-
-        * `IQD` - IQD
-
-        * `IRR` - IRR
-
-        * `ISK` - ISK
-
-        * `JMD` - JMD
-
-        * `JOD` - JOD
-
-        * `JPY` - JPY
-
-        * `KES` - KES
-
-        * `KGS` - KGS
-
-        * `KHR` - KHR
-
-        * `KMF` - KMF
-
-        * `KRW` - KRW
-
-        * `KWD` - KWD
-
-        * `KYD` - KYD
-
-        * `KZT` - KZT
-
-        * `LAK` - LAK
-
-        * `LBP` - LBP
-
-        * `LKR` - LKR
-
-        * `LRD` - LRD
-
-        * `LTL` - LTL
-
-        * `LVL` - LVL
-
-        * `LSL` - LSL
-
-        * `LYD` - LYD
-
-        * `MAD` - MAD
-
-        * `MDL` - MDL
-
-        * `MGA` - MGA
-
-        * `MKD` - MKD
-
-        * `MMK` - MMK
-
-        * `MNT` - MNT
-
-        * `MOP` - MOP
-
-        * `MRU` - MRU
-
-        * `MTL` - MTL
-
-        * `MUR` - MUR
-
-        * `MVR` - MVR
-
-        * `MWK` - MWK
-
-        * `MXN` - MXN
-
-        * `MYR` - MYR
-
-        * `MZN` - MZN
-
-        * `NAD` - NAD
-
-        * `NGN` - NGN
-
-        * `NIO` - NIO
-
-        * `NOK` - NOK
-
-        * `NPR` - NPR
-
-        * `NZD` - NZD
-
-        * `OMR` - OMR
-
-        * `PAB` - PAB
-
-        * `PEN` - PEN
-
-        * `PGK` - PGK
-
-        * `PHP` - PHP
-
-        * `PKR` - PKR
-
-        * `PLN` - PLN
-
-        * `PYG` - PYG
-
-        * `QAR` - QAR
-
-        * `RON` - RON
-
-        * `RSD` - RSD
-
-        * `RUB` - RUB
-
-        * `RWF` - RWF
-
-        * `SAR` - SAR
-
-        * `SBD` - SBD
-
-        * `SCR` - SCR
-
-        * `SDG` - SDG
-
-        * `SEK` - SEK
-
-        * `SGD` - SGD
-
-        * `SRD` - SRD
-
-        * `SSP` - SSP
-
-        * `STN` - STN
-
-        * `SYP` - SYP
-
-        * `SZL` - SZL
-
-        * `THB` - THB
-
-        * `TJS` - TJS
-
-        * `TMT` - TMT
-
-        * `TND` - TND
-
-        * `TOP` - TOP
-
-        * `TRY` - TRY
-
-        * `TTD` - TTD
-
-        * `TWD` - TWD
-
-        * `TZS` - TZS
-
-        * `UAH` - UAH
-
-        * `UGX` - UGX
-
-        * `USD` - USD
-
-        * `UYU` - UYU
-
-        * `UZS` - UZS
-
-        * `VES` - VES
-
-        * `VND` - VND
-
-        * `VUV` - VUV
-
-        * `WST` - WST
-
-        * `XAF` - XAF
-
-        * `XCD` - XCD
-
-        * `XOF` - XOF
-
-        * `XPF` - XPF
-
-        * `YER` - YER
-
-        * `ZAR` - ZAR
-
-        * `ZMW` - ZMW'
+      description: '* `b2b` - B2B
+
+        * `b2c` - B2C
+
+        * `other` - Other'
+    TeamCustomerAnalyticsConfig:
+      type: object
+      properties:
+        activity_event: {}
+        signup_pageview_event: {}
+        signup_event: {}
+        subscription_event: {}
+        payment_event: {}
     TeamMarketingAnalyticsConfig:
       type: object
       properties:
@@ -2113,6 +1349,43 @@ components:
         campaign_name_mappings: {}
         custom_source_mappings: {}
         campaign_field_preferences: {}
+    AttributionModeEnum:
+      enum:
+      - first_touch
+      - last_touch
+      - linear
+      - time_decay
+      - position_based
+      type: string
+      description: '* `first_touch` - First Touch
+
+        * `last_touch` - Last Touch
+
+        * `linear` - Linear
+
+        * `time_decay` - Time Decay
+
+        * `position_based` - Position Based'
+    WeekStartDayEnum:
+      enum:
+      - 0
+      - 1
+      type: integer
+      description: '* `0` - Sunday
+
+        * `1` - Monday'
+    BlankEnum:
+      enum:
+      - ''
+    TeamRevenueAnalyticsConfig:
+      type: object
+      properties:
+        base_currency:
+          $ref: '#/components/schemas/BaseCurrencyEnum'
+        events: {}
+        goals: {}
+        filter_test_accounts:
+          type: boolean
     TimezoneEnum:
       enum:
       - Africa/Abidjan
@@ -3903,17 +3176,692 @@ components:
         * `WET` - WET
 
         * `Zulu` - Zulu'
-    BusinessModelEnum:
+    AvailableSetupTaskIdsEnum:
       enum:
-      - b2b
-      - b2c
-      - other
+      - ingest_first_event
+      - set_up_reverse_proxy
+      - create_first_insight
+      - create_first_dashboard
+      - track_custom_events
+      - define_actions
+      - set_up_cohorts
+      - explore_trends_insight
+      - create_funnel
+      - explore_retention_insight
+      - explore_paths_insight
+      - explore_stickiness_insight
+      - explore_lifecycle_insight
+      - add_authorized_domain
+      - set_up_web_vitals
+      - review_web_analytics_dashboard
+      - filter_web_analytics
+      - set_up_web_analytics_conversion_goals
+      - visit_web_vitals_dashboard
+      - setup_session_recordings
+      - watch_session_recording
+      - configure_recording_settings
+      - create_recording_playlist
+      - enable_console_logs
+      - create_feature_flag
+      - implement_flag_in_code
+      - update_feature_flag_release_conditions
+      - create_multivariate_flag
+      - set_up_flag_payloads
+      - set_up_flag_evaluation_runtimes
+      - create_experiment
+      - implement_experiment_variants
+      - launch_experiment
+      - review_experiment_results
+      - create_survey
+      - launch_survey
+      - collect_survey_responses
+      - connect_source
+      - run_first_query
+      - join_external_data
+      - create_saved_view
+      - enable_error_tracking
+      - upload_source_maps
+      - view_first_error
+      - resolve_first_error
+      - ingest_first_llm_event
+      - view_first_trace
+      - track_costs
+      - set_up_llm_evaluation
+      - run_ai_playground
+      - enable_revenue_analytics_viewset
+      - connect_revenue_source
+      - set_up_revenue_goal
+      - enable_log_capture
+      - view_first_logs
+      - create_first_workflow
+      - set_up_first_workflow_channel
+      - configure_workflow_trigger
+      - add_workflow_action
+      - launch_workflow
+      - create_first_endpoint
+      - configure_endpoint
+      - test_endpoint
+      - create_early_access_feature
+      - update_feature_stage
       type: string
-      description: '* `b2b` - B2B
+      description: '* `ingest_first_event` - ingest_first_event
 
-        * `b2c` - B2C
+        * `set_up_reverse_proxy` - set_up_reverse_proxy
 
-        * `other` - Other'
+        * `create_first_insight` - create_first_insight
+
+        * `create_first_dashboard` - create_first_dashboard
+
+        * `track_custom_events` - track_custom_events
+
+        * `define_actions` - define_actions
+
+        * `set_up_cohorts` - set_up_cohorts
+
+        * `explore_trends_insight` - explore_trends_insight
+
+        * `create_funnel` - create_funnel
+
+        * `explore_retention_insight` - explore_retention_insight
+
+        * `explore_paths_insight` - explore_paths_insight
+
+        * `explore_stickiness_insight` - explore_stickiness_insight
+
+        * `explore_lifecycle_insight` - explore_lifecycle_insight
+
+        * `add_authorized_domain` - add_authorized_domain
+
+        * `set_up_web_vitals` - set_up_web_vitals
+
+        * `review_web_analytics_dashboard` - review_web_analytics_dashboard
+
+        * `filter_web_analytics` - filter_web_analytics
+
+        * `set_up_web_analytics_conversion_goals` - set_up_web_analytics_conversion_goals
+
+        * `visit_web_vitals_dashboard` - visit_web_vitals_dashboard
+
+        * `setup_session_recordings` - setup_session_recordings
+
+        * `watch_session_recording` - watch_session_recording
+
+        * `configure_recording_settings` - configure_recording_settings
+
+        * `create_recording_playlist` - create_recording_playlist
+
+        * `enable_console_logs` - enable_console_logs
+
+        * `create_feature_flag` - create_feature_flag
+
+        * `implement_flag_in_code` - implement_flag_in_code
+
+        * `update_feature_flag_release_conditions` - update_feature_flag_release_conditions
+
+        * `create_multivariate_flag` - create_multivariate_flag
+
+        * `set_up_flag_payloads` - set_up_flag_payloads
+
+        * `set_up_flag_evaluation_runtimes` - set_up_flag_evaluation_runtimes
+
+        * `create_experiment` - create_experiment
+
+        * `implement_experiment_variants` - implement_experiment_variants
+
+        * `launch_experiment` - launch_experiment
+
+        * `review_experiment_results` - review_experiment_results
+
+        * `create_survey` - create_survey
+
+        * `launch_survey` - launch_survey
+
+        * `collect_survey_responses` - collect_survey_responses
+
+        * `connect_source` - connect_source
+
+        * `run_first_query` - run_first_query
+
+        * `join_external_data` - join_external_data
+
+        * `create_saved_view` - create_saved_view
+
+        * `enable_error_tracking` - enable_error_tracking
+
+        * `upload_source_maps` - upload_source_maps
+
+        * `view_first_error` - view_first_error
+
+        * `resolve_first_error` - resolve_first_error
+
+        * `ingest_first_llm_event` - ingest_first_llm_event
+
+        * `view_first_trace` - view_first_trace
+
+        * `track_costs` - track_costs
+
+        * `set_up_llm_evaluation` - set_up_llm_evaluation
+
+        * `run_ai_playground` - run_ai_playground
+
+        * `enable_revenue_analytics_viewset` - enable_revenue_analytics_viewset
+
+        * `connect_revenue_source` - connect_revenue_source
+
+        * `set_up_revenue_goal` - set_up_revenue_goal
+
+        * `enable_log_capture` - enable_log_capture
+
+        * `view_first_logs` - view_first_logs
+
+        * `create_first_workflow` - create_first_workflow
+
+        * `set_up_first_workflow_channel` - set_up_first_workflow_channel
+
+        * `configure_workflow_trigger` - configure_workflow_trigger
+
+        * `add_workflow_action` - add_workflow_action
+
+        * `launch_workflow` - launch_workflow
+
+        * `create_first_endpoint` - create_first_endpoint
+
+        * `configure_endpoint` - configure_endpoint
+
+        * `test_endpoint` - test_endpoint
+
+        * `create_early_access_feature` - create_early_access_feature
+
+        * `update_feature_stage` - update_feature_stage'
+    EffectiveMembershipLevelEnum:
+      enum:
+      - 1
+      - 8
+      - 15
+      type: integer
+    BaseCurrencyEnum:
+      enum:
+      - AED
+      - AFN
+      - ALL
+      - AMD
+      - ANG
+      - AOA
+      - ARS
+      - AUD
+      - AWG
+      - AZN
+      - BAM
+      - BBD
+      - BDT
+      - BGN
+      - BHD
+      - BIF
+      - BMD
+      - BND
+      - BOB
+      - BRL
+      - BSD
+      - BTC
+      - BTN
+      - BWP
+      - BYN
+      - BZD
+      - CAD
+      - CDF
+      - CHF
+      - CLP
+      - CNY
+      - COP
+      - CRC
+      - CVE
+      - CZK
+      - DJF
+      - DKK
+      - DOP
+      - DZD
+      - EGP
+      - ERN
+      - ETB
+      - EUR
+      - FJD
+      - GBP
+      - GEL
+      - GHS
+      - GIP
+      - GMD
+      - GNF
+      - GTQ
+      - GYD
+      - HKD
+      - HNL
+      - HRK
+      - HTG
+      - HUF
+      - IDR
+      - ILS
+      - INR
+      - IQD
+      - IRR
+      - ISK
+      - JMD
+      - JOD
+      - JPY
+      - KES
+      - KGS
+      - KHR
+      - KMF
+      - KRW
+      - KWD
+      - KYD
+      - KZT
+      - LAK
+      - LBP
+      - LKR
+      - LRD
+      - LTL
+      - LVL
+      - LSL
+      - LYD
+      - MAD
+      - MDL
+      - MGA
+      - MKD
+      - MMK
+      - MNT
+      - MOP
+      - MRU
+      - MTL
+      - MUR
+      - MVR
+      - MWK
+      - MXN
+      - MYR
+      - MZN
+      - NAD
+      - NGN
+      - NIO
+      - NOK
+      - NPR
+      - NZD
+      - OMR
+      - PAB
+      - PEN
+      - PGK
+      - PHP
+      - PKR
+      - PLN
+      - PYG
+      - QAR
+      - RON
+      - RSD
+      - RUB
+      - RWF
+      - SAR
+      - SBD
+      - SCR
+      - SDG
+      - SEK
+      - SGD
+      - SRD
+      - SSP
+      - STN
+      - SYP
+      - SZL
+      - THB
+      - TJS
+      - TMT
+      - TND
+      - TOP
+      - TRY
+      - TTD
+      - TWD
+      - TZS
+      - UAH
+      - UGX
+      - USD
+      - UYU
+      - UZS
+      - VES
+      - VND
+      - VUV
+      - WST
+      - XAF
+      - XCD
+      - XOF
+      - XPF
+      - YER
+      - ZAR
+      - ZMW
+      type: string
+      description: '* `AED` - AED
+
+        * `AFN` - AFN
+
+        * `ALL` - ALL
+
+        * `AMD` - AMD
+
+        * `ANG` - ANG
+
+        * `AOA` - AOA
+
+        * `ARS` - ARS
+
+        * `AUD` - AUD
+
+        * `AWG` - AWG
+
+        * `AZN` - AZN
+
+        * `BAM` - BAM
+
+        * `BBD` - BBD
+
+        * `BDT` - BDT
+
+        * `BGN` - BGN
+
+        * `BHD` - BHD
+
+        * `BIF` - BIF
+
+        * `BMD` - BMD
+
+        * `BND` - BND
+
+        * `BOB` - BOB
+
+        * `BRL` - BRL
+
+        * `BSD` - BSD
+
+        * `BTC` - BTC
+
+        * `BTN` - BTN
+
+        * `BWP` - BWP
+
+        * `BYN` - BYN
+
+        * `BZD` - BZD
+
+        * `CAD` - CAD
+
+        * `CDF` - CDF
+
+        * `CHF` - CHF
+
+        * `CLP` - CLP
+
+        * `CNY` - CNY
+
+        * `COP` - COP
+
+        * `CRC` - CRC
+
+        * `CVE` - CVE
+
+        * `CZK` - CZK
+
+        * `DJF` - DJF
+
+        * `DKK` - DKK
+
+        * `DOP` - DOP
+
+        * `DZD` - DZD
+
+        * `EGP` - EGP
+
+        * `ERN` - ERN
+
+        * `ETB` - ETB
+
+        * `EUR` - EUR
+
+        * `FJD` - FJD
+
+        * `GBP` - GBP
+
+        * `GEL` - GEL
+
+        * `GHS` - GHS
+
+        * `GIP` - GIP
+
+        * `GMD` - GMD
+
+        * `GNF` - GNF
+
+        * `GTQ` - GTQ
+
+        * `GYD` - GYD
+
+        * `HKD` - HKD
+
+        * `HNL` - HNL
+
+        * `HRK` - HRK
+
+        * `HTG` - HTG
+
+        * `HUF` - HUF
+
+        * `IDR` - IDR
+
+        * `ILS` - ILS
+
+        * `INR` - INR
+
+        * `IQD` - IQD
+
+        * `IRR` - IRR
+
+        * `ISK` - ISK
+
+        * `JMD` - JMD
+
+        * `JOD` - JOD
+
+        * `JPY` - JPY
+
+        * `KES` - KES
+
+        * `KGS` - KGS
+
+        * `KHR` - KHR
+
+        * `KMF` - KMF
+
+        * `KRW` - KRW
+
+        * `KWD` - KWD
+
+        * `KYD` - KYD
+
+        * `KZT` - KZT
+
+        * `LAK` - LAK
+
+        * `LBP` - LBP
+
+        * `LKR` - LKR
+
+        * `LRD` - LRD
+
+        * `LTL` - LTL
+
+        * `LVL` - LVL
+
+        * `LSL` - LSL
+
+        * `LYD` - LYD
+
+        * `MAD` - MAD
+
+        * `MDL` - MDL
+
+        * `MGA` - MGA
+
+        * `MKD` - MKD
+
+        * `MMK` - MMK
+
+        * `MNT` - MNT
+
+        * `MOP` - MOP
+
+        * `MRU` - MRU
+
+        * `MTL` - MTL
+
+        * `MUR` - MUR
+
+        * `MVR` - MVR
+
+        * `MWK` - MWK
+
+        * `MXN` - MXN
+
+        * `MYR` - MYR
+
+        * `MZN` - MZN
+
+        * `NAD` - NAD
+
+        * `NGN` - NGN
+
+        * `NIO` - NIO
+
+        * `NOK` - NOK
+
+        * `NPR` - NPR
+
+        * `NZD` - NZD
+
+        * `OMR` - OMR
+
+        * `PAB` - PAB
+
+        * `PEN` - PEN
+
+        * `PGK` - PGK
+
+        * `PHP` - PHP
+
+        * `PKR` - PKR
+
+        * `PLN` - PLN
+
+        * `PYG` - PYG
+
+        * `QAR` - QAR
+
+        * `RON` - RON
+
+        * `RSD` - RSD
+
+        * `RUB` - RUB
+
+        * `RWF` - RWF
+
+        * `SAR` - SAR
+
+        * `SBD` - SBD
+
+        * `SCR` - SCR
+
+        * `SDG` - SDG
+
+        * `SEK` - SEK
+
+        * `SGD` - SGD
+
+        * `SRD` - SRD
+
+        * `SSP` - SSP
+
+        * `STN` - STN
+
+        * `SYP` - SYP
+
+        * `SZL` - SZL
+
+        * `THB` - THB
+
+        * `TJS` - TJS
+
+        * `TMT` - TMT
+
+        * `TND` - TND
+
+        * `TOP` - TOP
+
+        * `TRY` - TRY
+
+        * `TTD` - TTD
+
+        * `TWD` - TWD
+
+        * `TZS` - TZS
+
+        * `UAH` - UAH
+
+        * `UGX` - UGX
+
+        * `USD` - USD
+
+        * `UYU` - UYU
+
+        * `UZS` - UZS
+
+        * `VES` - VES
+
+        * `VND` - VND
+
+        * `VUV` - VUV
+
+        * `WST` - WST
+
+        * `XAF` - XAF
+
+        * `XCD` - XCD
+
+        * `XOF` - XOF
+
+        * `XPF` - XPF
+
+        * `YER` - YER
+
+        * `ZAR` - ZAR
+
+        * `ZMW` - ZMW'
+    PaginatedTeamBasicList:
+      type: object
+      required:
+      - count
+      - results
+      properties:
+        count:
+          type: integer
+          example: 123
+        next:
+          type:
+          - string
+          - 'null'
+          format: uri
+          example: http://api.example.org/accounts/?offset=400&limit=100
+        previous:
+          type:
+          - string
+          - 'null'
+          format: uri
+          example: http://api.example.org/accounts/?offset=200&limit=100
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/TeamBasic'
     SessionRecordingRetentionPeriodEnum:
       enum:
       - 30d
@@ -3928,14 +3876,66 @@ components:
         * `1y` - 1 Year
 
         * `5y` - 5 Years'
-    TeamCustomerAnalyticsConfig:
+    TeamBasic:
       type: object
+      description: 'Serializer for `Team` model with minimal attributes to speeed up loading and transfer times.
+
+        Also used for nested serializers.'
       properties:
-        activity_event: {}
-        signup_pageview_event: {}
-        signup_event: {}
-        subscription_event: {}
-        payment_event: {}
+        id:
+          type: integer
+          readOnly: true
+        uuid:
+          type: string
+          format: uuid
+          readOnly: true
+        organization:
+          type: string
+          format: uuid
+          readOnly: true
+        project_id:
+          type: integer
+          maximum: 9223372036854775807
+          minimum: -9223372036854775808
+          format: int64
+          readOnly: true
+        api_token:
+          type: string
+          readOnly: true
+        name:
+          type: string
+          readOnly: true
+        completed_snippet_onboarding:
+          type: boolean
+          readOnly: true
+        has_completed_onboarding_for:
+          readOnly: true
+        ingested_event:
+          type: boolean
+          readOnly: true
+        is_demo:
+          type: boolean
+          readOnly: true
+        timezone:
+          allOf:
+          - $ref: '#/components/schemas/TimezoneEnum'
+          readOnly: true
+        access_control:
+          type: boolean
+          readOnly: true
+      required:
+      - access_control
+      - api_token
+      - completed_snippet_onboarding
+      - has_completed_onboarding_for
+      - id
+      - ingested_event
+      - is_demo
+      - name
+      - organization
+      - project_id
+      - timezone
+      - uuid
   parameters:
     ProjectIdPath:
       in: path

@@ -105,16 +105,22 @@ paths:
       summary: Heatmaps events retrieve
       x-summary-source: derived
 components:
+  parameters:
+    EnvironmentIdPath:
+      in: path
+      name: environment_id
+      required: true
+      schema:
+        type: string
+      description: Deprecated. Use /api/projects/{project_id}/ instead.
+    ProjectIdPath:
+      in: path
+      name: project_id
+      required: true
+      schema:
+        type: string
+      description: Project ID of the project you're trying to access. To find the ID of the project, make a call to /api/projects/.
   schemas:
-    HeatmapsResponse:
-      type: object
-      properties:
-        results:
-          type: array
-          items:
-            $ref: '#/components/schemas/HeatmapResponseItem'
-      required:
-      - results
     HeatmapResponseItem:
       type: object
       properties:
@@ -132,6 +138,15 @@ components:
       - pointer_relative_x
       - pointer_target_fixed
       - pointer_y
+    HeatmapsResponse:
+      type: object
+      properties:
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/HeatmapResponseItem'
+      required:
+      - results
     PaginatedHeatmapsResponseList:
       type: object
       required:
@@ -157,21 +172,6 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/HeatmapsResponse'
-  parameters:
-    EnvironmentIdPath:
-      in: path
-      name: environment_id
-      required: true
-      schema:
-        type: string
-      description: Deprecated. Use /api/projects/{project_id}/ instead.
-    ProjectIdPath:
-      in: path
-      name: project_id
-      required: true
-      schema:
-        type: string
-      description: Project ID of the project you're trying to access. To find the ID of the project, make a call to /api/projects/.
   securitySchemes:
     PersonalAPIKeyAuth:
       type: http

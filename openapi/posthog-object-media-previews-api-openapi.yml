@@ -214,83 +214,7 @@ paths:
       summary: Object media previews preferred for event retrieve
       x-summary-source: derived
 components:
-  parameters:
-    ProjectIdPath:
-      in: path
-      name: project_id
-      required: true
-      schema:
-        type: string
-      description: Project ID of the project you're trying to access. To find the ID of the project, make a call to /api/projects/.
   schemas:
-    PatchedObjectMediaPreview:
-      type: object
-      properties:
-        id:
-          type: string
-          format: uuid
-          readOnly: true
-        created_at:
-          type: string
-          format: date-time
-          readOnly: true
-        updated_at:
-          type:
-          - string
-          - 'null'
-          format: date-time
-          readOnly: true
-        media_url:
-          type: string
-          readOnly: true
-        media_type:
-          type: string
-          description: Return 'uploaded' or 'exported' based on which media is set
-          readOnly: true
-        metadata: {}
-        uploaded_media_id:
-          type:
-          - string
-          - 'null'
-          format: uuid
-          writeOnly: true
-        exported_asset_id:
-          type:
-          - string
-          - 'null'
-          format: uuid
-          writeOnly: true
-        event_definition_id:
-          type:
-          - string
-          - 'null'
-          format: uuid
-          writeOnly: true
-    PaginatedObjectMediaPreviewList:
-      type: object
-      required:
-      - count
-      - results
-      properties:
-        count:
-          type: integer
-          example: 123
-        next:
-          type:
-          - string
-          - 'null'
-          format: uri
-          example: http://api.example.org/accounts/?offset=400&limit=100
-        previous:
-          type:
-          - string
-          - 'null'
-          format: uri
-          example: http://api.example.org/accounts/?offset=200&limit=100
-        results:
-          type: array
-          items:
-            $ref: '#/components/schemas/ObjectMediaPreview'
     ObjectMediaPreview:
       type: object
       properties:
@@ -340,6 +264,82 @@ components:
       - media_type
       - media_url
       - updated_at
+    PaginatedObjectMediaPreviewList:
+      type: object
+      required:
+      - count
+      - results
+      properties:
+        count:
+          type: integer
+          example: 123
+        next:
+          type:
+          - string
+          - 'null'
+          format: uri
+          example: http://api.example.org/accounts/?offset=400&limit=100
+        previous:
+          type:
+          - string
+          - 'null'
+          format: uri
+          example: http://api.example.org/accounts/?offset=200&limit=100
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/ObjectMediaPreview'
+    PatchedObjectMediaPreview:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+          readOnly: true
+        created_at:
+          type: string
+          format: date-time
+          readOnly: true
+        updated_at:
+          type:
+          - string
+          - 'null'
+          format: date-time
+          readOnly: true
+        media_url:
+          type: string
+          readOnly: true
+        media_type:
+          type: string
+          description: Return 'uploaded' or 'exported' based on which media is set
+          readOnly: true
+        metadata: {}
+        uploaded_media_id:
+          type:
+          - string
+          - 'null'
+          format: uuid
+          writeOnly: true
+        exported_asset_id:
+          type:
+          - string
+          - 'null'
+          format: uuid
+          writeOnly: true
+        event_definition_id:
+          type:
+          - string
+          - 'null'
+          format: uuid
+          writeOnly: true
+  parameters:
+    ProjectIdPath:
+      in: path
+      name: project_id
+      required: true
+      schema:
+        type: string
+      description: Project ID of the project you're trying to access. To find the ID of the project, make a call to /api/projects/.
   securitySchemes:
     PersonalAPIKeyAuth:
       type: http
