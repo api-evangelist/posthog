@@ -346,94 +346,7 @@ paths:
       summary: Conversations queue clear create
       x-summary-source: derived
 components:
-  parameters:
-    ProjectIdPath:
-      in: path
-      name: project_id
-      required: true
-      schema:
-        type: string
-      description: Project ID of the project you're trying to access. To find the ID of the project, make a call to /api/projects/.
   schemas:
-    MessageMinimal:
-      type: object
-      description: Serializer for appending a message to an existing conversation without triggering AI processing.
-      properties:
-        content:
-          type: string
-          maxLength: 10000
-      required:
-      - content
-    Message:
-      type: object
-      description: Serializer for appending a message to an existing conversation without triggering AI processing.
-      properties:
-        content:
-          type:
-          - string
-          - 'null'
-          maxLength: 40000
-        conversation:
-          type: string
-          format: uuid
-        contextual_tools:
-          type: object
-          additionalProperties: true
-        ui_context: {}
-        billing_context: {}
-        trace_id:
-          type: string
-          format: uuid
-        session_id:
-          type: string
-        agent_mode:
-          $ref: '#/components/schemas/AgentModeEnum'
-        is_sandbox:
-          type: boolean
-          default: false
-        resume_payload: {}
-      required:
-      - content
-      - conversation
-      - trace_id
-    BlankEnum:
-      enum:
-      - ''
-    AgentModeEnum:
-      enum:
-      - product_analytics
-      - sql
-      - session_replay
-      - error_tracking
-      - plan
-      - execution
-      - survey
-      - research
-      - flags
-      - llm_analytics
-      - sandbox
-      type: string
-      description: '* `product_analytics` - product_analytics
-
-        * `sql` - sql
-
-        * `session_replay` - session_replay
-
-        * `error_tracking` - error_tracking
-
-        * `plan` - plan
-
-        * `execution` - execution
-
-        * `survey` - survey
-
-        * `research` - research
-
-        * `flags` - flags
-
-        * `llm_analytics` - llm_analytics
-
-        * `sandbox` - sandbox'
     ConversationType:
       enum:
       - assistant
@@ -448,17 +361,6 @@ components:
         * `deep_research` - Deep research
 
         * `slack` - Slack'
-    ConversationStatus:
-      enum:
-      - idle
-      - in_progress
-      - canceling
-      type: string
-      description: '* `idle` - Idle
-
-        * `in_progress` - In progress
-
-        * `canceling` - Canceling'
     UserBasic:
       type: object
       properties:
@@ -505,6 +407,291 @@ components:
       - hedgehog_config
       - id
       - uuid
+    Message:
+      type: object
+      description: Serializer for appending a message to an existing conversation without triggering AI processing.
+      properties:
+        content:
+          type:
+          - string
+          - 'null'
+          maxLength: 40000
+        conversation:
+          type: string
+          format: uuid
+        contextual_tools:
+          type: object
+          additionalProperties: true
+        ui_context: {}
+        billing_context: {}
+        trace_id:
+          type: string
+          format: uuid
+        session_id:
+          type: string
+        agent_mode:
+          $ref: '#/components/schemas/AgentModeEnum'
+        is_sandbox:
+          type: boolean
+          default: false
+        resume_payload: {}
+      required:
+      - content
+      - conversation
+      - trace_id
+    AgentModeEnum:
+      enum:
+      - product_analytics
+      - sql
+      - session_replay
+      - error_tracking
+      - plan
+      - execution
+      - survey
+      - research
+      - flags
+      - llm_analytics
+      - sandbox
+      type: string
+      description: '* `product_analytics` - product_analytics
+
+        * `sql` - sql
+
+        * `session_replay` - session_replay
+
+        * `error_tracking` - error_tracking
+
+        * `plan` - plan
+
+        * `execution` - execution
+
+        * `survey` - survey
+
+        * `research` - research
+
+        * `flags` - flags
+
+        * `llm_analytics` - llm_analytics
+
+        * `sandbox` - sandbox'
+    NullEnum:
+      enum:
+      - null
+    PaginatedConversationMinimalList:
+      type: object
+      required:
+      - count
+      - results
+      properties:
+        count:
+          type: integer
+          example: 123
+        next:
+          type:
+          - string
+          - 'null'
+          format: uri
+          example: http://api.example.org/accounts/?offset=400&limit=100
+        previous:
+          type:
+          - string
+          - 'null'
+          format: uri
+          example: http://api.example.org/accounts/?offset=200&limit=100
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/ConversationMinimal'
+    RoleAtOrganizationEnum:
+      enum:
+      - engineering
+      - data
+      - product
+      - founder
+      - leadership
+      - marketing
+      - sales
+      - other
+      type: string
+      description: '* `engineering` - Engineering
+
+        * `data` - Data
+
+        * `product` - Product Management
+
+        * `founder` - Founder
+
+        * `leadership` - Leadership
+
+        * `marketing` - Marketing
+
+        * `sales` - Sales / Success
+
+        * `other` - Other'
+    ConversationStatus:
+      enum:
+      - idle
+      - in_progress
+      - canceling
+      type: string
+      description: '* `idle` - Idle
+
+        * `in_progress` - In progress
+
+        * `canceling` - Canceling'
+    PatchedConversation:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+          readOnly: true
+        status:
+          allOf:
+          - $ref: '#/components/schemas/ConversationStatus'
+          readOnly: true
+        title:
+          type:
+          - string
+          - 'null'
+          readOnly: true
+          description: Title of the conversation.
+        user:
+          allOf:
+          - $ref: '#/components/schemas/UserBasic'
+          readOnly: true
+        created_at:
+          type:
+          - string
+          - 'null'
+          format: date-time
+          readOnly: true
+        updated_at:
+          type:
+          - string
+          - 'null'
+          format: date-time
+          readOnly: true
+        type:
+          allOf:
+          - $ref: '#/components/schemas/ConversationType'
+          readOnly: true
+        is_internal:
+          type:
+          - boolean
+          - 'null'
+          readOnly: true
+          description: Whether this conversation was created during an impersonated session (e.g., by support agents). Internal conversations are hidden from customers.
+        slack_thread_key:
+          type:
+          - string
+          - 'null'
+          readOnly: true
+          description: 'Unique key for Slack thread: ''{workspace_id}:{channel}:{thread_ts}'''
+        slack_workspace_domain:
+          type:
+          - string
+          - 'null'
+          readOnly: true
+          description: Slack workspace subdomain (e.g. 'posthog' for posthog.slack.com)
+        messages:
+          type: array
+          items:
+            type: object
+            additionalProperties: true
+          readOnly: true
+        has_unsupported_content:
+          type: boolean
+          readOnly: true
+        agent_mode:
+          type:
+          - string
+          - 'null'
+          readOnly: true
+        is_sandbox:
+          type: boolean
+          readOnly: true
+        pending_approvals:
+          type: array
+          items:
+            type: object
+            additionalProperties: true
+          description: 'Return pending approval cards as structured data.
+
+
+            Combines metadata from conversation.approval_decisions with payload from checkpoint
+
+            interrupts (single source of truth for payload data).'
+          readOnly: true
+    ConversationMinimal:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+          readOnly: true
+        status:
+          allOf:
+          - $ref: '#/components/schemas/ConversationStatus'
+          readOnly: true
+        title:
+          type:
+          - string
+          - 'null'
+          readOnly: true
+          description: Title of the conversation.
+        user:
+          allOf:
+          - $ref: '#/components/schemas/UserBasic'
+          readOnly: true
+        created_at:
+          type:
+          - string
+          - 'null'
+          format: date-time
+          readOnly: true
+        updated_at:
+          type:
+          - string
+          - 'null'
+          format: date-time
+          readOnly: true
+        type:
+          allOf:
+          - $ref: '#/components/schemas/ConversationType'
+          readOnly: true
+        is_internal:
+          type:
+          - boolean
+          - 'null'
+          readOnly: true
+          description: Whether this conversation was created during an impersonated session (e.g., by support agents). Internal conversations are hidden from customers.
+        slack_thread_key:
+          type:
+          - string
+          - 'null'
+          readOnly: true
+          description: 'Unique key for Slack thread: ''{workspace_id}:{channel}:{thread_ts}'''
+        slack_workspace_domain:
+          type:
+          - string
+          - 'null'
+          readOnly: true
+          description: Slack workspace subdomain (e.g. 'posthog' for posthog.slack.com)
+      required:
+      - created_at
+      - id
+      - is_internal
+      - slack_thread_key
+      - slack_workspace_domain
+      - status
+      - title
+      - type
+      - updated_at
+      - user
+    BlankEnum:
+      enum:
+      - ''
     Conversation:
       type: object
       properties:
@@ -605,210 +792,23 @@ components:
       - type
       - updated_at
       - user
-    NullEnum:
-      enum:
-      - null
-    RoleAtOrganizationEnum:
-      enum:
-      - engineering
-      - data
-      - product
-      - founder
-      - leadership
-      - marketing
-      - sales
-      - other
-      type: string
-      description: '* `engineering` - Engineering
-
-        * `data` - Data
-
-        * `product` - Product Management
-
-        * `founder` - Founder
-
-        * `leadership` - Leadership
-
-        * `marketing` - Marketing
-
-        * `sales` - Sales / Success
-
-        * `other` - Other'
-    PaginatedConversationMinimalList:
+    MessageMinimal:
       type: object
-      required:
-      - count
-      - results
+      description: Serializer for appending a message to an existing conversation without triggering AI processing.
       properties:
-        count:
-          type: integer
-          example: 123
-        next:
-          type:
-          - string
-          - 'null'
-          format: uri
-          example: http://api.example.org/accounts/?offset=400&limit=100
-        previous:
-          type:
-          - string
-          - 'null'
-          format: uri
-          example: http://api.example.org/accounts/?offset=200&limit=100
-        results:
-          type: array
-          items:
-            $ref: '#/components/schemas/ConversationMinimal'
-    ConversationMinimal:
-      type: object
-      properties:
-        id:
+        content:
           type: string
-          format: uuid
-          readOnly: true
-        status:
-          allOf:
-          - $ref: '#/components/schemas/ConversationStatus'
-          readOnly: true
-        title:
-          type:
-          - string
-          - 'null'
-          readOnly: true
-          description: Title of the conversation.
-        user:
-          allOf:
-          - $ref: '#/components/schemas/UserBasic'
-          readOnly: true
-        created_at:
-          type:
-          - string
-          - 'null'
-          format: date-time
-          readOnly: true
-        updated_at:
-          type:
-          - string
-          - 'null'
-          format: date-time
-          readOnly: true
-        type:
-          allOf:
-          - $ref: '#/components/schemas/ConversationType'
-          readOnly: true
-        is_internal:
-          type:
-          - boolean
-          - 'null'
-          readOnly: true
-          description: Whether this conversation was created during an impersonated session (e.g., by support agents). Internal conversations are hidden from customers.
-        slack_thread_key:
-          type:
-          - string
-          - 'null'
-          readOnly: true
-          description: 'Unique key for Slack thread: ''{workspace_id}:{channel}:{thread_ts}'''
-        slack_workspace_domain:
-          type:
-          - string
-          - 'null'
-          readOnly: true
-          description: Slack workspace subdomain (e.g. 'posthog' for posthog.slack.com)
+          maxLength: 10000
       required:
-      - created_at
-      - id
-      - is_internal
-      - slack_thread_key
-      - slack_workspace_domain
-      - status
-      - title
-      - type
-      - updated_at
-      - user
-    PatchedConversation:
-      type: object
-      properties:
-        id:
-          type: string
-          format: uuid
-          readOnly: true
-        status:
-          allOf:
-          - $ref: '#/components/schemas/ConversationStatus'
-          readOnly: true
-        title:
-          type:
-          - string
-          - 'null'
-          readOnly: true
-          description: Title of the conversation.
-        user:
-          allOf:
-          - $ref: '#/components/schemas/UserBasic'
-          readOnly: true
-        created_at:
-          type:
-          - string
-          - 'null'
-          format: date-time
-          readOnly: true
-        updated_at:
-          type:
-          - string
-          - 'null'
-          format: date-time
-          readOnly: true
-        type:
-          allOf:
-          - $ref: '#/components/schemas/ConversationType'
-          readOnly: true
-        is_internal:
-          type:
-          - boolean
-          - 'null'
-          readOnly: true
-          description: Whether this conversation was created during an impersonated session (e.g., by support agents). Internal conversations are hidden from customers.
-        slack_thread_key:
-          type:
-          - string
-          - 'null'
-          readOnly: true
-          description: 'Unique key for Slack thread: ''{workspace_id}:{channel}:{thread_ts}'''
-        slack_workspace_domain:
-          type:
-          - string
-          - 'null'
-          readOnly: true
-          description: Slack workspace subdomain (e.g. 'posthog' for posthog.slack.com)
-        messages:
-          type: array
-          items:
-            type: object
-            additionalProperties: true
-          readOnly: true
-        has_unsupported_content:
-          type: boolean
-          readOnly: true
-        agent_mode:
-          type:
-          - string
-          - 'null'
-          readOnly: true
-        is_sandbox:
-          type: boolean
-          readOnly: true
-        pending_approvals:
-          type: array
-          items:
-            type: object
-            additionalProperties: true
-          description: 'Return pending approval cards as structured data.
-
-
-            Combines metadata from conversation.approval_decisions with payload from checkpoint
-
-            interrupts (single source of truth for payload data).'
-          readOnly: true
+      - content
+  parameters:
+    ProjectIdPath:
+      in: path
+      name: project_id
+      required: true
+      schema:
+        type: string
+      description: Project ID of the project you're trying to access. To find the ID of the project, make a call to /api/projects/.
   securitySchemes:
     PersonalAPIKeyAuth:
       type: http

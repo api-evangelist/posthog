@@ -243,6 +243,47 @@ paths:
       x-summary-source: derived
 components:
   schemas:
+    GroupUsageMetricFormatEnum:
+      enum:
+      - numeric
+      - currency
+      type: string
+      description: '* `numeric` - numeric
+
+        * `currency` - currency'
+    PaginatedGroupUsageMetricList:
+      type: object
+      required:
+      - count
+      - results
+      properties:
+        count:
+          type: integer
+          example: 123
+        next:
+          type:
+          - string
+          - 'null'
+          format: uri
+          example: http://api.example.org/accounts/?offset=400&limit=100
+        previous:
+          type:
+          - string
+          - 'null'
+          format: uri
+          example: http://api.example.org/accounts/?offset=200&limit=100
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/GroupUsageMetric'
+    GroupUsageMetricDisplayEnum:
+      enum:
+      - number
+      - sparkline
+      type: string
+      description: '* `number` - number
+
+        * `sparkline` - sparkline'
     MathEnum:
       enum:
       - count
@@ -312,47 +353,6 @@ components:
           - 'null'
           description: Required when `math` is `sum`; must be empty when `math` is `count`. For events metrics this is an event property name. For data warehouse metrics this is the column name (or HogQL expression) to sum on the DW table.
           maxLength: 255
-    PaginatedGroupUsageMetricList:
-      type: object
-      required:
-      - count
-      - results
-      properties:
-        count:
-          type: integer
-          example: 123
-        next:
-          type:
-          - string
-          - 'null'
-          format: uri
-          example: http://api.example.org/accounts/?offset=400&limit=100
-        previous:
-          type:
-          - string
-          - 'null'
-          format: uri
-          example: http://api.example.org/accounts/?offset=200&limit=100
-        results:
-          type: array
-          items:
-            $ref: '#/components/schemas/GroupUsageMetric'
-    GroupUsageMetricFormatEnum:
-      enum:
-      - numeric
-      - currency
-      type: string
-      description: '* `numeric` - numeric
-
-        * `currency` - currency'
-    GroupUsageMetricDisplayEnum:
-      enum:
-      - number
-      - sparkline
-      type: string
-      description: '* `number` - number
-
-        * `sparkline` - sparkline'
     GroupUsageMetric:
       type: object
       properties:

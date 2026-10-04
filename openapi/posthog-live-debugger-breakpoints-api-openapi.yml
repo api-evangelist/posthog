@@ -295,6 +295,117 @@ paths:
       - live_debugger
 components:
   schemas:
+    ActiveBreakpointsResponse:
+      type: object
+      description: Response schema for active breakpoints endpoint
+      properties:
+        breakpoints:
+          type: array
+          items:
+            $ref: '#/components/schemas/ActiveBreakpoint'
+          description: List of active breakpoints
+      required:
+      - breakpoints
+    PatchedLiveDebuggerBreakpoint:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+          readOnly: true
+        repository:
+          type:
+          - string
+          - 'null'
+        filename:
+          type: string
+        line_number:
+          type: integer
+          maximum: 2147483647
+          minimum: 0
+        enabled:
+          type: boolean
+        condition:
+          type:
+          - string
+          - 'null'
+        created_at:
+          type: string
+          format: date-time
+          readOnly: true
+        updated_at:
+          type: string
+          format: date-time
+          readOnly: true
+    LiveDebuggerBreakpoint:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+          readOnly: true
+        repository:
+          type:
+          - string
+          - 'null'
+        filename:
+          type: string
+        line_number:
+          type: integer
+          maximum: 2147483647
+          minimum: 0
+        enabled:
+          type: boolean
+        condition:
+          type:
+          - string
+          - 'null'
+        created_at:
+          type: string
+          format: date-time
+          readOnly: true
+        updated_at:
+          type: string
+          format: date-time
+          readOnly: true
+      required:
+      - created_at
+      - filename
+      - id
+      - line_number
+      - updated_at
+    ActiveBreakpoint:
+      type: object
+      description: Schema for a single active breakpoint
+      properties:
+        id:
+          type: string
+          format: uuid
+          description: Unique identifier for the breakpoint
+        repository:
+          type:
+          - string
+          - 'null'
+          description: Repository identifier (e.g., 'PostHog/posthog')
+        filename:
+          type: string
+          description: File path where the breakpoint is set
+        line_number:
+          type: integer
+          description: Line number of the breakpoint
+        enabled:
+          type: boolean
+          description: Whether the breakpoint is enabled
+        condition:
+          type:
+          - string
+          - 'null'
+          description: Optional condition for the breakpoint
+      required:
+      - enabled
+      - filename
+      - id
+      - line_number
     BreakpointHit:
       type: object
       description: Schema for a single breakpoint hit event
@@ -337,62 +448,6 @@ components:
       - stackTrace
       - timestamp
       - variables
-    LiveDebuggerBreakpoint:
-      type: object
-      properties:
-        id:
-          type: string
-          format: uuid
-          readOnly: true
-        repository:
-          type:
-          - string
-          - 'null'
-        filename:
-          type: string
-        line_number:
-          type: integer
-          maximum: 2147483647
-          minimum: 0
-        enabled:
-          type: boolean
-        condition:
-          type:
-          - string
-          - 'null'
-        created_at:
-          type: string
-          format: date-time
-          readOnly: true
-        updated_at:
-          type: string
-          format: date-time
-          readOnly: true
-      required:
-      - created_at
-      - filename
-      - id
-      - line_number
-      - updated_at
-    BreakpointHitsResponse:
-      type: object
-      description: Response schema for breakpoint hits endpoint
-      properties:
-        results:
-          type: array
-          items:
-            $ref: '#/components/schemas/BreakpointHit'
-          description: List of breakpoint hit events
-        count:
-          type: integer
-          description: Number of results returned
-        has_more:
-          type: boolean
-          description: Whether there are more results available
-      required:
-      - count
-      - has_more
-      - results
     PaginatedLiveDebuggerBreakpointList:
       type: object
       required:
@@ -418,80 +473,25 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/LiveDebuggerBreakpoint'
-    PatchedLiveDebuggerBreakpoint:
+    BreakpointHitsResponse:
       type: object
+      description: Response schema for breakpoint hits endpoint
       properties:
-        id:
-          type: string
-          format: uuid
-          readOnly: true
-        repository:
-          type:
-          - string
-          - 'null'
-        filename:
-          type: string
-        line_number:
-          type: integer
-          maximum: 2147483647
-          minimum: 0
-        enabled:
-          type: boolean
-        condition:
-          type:
-          - string
-          - 'null'
-        created_at:
-          type: string
-          format: date-time
-          readOnly: true
-        updated_at:
-          type: string
-          format: date-time
-          readOnly: true
-    ActiveBreakpoint:
-      type: object
-      description: Schema for a single active breakpoint
-      properties:
-        id:
-          type: string
-          format: uuid
-          description: Unique identifier for the breakpoint
-        repository:
-          type:
-          - string
-          - 'null'
-          description: Repository identifier (e.g., 'PostHog/posthog')
-        filename:
-          type: string
-          description: File path where the breakpoint is set
-        line_number:
-          type: integer
-          description: Line number of the breakpoint
-        enabled:
-          type: boolean
-          description: Whether the breakpoint is enabled
-        condition:
-          type:
-          - string
-          - 'null'
-          description: Optional condition for the breakpoint
-      required:
-      - enabled
-      - filename
-      - id
-      - line_number
-    ActiveBreakpointsResponse:
-      type: object
-      description: Response schema for active breakpoints endpoint
-      properties:
-        breakpoints:
+        results:
           type: array
           items:
-            $ref: '#/components/schemas/ActiveBreakpoint'
-          description: List of active breakpoints
+            $ref: '#/components/schemas/BreakpointHit'
+          description: List of breakpoint hit events
+        count:
+          type: integer
+          description: Number of results returned
+        has_more:
+          type: boolean
+          description: Whether there are more results available
       required:
-      - breakpoints
+      - count
+      - has_more
+      - results
   parameters:
     ProjectIdPath:
       in: path

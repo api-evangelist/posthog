@@ -978,6 +978,997 @@ paths:
       x-summary-source: derived
 components:
   schemas:
+    PatchedPinnedSceneTabs:
+      type: object
+      properties:
+        tabs:
+          type: array
+          items:
+            $ref: '#/components/schemas/PinnedSceneTab'
+          description: Ordered list of pinned navigation tabs shown in the sidebar for the authenticated user within the current team. Send the full list to replace the existing pins; omit to leave them unchanged.
+        homepage:
+          allOf:
+          - $ref: '#/components/schemas/PinnedSceneTab'
+          description: Tab descriptor for the user's chosen home page — the destination opened when they click the PostHog logo or hit `/`. Set to a tab descriptor to pick a homepage, send `null` or `{}` to clear it and fall back to the project default.
+    OrganizationMember:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+          readOnly: true
+        user:
+          allOf:
+          - $ref: '#/components/schemas/UserBasic'
+          readOnly: true
+        level:
+          $ref: '#/components/schemas/OrganizationMembershipLevelEnum'
+        joined_at:
+          type: string
+          format: date-time
+          readOnly: true
+        updated_at:
+          type: string
+          format: date-time
+          readOnly: true
+        is_2fa_enabled:
+          type: boolean
+          readOnly: true
+        has_social_auth:
+          type: boolean
+          readOnly: true
+        last_login:
+          type: string
+          format: date-time
+          readOnly: true
+      required:
+      - has_social_auth
+      - id
+      - is_2fa_enabled
+      - joined_at
+      - last_login
+      - updated_at
+      - user
+    DefaultExperimentStatsMethodEnum:
+      enum:
+      - bayesian
+      - frequentist
+      type: string
+      description: '* `bayesian` - Bayesian
+
+        * `frequentist` - Frequentist'
+    OrganizationMembershipLevelEnum:
+      enum:
+      - 1
+      - 8
+      - 15
+      type: integer
+      description: '* `1` - member
+
+        * `8` - administrator
+
+        * `15` - owner'
+    NullEnum:
+      enum:
+      - null
+    RoleAtOrganizationEnum:
+      enum:
+      - engineering
+      - data
+      - product
+      - founder
+      - leadership
+      - marketing
+      - sales
+      - other
+      type: string
+      description: '* `engineering` - Engineering
+
+        * `data` - Data
+
+        * `product` - Product Management
+
+        * `founder` - Founder
+
+        * `leadership` - Leadership
+
+        * `marketing` - Marketing
+
+        * `sales` - Sales / Success
+
+        * `other` - Other'
+    PaginatedRoleMembershipList:
+      type: object
+      required:
+      - count
+      - results
+      properties:
+        count:
+          type: integer
+          example: 123
+        next:
+          type:
+          - string
+          - 'null'
+          format: uri
+          example: http://api.example.org/accounts/?offset=400&limit=100
+        previous:
+          type:
+          - string
+          - 'null'
+          format: uri
+          example: http://api.example.org/accounts/?offset=200&limit=100
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/RoleMembership'
+    PaginatedChangeRequestList:
+      type: object
+      required:
+      - count
+      - results
+      properties:
+        count:
+          type: integer
+          example: 123
+        next:
+          type:
+          - string
+          - 'null'
+          format: uri
+          example: http://api.example.org/accounts/?offset=400&limit=100
+        previous:
+          type:
+          - string
+          - 'null'
+          format: uri
+          example: http://api.example.org/accounts/?offset=200&limit=100
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/ChangeRequest'
+    AvailableFiltersResponse:
+      type: object
+      properties:
+        static_filters:
+          allOf:
+          - $ref: '#/components/schemas/StaticFilters'
+          description: Pre-computed filter options for scopes, activities, and users.
+        detail_fields:
+          type: object
+          additionalProperties: true
+          description: Discovered detail fields and their value distributions.
+      required:
+      - detail_fields
+      - static_filters
+    PinnedSceneTabs:
+      type: object
+      properties:
+        tabs:
+          type: array
+          items:
+            $ref: '#/components/schemas/PinnedSceneTab'
+          description: Ordered list of pinned navigation tabs shown in the sidebar for the authenticated user within the current team. Send the full list to replace the existing pins; omit to leave them unchanged.
+        homepage:
+          allOf:
+          - $ref: '#/components/schemas/PinnedSceneTab'
+          description: Tab descriptor for the user's chosen home page — the destination opened when they click the PostHog logo or hit `/`. Set to a tab descriptor to pick a homepage, send `null` or `{}` to clear it and fall back to the project default.
+    PatchedOrganization:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+          readOnly: true
+        name:
+          type: string
+          maxLength: 64
+        slug:
+          type: string
+          readOnly: true
+          pattern: ^[-a-zA-Z0-9_]+$
+        logo_media_id:
+          type:
+          - string
+          - 'null'
+          format: uuid
+        created_at:
+          type: string
+          format: date-time
+          readOnly: true
+        updated_at:
+          type: string
+          format: date-time
+          readOnly: true
+        membership_level:
+          allOf:
+          - $ref: '#/components/schemas/EffectiveMembershipLevelEnum'
+          readOnly: true
+        plugins_access_level:
+          allOf:
+          - $ref: '#/components/schemas/PluginsAccessLevelEnum'
+          readOnly: true
+        teams:
+          type: array
+          items:
+            type: object
+            additionalProperties: true
+          readOnly: true
+        projects:
+          type: array
+          items:
+            type: object
+            additionalProperties: true
+          readOnly: true
+        available_product_features:
+          type:
+          - array
+          - 'null'
+          items: {}
+          readOnly: true
+        is_member_join_email_enabled:
+          type: boolean
+          readOnly: true
+          description: Legacy field; member-join emails are controlled per user in account notification settings.
+        metadata:
+          type: object
+          additionalProperties:
+            type: string
+          readOnly: true
+        customer_id:
+          type:
+          - string
+          - 'null'
+          readOnly: true
+        enforce_2fa:
+          type:
+          - boolean
+          - 'null'
+        members_can_invite:
+          type:
+          - boolean
+          - 'null'
+        members_can_use_personal_api_keys:
+          type: boolean
+        allow_publicly_shared_resources:
+          type: boolean
+        member_count:
+          type: integer
+          readOnly: true
+        is_ai_data_processing_approved:
+          type:
+          - boolean
+          - 'null'
+        default_experiment_stats_method:
+          description: 'Default statistical method for new experiments in this organization.
+
+
+            * `bayesian` - Bayesian
+
+            * `frequentist` - Frequentist'
+          oneOf:
+          - $ref: '#/components/schemas/DefaultExperimentStatsMethodEnum'
+          - $ref: '#/components/schemas/BlankEnum'
+          - $ref: '#/components/schemas/NullEnum'
+        default_anonymize_ips:
+          type: boolean
+          description: Default setting for 'Discard client IP data' for new projects in this organization.
+        default_role_id:
+          type:
+          - string
+          - 'null'
+          description: ID of the role to automatically assign to new members joining the organization
+        is_active:
+          type:
+          - boolean
+          - 'null'
+          readOnly: true
+          title: Active
+          description: Set this to 'No' to temporarily disable an organization.
+        is_not_active_reason:
+          type:
+          - string
+          - 'null'
+          readOnly: true
+          title: De-activated reason
+          description: (optional) reason for why the organization has been de-activated. This will be displayed to users on the web app.
+        is_pending_deletion:
+          type:
+          - boolean
+          - 'null'
+          readOnly: true
+          description: Set to True when org deletion has been initiated. Blocks all UI access until the async task completes.
+    PatchedApprovalPolicy:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+          readOnly: true
+        action_key:
+          type: string
+          maxLength: 128
+        conditions: {}
+        approver_config: {}
+        allow_self_approve:
+          type: boolean
+        bypass_org_membership_levels: {}
+        bypass_roles:
+          type: array
+          items:
+            type: string
+            format: uuid
+        expires_after:
+          type: string
+          description: Auto-expire change requests after this duration
+        enabled:
+          type: boolean
+        created_by:
+          allOf:
+          - $ref: '#/components/schemas/UserBasic'
+          readOnly: true
+        created_at:
+          type: string
+          format: date-time
+          readOnly: true
+        updated_at:
+          type:
+          - string
+          - 'null'
+          format: date-time
+          readOnly: true
+    PinnedSceneTab:
+      type: object
+      properties:
+        id:
+          type: string
+          description: Stable identifier for the tab. Generated client-side; safe to omit on create.
+        pathname:
+          type: string
+          description: URL pathname the tab points at — for example `/project/123/dashboard/45` or `/project/123/insights`. Combined with `search` and `hash` to reconstruct the destination.
+        search:
+          type: string
+          description: Query string portion of the URL, including the leading `?`. Empty string when there is no query.
+        hash:
+          type: string
+          description: Fragment portion of the URL, including the leading `#`. Empty string when there is no fragment.
+        title:
+          type: string
+          description: Default tab title derived from the destination scene. Used when `customTitle` is not set.
+        customTitle:
+          type:
+          - string
+          - 'null'
+          description: Optional user-provided title that overrides `title` in the navigation UI.
+        iconType:
+          type: string
+          description: Icon key shown next to the tab in the sidebar — for example `dashboard`, `insight`, `blank`.
+        sceneId:
+          type:
+          - string
+          - 'null'
+          description: Scene identifier resolved from the pathname when known — used by the frontend for icon/title hints.
+        sceneKey:
+          type:
+          - string
+          - 'null'
+          description: Scene key (logic key) for the destination, paired with `sceneParams` for deeper routing context.
+        sceneParams:
+          description: Free-form scene parameters captured at pin time, used by the frontend to rehydrate the destination.
+        pinned:
+          type: boolean
+          description: Whether this entry is pinned. Always coerced to true on save — pass true or omit.
+    PaginatedApprovalPolicyList:
+      type: object
+      required:
+      - count
+      - results
+      properties:
+        count:
+          type: integer
+          example: 123
+        next:
+          type:
+          - string
+          - 'null'
+          format: uri
+          example: http://api.example.org/accounts/?offset=400&limit=100
+        previous:
+          type:
+          - string
+          - 'null'
+          format: uri
+          example: http://api.example.org/accounts/?offset=200&limit=100
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/ApprovalPolicy'
+    _WelcomePopularDashboard:
+      type: object
+      properties:
+        id:
+          type: integer
+        name:
+          type: string
+        description:
+          type: string
+        team_id:
+          type: integer
+        url:
+          type: string
+      required:
+      - description
+      - id
+      - name
+      - team_id
+      - url
+    StaticFilters:
+      type: object
+      properties:
+        users:
+          type: array
+          items:
+            type: object
+            additionalProperties: true
+          description: Users who have logged activity.
+        scopes:
+          type: array
+          items:
+            type: object
+            additionalProperties: true
+          description: Available activity scopes.
+        activities:
+          type: array
+          items:
+            type: object
+            additionalProperties: true
+          description: Available activity types.
+        clients:
+          type: array
+          items:
+            type: object
+            additionalProperties: true
+          description: API clients that have generated activity (from x-posthog-client header).
+      required:
+      - activities
+      - clients
+      - scopes
+      - users
+    _WelcomeRecentActivity:
+      type: object
+      properties:
+        type:
+          type: string
+          description: Scope.activity pair, e.g. 'Insight.created'.
+        actor_name:
+          type: string
+        entity_name:
+          type: string
+        entity_url:
+          type:
+          - string
+          - 'null'
+        timestamp:
+          type: string
+          format: date-time
+      required:
+      - actor_name
+      - entity_name
+      - entity_url
+      - timestamp
+      - type
+    ApprovalPolicy:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+          readOnly: true
+        action_key:
+          type: string
+          maxLength: 128
+        conditions: {}
+        approver_config: {}
+        allow_self_approve:
+          type: boolean
+        bypass_org_membership_levels: {}
+        bypass_roles:
+          type: array
+          items:
+            type: string
+            format: uuid
+        expires_after:
+          type: string
+          description: Auto-expire change requests after this duration
+        enabled:
+          type: boolean
+        created_by:
+          allOf:
+          - $ref: '#/components/schemas/UserBasic'
+          readOnly: true
+        created_at:
+          type: string
+          format: date-time
+          readOnly: true
+        updated_at:
+          type:
+          - string
+          - 'null'
+          format: date-time
+          readOnly: true
+      required:
+      - action_key
+      - approver_config
+      - created_at
+      - created_by
+      - id
+      - updated_at
+    ActivityLog:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+          readOnly: true
+        user:
+          $ref: '#/components/schemas/UserBasic'
+        unread:
+          type: boolean
+          description: is the date of this log item newer than the user's bookmark
+          readOnly: true
+        organization_id:
+          type:
+          - string
+          - 'null'
+          format: uuid
+        was_impersonated:
+          type:
+          - boolean
+          - 'null'
+        is_system:
+          type:
+          - boolean
+          - 'null'
+        client:
+          type:
+          - string
+          - 'null'
+          maxLength: 32
+        activity:
+          type: string
+          maxLength: 79
+        item_id:
+          type:
+          - string
+          - 'null'
+          maxLength: 72
+        scope:
+          type: string
+          maxLength: 79
+        detail: {}
+        created_at:
+          type: string
+          format: date-time
+      required:
+      - activity
+      - id
+      - scope
+      - unread
+      - user
+    UserBasic:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        uuid:
+          type: string
+          format: uuid
+          readOnly: true
+        distinct_id:
+          type:
+          - string
+          - 'null'
+          maxLength: 200
+        first_name:
+          type: string
+          maxLength: 150
+        last_name:
+          type: string
+          maxLength: 150
+        email:
+          type: string
+          format: email
+          title: Email address
+          maxLength: 254
+        is_email_verified:
+          type:
+          - boolean
+          - 'null'
+        hedgehog_config:
+          type:
+          - object
+          - 'null'
+          additionalProperties: true
+          readOnly: true
+        role_at_organization:
+          oneOf:
+          - $ref: '#/components/schemas/RoleAtOrganizationEnum'
+          - $ref: '#/components/schemas/BlankEnum'
+          - $ref: '#/components/schemas/NullEnum'
+      required:
+      - email
+      - hedgehog_config
+      - id
+      - uuid
+    PaginatedOrganizationList:
+      type: object
+      required:
+      - count
+      - results
+      properties:
+        count:
+          type: integer
+          example: 123
+        next:
+          type:
+          - string
+          - 'null'
+          format: uri
+          example: http://api.example.org/accounts/?offset=400&limit=100
+        previous:
+          type:
+          - string
+          - 'null'
+          format: uri
+          example: http://api.example.org/accounts/?offset=200&limit=100
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/Organization'
+    LastActiveEnum:
+      enum:
+      - today
+      - this_week
+      - inactive
+      - never
+      type: string
+      description: '* `today` - today
+
+        * `this_week` - this_week
+
+        * `inactive` - inactive
+
+        * `never` - never'
+    BlankEnum:
+      enum:
+      - ''
+    ValidationStatusEnum:
+      enum:
+      - valid
+      - invalid
+      - expired
+      - stale
+      type: string
+      description: '* `valid` - Valid
+
+        * `invalid` - Invalid
+
+        * `expired` - Expired
+
+        * `stale` - Stale (resource changed)'
+    PluginsAccessLevelEnum:
+      enum:
+      - 0
+      - 3
+      - 6
+      - 9
+      type: integer
+      description: '* `0` - none
+
+        * `3` - config
+
+        * `6` - install
+
+        * `9` - root'
+    ChangeRequest:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+          readOnly: true
+        action_key:
+          type: string
+          readOnly: true
+        action_version:
+          type: integer
+          readOnly: true
+        resource_type:
+          type: string
+          readOnly: true
+        resource_id:
+          type:
+          - string
+          - 'null'
+          readOnly: true
+        intent:
+          readOnly: true
+        intent_display:
+          readOnly: true
+        policy_snapshot:
+          readOnly: true
+        validation_status:
+          allOf:
+          - $ref: '#/components/schemas/ValidationStatusEnum'
+          readOnly: true
+        validation_errors:
+          readOnly: true
+        validated_at:
+          type:
+          - string
+          - 'null'
+          format: date-time
+          readOnly: true
+        state:
+          allOf:
+          - $ref: '#/components/schemas/ChangeRequestStateEnum'
+          readOnly: true
+        created_by:
+          allOf:
+          - $ref: '#/components/schemas/UserBasic'
+          readOnly: true
+        applied_by:
+          allOf:
+          - $ref: '#/components/schemas/UserBasic'
+          readOnly: true
+        created_at:
+          type: string
+          format: date-time
+          readOnly: true
+        updated_at:
+          type:
+          - string
+          - 'null'
+          format: date-time
+          readOnly: true
+        expires_at:
+          type: string
+          format: date-time
+          readOnly: true
+        applied_at:
+          type:
+          - string
+          - 'null'
+          format: date-time
+          readOnly: true
+        apply_error:
+          type: string
+          readOnly: true
+        result_data:
+          readOnly: true
+        approvals:
+          type: array
+          items:
+            type: object
+            additionalProperties: true
+          readOnly: true
+        can_approve:
+          type: boolean
+          description: Check if current user can approve this change request.
+          readOnly: true
+        can_cancel:
+          type: boolean
+          readOnly: true
+        is_requester:
+          type: boolean
+          description: Check if current user is the requester.
+          readOnly: true
+        user_decision:
+          type:
+          - string
+          - 'null'
+          description: Get the current user's approval decision if they have voted.
+          readOnly: true
+      required:
+      - action_key
+      - action_version
+      - applied_at
+      - applied_by
+      - apply_error
+      - approvals
+      - can_approve
+      - can_cancel
+      - created_at
+      - created_by
+      - expires_at
+      - id
+      - intent
+      - intent_display
+      - is_requester
+      - policy_snapshot
+      - resource_id
+      - resource_type
+      - result_data
+      - state
+      - updated_at
+      - user_decision
+      - validated_at
+      - validation_errors
+      - validation_status
+    WelcomeResponse:
+      type: object
+      properties:
+        organization_name:
+          type: string
+        inviter:
+          allOf:
+          - $ref: '#/components/schemas/_WelcomeInviter'
+        team_members:
+          type: array
+          items:
+            $ref: '#/components/schemas/_WelcomeTeamMember'
+        recent_activity:
+          type: array
+          items:
+            $ref: '#/components/schemas/_WelcomeRecentActivity'
+        popular_dashboards:
+          type: array
+          items:
+            $ref: '#/components/schemas/_WelcomePopularDashboard'
+        products_in_use:
+          type: array
+          items:
+            type: string
+        suggested_next_steps:
+          type: array
+          items:
+            $ref: '#/components/schemas/_WelcomeSuggestedStep'
+        is_organization_first_user:
+          type: boolean
+      required:
+      - inviter
+      - is_organization_first_user
+      - organization_name
+      - popular_dashboards
+      - products_in_use
+      - recent_activity
+      - suggested_next_steps
+      - team_members
+    RoleMembership:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+          readOnly: true
+        role_id:
+          type: string
+          format: uuid
+          readOnly: true
+        organization_member:
+          allOf:
+          - $ref: '#/components/schemas/OrganizationMember'
+          readOnly: true
+        user:
+          allOf:
+          - $ref: '#/components/schemas/UserBasic'
+          readOnly: true
+        joined_at:
+          type: string
+          format: date-time
+          readOnly: true
+        updated_at:
+          type: string
+          format: date-time
+          readOnly: true
+        user_uuid:
+          type: string
+          format: uuid
+          writeOnly: true
+      required:
+      - id
+      - joined_at
+      - organization_member
+      - role_id
+      - updated_at
+      - user
+      - user_uuid
+    _WelcomeInviter:
+      type: object
+      properties:
+        name:
+          type: string
+        email:
+          type: string
+          format: email
+      required:
+      - email
+      - name
+    _WelcomeSuggestedStep:
+      type: object
+      properties:
+        label:
+          type: string
+        href:
+          type: string
+        reason:
+          type: string
+        docs_href:
+          type: string
+        product_key:
+          type: string
+      required:
+      - href
+      - label
+      - reason
+    ChangeRequestStateEnum:
+      enum:
+      - pending
+      - approved
+      - applied
+      - rejected
+      - expired
+      - failed
+      type: string
+      description: '* `pending` - Pending
+
+        * `approved` - Approved (awaiting application)
+
+        * `applied` - Applied
+
+        * `rejected` - Rejected
+
+        * `expired` - Expired
+
+        * `failed` - Failed to apply'
+    PaginatedActivityLogList:
+      type: object
+      required:
+      - count
+      - results
+      properties:
+        count:
+          type: integer
+          example: 123
+        next:
+          type:
+          - string
+          - 'null'
+          format: uri
+          example: http://api.example.org/accounts/?page=4
+        previous:
+          type:
+          - string
+          - 'null'
+          format: uri
+          example: http://api.example.org/accounts/?page=2
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/ActivityLog'
+    _WelcomeTeamMember:
+      type: object
+      properties:
+        name:
+          type: string
+        email:
+          type: string
+          format: email
+        avatar:
+          type:
+          - string
+          - 'null'
+        role:
+          type: string
+        last_active:
+          $ref: '#/components/schemas/LastActiveEnum'
+      required:
+      - avatar
+      - email
+      - last_active
+      - name
+      - role
     Organization:
       type: object
       properties:
@@ -1121,1011 +2112,13 @@ components:
       - slug
       - teams
       - updated_at
-    ValidationStatusEnum:
-      enum:
-      - valid
-      - invalid
-      - expired
-      - stale
-      type: string
-      description: '* `valid` - Valid
-
-        * `invalid` - Invalid
-
-        * `expired` - Expired
-
-        * `stale` - Stale (resource changed)'
-    OrganizationMember:
-      type: object
-      properties:
-        id:
-          type: string
-          format: uuid
-          readOnly: true
-        user:
-          allOf:
-          - $ref: '#/components/schemas/UserBasic'
-          readOnly: true
-        level:
-          $ref: '#/components/schemas/OrganizationMembershipLevelEnum'
-        joined_at:
-          type: string
-          format: date-time
-          readOnly: true
-        updated_at:
-          type: string
-          format: date-time
-          readOnly: true
-        is_2fa_enabled:
-          type: boolean
-          readOnly: true
-        has_social_auth:
-          type: boolean
-          readOnly: true
-        last_login:
-          type: string
-          format: date-time
-          readOnly: true
-      required:
-      - has_social_auth
-      - id
-      - is_2fa_enabled
-      - joined_at
-      - last_login
-      - updated_at
-      - user
-    PaginatedRoleMembershipList:
-      type: object
-      required:
-      - count
-      - results
-      properties:
-        count:
-          type: integer
-          example: 123
-        next:
-          type:
-          - string
-          - 'null'
-          format: uri
-          example: http://api.example.org/accounts/?offset=400&limit=100
-        previous:
-          type:
-          - string
-          - 'null'
-          format: uri
-          example: http://api.example.org/accounts/?offset=200&limit=100
-        results:
-          type: array
-          items:
-            $ref: '#/components/schemas/RoleMembership'
-    _WelcomeSuggestedStep:
-      type: object
-      properties:
-        label:
-          type: string
-        href:
-          type: string
-        reason:
-          type: string
-        docs_href:
-          type: string
-        product_key:
-          type: string
-      required:
-      - href
-      - label
-      - reason
-    WelcomeResponse:
-      type: object
-      properties:
-        organization_name:
-          type: string
-        inviter:
-          allOf:
-          - $ref: '#/components/schemas/_WelcomeInviter'
-        team_members:
-          type: array
-          items:
-            $ref: '#/components/schemas/_WelcomeTeamMember'
-        recent_activity:
-          type: array
-          items:
-            $ref: '#/components/schemas/_WelcomeRecentActivity'
-        popular_dashboards:
-          type: array
-          items:
-            $ref: '#/components/schemas/_WelcomePopularDashboard'
-        products_in_use:
-          type: array
-          items:
-            type: string
-        suggested_next_steps:
-          type: array
-          items:
-            $ref: '#/components/schemas/_WelcomeSuggestedStep'
-        is_organization_first_user:
-          type: boolean
-      required:
-      - inviter
-      - is_organization_first_user
-      - organization_name
-      - popular_dashboards
-      - products_in_use
-      - recent_activity
-      - suggested_next_steps
-      - team_members
-    _WelcomeRecentActivity:
-      type: object
-      properties:
-        type:
-          type: string
-          description: Scope.activity pair, e.g. 'Insight.created'.
-        actor_name:
-          type: string
-        entity_name:
-          type: string
-        entity_url:
-          type:
-          - string
-          - 'null'
-        timestamp:
-          type: string
-          format: date-time
-      required:
-      - actor_name
-      - entity_name
-      - entity_url
-      - timestamp
-      - type
-    NullEnum:
-      enum:
-      - null
-    LastActiveEnum:
-      enum:
-      - today
-      - this_week
-      - inactive
-      - never
-      type: string
-      description: '* `today` - today
-
-        * `this_week` - this_week
-
-        * `inactive` - inactive
-
-        * `never` - never'
-    PinnedSceneTabs:
-      type: object
-      properties:
-        tabs:
-          type: array
-          items:
-            $ref: '#/components/schemas/PinnedSceneTab'
-          description: Ordered list of pinned navigation tabs shown in the sidebar for the authenticated user within the current team. Send the full list to replace the existing pins; omit to leave them unchanged.
-        homepage:
-          allOf:
-          - $ref: '#/components/schemas/PinnedSceneTab'
-          description: Tab descriptor for the user's chosen home page — the destination opened when they click the PostHog logo or hit `/`. Set to a tab descriptor to pick a homepage, send `null` or `{}` to clear it and fall back to the project default.
-    DefaultExperimentStatsMethodEnum:
-      enum:
-      - bayesian
-      - frequentist
-      type: string
-      description: '* `bayesian` - Bayesian
-
-        * `frequentist` - Frequentist'
-    ActivityLog:
-      type: object
-      properties:
-        id:
-          type: string
-          format: uuid
-          readOnly: true
-        user:
-          $ref: '#/components/schemas/UserBasic'
-        unread:
-          type: boolean
-          description: is the date of this log item newer than the user's bookmark
-          readOnly: true
-        organization_id:
-          type:
-          - string
-          - 'null'
-          format: uuid
-        was_impersonated:
-          type:
-          - boolean
-          - 'null'
-        is_system:
-          type:
-          - boolean
-          - 'null'
-        client:
-          type:
-          - string
-          - 'null'
-          maxLength: 32
-        activity:
-          type: string
-          maxLength: 79
-        item_id:
-          type:
-          - string
-          - 'null'
-          maxLength: 72
-        scope:
-          type: string
-          maxLength: 79
-        detail: {}
-        created_at:
-          type: string
-          format: date-time
-      required:
-      - activity
-      - id
-      - scope
-      - unread
-      - user
-    PaginatedActivityLogList:
-      type: object
-      required:
-      - count
-      - results
-      properties:
-        count:
-          type: integer
-          example: 123
-        next:
-          type:
-          - string
-          - 'null'
-          format: uri
-          example: http://api.example.org/accounts/?page=4
-        previous:
-          type:
-          - string
-          - 'null'
-          format: uri
-          example: http://api.example.org/accounts/?page=2
-        results:
-          type: array
-          items:
-            $ref: '#/components/schemas/ActivityLog'
-    AvailableFiltersResponse:
-      type: object
-      properties:
-        static_filters:
-          allOf:
-          - $ref: '#/components/schemas/StaticFilters'
-          description: Pre-computed filter options for scopes, activities, and users.
-        detail_fields:
-          type: object
-          additionalProperties: true
-          description: Discovered detail fields and their value distributions.
-      required:
-      - detail_fields
-      - static_filters
-    PatchedApprovalPolicy:
-      type: object
-      properties:
-        id:
-          type: string
-          format: uuid
-          readOnly: true
-        action_key:
-          type: string
-          maxLength: 128
-        conditions: {}
-        approver_config: {}
-        allow_self_approve:
-          type: boolean
-        bypass_org_membership_levels: {}
-        bypass_roles:
-          type: array
-          items:
-            type: string
-            format: uuid
-        expires_after:
-          type: string
-          description: Auto-expire change requests after this duration
-        enabled:
-          type: boolean
-        created_by:
-          allOf:
-          - $ref: '#/components/schemas/UserBasic'
-          readOnly: true
-        created_at:
-          type: string
-          format: date-time
-          readOnly: true
-        updated_at:
-          type:
-          - string
-          - 'null'
-          format: date-time
-          readOnly: true
-    PluginsAccessLevelEnum:
-      enum:
-      - 0
-      - 3
-      - 6
-      - 9
-      type: integer
-      description: '* `0` - none
-
-        * `3` - config
-
-        * `6` - install
-
-        * `9` - root'
-    StaticFilters:
-      type: object
-      properties:
-        users:
-          type: array
-          items:
-            type: object
-            additionalProperties: true
-          description: Users who have logged activity.
-        scopes:
-          type: array
-          items:
-            type: object
-            additionalProperties: true
-          description: Available activity scopes.
-        activities:
-          type: array
-          items:
-            type: object
-            additionalProperties: true
-          description: Available activity types.
-        clients:
-          type: array
-          items:
-            type: object
-            additionalProperties: true
-          description: API clients that have generated activity (from x-posthog-client header).
-      required:
-      - activities
-      - clients
-      - scopes
-      - users
-    ChangeRequest:
-      type: object
-      properties:
-        id:
-          type: string
-          format: uuid
-          readOnly: true
-        action_key:
-          type: string
-          readOnly: true
-        action_version:
-          type: integer
-          readOnly: true
-        resource_type:
-          type: string
-          readOnly: true
-        resource_id:
-          type:
-          - string
-          - 'null'
-          readOnly: true
-        intent:
-          readOnly: true
-        intent_display:
-          readOnly: true
-        policy_snapshot:
-          readOnly: true
-        validation_status:
-          allOf:
-          - $ref: '#/components/schemas/ValidationStatusEnum'
-          readOnly: true
-        validation_errors:
-          readOnly: true
-        validated_at:
-          type:
-          - string
-          - 'null'
-          format: date-time
-          readOnly: true
-        state:
-          allOf:
-          - $ref: '#/components/schemas/ChangeRequestStateEnum'
-          readOnly: true
-        created_by:
-          allOf:
-          - $ref: '#/components/schemas/UserBasic'
-          readOnly: true
-        applied_by:
-          allOf:
-          - $ref: '#/components/schemas/UserBasic'
-          readOnly: true
-        created_at:
-          type: string
-          format: date-time
-          readOnly: true
-        updated_at:
-          type:
-          - string
-          - 'null'
-          format: date-time
-          readOnly: true
-        expires_at:
-          type: string
-          format: date-time
-          readOnly: true
-        applied_at:
-          type:
-          - string
-          - 'null'
-          format: date-time
-          readOnly: true
-        apply_error:
-          type: string
-          readOnly: true
-        result_data:
-          readOnly: true
-        approvals:
-          type: array
-          items:
-            type: object
-            additionalProperties: true
-          readOnly: true
-        can_approve:
-          type: boolean
-          description: Check if current user can approve this change request.
-          readOnly: true
-        can_cancel:
-          type: boolean
-          readOnly: true
-        is_requester:
-          type: boolean
-          description: Check if current user is the requester.
-          readOnly: true
-        user_decision:
-          type:
-          - string
-          - 'null'
-          description: Get the current user's approval decision if they have voted.
-          readOnly: true
-      required:
-      - action_key
-      - action_version
-      - applied_at
-      - applied_by
-      - apply_error
-      - approvals
-      - can_approve
-      - can_cancel
-      - created_at
-      - created_by
-      - expires_at
-      - id
-      - intent
-      - intent_display
-      - is_requester
-      - policy_snapshot
-      - resource_id
-      - resource_type
-      - result_data
-      - state
-      - updated_at
-      - user_decision
-      - validated_at
-      - validation_errors
-      - validation_status
-    BlankEnum:
-      enum:
-      - ''
-    OrganizationMembershipLevelEnum:
-      enum:
-      - 1
-      - 8
-      - 15
-      type: integer
-      description: '* `1` - member
-
-        * `8` - administrator
-
-        * `15` - owner'
-    ChangeRequestStateEnum:
-      enum:
-      - pending
-      - approved
-      - applied
-      - rejected
-      - expired
-      - failed
-      type: string
-      description: '* `pending` - Pending
-
-        * `approved` - Approved (awaiting application)
-
-        * `applied` - Applied
-
-        * `rejected` - Rejected
-
-        * `expired` - Expired
-
-        * `failed` - Failed to apply'
-    PaginatedApprovalPolicyList:
-      type: object
-      required:
-      - count
-      - results
-      properties:
-        count:
-          type: integer
-          example: 123
-        next:
-          type:
-          - string
-          - 'null'
-          format: uri
-          example: http://api.example.org/accounts/?offset=400&limit=100
-        previous:
-          type:
-          - string
-          - 'null'
-          format: uri
-          example: http://api.example.org/accounts/?offset=200&limit=100
-        results:
-          type: array
-          items:
-            $ref: '#/components/schemas/ApprovalPolicy'
-    PaginatedOrganizationList:
-      type: object
-      required:
-      - count
-      - results
-      properties:
-        count:
-          type: integer
-          example: 123
-        next:
-          type:
-          - string
-          - 'null'
-          format: uri
-          example: http://api.example.org/accounts/?offset=400&limit=100
-        previous:
-          type:
-          - string
-          - 'null'
-          format: uri
-          example: http://api.example.org/accounts/?offset=200&limit=100
-        results:
-          type: array
-          items:
-            $ref: '#/components/schemas/Organization'
-    _WelcomePopularDashboard:
-      type: object
-      properties:
-        id:
-          type: integer
-        name:
-          type: string
-        description:
-          type: string
-        team_id:
-          type: integer
-        url:
-          type: string
-      required:
-      - description
-      - id
-      - name
-      - team_id
-      - url
-    RoleMembership:
-      type: object
-      properties:
-        id:
-          type: string
-          format: uuid
-          readOnly: true
-        role_id:
-          type: string
-          format: uuid
-          readOnly: true
-        organization_member:
-          allOf:
-          - $ref: '#/components/schemas/OrganizationMember'
-          readOnly: true
-        user:
-          allOf:
-          - $ref: '#/components/schemas/UserBasic'
-          readOnly: true
-        joined_at:
-          type: string
-          format: date-time
-          readOnly: true
-        updated_at:
-          type: string
-          format: date-time
-          readOnly: true
-        user_uuid:
-          type: string
-          format: uuid
-          writeOnly: true
-      required:
-      - id
-      - joined_at
-      - organization_member
-      - role_id
-      - updated_at
-      - user
-      - user_uuid
     EffectiveMembershipLevelEnum:
       enum:
       - 1
       - 8
       - 15
       type: integer
-    _WelcomeInviter:
-      type: object
-      properties:
-        name:
-          type: string
-        email:
-          type: string
-          format: email
-      required:
-      - email
-      - name
-    PatchedPinnedSceneTabs:
-      type: object
-      properties:
-        tabs:
-          type: array
-          items:
-            $ref: '#/components/schemas/PinnedSceneTab'
-          description: Ordered list of pinned navigation tabs shown in the sidebar for the authenticated user within the current team. Send the full list to replace the existing pins; omit to leave them unchanged.
-        homepage:
-          allOf:
-          - $ref: '#/components/schemas/PinnedSceneTab'
-          description: Tab descriptor for the user's chosen home page — the destination opened when they click the PostHog logo or hit `/`. Set to a tab descriptor to pick a homepage, send `null` or `{}` to clear it and fall back to the project default.
-    PinnedSceneTab:
-      type: object
-      properties:
-        id:
-          type: string
-          description: Stable identifier for the tab. Generated client-side; safe to omit on create.
-        pathname:
-          type: string
-          description: URL pathname the tab points at — for example `/project/123/dashboard/45` or `/project/123/insights`. Combined with `search` and `hash` to reconstruct the destination.
-        search:
-          type: string
-          description: Query string portion of the URL, including the leading `?`. Empty string when there is no query.
-        hash:
-          type: string
-          description: Fragment portion of the URL, including the leading `#`. Empty string when there is no fragment.
-        title:
-          type: string
-          description: Default tab title derived from the destination scene. Used when `customTitle` is not set.
-        customTitle:
-          type:
-          - string
-          - 'null'
-          description: Optional user-provided title that overrides `title` in the navigation UI.
-        iconType:
-          type: string
-          description: Icon key shown next to the tab in the sidebar — for example `dashboard`, `insight`, `blank`.
-        sceneId:
-          type:
-          - string
-          - 'null'
-          description: Scene identifier resolved from the pathname when known — used by the frontend for icon/title hints.
-        sceneKey:
-          type:
-          - string
-          - 'null'
-          description: Scene key (logic key) for the destination, paired with `sceneParams` for deeper routing context.
-        sceneParams:
-          description: Free-form scene parameters captured at pin time, used by the frontend to rehydrate the destination.
-        pinned:
-          type: boolean
-          description: Whether this entry is pinned. Always coerced to true on save — pass true or omit.
-    PaginatedChangeRequestList:
-      type: object
-      required:
-      - count
-      - results
-      properties:
-        count:
-          type: integer
-          example: 123
-        next:
-          type:
-          - string
-          - 'null'
-          format: uri
-          example: http://api.example.org/accounts/?offset=400&limit=100
-        previous:
-          type:
-          - string
-          - 'null'
-          format: uri
-          example: http://api.example.org/accounts/?offset=200&limit=100
-        results:
-          type: array
-          items:
-            $ref: '#/components/schemas/ChangeRequest'
-    UserBasic:
-      type: object
-      properties:
-        id:
-          type: integer
-          readOnly: true
-        uuid:
-          type: string
-          format: uuid
-          readOnly: true
-        distinct_id:
-          type:
-          - string
-          - 'null'
-          maxLength: 200
-        first_name:
-          type: string
-          maxLength: 150
-        last_name:
-          type: string
-          maxLength: 150
-        email:
-          type: string
-          format: email
-          title: Email address
-          maxLength: 254
-        is_email_verified:
-          type:
-          - boolean
-          - 'null'
-        hedgehog_config:
-          type:
-          - object
-          - 'null'
-          additionalProperties: true
-          readOnly: true
-        role_at_organization:
-          oneOf:
-          - $ref: '#/components/schemas/RoleAtOrganizationEnum'
-          - $ref: '#/components/schemas/BlankEnum'
-          - $ref: '#/components/schemas/NullEnum'
-      required:
-      - email
-      - hedgehog_config
-      - id
-      - uuid
-    RoleAtOrganizationEnum:
-      enum:
-      - engineering
-      - data
-      - product
-      - founder
-      - leadership
-      - marketing
-      - sales
-      - other
-      type: string
-      description: '* `engineering` - Engineering
-
-        * `data` - Data
-
-        * `product` - Product Management
-
-        * `founder` - Founder
-
-        * `leadership` - Leadership
-
-        * `marketing` - Marketing
-
-        * `sales` - Sales / Success
-
-        * `other` - Other'
-    PatchedOrganization:
-      type: object
-      properties:
-        id:
-          type: string
-          format: uuid
-          readOnly: true
-        name:
-          type: string
-          maxLength: 64
-        slug:
-          type: string
-          readOnly: true
-          pattern: ^[-a-zA-Z0-9_]+$
-        logo_media_id:
-          type:
-          - string
-          - 'null'
-          format: uuid
-        created_at:
-          type: string
-          format: date-time
-          readOnly: true
-        updated_at:
-          type: string
-          format: date-time
-          readOnly: true
-        membership_level:
-          allOf:
-          - $ref: '#/components/schemas/EffectiveMembershipLevelEnum'
-          readOnly: true
-        plugins_access_level:
-          allOf:
-          - $ref: '#/components/schemas/PluginsAccessLevelEnum'
-          readOnly: true
-        teams:
-          type: array
-          items:
-            type: object
-            additionalProperties: true
-          readOnly: true
-        projects:
-          type: array
-          items:
-            type: object
-            additionalProperties: true
-          readOnly: true
-        available_product_features:
-          type:
-          - array
-          - 'null'
-          items: {}
-          readOnly: true
-        is_member_join_email_enabled:
-          type: boolean
-          readOnly: true
-          description: Legacy field; member-join emails are controlled per user in account notification settings.
-        metadata:
-          type: object
-          additionalProperties:
-            type: string
-          readOnly: true
-        customer_id:
-          type:
-          - string
-          - 'null'
-          readOnly: true
-        enforce_2fa:
-          type:
-          - boolean
-          - 'null'
-        members_can_invite:
-          type:
-          - boolean
-          - 'null'
-        members_can_use_personal_api_keys:
-          type: boolean
-        allow_publicly_shared_resources:
-          type: boolean
-        member_count:
-          type: integer
-          readOnly: true
-        is_ai_data_processing_approved:
-          type:
-          - boolean
-          - 'null'
-        default_experiment_stats_method:
-          description: 'Default statistical method for new experiments in this organization.
-
-
-            * `bayesian` - Bayesian
-
-            * `frequentist` - Frequentist'
-          oneOf:
-          - $ref: '#/components/schemas/DefaultExperimentStatsMethodEnum'
-          - $ref: '#/components/schemas/BlankEnum'
-          - $ref: '#/components/schemas/NullEnum'
-        default_anonymize_ips:
-          type: boolean
-          description: Default setting for 'Discard client IP data' for new projects in this organization.
-        default_role_id:
-          type:
-          - string
-          - 'null'
-          description: ID of the role to automatically assign to new members joining the organization
-        is_active:
-          type:
-          - boolean
-          - 'null'
-          readOnly: true
-          title: Active
-          description: Set this to 'No' to temporarily disable an organization.
-        is_not_active_reason:
-          type:
-          - string
-          - 'null'
-          readOnly: true
-          title: De-activated reason
-          description: (optional) reason for why the organization has been de-activated. This will be displayed to users on the web app.
-        is_pending_deletion:
-          type:
-          - boolean
-          - 'null'
-          readOnly: true
-          description: Set to True when org deletion has been initiated. Blocks all UI access until the async task completes.
-    _WelcomeTeamMember:
-      type: object
-      properties:
-        name:
-          type: string
-        email:
-          type: string
-          format: email
-        avatar:
-          type:
-          - string
-          - 'null'
-        role:
-          type: string
-        last_active:
-          $ref: '#/components/schemas/LastActiveEnum'
-      required:
-      - avatar
-      - email
-      - last_active
-      - name
-      - role
-    ApprovalPolicy:
-      type: object
-      properties:
-        id:
-          type: string
-          format: uuid
-          readOnly: true
-        action_key:
-          type: string
-          maxLength: 128
-        conditions: {}
-        approver_config: {}
-        allow_self_approve:
-          type: boolean
-        bypass_org_membership_levels: {}
-        bypass_roles:
-          type: array
-          items:
-            type: string
-            format: uuid
-        expires_after:
-          type: string
-          description: Auto-expire change requests after this duration
-        enabled:
-          type: boolean
-        created_by:
-          allOf:
-          - $ref: '#/components/schemas/UserBasic'
-          readOnly: true
-        created_at:
-          type: string
-          format: date-time
-          readOnly: true
-        updated_at:
-          type:
-          - string
-          - 'null'
-          format: date-time
-          readOnly: true
-      required:
-      - action_key
-      - approver_config
-      - created_at
-      - created_by
-      - id
-      - updated_at
   parameters:
-    ProjectIdPath:
-      in: path
-      name: project_id
-      required: true
-      schema:
-        type: string
-      description: Project ID of the project you're trying to access. To find the ID of the project, make a call to /api/projects/.
     OrganizationIdPath:
       in: path
       name: organization_id
@@ -2133,6 +2126,13 @@ components:
       schema:
         type: string
       description: ID of the organization you're trying to access. To find the ID of the organization, make a call to /api/organizations/.
+    ProjectIdPath:
+      in: path
+      name: project_id
+      required: true
+      schema:
+        type: string
+      description: Project ID of the project you're trying to access. To find the ID of the project, make a call to /api/projects/.
   securitySchemes:
     PersonalAPIKeyAuth:
       type: http

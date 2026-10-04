@@ -507,6 +507,55 @@ paths:
       x-summary-source: derived
 components:
   schemas:
+    ActionEnum:
+      enum:
+      - add
+      - remove
+      - set
+      type: string
+      description: '* `add` - add
+
+        * `remove` - remove
+
+        * `set` - set'
+    SuggestReplyError:
+      type: object
+      properties:
+        detail:
+          type: string
+        error_type:
+          type: string
+      required:
+      - detail
+    BulkUpdateTagsRequest:
+      type: object
+      properties:
+        ids:
+          type: array
+          items:
+            type: integer
+          description: List of object IDs to update tags on.
+          maxItems: 500
+        action:
+          allOf:
+          - $ref: '#/components/schemas/ActionEnum'
+          description: '''add'' merges with existing tags, ''remove'' deletes specific tags, ''set'' replaces all tags.
+
+
+            * `add` - add
+
+            * `remove` - remove
+
+            * `set` - set'
+        tags:
+          type: array
+          items:
+            type: string
+          description: Tag names to add, remove, or set.
+      required:
+      - action
+      - ids
+      - tags
     TicketStatusEnum:
       enum:
       - new
@@ -524,43 +573,201 @@ components:
         * `on_hold` - On hold
 
         * `resolved` - Resolved'
-    ActionEnum:
-      enum:
-      - add
-      - remove
-      - set
-      type: string
-      description: '* `add` - add
-
-        * `remove` - remove
-
-        * `set` - set'
-    ChannelDetailEnum:
-      enum:
-      - slack_channel_message
-      - slack_bot_mention
-      - slack_emoji_reaction
-      - teams_channel_message
-      - teams_bot_mention
-      - widget_embedded
-      - widget_api
-      type: string
-      description: '* `slack_channel_message` - Channel message
-
-        * `slack_bot_mention` - Bot mention
-
-        * `slack_emoji_reaction` - Emoji reaction
-
-        * `teams_channel_message` - Teams channel message
-
-        * `teams_bot_mention` - Teams bot mention
-
-        * `widget_embedded` - Widget
-
-        * `widget_api` - API'
     NullEnum:
       enum:
       - null
+    BulkUpdateTagsItem:
+      type: object
+      properties:
+        id:
+          type: integer
+        tags:
+          type: array
+          items:
+            type: string
+      required:
+      - id
+      - tags
+    PatchedTicket:
+      type: object
+      description: Serializer mixin that handles tags for objects.
+      properties:
+        id:
+          type: string
+          format: uuid
+          readOnly: true
+        ticket_number:
+          type: integer
+          readOnly: true
+        channel_source:
+          allOf:
+          - $ref: '#/components/schemas/ChannelSourceEnum'
+          readOnly: true
+        channel_detail:
+          readOnly: true
+          oneOf:
+          - $ref: '#/components/schemas/ChannelDetailEnum'
+          - $ref: '#/components/schemas/NullEnum'
+        distinct_id:
+          type: string
+          readOnly: true
+        status:
+          allOf:
+          - $ref: '#/components/schemas/TicketStatusEnum'
+          description: 'Ticket status: new, open, pending, on_hold, or resolved
+
+
+            * `new` - New
+
+            * `open` - Open
+
+            * `pending` - Pending
+
+            * `on_hold` - On hold
+
+            * `resolved` - Resolved'
+        priority:
+          description: 'Ticket priority: low, medium, or high. Null if unset.
+
+
+            * `low` - Low
+
+            * `medium` - Medium
+
+            * `high` - High'
+          oneOf:
+          - $ref: '#/components/schemas/PriorityEnum'
+          - $ref: '#/components/schemas/BlankEnum'
+          - $ref: '#/components/schemas/NullEnum'
+        assignee:
+          allOf:
+          - $ref: '#/components/schemas/TicketAssignment'
+          readOnly: true
+        anonymous_traits:
+          description: Customer-provided traits such as name and email
+        ai_resolved:
+          type: boolean
+        escalation_reason:
+          type:
+          - string
+          - 'null'
+        created_at:
+          type: string
+          format: date-time
+          readOnly: true
+        updated_at:
+          type: string
+          format: date-time
+          readOnly: true
+        message_count:
+          type: integer
+          readOnly: true
+        last_message_at:
+          type:
+          - string
+          - 'null'
+          format: date-time
+          readOnly: true
+        last_message_text:
+          type:
+          - string
+          - 'null'
+          readOnly: true
+        unread_team_count:
+          type: integer
+          readOnly: true
+        unread_customer_count:
+          type: integer
+          readOnly: true
+        session_id:
+          type:
+          - string
+          - 'null'
+          readOnly: true
+        session_context:
+          readOnly: true
+        sla_due_at:
+          type:
+          - string
+          - 'null'
+          format: date-time
+          description: SLA deadline set via workflows. Null means no SLA.
+        snoozed_until:
+          type:
+          - string
+          - 'null'
+          format: date-time
+        slack_channel_id:
+          type:
+          - string
+          - 'null'
+          readOnly: true
+        slack_thread_ts:
+          type:
+          - string
+          - 'null'
+          readOnly: true
+        slack_team_id:
+          type:
+          - string
+          - 'null'
+          readOnly: true
+        email_subject:
+          type:
+          - string
+          - 'null'
+          readOnly: true
+        email_from:
+          type:
+          - string
+          - 'null'
+          format: email
+          readOnly: true
+        email_to:
+          type:
+          - string
+          - 'null'
+          readOnly: true
+        cc_participants:
+          readOnly: true
+        person:
+          allOf:
+          - $ref: '#/components/schemas/TicketPerson'
+          readOnly: true
+        tags:
+          type: array
+          items: {}
+    TicketAssignment:
+      type: object
+      description: Serializer for ticket assignment (user or role).
+      properties:
+        id:
+          type:
+          - string
+          - 'null'
+          readOnly: true
+        type:
+          type: string
+          readOnly: true
+        user:
+          type:
+          - object
+          - 'null'
+          additionalProperties:
+            type: string
+          readOnly: true
+        role:
+          type:
+          - object
+          - 'null'
+          additionalProperties:
+            type: string
+          readOnly: true
+      required:
+      - id
+      - role
+      - type
+      - user
     Ticket:
       type: object
       description: Serializer mixin that handles tags for objects.
@@ -734,201 +941,6 @@ components:
       - unread_customer_count
       - unread_team_count
       - updated_at
-    SuggestReplyError:
-      type: object
-      properties:
-        detail:
-          type: string
-        error_type:
-          type: string
-      required:
-      - detail
-    PatchedTicket:
-      type: object
-      description: Serializer mixin that handles tags for objects.
-      properties:
-        id:
-          type: string
-          format: uuid
-          readOnly: true
-        ticket_number:
-          type: integer
-          readOnly: true
-        channel_source:
-          allOf:
-          - $ref: '#/components/schemas/ChannelSourceEnum'
-          readOnly: true
-        channel_detail:
-          readOnly: true
-          oneOf:
-          - $ref: '#/components/schemas/ChannelDetailEnum'
-          - $ref: '#/components/schemas/NullEnum'
-        distinct_id:
-          type: string
-          readOnly: true
-        status:
-          allOf:
-          - $ref: '#/components/schemas/TicketStatusEnum'
-          description: 'Ticket status: new, open, pending, on_hold, or resolved
-
-
-            * `new` - New
-
-            * `open` - Open
-
-            * `pending` - Pending
-
-            * `on_hold` - On hold
-
-            * `resolved` - Resolved'
-        priority:
-          description: 'Ticket priority: low, medium, or high. Null if unset.
-
-
-            * `low` - Low
-
-            * `medium` - Medium
-
-            * `high` - High'
-          oneOf:
-          - $ref: '#/components/schemas/PriorityEnum'
-          - $ref: '#/components/schemas/BlankEnum'
-          - $ref: '#/components/schemas/NullEnum'
-        assignee:
-          allOf:
-          - $ref: '#/components/schemas/TicketAssignment'
-          readOnly: true
-        anonymous_traits:
-          description: Customer-provided traits such as name and email
-        ai_resolved:
-          type: boolean
-        escalation_reason:
-          type:
-          - string
-          - 'null'
-        created_at:
-          type: string
-          format: date-time
-          readOnly: true
-        updated_at:
-          type: string
-          format: date-time
-          readOnly: true
-        message_count:
-          type: integer
-          readOnly: true
-        last_message_at:
-          type:
-          - string
-          - 'null'
-          format: date-time
-          readOnly: true
-        last_message_text:
-          type:
-          - string
-          - 'null'
-          readOnly: true
-        unread_team_count:
-          type: integer
-          readOnly: true
-        unread_customer_count:
-          type: integer
-          readOnly: true
-        session_id:
-          type:
-          - string
-          - 'null'
-          readOnly: true
-        session_context:
-          readOnly: true
-        sla_due_at:
-          type:
-          - string
-          - 'null'
-          format: date-time
-          description: SLA deadline set via workflows. Null means no SLA.
-        snoozed_until:
-          type:
-          - string
-          - 'null'
-          format: date-time
-        slack_channel_id:
-          type:
-          - string
-          - 'null'
-          readOnly: true
-        slack_thread_ts:
-          type:
-          - string
-          - 'null'
-          readOnly: true
-        slack_team_id:
-          type:
-          - string
-          - 'null'
-          readOnly: true
-        email_subject:
-          type:
-          - string
-          - 'null'
-          readOnly: true
-        email_from:
-          type:
-          - string
-          - 'null'
-          format: email
-          readOnly: true
-        email_to:
-          type:
-          - string
-          - 'null'
-          readOnly: true
-        cc_participants:
-          readOnly: true
-        person:
-          allOf:
-          - $ref: '#/components/schemas/TicketPerson'
-          readOnly: true
-        tags:
-          type: array
-          items: {}
-    BulkUpdateTagsItem:
-      type: object
-      properties:
-        id:
-          type: integer
-        tags:
-          type: array
-          items:
-            type: string
-      required:
-      - id
-      - tags
-    PaginatedTicketViewList:
-      type: object
-      required:
-      - count
-      - results
-      properties:
-        count:
-          type: integer
-          example: 123
-        next:
-          type:
-          - string
-          - 'null'
-          format: uri
-          example: http://api.example.org/accounts/?offset=400&limit=100
-        previous:
-          type:
-          - string
-          - 'null'
-          format: uri
-          example: http://api.example.org/accounts/?offset=200&limit=100
-        results:
-          type: array
-          items:
-            $ref: '#/components/schemas/TicketView'
     BulkUpdateTagsResponse:
       type: object
       properties:
@@ -943,16 +955,20 @@ components:
       required:
       - skipped
       - updated
-    BulkUpdateTagsError:
-      type: object
-      properties:
-        id:
-          type: integer
-        reason:
-          type: string
-      required:
-      - id
-      - reason
+    ChannelSourceEnum:
+      enum:
+      - widget
+      - email
+      - slack
+      - teams
+      type: string
+      description: '* `widget` - Widget
+
+        * `email` - Email
+
+        * `slack` - Slack
+
+        * `teams` - Microsoft Teams'
     TicketPerson:
       type: object
       description: Minimal person serializer for embedding in ticket responses.
@@ -987,126 +1003,29 @@ components:
       - is_identified
       - name
       - properties
-    ChannelSourceEnum:
+    ChannelDetailEnum:
       enum:
-      - widget
-      - email
-      - slack
-      - teams
+      - slack_channel_message
+      - slack_bot_mention
+      - slack_emoji_reaction
+      - teams_channel_message
+      - teams_bot_mention
+      - widget_embedded
+      - widget_api
       type: string
-      description: '* `widget` - Widget
+      description: '* `slack_channel_message` - Channel message
 
-        * `email` - Email
+        * `slack_bot_mention` - Bot mention
 
-        * `slack` - Slack
+        * `slack_emoji_reaction` - Emoji reaction
 
-        * `teams` - Microsoft Teams'
-    BlankEnum:
-      enum:
-      - ''
-    TicketView:
-      type: object
-      properties:
-        id:
-          type: string
-          format: uuid
-          readOnly: true
-        short_id:
-          type: string
-          readOnly: true
-        name:
-          type: string
-          maxLength: 400
-        filters:
-          type: object
-          additionalProperties: true
-          description: Saved ticket filter criteria. May contain status, priority, channel, sla, assignee, tags, dateFrom, dateTo, and sorting keys.
-        created_at:
-          type: string
-          format: date-time
-          readOnly: true
-        created_by:
-          allOf:
-          - $ref: '#/components/schemas/UserBasic'
-          readOnly: true
-      required:
-      - created_at
-      - created_by
-      - id
-      - name
-      - short_id
-    PaginatedTicketList:
-      type: object
-      required:
-      - count
-      - results
-      properties:
-        count:
-          type: integer
-          example: 123
-        next:
-          type:
-          - string
-          - 'null'
-          format: uri
-          example: http://api.example.org/accounts/?offset=400&limit=100
-        previous:
-          type:
-          - string
-          - 'null'
-          format: uri
-          example: http://api.example.org/accounts/?offset=200&limit=100
-        results:
-          type: array
-          items:
-            $ref: '#/components/schemas/Ticket'
-    PriorityEnum:
-      enum:
-      - low
-      - medium
-      - high
-      type: string
-      description: '* `low` - Low
+        * `teams_channel_message` - Teams channel message
 
-        * `medium` - Medium
+        * `teams_bot_mention` - Teams bot mention
 
-        * `high` - High'
-    SuggestReplyResponse:
-      type: object
-      properties:
-        suggestion:
-          type: string
-      required:
-      - suggestion
-    BulkUpdateTagsRequest:
-      type: object
-      properties:
-        ids:
-          type: array
-          items:
-            type: integer
-          description: List of object IDs to update tags on.
-          maxItems: 500
-        action:
-          allOf:
-          - $ref: '#/components/schemas/ActionEnum'
-          description: '''add'' merges with existing tags, ''remove'' deletes specific tags, ''set'' replaces all tags.
+        * `widget_embedded` - Widget
 
-
-            * `add` - add
-
-            * `remove` - remove
-
-            * `set` - set'
-        tags:
-          type: array
-          items:
-            type: string
-          description: Tag names to add, remove, or set.
-      required:
-      - action
-      - ids
-      - tags
+        * `widget_api` - API'
     UserBasic:
       type: object
       properties:
@@ -1153,6 +1072,93 @@ components:
       - hedgehog_config
       - id
       - uuid
+    PriorityEnum:
+      enum:
+      - low
+      - medium
+      - high
+      type: string
+      description: '* `low` - Low
+
+        * `medium` - Medium
+
+        * `high` - High'
+    PaginatedTicketList:
+      type: object
+      required:
+      - count
+      - results
+      properties:
+        count:
+          type: integer
+          example: 123
+        next:
+          type:
+          - string
+          - 'null'
+          format: uri
+          example: http://api.example.org/accounts/?offset=400&limit=100
+        previous:
+          type:
+          - string
+          - 'null'
+          format: uri
+          example: http://api.example.org/accounts/?offset=200&limit=100
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/Ticket'
+    BlankEnum:
+      enum:
+      - ''
+    BulkUpdateTagsError:
+      type: object
+      properties:
+        id:
+          type: integer
+        reason:
+          type: string
+      required:
+      - id
+      - reason
+    SuggestReplyResponse:
+      type: object
+      properties:
+        suggestion:
+          type: string
+      required:
+      - suggestion
+    TicketView:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+          readOnly: true
+        short_id:
+          type: string
+          readOnly: true
+        name:
+          type: string
+          maxLength: 400
+        filters:
+          type: object
+          additionalProperties: true
+          description: Saved ticket filter criteria. May contain status, priority, channel, sla, assignee, tags, dateFrom, dateTo, and sorting keys.
+        created_at:
+          type: string
+          format: date-time
+          readOnly: true
+        created_by:
+          allOf:
+          - $ref: '#/components/schemas/UserBasic'
+          readOnly: true
+      required:
+      - created_at
+      - created_by
+      - id
+      - name
+      - short_id
     RoleAtOrganizationEnum:
       enum:
       - engineering
@@ -1179,37 +1185,31 @@ components:
         * `sales` - Sales / Success
 
         * `other` - Other'
-    TicketAssignment:
+    PaginatedTicketViewList:
       type: object
-      description: Serializer for ticket assignment (user or role).
+      required:
+      - count
+      - results
       properties:
-        id:
+        count:
+          type: integer
+          example: 123
+        next:
           type:
           - string
           - 'null'
-          readOnly: true
-        type:
-          type: string
-          readOnly: true
-        user:
+          format: uri
+          example: http://api.example.org/accounts/?offset=400&limit=100
+        previous:
           type:
-          - object
+          - string
           - 'null'
-          additionalProperties:
-            type: string
-          readOnly: true
-        role:
-          type:
-          - object
-          - 'null'
-          additionalProperties:
-            type: string
-          readOnly: true
-      required:
-      - id
-      - role
-      - type
-      - user
+          format: uri
+          example: http://api.example.org/accounts/?offset=200&limit=100
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/TicketView'
   parameters:
     ProjectIdPath:
       in: path

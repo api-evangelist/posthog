@@ -327,6 +327,115 @@ paths:
       x-summary-source: derived
 components:
   schemas:
+    ClickhouseEvent:
+      type: object
+      properties:
+        id:
+          type: string
+          readOnly: true
+        distinct_id:
+          type: string
+          readOnly: true
+        properties:
+          type: object
+          additionalProperties: true
+          readOnly: true
+        event:
+          type: string
+          readOnly: true
+        timestamp:
+          type: string
+          format: date-time
+          readOnly: true
+        person:
+          type:
+          - object
+          - 'null'
+          additionalProperties: true
+          readOnly: true
+        elements:
+          type: array
+          items:
+            $ref: '#/components/schemas/EventElement'
+          readOnly: true
+        elements_chain:
+          type: string
+          readOnly: true
+      required:
+      - distinct_id
+      - elements
+      - elements_chain
+      - event
+      - id
+      - person
+      - properties
+      - timestamp
+    PaginatedClickhouseEventList:
+      type: object
+      properties:
+        next:
+          type:
+          - string
+          - 'null'
+          format: uri
+          example: http://api.example.org/accounts/?offset=400&limit=100
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/ClickhouseEvent'
+    EventElement:
+      type: object
+      properties:
+        event:
+          type: string
+        text:
+          type:
+          - string
+          - 'null'
+          maxLength: 10000
+        tag_name:
+          type:
+          - string
+          - 'null'
+          maxLength: 1000
+        attr_class:
+          type:
+          - array
+          - 'null'
+          items:
+            type: string
+            maxLength: 200
+        href:
+          type:
+          - string
+          - 'null'
+          maxLength: 10000
+        attr_id:
+          type:
+          - string
+          - 'null'
+          maxLength: 10000
+        nth_child:
+          type:
+          - integer
+          - 'null'
+          maximum: 2147483647
+          minimum: -2147483648
+        nth_of_type:
+          type:
+          - integer
+          - 'null'
+          maximum: 2147483647
+          minimum: -2147483648
+        attributes: {}
+        order:
+          type:
+          - integer
+          - 'null'
+          maximum: 2147483647
+          minimum: -2147483648
+      required:
+      - event
     PropertyItem:
       type: object
       properties:
@@ -358,33 +467,6 @@ components:
       required:
       - key
       - value
-    PaginatedClickhouseEventList:
-      type: object
-      properties:
-        next:
-          type:
-          - string
-          - 'null'
-          format: uri
-          example: http://api.example.org/accounts/?offset=400&limit=100
-        results:
-          type: array
-          items:
-            $ref: '#/components/schemas/ClickhouseEvent'
-    Property:
-      type: object
-      properties:
-        type:
-          allOf:
-          - $ref: '#/components/schemas/PropertyGroupOperator'
-          default: AND
-          description: "\n You can use a simplified version:\n```json\n{\n    \"properties\": [\n        {\n            \"key\": \"email\",\n            \"value\": \"x@y.com\",\n            \"operator\": \"exact\",\n            \"type\": \"event\"\n        }\n    ]\n}\n```\n\nOr you can create more complicated queries with AND and OR:\n```json\n{\n    \"properties\": {\n        \"type\": \"AND\",\n        \"values\": [\n            {\n                \"type\": \"OR\",\n                \"values\": [\n                    {\"key\": \"email\", ...},\n                    {\"key\": \"email\", ...}\n                ]\n            },\n            {\n                \"type\": \"AND\",\n                \"values\": [\n                    {\"key\": \"email\", ...},\n                    {\"key\": \"email\", ...}\n                ]\n            }\n        ]\n    ]\n}\n```\n\n\n* `AND` - AND\n* `OR` - OR"
-        values:
-          type: array
-          items:
-            $ref: '#/components/schemas/PropertyItem'
-      required:
-      - values
     PropertyFilterTypeEnum:
       enum:
       - event
@@ -521,121 +603,32 @@ components:
         * `in` - in
 
         * `not_in` - not_in'
-    ClickhouseEvent:
-      type: object
-      properties:
-        id:
-          type: string
-          readOnly: true
-        distinct_id:
-          type: string
-          readOnly: true
-        properties:
-          type: object
-          additionalProperties: true
-          readOnly: true
-        event:
-          type: string
-          readOnly: true
-        timestamp:
-          type: string
-          format: date-time
-          readOnly: true
-        person:
-          type:
-          - object
-          - 'null'
-          additionalProperties: true
-          readOnly: true
-        elements:
-          type: array
-          items:
-            $ref: '#/components/schemas/EventElement'
-          readOnly: true
-        elements_chain:
-          type: string
-          readOnly: true
-      required:
-      - distinct_id
-      - elements
-      - elements_chain
-      - event
-      - id
-      - person
-      - properties
-      - timestamp
-    EventElement:
-      type: object
-      properties:
-        event:
-          type: string
-        text:
-          type:
-          - string
-          - 'null'
-          maxLength: 10000
-        tag_name:
-          type:
-          - string
-          - 'null'
-          maxLength: 1000
-        attr_class:
-          type:
-          - array
-          - 'null'
-          items:
-            type: string
-            maxLength: 200
-        href:
-          type:
-          - string
-          - 'null'
-          maxLength: 10000
-        attr_id:
-          type:
-          - string
-          - 'null'
-          maxLength: 10000
-        nth_child:
-          type:
-          - integer
-          - 'null'
-          maximum: 2147483647
-          minimum: -2147483648
-        nth_of_type:
-          type:
-          - integer
-          - 'null'
-          maximum: 2147483647
-          minimum: -2147483648
-        attributes: {}
-        order:
-          type:
-          - integer
-          - 'null'
-          maximum: 2147483647
-          minimum: -2147483648
-      required:
-      - event
-    BlankEnum:
-      enum:
-      - ''
     NullEnum:
       enum:
       - null
+    BlankEnum:
+      enum:
+      - ''
+    Property:
+      type: object
+      properties:
+        type:
+          allOf:
+          - $ref: '#/components/schemas/PropertyGroupOperator'
+          default: AND
+          description: "\n You can use a simplified version:\n```json\n{\n    \"properties\": [\n        {\n            \"key\": \"email\",\n            \"value\": \"x@y.com\",\n            \"operator\": \"exact\",\n            \"type\": \"event\"\n        }\n    ]\n}\n```\n\nOr you can create more complicated queries with AND and OR:\n```json\n{\n    \"properties\": {\n        \"type\": \"AND\",\n        \"values\": [\n            {\n                \"type\": \"OR\",\n                \"values\": [\n                    {\"key\": \"email\", ...},\n                    {\"key\": \"email\", ...}\n                ]\n            },\n            {\n                \"type\": \"AND\",\n                \"values\": [\n                    {\"key\": \"email\", ...},\n                    {\"key\": \"email\", ...}\n                ]\n            }\n        ]\n    ]\n}\n```\n\n\n* `AND` - AND\n* `OR` - OR"
+        values:
+          type: array
+          items:
+            $ref: '#/components/schemas/PropertyItem'
+      required:
+      - values
     PropertyGroupOperator:
       enum:
       - AND
       - OR
       type: string
   parameters:
-    EnvironmentIdPath:
-      in: path
-      name: environment_id
-      required: true
-      schema:
-        type: string
-      description: Deprecated. Use /api/projects/{project_id}/ instead.
     ProjectIdPath:
       in: path
       name: project_id
@@ -643,6 +636,13 @@ components:
       schema:
         type: string
       description: Project ID of the project you're trying to access. To find the ID of the project, make a call to /api/projects/.
+    EnvironmentIdPath:
+      in: path
+      name: environment_id
+      required: true
+      schema:
+        type: string
+      description: Deprecated. Use /api/projects/{project_id}/ instead.
   securitySchemes:
     PersonalAPIKeyAuth:
       type: http

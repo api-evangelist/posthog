@@ -2216,7 +2216,231 @@ paths:
       x-summary-source: derived
 components:
   schemas:
-    PaginatedLogsAlertEventList:
+    _LogsSparklineResponse:
+      type: object
+      properties:
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/_LogsSparklineBucket'
+          description: Time-bucketed log counts. Each bucket carries either `severity` or `service` depending on breakdown.
+      required:
+      - results
+    LogsSamplingRuleReorder:
+      type: object
+      properties:
+        ordered_ids:
+          type: array
+          items:
+            type: string
+            format: uuid
+          description: Rule IDs in the desired evaluation order (first element is highest priority / lowest order index).
+      required:
+      - ordered_ids
+    _LogsCountBody:
+      type: object
+      properties:
+        dateRange:
+          allOf:
+          - $ref: '#/components/schemas/_DateRange'
+          description: Date range for the count. Defaults to last hour.
+        severityLevels:
+          type: array
+          items:
+            $ref: '#/components/schemas/SeverityLevelsEnum'
+          description: Filter by log severity levels.
+        serviceNames:
+          type: array
+          items:
+            type: string
+          description: Filter by service names.
+        searchTerm:
+          type: string
+          description: Full-text search term to filter log bodies.
+        filterGroup:
+          type: array
+          items:
+            $ref: '#/components/schemas/_LogPropertyFilter'
+          description: Property filters for the query.
+    _LogEntry:
+      type: object
+      properties:
+        uuid:
+          type: string
+        timestamp:
+          type: string
+          description: ISO 8601 timestamp of the original log event.
+        observed_timestamp:
+          type: string
+          description: ISO 8601 timestamp the log pipeline observed the event (may differ from `timestamp`).
+        body:
+          type: string
+        severity_text:
+          type: string
+          description: Log severity as a string (e.g. "info", "error"). Preferred over severity_number.
+        severity_number:
+          type: integer
+          description: Log severity as a numeric code. Redundant with severity_text; kept for OpenTelemetry compatibility.
+        level:
+          type: string
+          description: ClickHouse alias for severity_text. Redundant; prefer severity_text.
+        trace_id:
+          type: string
+          description: Trace ID. Returns "00000000000000000000000000000000" when not set (padding, not null).
+        span_id:
+          type: string
+          description: Span ID. Returns "0000000000000000" when not set (padding, not null).
+        trace_flags:
+          type: integer
+          description: OpenTelemetry trace flags.
+        attributes:
+          type: object
+          additionalProperties:
+            type: string
+          description: Log-level attributes as a string-keyed map. Values are strings (numeric/datetime attributes are also accessible via materialized columns).
+        resource_attributes:
+          type: object
+          additionalProperties:
+            type: string
+          description: Resource-level attributes (service.name, k8s.*, host.hostname, etc.) as a string-keyed map. Repeats across all logs from the same pod/host.
+        event_name:
+          type: string
+          description: OpenTelemetry event name, if set.
+      required:
+      - attributes
+      - body
+      - level
+      - observed_timestamp
+      - resource_attributes
+      - severity_number
+      - severity_text
+      - span_id
+      - timestamp
+      - trace_id
+      - uuid
+    LogsAlertConfigurationStateEnum:
+      enum:
+      - not_firing
+      - firing
+      - pending_resolve
+      - errored
+      - snoozed
+      - broken
+      type: string
+      description: '* `not_firing` - Not firing
+
+        * `firing` - Firing
+
+        * `pending_resolve` - Pending resolve
+
+        * `errored` - Errored
+
+        * `snoozed` - Snoozed
+
+        * `broken` - Broken'
+    LogsSamplingRule:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+          readOnly: true
+          description: Unique identifier for this sampling rule.
+        name:
+          type: string
+          description: User-visible label for this rule.
+          maxLength: 255
+        enabled:
+          type: boolean
+          default: false
+          description: When false, the rule is ignored by ingestion and listing UIs that show active rules only.
+        priority:
+          type:
+          - integer
+          - 'null'
+          minimum: 0
+          description: Lower numbers are evaluated first; the first matching rule wins. Omit to append after existing rules.
+        rule_type:
+          allOf:
+          - $ref: '#/components/schemas/RuleTypeEnum'
+          description: 'Rule kind: severity_sampling, path_drop, or rate_limit (rate_limit reserved for a future release).
+
+
+            * `severity_sampling` - Severity-based reduction
+
+            * `path_drop` - Path exclusion
+
+            * `rate_limit` - Rate limit'
+        scope_service:
+          type:
+          - string
+          - 'null'
+          description: If set, the rule applies only to this service name; null means all services.
+          maxLength: 512
+        scope_path_pattern:
+          type:
+          - string
+          - 'null'
+          description: Optional regex matched against a path-like log attribute when present.
+          maxLength: 1024
+        scope_attribute_filters:
+          type: array
+          items:
+            type: object
+            additionalProperties: true
+          description: Optional list of predicates over string attributes, e.g. [{"key":"http.route","op":"eq","value":"/api"}].
+        config:
+          description: 'Type-specific JSON. For path_drop: object with required `patterns` (list of regex strings) and optional `match_attribute_key` (string). When `match_attribute_key` is omitted or empty, patterns match the same virtual path string as ingestion (url.path, http.path, http.route, path). When set, each pattern is tested only against that string attribute on the log record. For severity_sampling: object with `actions` per severity level and optional `always_keep`. rate_limit is reserved.'
+        version:
+          type: integer
+          readOnly: true
+          description: Incremented on each update for worker cache coherency.
+        created_by:
+          type: integer
+          readOnly: true
+        created_at:
+          type: string
+          format: date-time
+          readOnly: true
+        updated_at:
+          type:
+          - string
+          - 'null'
+          format: date-time
+          readOnly: true
+      required:
+      - config
+      - created_at
+      - created_by
+      - id
+      - name
+      - rule_type
+      - updated_at
+      - version
+    _LogsServiceActiveRule:
+      type: object
+      properties:
+        rule_id:
+          type: string
+          format: uuid
+        rule_name:
+          type: string
+        summary_string:
+          type: string
+      required:
+      - rule_id
+      - rule_name
+      - summary_string
+    _LogsServicesRequest:
+      type: object
+      properties:
+        query:
+          allOf:
+          - $ref: '#/components/schemas/_LogsServicesBody'
+          description: The services aggregation query to execute.
+      required:
+      - query
+    PaginatedLogsViewList:
       type: object
       required:
       - count
@@ -2240,67 +2464,7 @@ components:
         results:
           type: array
           items:
-            $ref: '#/components/schemas/LogsAlertEvent'
-    _LogsQueryRequest:
-      type: object
-      properties:
-        query:
-          allOf:
-          - $ref: '#/components/schemas/_LogsQueryBody'
-          description: The logs query to execute.
-      required:
-      - query
-    LogsAlertEventKindEnum:
-      enum:
-      - check
-      - reset
-      - enable
-      - disable
-      - snooze
-      - unsnooze
-      - threshold_change
-      type: string
-      description: '* `check` - Check
-
-        * `reset` - Reset
-
-        * `enable` - Enable
-
-        * `disable` - Disable
-
-        * `snooze` - Snooze
-
-        * `unsnooze` - Unsnooze
-
-        * `threshold_change` - Threshold change'
-    _LogsCountResponse:
-      type: object
-      properties:
-        count:
-          type: integer
-          description: Number of log entries matching the filters.
-      required:
-      - count
-    RuleTypeEnum:
-      enum:
-      - severity_sampling
-      - path_drop
-      - rate_limit
-      type: string
-      description: '* `severity_sampling` - Severity-based reduction
-
-        * `path_drop` - Path exclusion
-
-        * `rate_limit` - Rate limit'
-    _LogsServicesRequest:
-      type: object
-      properties:
-        query:
-          allOf:
-          - $ref: '#/components/schemas/_LogsServicesBody'
-          description: The services aggregation query to execute.
-      required:
-      - query
+            $ref: '#/components/schemas/LogsView'
     PatchedLogsSamplingRule:
       type: object
       properties:
@@ -2371,7 +2535,16 @@ components:
           - 'null'
           format: date-time
           readOnly: true
-    PaginatedLogsSamplingRuleList:
+    _LogsCountRangesRequest:
+      type: object
+      properties:
+        query:
+          allOf:
+          - $ref: '#/components/schemas/_LogsCountRangesBody'
+          description: The bucketed-count query to execute.
+      required:
+      - query
+    PaginatedLogsAlertEventList:
       type: object
       required:
       - count
@@ -2395,171 +2568,27 @@ components:
         results:
           type: array
           items:
-            $ref: '#/components/schemas/LogsSamplingRule'
-    PatchedLogsView:
-      type: object
-      properties:
-        id:
-          type: string
-          format: uuid
-          readOnly: true
-        short_id:
-          type: string
-          readOnly: true
-        name:
-          type: string
-          maxLength: 400
-        filters:
-          type: object
-          additionalProperties: true
-          description: Filter criteria — subset of LogsViewerFilters. May contain severityLevels, serviceNames, searchTerm, filterGroup, dateRange, and other keys.
-        pinned:
-          type: boolean
-        created_at:
-          type: string
-          format: date-time
-          readOnly: true
-        created_by:
-          allOf:
-          - $ref: '#/components/schemas/UserBasic'
-          readOnly: true
-        updated_at:
-          type:
-          - string
-          - 'null'
-          format: date-time
-          readOnly: true
-    _LogsValuesResponse:
-      type: object
-      properties:
-        results:
-          type: array
-          items:
-            $ref: '#/components/schemas/_LogAttributeValue'
-          description: Distinct values observed for the requested attribute.
-        refreshing:
-          type: boolean
-          description: Always false — reserved for future cached-value refresh signalling.
-      required:
-      - refreshing
-      - results
-    LogsAlertDeleteDestination:
-      type: object
-      properties:
-        hog_function_ids:
-          type: array
-          items:
-            type: string
-            format: uuid
-          description: HogFunction IDs to delete as one atomic destination group.
-          minItems: 1
-      required:
-      - hog_function_ids
-    _LogsCountBody:
-      type: object
-      properties:
-        dateRange:
-          allOf:
-          - $ref: '#/components/schemas/_DateRange'
-          description: Date range for the count. Defaults to last hour.
-        severityLevels:
-          type: array
-          items:
-            $ref: '#/components/schemas/SeverityLevelsEnum'
-          description: Filter by log severity levels.
-        serviceNames:
-          type: array
-          items:
-            type: string
-          description: Filter by service names.
-        searchTerm:
-          type: string
-          description: Full-text search term to filter log bodies.
-        filterGroup:
-          type: array
-          items:
-            $ref: '#/components/schemas/_LogPropertyFilter'
-          description: Property filters for the query.
+            $ref: '#/components/schemas/LogsAlertEvent'
     NullEnum:
       enum:
       - null
-    _LogsCountRangesBody:
+    ExplainRequest:
       type: object
       properties:
-        dateRange:
-          allOf:
-          - $ref: '#/components/schemas/_DateRange'
-          description: Window to bucket. Defaults to last hour. Use a bucket's date_from/date_to from a prior response to recursively narrow into a sub-range.
-        targetBuckets:
-          type: integer
-          maximum: 100
-          minimum: 1
-          default: 10
-          description: Approximate number of buckets to return. The bucket interval is picked adaptively from a fixed list (1/5/10s, 1/2/5/10/15/30/60/120/240/360/720/1440m) to land near this target. Defaults to 10, capped at 100.
-        severityLevels:
-          type: array
-          items:
-            $ref: '#/components/schemas/SeverityLevelsEnum'
-          description: Filter by log severity levels. Applied before bucketing.
-        serviceNames:
-          type: array
-          items:
-            type: string
-          description: Filter by service names. Applied before bucketing.
-        searchTerm:
+        uuid:
           type: string
-          description: Full-text search across log bodies. Applied before bucketing.
-        filterGroup:
-          type: array
-          items:
-            $ref: '#/components/schemas/_LogPropertyFilter'
-          description: Property filters applied before bucketing. Same shape as `query-logs`.
-    LogsAlertConfigurationStateEnum:
-      enum:
-      - not_firing
-      - firing
-      - pending_resolve
-      - errored
-      - snoozed
-      - broken
-      type: string
-      description: '* `not_firing` - Not firing
-
-        * `firing` - Firing
-
-        * `pending_resolve` - Pending resolve
-
-        * `errored` - Errored
-
-        * `snoozed` - Snoozed
-
-        * `broken` - Broken'
-    _LogAttributeEntry:
-      type: object
-      properties:
-        name:
+          description: UUID of the log entry to explain
+        timestamp:
           type: string
-        propertyFilterType:
-          type: string
-          description: 'Property filter type: "log_attribute" or "log_resource_attribute". Use this as the `type` field when filtering.'
-        matchedOn:
-          allOf:
-          - $ref: '#/components/schemas/MatchedOnEnum'
-          description: 'How the search query matched this row: "key" if the attribute key matched, "value" if a value matched.
-
-
-            * `key` - key
-
-            * `value` - value'
-        matchedValue:
-          type:
-          - string
-          - 'null'
-          description: Sample matching value — only set when matchedOn is "value".
+          format: date-time
+          description: Timestamp of the log entry (used for efficient lookup)
+        force_refresh:
+          type: boolean
+          default: false
+          description: Force regenerate explanation, bypassing cache
       required:
-      - matchedOn
-      - name
-      - propertyFilterType
+      - timestamp
+      - uuid
     _LogsQueryResponse:
       type: object
       properties:
@@ -2588,67 +2617,85 @@ components:
       - maxExportableLogs
       - query
       - results
-    _LogsServiceActiveRule:
+    LogsAlertEvent:
       type: object
       properties:
-        rule_id:
+        id:
           type: string
           format: uuid
-        rule_name:
+          readOnly: true
+        created_at:
           type: string
-        summary_string:
+          format: date-time
+          readOnly: true
+        kind:
+          allOf:
+          - $ref: '#/components/schemas/LogsAlertEventKindEnum'
+          readOnly: true
+        state_before:
           type: string
+          readOnly: true
+        state_after:
+          type: string
+          readOnly: true
+        threshold_breached:
+          type: boolean
+          readOnly: true
+        result_count:
+          type:
+          - integer
+          - 'null'
+          readOnly: true
+        error_message:
+          type:
+          - string
+          - 'null'
+          readOnly: true
+        query_duration_ms:
+          type:
+          - integer
+          - 'null'
+          readOnly: true
       required:
-      - rule_id
-      - rule_name
-      - summary_string
-    LogsAlertSimulateRequest:
+      - created_at
+      - error_message
+      - id
+      - kind
+      - query_duration_ms
+      - result_count
+      - state_after
+      - state_before
+      - threshold_breached
+    _LogsSparklineBucket:
       type: object
       properties:
-        filters:
-          description: Filter criteria — same format as LogsAlertConfiguration.filters.
-        threshold_count:
-          type: integer
-          minimum: 1
-          description: Threshold count to evaluate against.
-        threshold_operator:
-          allOf:
-          - $ref: '#/components/schemas/ThresholdOperatorEnum'
-          description: 'Whether the alert fires when the count is above or below the threshold.
-
-
-            * `above` - Above
-
-            * `below` - Below'
-        window_minutes:
-          type: integer
-          description: Window size in minutes — determines bucket interval.
-        evaluation_periods:
-          type: integer
-          maximum: 10
-          minimum: 1
-          default: 1
-          description: Total check periods in the N-of-M evaluation window (M).
-        datapoints_to_alarm:
-          type: integer
-          maximum: 10
-          minimum: 1
-          default: 1
-          description: How many periods must breach to fire (N in N-of-M).
-        cooldown_minutes:
-          type: integer
-          minimum: 0
-          default: 0
-          description: Minutes to wait after firing before sending another notification.
-        date_from:
+        time:
           type: string
-          description: Relative date string for how far back to simulate (e.g. '-24h', '-7d', '-30d').
+          description: Bucket start time (ISO 8601).
+        severity:
+          type: string
+          description: Severity label when sparklineBreakdownBy="severity". Present only for severity-broken-down sparklines.
+        service:
+          type: string
+          description: Service name when sparklineBreakdownBy="service". Present only for service-broken-down sparklines.
+        count:
+          type: integer
       required:
-      - date_from
-      - filters
-      - threshold_count
-      - threshold_operator
-      - window_minutes
+      - count
+      - time
+    _LogsServicesSummary:
+      type: object
+      properties:
+        top_services_count:
+          type: integer
+          description: Number of top services included in the volume_share aggregate (up to 5).
+        top_services_volume_share_pct:
+          type: number
+          format: double
+          description: Combined volume share (percent) of the top services by log_count.
+      required:
+      - top_services_count
+      - top_services_volume_share_pct
     PatchedLogsAlertConfiguration:
       type: object
       properties:
@@ -2797,55 +2844,261 @@ components:
           format: date-time
           readOnly: true
           description: When the alert was last modified.
-    LogsAlertEvent:
+    LogsAlertCreateDestination:
+      type: object
+      properties:
+        type:
+          allOf:
+          - $ref: '#/components/schemas/NotificationDestinationTypeEnum'
+          description: 'Destination type — slack or webhook.
+
+
+            * `slack` - slack
+
+            * `webhook` - webhook'
+        slack_workspace_id:
+          type: integer
+          description: Integration ID for the Slack workspace. Required when type=slack.
+        slack_channel_id:
+          type: string
+          description: Slack channel ID. Required when type=slack.
+        slack_channel_name:
+          type: string
+          description: Human-readable channel name for display.
+        webhook_url:
+          type: string
+          format: uri
+          description: HTTPS endpoint to POST to. Required when type=webhook.
+      required:
+      - type
+    _LogsCountRangesResponse:
+      type: object
+      properties:
+        ranges:
+          type: array
+          items:
+            $ref: '#/components/schemas/_LogsCountRangeBucket'
+          description: Buckets ordered by `date_from` ascending. Empty buckets are omitted — infer gaps by comparing each bucket's `date_to` to the next bucket's `date_from`.
+        interval:
+          type: string
+          description: Short-form duration of the chosen bucket width (e.g. "1h", "5m", "30s", "1d"). Informational only — use each bucket's `date_from`/`date_to` for follow-up queries.
+      required:
+      - interval
+      - ranges
+    LogsAlertEventKindEnum:
+      enum:
+      - check
+      - reset
+      - enable
+      - disable
+      - snooze
+      - unsnooze
+      - threshold_change
+      type: string
+      description: '* `check` - Check
+
+        * `reset` - Reset
+
+        * `enable` - Enable
+
+        * `disable` - Disable
+
+        * `snooze` - Snooze
+
+        * `unsnooze` - Unsnooze
+
+        * `threshold_change` - Threshold change'
+    _LogsServiceSeverityBreakdown:
+      type: object
+      properties:
+        debug:
+          type: integer
+        info:
+          type: integer
+        warn:
+          type: integer
+        error:
+          type: integer
+      required:
+      - debug
+      - error
+      - info
+      - warn
+    _LogsCountRequest:
+      type: object
+      properties:
+        query:
+          allOf:
+          - $ref: '#/components/schemas/_LogsCountBody'
+          description: The count query to execute.
+      required:
+      - query
+    _LogsSparklineBody:
+      type: object
+      properties:
+        dateRange:
+          allOf:
+          - $ref: '#/components/schemas/_DateRange'
+          description: Date range for the sparkline. Defaults to last hour.
+        severityLevels:
+          type: array
+          items:
+            $ref: '#/components/schemas/SeverityLevelsEnum'
+          default: []
+          description: Filter by log severity levels.
+        serviceNames:
+          type: array
+          items:
+            type: string
+          default: []
+          description: Filter by service names.
+        searchTerm:
+          type: string
+          description: Full-text search term to filter log bodies.
+        filterGroup:
+          type: array
+          items:
+            $ref: '#/components/schemas/_LogPropertyFilter'
+          default: []
+          description: Property filters for the query.
+        sparklineBreakdownBy:
+          allOf:
+          - $ref: '#/components/schemas/SparklineBreakdownByEnum'
+          description: 'Break down sparkline by "severity" (default) or "service".
+
+
+            * `severity` - severity
+
+            * `service` - service'
+    LogsAlertDestinationResponse:
+      type: object
+      properties:
+        hog_function_ids:
+          type: array
+          items:
+            type: string
+            format: uuid
+      required:
+      - hog_function_ids
+    LogsView:
       type: object
       properties:
         id:
           type: string
           format: uuid
           readOnly: true
+        short_id:
+          type: string
+          readOnly: true
+        name:
+          type: string
+          maxLength: 400
+        filters:
+          type: object
+          additionalProperties: true
+          description: Filter criteria — subset of LogsViewerFilters. May contain severityLevels, serviceNames, searchTerm, filterGroup, dateRange, and other keys.
+        pinned:
+          type: boolean
         created_at:
           type: string
           format: date-time
           readOnly: true
-        kind:
+        created_by:
           allOf:
-          - $ref: '#/components/schemas/LogsAlertEventKindEnum'
+          - $ref: '#/components/schemas/UserBasic'
           readOnly: true
-        state_before:
-          type: string
-          readOnly: true
-        state_after:
-          type: string
-          readOnly: true
-        threshold_breached:
-          type: boolean
-          readOnly: true
-        result_count:
-          type:
-          - integer
-          - 'null'
-          readOnly: true
-        error_message:
+        updated_at:
           type:
           - string
           - 'null'
-          readOnly: true
-        query_duration_ms:
-          type:
-          - integer
-          - 'null'
+          format: date-time
           readOnly: true
       required:
       - created_at
-      - error_message
+      - created_by
       - id
-      - kind
-      - query_duration_ms
-      - result_count
-      - state_after
-      - state_before
-      - threshold_breached
+      - name
+      - short_id
+      - updated_at
+    PatchedLogsView:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+          readOnly: true
+        short_id:
+          type: string
+          readOnly: true
+        name:
+          type: string
+          maxLength: 400
+        filters:
+          type: object
+          additionalProperties: true
+          description: Filter criteria — subset of LogsViewerFilters. May contain severityLevels, serviceNames, searchTerm, filterGroup, dateRange, and other keys.
+        pinned:
+          type: boolean
+        created_at:
+          type: string
+          format: date-time
+          readOnly: true
+        created_by:
+          allOf:
+          - $ref: '#/components/schemas/UserBasic'
+          readOnly: true
+        updated_at:
+          type:
+          - string
+          - 'null'
+          format: date-time
+          readOnly: true
+    ThresholdOperatorEnum:
+      enum:
+      - above
+      - below
+      type: string
+      description: '* `above` - Above
+
+        * `below` - Below'
+    LogsAlertSimulateResponse:
+      type: object
+      properties:
+        buckets:
+          type: array
+          items:
+            $ref: '#/components/schemas/LogsAlertSimulateBucket'
+          description: Time-bucketed counts with full state machine evaluation.
+        fire_count:
+          type: integer
+          description: Number of times the alert would have sent a fire notification.
+        resolve_count:
+          type: integer
+          description: Number of times the alert would have sent a resolve notification.
+        total_buckets:
+          type: integer
+          description: Total number of buckets in the simulation window.
+        threshold_count:
+          type: integer
+          description: Threshold count used for evaluation.
+        threshold_operator:
+          type: string
+          description: Threshold operator used for evaluation.
+      required:
+      - buckets
+      - fire_count
+      - resolve_count
+      - threshold_count
+      - threshold_operator
+      - total_buckets
+    SparklineBreakdownByEnum:
+      enum:
+      - severity
+      - service
+      type: string
+      description: '* `severity` - severity
+
+        * `service` - service'
     NotificationDestinationTypeEnum:
       enum:
       - slack
@@ -2854,6 +3107,66 @@ components:
       description: '* `slack` - slack
 
         * `webhook` - webhook'
+    _LogAttributeEntry:
+      type: object
+      properties:
+        name:
+          type: string
+        propertyFilterType:
+          type: string
+          description: 'Property filter type: "log_attribute" or "log_resource_attribute". Use this as the `type` field when filtering.'
+        matchedOn:
+          allOf:
+          - $ref: '#/components/schemas/MatchedOnEnum'
+          description: 'How the search query matched this row: "key" if the attribute key matched, "value" if a value matched.
+
+
+            * `key` - key
+
+            * `value` - value'
+        matchedValue:
+          type:
+          - string
+          - 'null'
+          description: Sample matching value — only set when matchedOn is "value".
+      required:
+      - matchedOn
+      - name
+      - propertyFilterType
+    _LogsServicesSparklineBucket:
+      type: object
+      properties:
+        time:
+          type: string
+          description: Bucket start time (ISO 8601).
+        service_name:
+          type: string
+        count:
+          type: integer
+      required:
+      - count
+      - service_name
+      - time
+    SeverityLevelsEnum:
+      enum:
+      - trace
+      - debug
+      - info
+      - warn
+      - error
+      - fatal
+      type: string
+      description: '* `trace` - trace
+
+        * `debug` - debug
+
+        * `info` - info
+
+        * `warn` - warn
+
+        * `error` - error
+
+        * `fatal` - fatal'
     PaginatedLogsAlertConfigurationList:
       type: object
       required:
@@ -2899,31 +3212,114 @@ components:
       required:
       - services
       - sparkline
-    PaginatedLogsViewList:
+    RuleTypeEnum:
+      enum:
+      - severity_sampling
+      - path_drop
+      - rate_limit
+      type: string
+      description: '* `severity_sampling` - Severity-based reduction
+
+        * `path_drop` - Path exclusion
+
+        * `rate_limit` - Rate limit'
+    LogsAlertSimulateRequest:
       type: object
-      required:
-      - count
-      - results
       properties:
-        count:
+        filters:
+          description: Filter criteria — same format as LogsAlertConfiguration.filters.
+        threshold_count:
           type: integer
-          example: 123
-        next:
-          type:
-          - string
-          - 'null'
-          format: uri
-          example: http://api.example.org/accounts/?offset=400&limit=100
-        previous:
-          type:
-          - string
-          - 'null'
-          format: uri
-          example: http://api.example.org/accounts/?offset=200&limit=100
-        results:
+          minimum: 1
+          description: Threshold count to evaluate against.
+        threshold_operator:
+          allOf:
+          - $ref: '#/components/schemas/ThresholdOperatorEnum'
+          description: 'Whether the alert fires when the count is above or below the threshold.
+
+
+            * `above` - Above
+
+            * `below` - Below'
+        window_minutes:
+          type: integer
+          description: Window size in minutes — determines bucket interval.
+        evaluation_periods:
+          type: integer
+          maximum: 10
+          minimum: 1
+          default: 1
+          description: Total check periods in the N-of-M evaluation window (M).
+        datapoints_to_alarm:
+          type: integer
+          maximum: 10
+          minimum: 1
+          default: 1
+          description: How many periods must breach to fire (N in N-of-M).
+        cooldown_minutes:
+          type: integer
+          minimum: 0
+          default: 0
+          description: Minutes to wait after firing before sending another notification.
+        date_from:
+          type: string
+          description: Relative date string for how far back to simulate (e.g. '-24h', '-7d', '-30d').
+      required:
+      - date_from
+      - filters
+      - threshold_count
+      - threshold_operator
+      - window_minutes
+    _LogsServiceAggregate:
+      type: object
+      properties:
+        service_name:
+          type: string
+          description: Service name, or "(no value)" / "(no service)" placeholder for unset entries.
+        log_count:
+          type: integer
+          description: Total log entries from this service in the window.
+        error_count:
+          type: integer
+          description: Count of logs at severity "error" or "fatal".
+        error_rate:
+          type: number
+          format: double
+          description: Pre-computed error_count / log_count, rounded to 4 decimals. Useful for ranking noisy services.
+        volume_share_pct:
+          type: number
+          format: double
+          description: Share of total log volume in the window for this service (0–100).
+        severity_breakdown:
+          allOf:
+          - $ref: '#/components/schemas/_LogsServiceSeverityBreakdown'
+          description: Counts by coarse severity bucket (debug, info, warn, error+fatal).
+        active_rules:
           type: array
           items:
-            $ref: '#/components/schemas/LogsView'
+            $ref: '#/components/schemas/_LogsServiceActiveRule'
+          description: Enabled sampling rules whose scope includes this service.
+      required:
+      - error_count
+      - error_rate
+      - log_count
+      - service_name
+    _LogsCountRangeBucket:
+      type: object
+      properties:
+        date_from:
+          type: string
+          description: Bucket start as ISO 8601 timestamp. Inclusive lower bound. Pass back as `dateRange.date_from` to drill in.
+        date_to:
+          type: string
+          description: Bucket end as ISO 8601 timestamp. Exclusive upper bound. Pass back as `dateRange.date_to` to drill in.
+        count:
+          type: integer
+          description: Log entries matching the filters within this bucket.
+      required:
+      - count
+      - date_from
+      - date_to
     _LogsQueryBody:
       type: object
       properties:
@@ -2968,47 +3364,64 @@ components:
         after:
           type: string
           description: Pagination cursor from previous response.
-    _LogPropertyFilterOperatorEnum:
-      enum:
-      - exact
-      - is_not
-      - icontains
-      - not_icontains
-      - regex
-      - not_regex
-      - gt
-      - lt
-      - is_date_exact
-      - is_date_before
-      - is_date_after
-      - is_set
-      - is_not_set
-      type: string
-      description: '* `exact` - exact
-
-        * `is_not` - is_not
-
-        * `icontains` - icontains
-
-        * `not_icontains` - not_icontains
-
-        * `regex` - regex
-
-        * `not_regex` - not_regex
-
-        * `gt` - gt
-
-        * `lt` - lt
-
-        * `is_date_exact` - is_date_exact
-
-        * `is_date_before` - is_date_before
-
-        * `is_date_after` - is_date_after
-
-        * `is_set` - is_set
-
-        * `is_not_set` - is_not_set'
+    LogsAlertDeleteDestination:
+      type: object
+      properties:
+        hog_function_ids:
+          type: array
+          items:
+            type: string
+            format: uuid
+          description: HogFunction IDs to delete as one atomic destination group.
+          minItems: 1
+      required:
+      - hog_function_ids
+    UserBasic:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        uuid:
+          type: string
+          format: uuid
+          readOnly: true
+        distinct_id:
+          type:
+          - string
+          - 'null'
+          maxLength: 200
+        first_name:
+          type: string
+          maxLength: 150
+        last_name:
+          type: string
+          maxLength: 150
+        email:
+          type: string
+          format: email
+          title: Email address
+          maxLength: 254
+        is_email_verified:
+          type:
+          - boolean
+          - 'null'
+        hedgehog_config:
+          type:
+          - object
+          - 'null'
+          additionalProperties: true
+          readOnly: true
+        role_at_organization:
+          oneOf:
+          - $ref: '#/components/schemas/RoleAtOrganizationEnum'
+          - $ref: '#/components/schemas/BlankEnum'
+          - $ref: '#/components/schemas/NullEnum'
+      required:
+      - email
+      - hedgehog_config
+      - id
+      - uuid
     OrderByEnum:
       enum:
       - latest
@@ -3053,207 +3466,15 @@ components:
       - end
       - start
       - state
-    _LogsCountRangesRequest:
+    _LogsQueryRequest:
       type: object
       properties:
         query:
           allOf:
-          - $ref: '#/components/schemas/_LogsCountRangesBody'
-          description: The bucketed-count query to execute.
+          - $ref: '#/components/schemas/_LogsQueryBody'
+          description: The logs query to execute.
       required:
       - query
-    LogsAlertCreateDestination:
-      type: object
-      properties:
-        type:
-          allOf:
-          - $ref: '#/components/schemas/NotificationDestinationTypeEnum'
-          description: 'Destination type — slack or webhook.
-
-
-            * `slack` - slack
-
-            * `webhook` - webhook'
-        slack_workspace_id:
-          type: integer
-          description: Integration ID for the Slack workspace. Required when type=slack.
-        slack_channel_id:
-          type: string
-          description: Slack channel ID. Required when type=slack.
-        slack_channel_name:
-          type: string
-          description: Human-readable channel name for display.
-        webhook_url:
-          type: string
-          format: uri
-          description: HTTPS endpoint to POST to. Required when type=webhook.
-      required:
-      - type
-    LogsAlertDestinationResponse:
-      type: object
-      properties:
-        hog_function_ids:
-          type: array
-          items:
-            type: string
-            format: uuid
-      required:
-      - hog_function_ids
-    LogsSamplingRule:
-      type: object
-      properties:
-        id:
-          type: string
-          format: uuid
-          readOnly: true
-          description: Unique identifier for this sampling rule.
-        name:
-          type: string
-          description: User-visible label for this rule.
-          maxLength: 255
-        enabled:
-          type: boolean
-          default: false
-          description: When false, the rule is ignored by ingestion and listing UIs that show active rules only.
-        priority:
-          type:
-          - integer
-          - 'null'
-          minimum: 0
-          description: Lower numbers are evaluated first; the first matching rule wins. Omit to append after existing rules.
-        rule_type:
-          allOf:
-          - $ref: '#/components/schemas/RuleTypeEnum'
-          description: 'Rule kind: severity_sampling, path_drop, or rate_limit (rate_limit reserved for a future release).
-
-
-            * `severity_sampling` - Severity-based reduction
-
-            * `path_drop` - Path exclusion
-
-            * `rate_limit` - Rate limit'
-        scope_service:
-          type:
-          - string
-          - 'null'
-          description: If set, the rule applies only to this service name; null means all services.
-          maxLength: 512
-        scope_path_pattern:
-          type:
-          - string
-          - 'null'
-          description: Optional regex matched against a path-like log attribute when present.
-          maxLength: 1024
-        scope_attribute_filters:
-          type: array
-          items:
-            type: object
-            additionalProperties: true
-          description: Optional list of predicates over string attributes, e.g. [{"key":"http.route","op":"eq","value":"/api"}].
-        config:
-          description: 'Type-specific JSON. For path_drop: object with required `patterns` (list of regex strings) and optional `match_attribute_key` (string). When `match_attribute_key` is omitted or empty, patterns match the same virtual path string as ingestion (url.path, http.path, http.route, path). When set, each pattern is tested only against that string attribute on the log record. For severity_sampling: object with `actions` per severity level and optional `always_keep`. rate_limit is reserved.'
-        version:
-          type: integer
-          readOnly: true
-          description: Incremented on each update for worker cache coherency.
-        created_by:
-          type: integer
-          readOnly: true
-        created_at:
-          type: string
-          format: date-time
-          readOnly: true
-        updated_at:
-          type:
-          - string
-          - 'null'
-          format: date-time
-          readOnly: true
-      required:
-      - config
-      - created_at
-      - created_by
-      - id
-      - name
-      - rule_type
-      - updated_at
-      - version
-    SeverityLevelsEnum:
-      enum:
-      - trace
-      - debug
-      - info
-      - warn
-      - error
-      - fatal
-      type: string
-      description: '* `trace` - trace
-
-        * `debug` - debug
-
-        * `info` - info
-
-        * `warn` - warn
-
-        * `error` - error
-
-        * `fatal` - fatal'
-    _LogEntry:
-      type: object
-      properties:
-        uuid:
-          type: string
-        timestamp:
-          type: string
-          description: ISO 8601 timestamp of the original log event.
-        observed_timestamp:
-          type: string
-          description: ISO 8601 timestamp the log pipeline observed the event (may differ from `timestamp`).
-        body:
-          type: string
-        severity_text:
-          type: string
-          description: Log severity as a string (e.g. "info", "error"). Preferred over severity_number.
-        severity_number:
-          type: integer
-          description: Log severity as a numeric code. Redundant with severity_text; kept for OpenTelemetry compatibility.
-        level:
-          type: string
-          description: ClickHouse alias for severity_text. Redundant; prefer severity_text.
-        trace_id:
-          type: string
-          description: Trace ID. Returns "00000000000000000000000000000000" when not set (padding, not null).
-        span_id:
-          type: string
-          description: Span ID. Returns "0000000000000000" when not set (padding, not null).
-        trace_flags:
-          type: integer
-          description: OpenTelemetry trace flags.
-        attributes:
-          type: object
-          additionalProperties:
-            type: string
-          description: Log-level attributes as a string-keyed map. Values are strings (numeric/datetime attributes are also accessible via materialized columns).
-        resource_attributes:
-          type: object
-          additionalProperties:
-            type: string
-          description: Resource-level attributes (service.name, k8s.*, host.hostname, etc.) as a string-keyed map. Repeats across all logs from the same pod/host.
-        event_name:
-          type: string
-          description: OpenTelemetry event name, if set.
-      required:
-      - attributes
-      - body
-      - level
-      - observed_timestamp
-      - resource_attributes
-      - severity_number
-      - severity_text
-      - span_id
-      - timestamp
-      - trace_id
-      - uuid
     _LogAttributeValue:
       type: object
       properties:
@@ -3266,40 +3487,129 @@ components:
       required:
       - id
       - name
-    _LogsServiceAggregate:
+    BlankEnum:
+      enum:
+      - ''
+    _LogsServicesBody:
       type: object
       properties:
-        service_name:
-          type: string
-          description: Service name, or "(no value)" / "(no service)" placeholder for unset entries.
-        log_count:
-          type: integer
-          description: Total log entries from this service in the window.
-        error_count:
-          type: integer
-          description: Count of logs at severity "error" or "fatal".
-        error_rate:
-          type: number
-          format: double
-          description: Pre-computed error_count / log_count, rounded to 4 decimals. Useful for ranking noisy services.
-        volume_share_pct:
-          type: number
-          format: double
-          description: Share of total log volume in the window for this service (0–100).
-        severity_breakdown:
+        dateRange:
           allOf:
-          - $ref: '#/components/schemas/_LogsServiceSeverityBreakdown'
-          description: Counts by coarse severity bucket (debug, info, warn, error+fatal).
-        active_rules:
+          - $ref: '#/components/schemas/_DateRange'
+          description: Date range for the services aggregation. Defaults to last hour.
+        severityLevels:
           type: array
           items:
-            $ref: '#/components/schemas/_LogsServiceActiveRule'
-          description: Enabled sampling rules whose scope includes this service.
+            $ref: '#/components/schemas/SeverityLevelsEnum'
+          description: Filter by log severity levels.
+        serviceNames:
+          type: array
+          items:
+            type: string
+          description: Restrict the aggregation to these service names.
+        searchTerm:
+          type: string
+          description: Full-text search term to filter log bodies.
+        filterGroup:
+          type: array
+          items:
+            $ref: '#/components/schemas/_LogPropertyFilter'
+          description: Property filters for the query.
+    _LogsValuesResponse:
+      type: object
+      properties:
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/_LogAttributeValue'
+          description: Distinct values observed for the requested attribute.
+        refreshing:
+          type: boolean
+          description: Always false — reserved for future cached-value refresh signalling.
       required:
-      - error_count
-      - error_rate
-      - log_count
-      - service_name
+      - refreshing
+      - results
+    PaginatedLogsSamplingRuleList:
+      type: object
+      required:
+      - count
+      - results
+      properties:
+        count:
+          type: integer
+          example: 123
+        next:
+          type:
+          - string
+          - 'null'
+          format: uri
+          example: http://api.example.org/accounts/?offset=400&limit=100
+        previous:
+          type:
+          - string
+          - 'null'
+          format: uri
+          example: http://api.example.org/accounts/?offset=200&limit=100
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/LogsSamplingRule'
+    _LogPropertyFilterTypeEnum:
+      enum:
+      - log
+      - log_attribute
+      - log_resource_attribute
+      type: string
+      description: '* `log` - log
+
+        * `log_attribute` - log_attribute
+
+        * `log_resource_attribute` - log_resource_attribute'
+    _LogsCountRangesBody:
+      type: object
+      properties:
+        dateRange:
+          allOf:
+          - $ref: '#/components/schemas/_DateRange'
+          description: Window to bucket. Defaults to last hour. Use a bucket's date_from/date_to from a prior response to recursively narrow into a sub-range.
+        targetBuckets:
+          type: integer
+          maximum: 100
+          minimum: 1
+          default: 10
+          description: Approximate number of buckets to return. The bucket interval is picked adaptively from a fixed list (1/5/10s, 1/2/5/10/15/30/60/120/240/360/720/1440m) to land near this target. Defaults to 10, capped at 100.
+        severityLevels:
+          type: array
+          items:
+            $ref: '#/components/schemas/SeverityLevelsEnum'
+          description: Filter by log severity levels. Applied before bucketing.
+        serviceNames:
+          type: array
+          items:
+            type: string
+          description: Filter by service names. Applied before bucketing.
+        searchTerm:
+          type: string
+          description: Full-text search across log bodies. Applied before bucketing.
+        filterGroup:
+          type: array
+          items:
+            $ref: '#/components/schemas/_LogPropertyFilter'
+          description: Property filters applied before bucketing. Same shape as `query-logs`.
+    _LogsAttributesResponse:
+      type: object
+      properties:
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/_LogAttributeEntry'
+          description: Available attribute keys matching the filters.
+        count:
+          type: integer
+          description: Total attribute keys matched (not paginated).
+      required:
+      - count
+      - results
     LogsAlertSimulateBucket:
       type: object
       properties:
@@ -3329,121 +3639,6 @@ components:
       - state
       - threshold_breached
       - timestamp
-    _LogPropertyFilterTypeEnum:
-      enum:
-      - log
-      - log_attribute
-      - log_resource_attribute
-      type: string
-      description: '* `log` - log
-
-        * `log_attribute` - log_attribute
-
-        * `log_resource_attribute` - log_resource_attribute'
-    ExplainRequest:
-      type: object
-      properties:
-        uuid:
-          type: string
-          description: UUID of the log entry to explain
-        timestamp:
-          type: string
-          format: date-time
-          description: Timestamp of the log entry (used for efficient lookup)
-        force_refresh:
-          type: boolean
-          default: false
-          description: Force regenerate explanation, bypassing cache
-      required:
-      - timestamp
-      - uuid
-    _LogsServicesBody:
-      type: object
-      properties:
-        dateRange:
-          allOf:
-          - $ref: '#/components/schemas/_DateRange'
-          description: Date range for the services aggregation. Defaults to last hour.
-        severityLevels:
-          type: array
-          items:
-            $ref: '#/components/schemas/SeverityLevelsEnum'
-          description: Filter by log severity levels.
-        serviceNames:
-          type: array
-          items:
-            type: string
-          description: Restrict the aggregation to these service names.
-        searchTerm:
-          type: string
-          description: Full-text search term to filter log bodies.
-        filterGroup:
-          type: array
-          items:
-            $ref: '#/components/schemas/_LogPropertyFilter'
-          description: Property filters for the query.
-    ThresholdOperatorEnum:
-      enum:
-      - above
-      - below
-      type: string
-      description: '* `above` - Above
-
-        * `below` - Below'
-    _LogsServicesSparklineBucket:
-      type: object
-      properties:
-        time:
-          type: string
-          description: Bucket start time (ISO 8601).
-        service_name:
-          type: string
-        count:
-          type: integer
-      required:
-      - count
-      - service_name
-      - time
-    BlankEnum:
-      enum:
-      - ''
-    _LogsSparklineBody:
-      type: object
-      properties:
-        dateRange:
-          allOf:
-          - $ref: '#/components/schemas/_DateRange'
-          description: Date range for the sparkline. Defaults to last hour.
-        severityLevels:
-          type: array
-          items:
-            $ref: '#/components/schemas/SeverityLevelsEnum'
-          default: []
-          description: Filter by log severity levels.
-        serviceNames:
-          type: array
-          items:
-            type: string
-          default: []
-          description: Filter by service names.
-        searchTerm:
-          type: string
-          description: Full-text search term to filter log bodies.
-        filterGroup:
-          type: array
-          items:
-            $ref: '#/components/schemas/_LogPropertyFilter'
-          default: []
-          description: Property filters for the query.
-        sparklineBreakdownBy:
-          allOf:
-          - $ref: '#/components/schemas/SparklineBreakdownByEnum'
-          description: 'Break down sparkline by "severity" (default) or "service".
-
-
-            * `severity` - severity
-
-            * `service` - service'
     MatchedOnEnum:
       enum:
       - key
@@ -3452,22 +3647,170 @@ components:
       description: '* `key` - key
 
         * `value` - value'
-    _LogsServiceSeverityBreakdown:
+    _LogsSparklineRequest:
       type: object
       properties:
-        debug:
-          type: integer
-        info:
-          type: integer
-        warn:
-          type: integer
-        error:
-          type: integer
+        query:
+          allOf:
+          - $ref: '#/components/schemas/_LogsSparklineBody'
+          description: The sparkline query to execute.
       required:
-      - debug
-      - error
-      - info
-      - warn
+      - query
+    _LogsCountResponse:
+      type: object
+      properties:
+        count:
+          type: integer
+          description: Number of log entries matching the filters.
+      required:
+      - count
+    _DateRange:
+      type: object
+      properties:
+        date_from:
+          type:
+          - string
+          - 'null'
+          description: 'Start of the date range. Accepts ISO 8601 timestamps or relative formats: -7d, -1h, -1mStart, etc.'
+        date_to:
+          type:
+          - string
+          - 'null'
+          description: End of the date range. Same format as date_from. Omit or null for "now".
+    _LogPropertyFilterOperatorEnum:
+      enum:
+      - exact
+      - is_not
+      - icontains
+      - not_icontains
+      - regex
+      - not_regex
+      - gt
+      - lt
+      - is_date_exact
+      - is_date_before
+      - is_date_after
+      - is_set
+      - is_not_set
+      type: string
+      description: '* `exact` - exact
+
+        * `is_not` - is_not
+
+        * `icontains` - icontains
+
+        * `not_icontains` - not_icontains
+
+        * `regex` - regex
+
+        * `not_regex` - not_regex
+
+        * `gt` - gt
+
+        * `lt` - lt
+
+        * `is_date_exact` - is_date_exact
+
+        * `is_date_before` - is_date_before
+
+        * `is_date_after` - is_date_after
+
+        * `is_set` - is_set
+
+        * `is_not_set` - is_not_set'
+    _LogPropertyFilter:
+      type: object
+      properties:
+        key:
+          type: string
+          description: Attribute key. For type "log", use "message". For "log_attribute"/"log_resource_attribute", use the attribute key (e.g. "k8s.container.name").
+        type:
+          allOf:
+          - $ref: '#/components/schemas/_LogPropertyFilterTypeEnum'
+          description: '"log" filters the log body/message. "log_attribute" filters log-level attributes. "log_resource_attribute" filters resource-level attributes.
+
+
+            * `log` - log
+
+            * `log_attribute` - log_attribute
+
+            * `log_resource_attribute` - log_resource_attribute'
+        operator:
+          allOf:
+          - $ref: '#/components/schemas/_LogPropertyFilterOperatorEnum'
+          description: 'Comparison operator.
+
+
+            * `exact` - exact
+
+            * `is_not` - is_not
+
+            * `icontains` - icontains
+
+            * `not_icontains` - not_icontains
+
+            * `regex` - regex
+
+            * `not_regex` - not_regex
+
+            * `gt` - gt
+
+            * `lt` - lt
+
+            * `is_date_exact` - is_date_exact
+
+            * `is_date_before` - is_date_before
+
+            * `is_date_after` - is_date_after
+
+            * `is_set` - is_set
+
+            * `is_not_set` - is_not_set'
+        value:
+          description: Value to compare against. String, number, or array of strings. Omit for is_set/is_not_set operators.
+      required:
+      - key
+      - operator
+      - type
+    LogsSamplingRuleSimulateResponse:
+      type: object
+      properties:
+        estimated_reduction_pct:
+          type: number
+          format: double
+          description: Rough percent of log volume this rule would drop (0–100). Stub until ClickHouse-backed estimate ships.
+        notes:
+          type: string
+          description: Human-readable caveats for the estimate.
+      required:
+      - estimated_reduction_pct
+      - notes
+    RoleAtOrganizationEnum:
+      enum:
+      - engineering
+      - data
+      - product
+      - founder
+      - leadership
+      - marketing
+      - sales
+      - other
+      type: string
+      description: '* `engineering` - Engineering
+
+        * `data` - Data
+
+        * `product` - Product Management
+
+        * `founder` - Founder
+
+        * `leadership` - Leadership
+
+        * `marketing` - Marketing
+
+        * `sales` - Sales / Success
+
+        * `other` - Other'
     LogsAlertConfiguration:
       type: object
       properties:
@@ -3631,349 +3974,6 @@ components:
       - state
       - state_timeline
       - updated_at
-    _DateRange:
-      type: object
-      properties:
-        date_from:
-          type:
-          - string
-          - 'null'
-          description: 'Start of the date range. Accepts ISO 8601 timestamps or relative formats: -7d, -1h, -1mStart, etc.'
-        date_to:
-          type:
-          - string
-          - 'null'
-          description: End of the date range. Same format as date_from. Omit or null for "now".
-    _LogsCountRequest:
-      type: object
-      properties:
-        query:
-          allOf:
-          - $ref: '#/components/schemas/_LogsCountBody'
-          description: The count query to execute.
-      required:
-      - query
-    SparklineBreakdownByEnum:
-      enum:
-      - severity
-      - service
-      type: string
-      description: '* `severity` - severity
-
-        * `service` - service'
-    _LogsSparklineResponse:
-      type: object
-      properties:
-        results:
-          type: array
-          items:
-            $ref: '#/components/schemas/_LogsSparklineBucket'
-          description: Time-bucketed log counts. Each bucket carries either `severity` or `service` depending on breakdown.
-      required:
-      - results
-    LogsAlertSimulateResponse:
-      type: object
-      properties:
-        buckets:
-          type: array
-          items:
-            $ref: '#/components/schemas/LogsAlertSimulateBucket'
-          description: Time-bucketed counts with full state machine evaluation.
-        fire_count:
-          type: integer
-          description: Number of times the alert would have sent a fire notification.
-        resolve_count:
-          type: integer
-          description: Number of times the alert would have sent a resolve notification.
-        total_buckets:
-          type: integer
-          description: Total number of buckets in the simulation window.
-        threshold_count:
-          type: integer
-          description: Threshold count used for evaluation.
-        threshold_operator:
-          type: string
-          description: Threshold operator used for evaluation.
-      required:
-      - buckets
-      - fire_count
-      - resolve_count
-      - threshold_count
-      - threshold_operator
-      - total_buckets
-    _LogPropertyFilter:
-      type: object
-      properties:
-        key:
-          type: string
-          description: Attribute key. For type "log", use "message". For "log_attribute"/"log_resource_attribute", use the attribute key (e.g. "k8s.container.name").
-        type:
-          allOf:
-          - $ref: '#/components/schemas/_LogPropertyFilterTypeEnum'
-          description: '"log" filters the log body/message. "log_attribute" filters log-level attributes. "log_resource_attribute" filters resource-level attributes.
-
-
-            * `log` - log
-
-            * `log_attribute` - log_attribute
-
-            * `log_resource_attribute` - log_resource_attribute'
-        operator:
-          allOf:
-          - $ref: '#/components/schemas/_LogPropertyFilterOperatorEnum'
-          description: 'Comparison operator.
-
-
-            * `exact` - exact
-
-            * `is_not` - is_not
-
-            * `icontains` - icontains
-
-            * `not_icontains` - not_icontains
-
-            * `regex` - regex
-
-            * `not_regex` - not_regex
-
-            * `gt` - gt
-
-            * `lt` - lt
-
-            * `is_date_exact` - is_date_exact
-
-            * `is_date_before` - is_date_before
-
-            * `is_date_after` - is_date_after
-
-            * `is_set` - is_set
-
-            * `is_not_set` - is_not_set'
-        value:
-          description: Value to compare against. String, number, or array of strings. Omit for is_set/is_not_set operators.
-      required:
-      - key
-      - operator
-      - type
-    _LogsServicesSummary:
-      type: object
-      properties:
-        top_services_count:
-          type: integer
-          description: Number of top services included in the volume_share aggregate (up to 5).
-        top_services_volume_share_pct:
-          type: number
-          format: double
-          description: Combined volume share (percent) of the top services by log_count.
-      required:
-      - top_services_count
-      - top_services_volume_share_pct
-    LogsSamplingRuleReorder:
-      type: object
-      properties:
-        ordered_ids:
-          type: array
-          items:
-            type: string
-            format: uuid
-          description: Rule IDs in the desired evaluation order (first element is highest priority / lowest order index).
-      required:
-      - ordered_ids
-    _LogsSparklineBucket:
-      type: object
-      properties:
-        time:
-          type: string
-          description: Bucket start time (ISO 8601).
-        severity:
-          type: string
-          description: Severity label when sparklineBreakdownBy="severity". Present only for severity-broken-down sparklines.
-        service:
-          type: string
-          description: Service name when sparklineBreakdownBy="service". Present only for service-broken-down sparklines.
-        count:
-          type: integer
-      required:
-      - count
-      - time
-    _LogsCountRangeBucket:
-      type: object
-      properties:
-        date_from:
-          type: string
-          description: Bucket start as ISO 8601 timestamp. Inclusive lower bound. Pass back as `dateRange.date_from` to drill in.
-        date_to:
-          type: string
-          description: Bucket end as ISO 8601 timestamp. Exclusive upper bound. Pass back as `dateRange.date_to` to drill in.
-        count:
-          type: integer
-          description: Log entries matching the filters within this bucket.
-      required:
-      - count
-      - date_from
-      - date_to
-    _LogsCountRangesResponse:
-      type: object
-      properties:
-        ranges:
-          type: array
-          items:
-            $ref: '#/components/schemas/_LogsCountRangeBucket'
-          description: Buckets ordered by `date_from` ascending. Empty buckets are omitted — infer gaps by comparing each bucket's `date_to` to the next bucket's `date_from`.
-        interval:
-          type: string
-          description: Short-form duration of the chosen bucket width (e.g. "1h", "5m", "30s", "1d"). Informational only — use each bucket's `date_from`/`date_to` for follow-up queries.
-      required:
-      - interval
-      - ranges
-    LogsSamplingRuleSimulateResponse:
-      type: object
-      properties:
-        estimated_reduction_pct:
-          type: number
-          format: double
-          description: Rough percent of log volume this rule would drop (0–100). Stub until ClickHouse-backed estimate ships.
-        notes:
-          type: string
-          description: Human-readable caveats for the estimate.
-      required:
-      - estimated_reduction_pct
-      - notes
-    LogsView:
-      type: object
-      properties:
-        id:
-          type: string
-          format: uuid
-          readOnly: true
-        short_id:
-          type: string
-          readOnly: true
-        name:
-          type: string
-          maxLength: 400
-        filters:
-          type: object
-          additionalProperties: true
-          description: Filter criteria — subset of LogsViewerFilters. May contain severityLevels, serviceNames, searchTerm, filterGroup, dateRange, and other keys.
-        pinned:
-          type: boolean
-        created_at:
-          type: string
-          format: date-time
-          readOnly: true
-        created_by:
-          allOf:
-          - $ref: '#/components/schemas/UserBasic'
-          readOnly: true
-        updated_at:
-          type:
-          - string
-          - 'null'
-          format: date-time
-          readOnly: true
-      required:
-      - created_at
-      - created_by
-      - id
-      - name
-      - short_id
-      - updated_at
-    UserBasic:
-      type: object
-      properties:
-        id:
-          type: integer
-          readOnly: true
-        uuid:
-          type: string
-          format: uuid
-          readOnly: true
-        distinct_id:
-          type:
-          - string
-          - 'null'
-          maxLength: 200
-        first_name:
-          type: string
-          maxLength: 150
-        last_name:
-          type: string
-          maxLength: 150
-        email:
-          type: string
-          format: email
-          title: Email address
-          maxLength: 254
-        is_email_verified:
-          type:
-          - boolean
-          - 'null'
-        hedgehog_config:
-          type:
-          - object
-          - 'null'
-          additionalProperties: true
-          readOnly: true
-        role_at_organization:
-          oneOf:
-          - $ref: '#/components/schemas/RoleAtOrganizationEnum'
-          - $ref: '#/components/schemas/BlankEnum'
-          - $ref: '#/components/schemas/NullEnum'
-      required:
-      - email
-      - hedgehog_config
-      - id
-      - uuid
-    RoleAtOrganizationEnum:
-      enum:
-      - engineering
-      - data
-      - product
-      - founder
-      - leadership
-      - marketing
-      - sales
-      - other
-      type: string
-      description: '* `engineering` - Engineering
-
-        * `data` - Data
-
-        * `product` - Product Management
-
-        * `founder` - Founder
-
-        * `leadership` - Leadership
-
-        * `marketing` - Marketing
-
-        * `sales` - Sales / Success
-
-        * `other` - Other'
-    _LogsAttributesResponse:
-      type: object
-      properties:
-        results:
-          type: array
-          items:
-            $ref: '#/components/schemas/_LogAttributeEntry'
-          description: Available attribute keys matching the filters.
-        count:
-          type: integer
-          description: Total attribute keys matched (not paginated).
-      required:
-      - count
-      - results
-    _LogsSparklineRequest:
-      type: object
-      properties:
-        query:
-          allOf:
-          - $ref: '#/components/schemas/_LogsSparklineBody'
-          description: The sparkline query to execute.
-      required:
-      - query
   parameters:
     EnvironmentIdPath:
       in: path

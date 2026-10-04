@@ -602,14 +602,6 @@ paths:
       summary: Notebooks recording comments retrieve
       x-summary-source: derived
 components:
-  parameters:
-    ProjectIdPath:
-      in: path
-      name: project_id
-      required: true
-      schema:
-        type: string
-      description: Project ID of the project you're trying to access. To find the ID of the project, make a call to /api/projects/.
   schemas:
     NotebookMinimal:
       type: object
@@ -669,6 +661,52 @@ components:
       - short_id
       - title
       - user_access_level
+    UserBasic:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        uuid:
+          type: string
+          format: uuid
+          readOnly: true
+        distinct_id:
+          type:
+          - string
+          - 'null'
+          maxLength: 200
+        first_name:
+          type: string
+          maxLength: 150
+        last_name:
+          type: string
+          maxLength: 150
+        email:
+          type: string
+          format: email
+          title: Email address
+          maxLength: 254
+        is_email_verified:
+          type:
+          - boolean
+          - 'null'
+        hedgehog_config:
+          type:
+          - object
+          - 'null'
+          additionalProperties: true
+          readOnly: true
+        role_at_organization:
+          oneOf:
+          - $ref: '#/components/schemas/RoleAtOrganizationEnum'
+          - $ref: '#/components/schemas/BlankEnum'
+          - $ref: '#/components/schemas/NullEnum'
+      required:
+      - email
+      - hedgehog_config
+      - id
+      - uuid
     Notebook:
       type: object
       properties:
@@ -736,9 +774,9 @@ components:
       - last_modified_by
       - short_id
       - user_access_level
-    BlankEnum:
+    NullEnum:
       enum:
-      - ''
+      - null
     PaginatedNotebookMinimalList:
       type: object
       required:
@@ -796,81 +834,6 @@ components:
       - content
       - steps
       - version
-    UserBasic:
-      type: object
-      properties:
-        id:
-          type: integer
-          readOnly: true
-        uuid:
-          type: string
-          format: uuid
-          readOnly: true
-        distinct_id:
-          type:
-          - string
-          - 'null'
-          maxLength: 200
-        first_name:
-          type: string
-          maxLength: 150
-        last_name:
-          type: string
-          maxLength: 150
-        email:
-          type: string
-          format: email
-          title: Email address
-          maxLength: 254
-        is_email_verified:
-          type:
-          - boolean
-          - 'null'
-        hedgehog_config:
-          type:
-          - object
-          - 'null'
-          additionalProperties: true
-          readOnly: true
-        role_at_organization:
-          oneOf:
-          - $ref: '#/components/schemas/RoleAtOrganizationEnum'
-          - $ref: '#/components/schemas/BlankEnum'
-          - $ref: '#/components/schemas/NullEnum'
-      required:
-      - email
-      - hedgehog_config
-      - id
-      - uuid
-    NullEnum:
-      enum:
-      - null
-    RoleAtOrganizationEnum:
-      enum:
-      - engineering
-      - data
-      - product
-      - founder
-      - leadership
-      - marketing
-      - sales
-      - other
-      type: string
-      description: '* `engineering` - Engineering
-
-        * `data` - Data
-
-        * `product` - Product Management
-
-        * `founder` - Founder
-
-        * `leadership` - Leadership
-
-        * `marketing` - Marketing
-
-        * `sales` - Sales / Success
-
-        * `other` - Other'
     PatchedNotebook:
       type: object
       properties:
@@ -930,6 +893,43 @@ components:
           type: string
           writeOnly: true
           title: ' create in folder'
+    BlankEnum:
+      enum:
+      - ''
+    RoleAtOrganizationEnum:
+      enum:
+      - engineering
+      - data
+      - product
+      - founder
+      - leadership
+      - marketing
+      - sales
+      - other
+      type: string
+      description: '* `engineering` - Engineering
+
+        * `data` - Data
+
+        * `product` - Product Management
+
+        * `founder` - Founder
+
+        * `leadership` - Leadership
+
+        * `marketing` - Marketing
+
+        * `sales` - Sales / Success
+
+        * `other` - Other'
+  parameters:
+    ProjectIdPath:
+      in: path
+      name: project_id
+      required: true
+      schema:
+        type: string
+      description: Project ID of the project you're trying to access. To find the ID of the project, make a call to /api/projects/.
   securitySchemes:
     PersonalAPIKeyAuth:
       type: http

@@ -198,53 +198,7 @@ paths:
       summary: Session group summaries destroy
       x-summary-source: derived
 components:
-  parameters:
-    ProjectIdPath:
-      in: path
-      name: project_id
-      required: true
-      schema:
-        type: string
-      description: Project ID of the project you're trying to access. To find the ID of the project, make a call to /api/projects/.
   schemas:
-    PatchedSessionGroupSummary:
-      type: object
-      properties:
-        id:
-          type: string
-          format: uuid
-          readOnly: true
-        title:
-          type: string
-          readOnly: true
-          description: Title of the group session summary
-        session_ids:
-          type: array
-          items:
-            type: string
-            maxLength: 200
-          readOnly: true
-          description: List of session replay IDs included in this group summary
-        summary:
-          readOnly: true
-          description: Group summary in JSON format (EnrichedSessionGroupSummaryPatternsList schema)
-        extra_summary_context:
-          readOnly: true
-          description: Additional context passed to the summary (ExtraSummaryContext schema)
-        run_metadata:
-          readOnly: true
-          description: Summary run metadata (SessionSummaryRunMeta schema)
-        created_at:
-          type: string
-          format: date-time
-          readOnly: true
-        created_by:
-          allOf:
-          - $ref: '#/components/schemas/UserBasic'
-          readOnly: true
-        team:
-          type: integer
-          readOnly: true
     SessionGroupSummary:
       type: object
       properties:
@@ -293,37 +247,6 @@ components:
       - summary
       - team
       - title
-    BlankEnum:
-      enum:
-      - ''
-    SessionGroupSummaryMinimal:
-      type: object
-      properties:
-        id:
-          type: string
-          format: uuid
-          readOnly: true
-        title:
-          type: string
-          readOnly: true
-          description: Title of the group session summary
-        session_count:
-          type: integer
-          readOnly: true
-        created_at:
-          type: string
-          format: date-time
-          readOnly: true
-        created_by:
-          allOf:
-          - $ref: '#/components/schemas/UserBasic'
-          readOnly: true
-      required:
-      - created_at
-      - created_by
-      - id
-      - session_count
-      - title
     UserBasic:
       type: object
       properties:
@@ -370,9 +293,40 @@ components:
       - hedgehog_config
       - id
       - uuid
+    SessionGroupSummaryMinimal:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+          readOnly: true
+        title:
+          type: string
+          readOnly: true
+          description: Title of the group session summary
+        session_count:
+          type: integer
+          readOnly: true
+        created_at:
+          type: string
+          format: date-time
+          readOnly: true
+        created_by:
+          allOf:
+          - $ref: '#/components/schemas/UserBasic'
+          readOnly: true
+      required:
+      - created_at
+      - created_by
+      - id
+      - session_count
+      - title
     NullEnum:
       enum:
       - null
+    BlankEnum:
+      enum:
+      - ''
     RoleAtOrganizationEnum:
       enum:
       - engineering
@@ -424,6 +378,52 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/SessionGroupSummaryMinimal'
+    PatchedSessionGroupSummary:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+          readOnly: true
+        title:
+          type: string
+          readOnly: true
+          description: Title of the group session summary
+        session_ids:
+          type: array
+          items:
+            type: string
+            maxLength: 200
+          readOnly: true
+          description: List of session replay IDs included in this group summary
+        summary:
+          readOnly: true
+          description: Group summary in JSON format (EnrichedSessionGroupSummaryPatternsList schema)
+        extra_summary_context:
+          readOnly: true
+          description: Additional context passed to the summary (ExtraSummaryContext schema)
+        run_metadata:
+          readOnly: true
+          description: Summary run metadata (SessionSummaryRunMeta schema)
+        created_at:
+          type: string
+          format: date-time
+          readOnly: true
+        created_by:
+          allOf:
+          - $ref: '#/components/schemas/UserBasic'
+          readOnly: true
+        team:
+          type: integer
+          readOnly: true
+  parameters:
+    ProjectIdPath:
+      in: path
+      name: project_id
+      required: true
+      schema:
+        type: string
+      description: Project ID of the project you're trying to access. To find the ID of the project, make a call to /api/projects/.
   securitySchemes:
     PersonalAPIKeyAuth:
       type: http

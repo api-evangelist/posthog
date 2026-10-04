@@ -1485,49 +1485,33 @@ paths:
       summary: Integrations github oauth authorize create
       x-summary-source: derived
 components:
-  parameters:
-    EnvironmentIdPath:
-      in: path
-      name: environment_id
-      required: true
-      schema:
-        type: string
-      description: Deprecated. Use /api/projects/{project_id}/ instead.
-    ProjectIdPath:
-      in: path
-      name: project_id
-      required: true
-      schema:
-        type: string
-      description: Project ID of the project you're trying to access. To find the ID of the project, make a call to /api/projects/.
-    OrganizationIdPath:
-      in: path
-      name: organization_id
-      required: true
-      schema:
-        type: string
-      description: ID of the organization you're trying to access. To find the ID of the organization, make a call to /api/organizations/.
   schemas:
-    GitHubBranchesResponse:
+    GitHubRepo:
       type: object
       properties:
-        branches:
-          type: array
-          items:
-            type: string
-          description: List of branch names
-        default_branch:
-          type:
-          - string
-          - 'null'
-          description: The default branch of the repository
-        has_more:
-          type: boolean
-          description: Whether more branches exist beyond the returned page
+        id:
+          type: integer
+        name:
+          type: string
+        full_name:
+          type: string
       required:
-      - branches
-      - has_more
-    PatchedIntegrationConfig:
+      - full_name
+      - id
+      - name
+    RoleLookupResponse:
+      type: object
+      properties:
+        reference:
+          allOf:
+          - $ref: '#/components/schemas/RoleExternalReference'
+          description: Matching reference, or null if none exists.
+      required:
+      - reference
+    NullEnum:
+      enum:
+      - null
+    IntegrationConfig:
       type: object
       description: Standard Integration serializer.
       properties:
@@ -1551,9 +1535,55 @@ components:
         display_name:
           type: string
           readOnly: true
-    NullEnum:
-      enum:
-      - null
+      required:
+      - created_at
+      - created_by
+      - display_name
+      - errors
+      - id
+      - kind
+    GitHubReposResponse:
+      type: object
+      properties:
+        repositories:
+          type: array
+          items:
+            $ref: '#/components/schemas/GitHubRepo'
+        has_more:
+          type: boolean
+          description: Whether more repositories are available beyond this page.
+      required:
+      - has_more
+      - repositories
+    GitHubReposRefreshResponse:
+      type: object
+      properties:
+        repositories:
+          type: array
+          items:
+            $ref: '#/components/schemas/GitHubRepo'
+          description: The refreshed repository cache.
+      required:
+      - repositories
+    GitHubBranchesResponse:
+      type: object
+      properties:
+        branches:
+          type: array
+          items:
+            type: string
+          description: List of branch names
+        default_branch:
+          type:
+          - string
+          - 'null'
+          description: The default branch of the repository
+        has_more:
+          type: boolean
+          description: Whether more branches exist beyond the returned page
+      required:
+      - branches
+      - has_more
     IntegrationKindEnum:
       enum:
       - apns
@@ -1658,97 +1688,52 @@ components:
         * `twilio` - Twilio
 
         * `vercel` - Vercel'
-    PaginatedIntegrationConfigList:
-      type: object
-      required:
-      - count
-      - results
-      properties:
-        count:
-          type: integer
-          example: 123
-        next:
-          type:
-          - string
-          - 'null'
-          format: uri
-          example: http://api.example.org/accounts/?offset=400&limit=100
-        previous:
-          type:
-          - string
-          - 'null'
-          format: uri
-          example: http://api.example.org/accounts/?offset=200&limit=100
-        results:
-          type: array
-          items:
-            $ref: '#/components/schemas/IntegrationConfig'
-    SlackChannel:
-      type: object
-      properties:
-        id:
-          type: string
-          description: Slack channel ID (e.g. C0123ABC) — pass to cdp-functions inputs.channel.
-        name:
-          type: string
-          description: Slack channel name without the leading '#'.
-        is_private:
-          type: boolean
-          description: True if the channel is private.
-        is_member:
-          type: boolean
-          description: True if the PostHog Slack app is a member of the channel and can post to it.
-        is_ext_shared:
-          type: boolean
-          description: True if the channel is shared with another Slack workspace.
-        is_private_without_access:
-          type: boolean
-          description: True if the channel is private and the PostHog Slack app cannot access it.
-      required:
-      - id
-      - is_ext_shared
-      - is_member
-      - is_private
-      - is_private_without_access
-      - name
-    GitHubReposResponse:
-      type: object
-      properties:
-        repositories:
-          type: array
-          items:
-            $ref: '#/components/schemas/GitHubRepo'
-        has_more:
-          type: boolean
-          description: Whether more repositories are available beyond this page.
-      required:
-      - has_more
-      - repositories
-    GitHubRepo:
+    UserBasic:
       type: object
       properties:
         id:
           type: integer
-        name:
+          readOnly: true
+        uuid:
           type: string
-        full_name:
+          format: uuid
+          readOnly: true
+        distinct_id:
+          type:
+          - string
+          - 'null'
+          maxLength: 200
+        first_name:
           type: string
+          maxLength: 150
+        last_name:
+          type: string
+          maxLength: 150
+        email:
+          type: string
+          format: email
+          title: Email address
+          maxLength: 254
+        is_email_verified:
+          type:
+          - boolean
+          - 'null'
+        hedgehog_config:
+          type:
+          - object
+          - 'null'
+          additionalProperties: true
+          readOnly: true
+        role_at_organization:
+          oneOf:
+          - $ref: '#/components/schemas/RoleAtOrganizationEnum'
+          - $ref: '#/components/schemas/BlankEnum'
+          - $ref: '#/components/schemas/NullEnum'
       required:
-      - full_name
+      - email
+      - hedgehog_config
       - id
-      - name
-    RoleLookupResponse:
-      type: object
-      properties:
-        reference:
-          allOf:
-          - $ref: '#/components/schemas/RoleExternalReference'
-          description: Matching reference, or null if none exists.
-      required:
-      - reference
-    BlankEnum:
-      enum:
-      - ''
+      - uuid
     RoleExternalReference:
       type: object
       properties:
@@ -1799,6 +1784,37 @@ components:
       - provider_role_id
       - provider_role_name
       - role
+    BlankEnum:
+      enum:
+      - ''
+    SlackChannel:
+      type: object
+      properties:
+        id:
+          type: string
+          description: Slack channel ID (e.g. C0123ABC) — pass to cdp-functions inputs.channel.
+        name:
+          type: string
+          description: Slack channel name without the leading '#'.
+        is_private:
+          type: boolean
+          description: True if the channel is private.
+        is_member:
+          type: boolean
+          description: True if the PostHog Slack app is a member of the channel and can post to it.
+        is_ext_shared:
+          type: boolean
+          description: True if the channel is shared with another Slack workspace.
+        is_private_without_access:
+          type: boolean
+          description: True if the channel is private and the PostHog Slack app cannot access it.
+      required:
+      - id
+      - is_ext_shared
+      - is_member
+      - is_private
+      - is_private_without_access
+      - name
     PaginatedRoleExternalReferenceList:
       type: object
       required:
@@ -1824,7 +1840,7 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/RoleExternalReference'
-    IntegrationConfig:
+    PatchedIntegrationConfig:
       type: object
       description: Standard Integration serializer.
       properties:
@@ -1848,84 +1864,6 @@ components:
         display_name:
           type: string
           readOnly: true
-      required:
-      - created_at
-      - created_by
-      - display_name
-      - errors
-      - id
-      - kind
-    SlackChannelsResponse:
-      type: object
-      properties:
-        channels:
-          type: array
-          items:
-            $ref: '#/components/schemas/SlackChannel'
-          description: Slack channels visible to the PostHog Slack app.
-        lastRefreshedAt:
-          type:
-          - string
-          - 'null'
-          description: ISO 8601 timestamp of the last full Slack API refresh (only set on full lists, not single-channel lookups).
-      required:
-      - channels
-    GitHubReposRefreshResponse:
-      type: object
-      properties:
-        repositories:
-          type: array
-          items:
-            $ref: '#/components/schemas/GitHubRepo'
-          description: The refreshed repository cache.
-      required:
-      - repositories
-    UserBasic:
-      type: object
-      properties:
-        id:
-          type: integer
-          readOnly: true
-        uuid:
-          type: string
-          format: uuid
-          readOnly: true
-        distinct_id:
-          type:
-          - string
-          - 'null'
-          maxLength: 200
-        first_name:
-          type: string
-          maxLength: 150
-        last_name:
-          type: string
-          maxLength: 150
-        email:
-          type: string
-          format: email
-          title: Email address
-          maxLength: 254
-        is_email_verified:
-          type:
-          - boolean
-          - 'null'
-        hedgehog_config:
-          type:
-          - object
-          - 'null'
-          additionalProperties: true
-          readOnly: true
-        role_at_organization:
-          oneOf:
-          - $ref: '#/components/schemas/RoleAtOrganizationEnum'
-          - $ref: '#/components/schemas/BlankEnum'
-          - $ref: '#/components/schemas/NullEnum'
-      required:
-      - email
-      - hedgehog_config
-      - id
-      - uuid
     RoleAtOrganizationEnum:
       enum:
       - engineering
@@ -1952,6 +1890,68 @@ components:
         * `sales` - Sales / Success
 
         * `other` - Other'
+    SlackChannelsResponse:
+      type: object
+      properties:
+        channels:
+          type: array
+          items:
+            $ref: '#/components/schemas/SlackChannel'
+          description: Slack channels visible to the PostHog Slack app.
+        lastRefreshedAt:
+          type:
+          - string
+          - 'null'
+          description: ISO 8601 timestamp of the last full Slack API refresh (only set on full lists, not single-channel lookups).
+      required:
+      - channels
+    PaginatedIntegrationConfigList:
+      type: object
+      required:
+      - count
+      - results
+      properties:
+        count:
+          type: integer
+          example: 123
+        next:
+          type:
+          - string
+          - 'null'
+          format: uri
+          example: http://api.example.org/accounts/?offset=400&limit=100
+        previous:
+          type:
+          - string
+          - 'null'
+          format: uri
+          example: http://api.example.org/accounts/?offset=200&limit=100
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/IntegrationConfig'
+  parameters:
+    OrganizationIdPath:
+      in: path
+      name: organization_id
+      required: true
+      schema:
+        type: string
+      description: ID of the organization you're trying to access. To find the ID of the organization, make a call to /api/organizations/.
+    ProjectIdPath:
+      in: path
+      name: project_id
+      required: true
+      schema:
+        type: string
+      description: Project ID of the project you're trying to access. To find the ID of the project, make a call to /api/projects/.
+    EnvironmentIdPath:
+      in: path
+      name: environment_id
+      required: true
+      schema:
+        type: string
+      description: Deprecated. Use /api/projects/{project_id}/ instead.
   securitySchemes:
     PersonalAPIKeyAuth:
       type: http

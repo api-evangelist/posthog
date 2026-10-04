@@ -221,69 +221,6 @@ components:
           type: string
           format: uri
           writeOnly: true
-    PaginatedUserInterviewList:
-      type: object
-      required:
-      - count
-      - results
-      properties:
-        count:
-          type: integer
-          example: 123
-        next:
-          type:
-          - string
-          - 'null'
-          format: uri
-          example: http://api.example.org/accounts/?offset=400&limit=100
-        previous:
-          type:
-          - string
-          - 'null'
-          format: uri
-          example: http://api.example.org/accounts/?offset=200&limit=100
-        results:
-          type: array
-          items:
-            $ref: '#/components/schemas/UserInterview'
-    BlankEnum:
-      enum:
-      - ''
-    UserInterview:
-      type: object
-      properties:
-        id:
-          type: string
-          format: uuid
-          readOnly: true
-        created_by:
-          allOf:
-          - $ref: '#/components/schemas/UserBasic'
-          readOnly: true
-        created_at:
-          type: string
-          format: date-time
-          readOnly: true
-        interviewee_emails:
-          type: array
-          items:
-            type: string
-            maxLength: 254
-        transcript:
-          type: string
-          readOnly: true
-        summary:
-          type: string
-        audio:
-          type: string
-          format: uri
-          writeOnly: true
-      required:
-      - audio
-      - created_at
-      - created_by
-      - id
-      - transcript
     UserBasic:
       type: object
       properties:
@@ -330,9 +267,72 @@ components:
       - hedgehog_config
       - id
       - uuid
+    UserInterview:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+          readOnly: true
+        created_by:
+          allOf:
+          - $ref: '#/components/schemas/UserBasic'
+          readOnly: true
+        created_at:
+          type: string
+          format: date-time
+          readOnly: true
+        interviewee_emails:
+          type: array
+          items:
+            type: string
+            maxLength: 254
+        transcript:
+          type: string
+          readOnly: true
+        summary:
+          type: string
+        audio:
+          type: string
+          format: uri
+          writeOnly: true
+      required:
+      - audio
+      - created_at
+      - created_by
+      - id
+      - transcript
     NullEnum:
       enum:
       - null
+    BlankEnum:
+      enum:
+      - ''
+    PaginatedUserInterviewList:
+      type: object
+      required:
+      - count
+      - results
+      properties:
+        count:
+          type: integer
+          example: 123
+        next:
+          type:
+          - string
+          - 'null'
+          format: uri
+          example: http://api.example.org/accounts/?offset=400&limit=100
+        previous:
+          type:
+          - string
+          - 'null'
+          format: uri
+          example: http://api.example.org/accounts/?offset=200&limit=100
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/UserInterview'
     RoleAtOrganizationEnum:
       enum:
       - engineering

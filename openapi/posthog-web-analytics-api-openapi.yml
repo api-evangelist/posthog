@@ -41,93 +41,6 @@ paths:
       - web_analytics
 components:
   schemas:
-    TopPage:
-      type: object
-      properties:
-        host:
-          type: string
-          description: Host for the page, if recorded.
-        path:
-          type: string
-          description: URL path.
-        visitors:
-          type: integer
-          description: Unique visitors in the period.
-        change:
-          allOf:
-          - $ref: '#/components/schemas/WoWChange'
-          description: Period-over-period change in visitors, null when not meaningful.
-      required:
-      - change
-      - host
-      - path
-      - visitors
-    WoWChange:
-      type: object
-      properties:
-        percent:
-          type: integer
-          description: Absolute percentage change, rounded to nearest integer.
-        direction:
-          allOf:
-          - $ref: '#/components/schemas/DirectionEnum'
-          description: 'Direction of the change relative to the prior period.
-
-
-            * `Up` - Up
-
-            * `Down` - Down'
-        color:
-          type: string
-          description: Hex color indicating whether the change is a positive or negative signal.
-        text:
-          type: string
-          description: Short label, e.g. 'Up 12%'.
-        long_text:
-          type: string
-          description: Verbose label, e.g. 'Up 12% from prior period'.
-      required:
-      - color
-      - direction
-      - long_text
-      - percent
-      - text
-    DurationMetric:
-      type: object
-      properties:
-        current:
-          type: string
-          description: Human-readable duration, e.g. '2m 34s'.
-        previous:
-          type:
-          - string
-          - 'null'
-          description: Prior-period duration, e.g. '2m 10s'.
-        change:
-          allOf:
-          - $ref: '#/components/schemas/WoWChange'
-          description: Period-over-period change, null when not meaningful.
-      required:
-      - change
-      - current
-      - previous
-    Goal:
-      type: object
-      properties:
-        name:
-          type: string
-          description: Goal name (action name).
-        conversions:
-          type: integer
-          description: Total conversions in the period.
-        change:
-          allOf:
-          - $ref: '#/components/schemas/WoWChange'
-          description: Period-over-period change in conversions, null when not meaningful.
-      required:
-      - change
-      - conversions
-      - name
     NumericMetric:
       type: object
       properties:
@@ -149,23 +62,6 @@ components:
       - change
       - current
       - previous
-    TopSource:
-      type: object
-      properties:
-        name:
-          type: string
-          description: Initial referring domain.
-        visitors:
-          type: integer
-          description: Unique visitors from this source.
-        change:
-          allOf:
-          - $ref: '#/components/schemas/WoWChange'
-          description: Period-over-period change in visitors, null when not meaningful.
-      required:
-      - change
-      - name
-      - visitors
     WeeklyDigestResponse:
       type: object
       properties:
@@ -218,6 +114,110 @@ components:
       - top_pages
       - top_sources
       - visitors
+    DurationMetric:
+      type: object
+      properties:
+        current:
+          type: string
+          description: Human-readable duration, e.g. '2m 34s'.
+        previous:
+          type:
+          - string
+          - 'null'
+          description: Prior-period duration, e.g. '2m 10s'.
+        change:
+          allOf:
+          - $ref: '#/components/schemas/WoWChange'
+          description: Period-over-period change, null when not meaningful.
+      required:
+      - change
+      - current
+      - previous
+    TopPage:
+      type: object
+      properties:
+        host:
+          type: string
+          description: Host for the page, if recorded.
+        path:
+          type: string
+          description: URL path.
+        visitors:
+          type: integer
+          description: Unique visitors in the period.
+        change:
+          allOf:
+          - $ref: '#/components/schemas/WoWChange'
+          description: Period-over-period change in visitors, null when not meaningful.
+      required:
+      - change
+      - host
+      - path
+      - visitors
+    TopSource:
+      type: object
+      properties:
+        name:
+          type: string
+          description: Initial referring domain.
+        visitors:
+          type: integer
+          description: Unique visitors from this source.
+        change:
+          allOf:
+          - $ref: '#/components/schemas/WoWChange'
+          description: Period-over-period change in visitors, null when not meaningful.
+      required:
+      - change
+      - name
+      - visitors
+    WoWChange:
+      type: object
+      properties:
+        percent:
+          type: integer
+          description: Absolute percentage change, rounded to nearest integer.
+        direction:
+          allOf:
+          - $ref: '#/components/schemas/DirectionEnum'
+          description: 'Direction of the change relative to the prior period.
+
+
+            * `Up` - Up
+
+            * `Down` - Down'
+        color:
+          type: string
+          description: Hex color indicating whether the change is a positive or negative signal.
+        text:
+          type: string
+          description: Short label, e.g. 'Up 12%'.
+        long_text:
+          type: string
+          description: Verbose label, e.g. 'Up 12% from prior period'.
+      required:
+      - color
+      - direction
+      - long_text
+      - percent
+      - text
+    Goal:
+      type: object
+      properties:
+        name:
+          type: string
+          description: Goal name (action name).
+        conversions:
+          type: integer
+          description: Total conversions in the period.
+        change:
+          allOf:
+          - $ref: '#/components/schemas/WoWChange'
+          description: Period-over-period change in conversions, null when not meaningful.
+      required:
+      - change
+      - conversions
+      - name
     DirectionEnum:
       enum:
       - Up

@@ -362,20 +362,6 @@ paths:
       x-summary-source: derived
 components:
   schemas:
-    HeatmapScreenshotResponseStatusEnum:
-      enum:
-      - processing
-      - completed
-      - failed
-      type: string
-      description: '* `processing` - Processing
-
-        * `completed` - Completed
-
-        * `failed` - Failed'
-    BlankEnum:
-      enum:
-      - ''
     PatchedHeatmapScreenshotResponse:
       type: object
       properties:
@@ -437,6 +423,88 @@ components:
           - string
           - 'null'
           readOnly: true
+    PaginatedHeatmapScreenshotResponseList:
+      type: object
+      required:
+      - count
+      - results
+      properties:
+        count:
+          type: integer
+          example: 123
+        next:
+          type:
+          - string
+          - 'null'
+          format: uri
+          example: http://api.example.org/accounts/?offset=400&limit=100
+        previous:
+          type:
+          - string
+          - 'null'
+          format: uri
+          example: http://api.example.org/accounts/?offset=200&limit=100
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/HeatmapScreenshotResponse'
+    UserBasic:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        uuid:
+          type: string
+          format: uuid
+          readOnly: true
+        distinct_id:
+          type:
+          - string
+          - 'null'
+          maxLength: 200
+        first_name:
+          type: string
+          maxLength: 150
+        last_name:
+          type: string
+          maxLength: 150
+        email:
+          type: string
+          format: email
+          title: Email address
+          maxLength: 254
+        is_email_verified:
+          type:
+          - boolean
+          - 'null'
+        hedgehog_config:
+          type:
+          - object
+          - 'null'
+          additionalProperties: true
+          readOnly: true
+        role_at_organization:
+          oneOf:
+          - $ref: '#/components/schemas/RoleAtOrganizationEnum'
+          - $ref: '#/components/schemas/BlankEnum'
+          - $ref: '#/components/schemas/NullEnum'
+      required:
+      - email
+      - hedgehog_config
+      - id
+      - uuid
+    HeatmapScreenshotResponseTypeEnum:
+      enum:
+      - screenshot
+      - iframe
+      - recording
+      type: string
+      description: '* `screenshot` - Screenshot
+
+        * `iframe` - Iframe
+
+        * `recording` - Recording'
     HeatmapScreenshotResponse:
       type: object
       properties:
@@ -509,55 +577,12 @@ components:
       - status
       - updated_at
       - url
-    UserBasic:
-      type: object
-      properties:
-        id:
-          type: integer
-          readOnly: true
-        uuid:
-          type: string
-          format: uuid
-          readOnly: true
-        distinct_id:
-          type:
-          - string
-          - 'null'
-          maxLength: 200
-        first_name:
-          type: string
-          maxLength: 150
-        last_name:
-          type: string
-          maxLength: 150
-        email:
-          type: string
-          format: email
-          title: Email address
-          maxLength: 254
-        is_email_verified:
-          type:
-          - boolean
-          - 'null'
-        hedgehog_config:
-          type:
-          - object
-          - 'null'
-          additionalProperties: true
-          readOnly: true
-        role_at_organization:
-          oneOf:
-          - $ref: '#/components/schemas/RoleAtOrganizationEnum'
-          - $ref: '#/components/schemas/BlankEnum'
-          - $ref: '#/components/schemas/NullEnum'
-      required:
-      - email
-      - hedgehog_config
-      - id
-      - uuid
     NullEnum:
       enum:
       - null
+    BlankEnum:
+      enum:
+      - ''
     RoleAtOrganizationEnum:
       enum:
       - engineering
@@ -584,42 +609,17 @@ components:
         * `sales` - Sales / Success
 
         * `other` - Other'
-    HeatmapScreenshotResponseTypeEnum:
+    HeatmapScreenshotResponseStatusEnum:
       enum:
-      - screenshot
-      - iframe
-      - recording
+      - processing
+      - completed
+      - failed
       type: string
-      description: '* `screenshot` - Screenshot
+      description: '* `processing` - Processing
 
-        * `iframe` - Iframe
+        * `completed` - Completed
 
-        * `recording` - Recording'
-    PaginatedHeatmapScreenshotResponseList:
-      type: object
-      required:
-      - count
-      - results
-      properties:
-        count:
-          type: integer
-          example: 123
-        next:
-          type:
-          - string
-          - 'null'
-          format: uri
-          example: http://api.example.org/accounts/?offset=400&limit=100
-        previous:
-          type:
-          - string
-          - 'null'
-          format: uri
-          example: http://api.example.org/accounts/?offset=200&limit=100
-        results:
-          type: array
-          items:
-            $ref: '#/components/schemas/HeatmapScreenshotResponse'
+        * `failed` - Failed'
   parameters:
     EnvironmentIdPath:
       in: path

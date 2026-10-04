@@ -387,7 +387,58 @@ paths:
       summary: Persisted folder destroy
       x-summary-source: derived
 components:
+  parameters:
+    ProjectIdPath:
+      in: path
+      name: project_id
+      required: true
+      schema:
+        type: string
+      description: Project ID of the project you're trying to access. To find the ID of the project, make a call to /api/projects/.
+    EnvironmentIdPath:
+      in: path
+      name: environment_id
+      required: true
+      schema:
+        type: string
+      description: Deprecated. Use /api/projects/{project_id}/ instead.
   schemas:
+    PaginatedPersistedFolderList:
+      type: object
+      required:
+      - count
+      - results
+      properties:
+        count:
+          type: integer
+          example: 123
+        next:
+          type:
+          - string
+          - 'null'
+          format: uri
+          example: http://api.example.org/accounts/?offset=400&limit=100
+        previous:
+          type:
+          - string
+          - 'null'
+          format: uri
+          example: http://api.example.org/accounts/?offset=200&limit=100
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/PersistedFolder'
+    PersistedFolderTypeEnum:
+      enum:
+      - home
+      - pinned
+      - custom_products
+      type: string
+      description: '* `home` - Home
+
+        * `pinned` - Pinned
+
+        * `custom_products` - Custom Products'
     PersistedFolder:
       type: object
       properties:
@@ -415,42 +466,6 @@ components:
       - id
       - type
       - updated_at
-    PersistedFolderTypeEnum:
-      enum:
-      - home
-      - pinned
-      - custom_products
-      type: string
-      description: '* `home` - Home
-
-        * `pinned` - Pinned
-
-        * `custom_products` - Custom Products'
-    PaginatedPersistedFolderList:
-      type: object
-      required:
-      - count
-      - results
-      properties:
-        count:
-          type: integer
-          example: 123
-        next:
-          type:
-          - string
-          - 'null'
-          format: uri
-          example: http://api.example.org/accounts/?offset=400&limit=100
-        previous:
-          type:
-          - string
-          - 'null'
-          format: uri
-          example: http://api.example.org/accounts/?offset=200&limit=100
-        results:
-          type: array
-          items:
-            $ref: '#/components/schemas/PersistedFolder'
     PatchedPersistedFolder:
       type: object
       properties:
@@ -473,21 +488,6 @@ components:
           type: string
           format: date-time
           readOnly: true
-  parameters:
-    EnvironmentIdPath:
-      in: path
-      name: environment_id
-      required: true
-      schema:
-        type: string
-      description: Deprecated. Use /api/projects/{project_id}/ instead.
-    ProjectIdPath:
-      in: path
-      name: project_id
-      required: true
-      schema:
-        type: string
-      description: Project ID of the project you're trying to access. To find the ID of the project, make a call to /api/projects/.
   securitySchemes:
     PersonalAPIKeyAuth:
       type: http

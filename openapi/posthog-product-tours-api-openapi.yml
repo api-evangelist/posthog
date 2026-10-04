@@ -382,6 +382,174 @@ paths:
       x-summary-source: derived
 components:
   schemas:
+    ProductTourSerializerCreateUpdateOnlyCreationContextEnum:
+      enum:
+      - app
+      - toolbar
+      type: string
+      description: '* `app` - app
+
+        * `toolbar` - toolbar'
+    MinimalFeatureFlag:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        team_id:
+          type: integer
+          readOnly: true
+        name:
+          type: string
+        key:
+          type: string
+          maxLength: 400
+        filters:
+          type: object
+          additionalProperties: true
+        deleted:
+          type: boolean
+        active:
+          type: boolean
+        ensure_experience_continuity:
+          type:
+          - boolean
+          - 'null'
+        has_encrypted_payloads:
+          type:
+          - boolean
+          - 'null'
+        version:
+          type:
+          - integer
+          - 'null'
+          maximum: 2147483647
+          minimum: -2147483648
+        evaluation_runtime:
+          description: 'Specifies where this feature flag should be evaluated
+
+
+            * `server` - Server
+
+            * `client` - Client
+
+            * `all` - All'
+          oneOf:
+          - $ref: '#/components/schemas/EvaluationRuntimeEnum'
+          - $ref: '#/components/schemas/BlankEnum'
+          - $ref: '#/components/schemas/NullEnum'
+        bucketing_identifier:
+          description: 'Identifier used for bucketing users into rollout and variants
+
+
+            * `distinct_id` - User ID (default)
+
+            * `device_id` - Device ID'
+          oneOf:
+          - $ref: '#/components/schemas/BucketingIdentifierEnum'
+          - $ref: '#/components/schemas/BlankEnum'
+          - $ref: '#/components/schemas/NullEnum'
+        evaluation_contexts:
+          type: array
+          items:
+            type: string
+          readOnly: true
+      required:
+      - evaluation_contexts
+      - id
+      - key
+      - team_id
+    EvaluationRuntimeEnum:
+      enum:
+      - server
+      - client
+      - all
+      type: string
+      description: '* `server` - Server
+
+        * `client` - Client
+
+        * `all` - All'
+    PaginatedProductTourList:
+      type: object
+      required:
+      - count
+      - results
+      properties:
+        count:
+          type: integer
+          example: 123
+        next:
+          type:
+          - string
+          - 'null'
+          format: uri
+          example: http://api.example.org/accounts/?offset=400&limit=100
+        previous:
+          type:
+          - string
+          - 'null'
+          format: uri
+          example: http://api.example.org/accounts/?offset=200&limit=100
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/ProductTour'
+    GenerateResponse:
+      type: object
+      properties:
+        steps:
+          type: array
+          items:
+            $ref: '#/components/schemas/GenerateStepResponse'
+      required:
+      - steps
+    UserBasic:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        uuid:
+          type: string
+          format: uuid
+          readOnly: true
+        distinct_id:
+          type:
+          - string
+          - 'null'
+          maxLength: 200
+        first_name:
+          type: string
+          maxLength: 150
+        last_name:
+          type: string
+          maxLength: 150
+        email:
+          type: string
+          format: email
+          title: Email address
+          maxLength: 254
+        is_email_verified:
+          type:
+          - boolean
+          - 'null'
+        hedgehog_config:
+          type:
+          - object
+          - 'null'
+          additionalProperties: true
+          readOnly: true
+        role_at_organization:
+          oneOf:
+          - $ref: '#/components/schemas/RoleAtOrganizationEnum'
+          - $ref: '#/components/schemas/BlankEnum'
+          - $ref: '#/components/schemas/NullEnum'
+      required:
+      - email
+      - hedgehog_config
+      - id
+      - uuid
     GenerateStepResponse:
       type: object
       properties:
@@ -395,6 +563,134 @@ components:
       - description
       - step_id
       - title
+    NullEnum:
+      enum:
+      - null
+    GenerateRequest:
+      type: object
+      properties:
+        title:
+          type: string
+          default: ''
+        goal:
+          type: string
+          default: ''
+        steps:
+          type: array
+          items:
+            type: object
+            additionalProperties: true
+    BucketingIdentifierEnum:
+      enum:
+      - distinct_id
+      - device_id
+      type: string
+      description: '* `distinct_id` - User ID (default)
+
+        * `device_id` - Device ID'
+    ProductTourSerializerCreateUpdateOnly:
+      type: object
+      description: Serializer for creating and updating ProductTour.
+      properties:
+        id:
+          type: string
+          format: uuid
+          readOnly: true
+        name:
+          type: string
+          maxLength: 400
+        description:
+          type: string
+        internal_targeting_flag:
+          allOf:
+          - $ref: '#/components/schemas/MinimalFeatureFlag'
+          readOnly: true
+        linked_flag:
+          allOf:
+          - $ref: '#/components/schemas/MinimalFeatureFlag'
+          readOnly: true
+        linked_flag_id:
+          type:
+          - integer
+          - 'null'
+          writeOnly: true
+        targeting_flag_filters:
+          writeOnly: true
+        content: {}
+        auto_launch:
+          type: boolean
+        start_date:
+          type:
+          - string
+          - 'null'
+          format: date-time
+        end_date:
+          type:
+          - string
+          - 'null'
+          format: date-time
+        created_at:
+          type: string
+          format: date-time
+          readOnly: true
+        created_by:
+          allOf:
+          - $ref: '#/components/schemas/UserBasic'
+          readOnly: true
+        updated_at:
+          type: string
+          format: date-time
+          readOnly: true
+        archived:
+          type: boolean
+        creation_context:
+          allOf:
+          - $ref: '#/components/schemas/ProductTourSerializerCreateUpdateOnlyCreationContextEnum'
+          writeOnly: true
+          default: app
+          description: 'Where the tour was created/updated from
+
+
+            * `app` - app
+
+            * `toolbar` - toolbar'
+      required:
+      - created_at
+      - created_by
+      - id
+      - internal_targeting_flag
+      - linked_flag
+      - name
+      - updated_at
+    BlankEnum:
+      enum:
+      - ''
+    RoleAtOrganizationEnum:
+      enum:
+      - engineering
+      - data
+      - product
+      - founder
+      - leadership
+      - marketing
+      - sales
+      - other
+      type: string
+      description: '* `engineering` - Engineering
+
+        * `data` - Data
+
+        * `product` - Product Management
+
+        * `founder` - Founder
+
+        * `leadership` - Leadership
+
+        * `marketing` - Marketing
+
+        * `sales` - Sales / Success
+
+        * `other` - Other'
     ProductTour:
       type: object
       description: Read-only serializer for ProductTour.
@@ -466,15 +762,6 @@ components:
       - name
       - targeting_flag_filters
       - updated_at
-    GenerateResponse:
-      type: object
-      properties:
-        steps:
-          type: array
-          items:
-            $ref: '#/components/schemas/GenerateStepResponse'
-      required:
-      - steps
     PatchedProductTourSerializerCreateUpdateOnly:
       type: object
       description: Serializer for creating and updating ProductTour.
@@ -552,293 +839,6 @@ components:
       required:
       - has_draft
       - updated_at
-    PaginatedProductTourList:
-      type: object
-      required:
-      - count
-      - results
-      properties:
-        count:
-          type: integer
-          example: 123
-        next:
-          type:
-          - string
-          - 'null'
-          format: uri
-          example: http://api.example.org/accounts/?offset=400&limit=100
-        previous:
-          type:
-          - string
-          - 'null'
-          format: uri
-          example: http://api.example.org/accounts/?offset=200&limit=100
-        results:
-          type: array
-          items:
-            $ref: '#/components/schemas/ProductTour'
-    BucketingIdentifierEnum:
-      enum:
-      - distinct_id
-      - device_id
-      type: string
-      description: '* `distinct_id` - User ID (default)
-
-        * `device_id` - Device ID'
-    BlankEnum:
-      enum:
-      - ''
-    ProductTourSerializerCreateUpdateOnlyCreationContextEnum:
-      enum:
-      - app
-      - toolbar
-      type: string
-      description: '* `app` - app
-
-        * `toolbar` - toolbar'
-    UserBasic:
-      type: object
-      properties:
-        id:
-          type: integer
-          readOnly: true
-        uuid:
-          type: string
-          format: uuid
-          readOnly: true
-        distinct_id:
-          type:
-          - string
-          - 'null'
-          maxLength: 200
-        first_name:
-          type: string
-          maxLength: 150
-        last_name:
-          type: string
-          maxLength: 150
-        email:
-          type: string
-          format: email
-          title: Email address
-          maxLength: 254
-        is_email_verified:
-          type:
-          - boolean
-          - 'null'
-        hedgehog_config:
-          type:
-          - object
-          - 'null'
-          additionalProperties: true
-          readOnly: true
-        role_at_organization:
-          oneOf:
-          - $ref: '#/components/schemas/RoleAtOrganizationEnum'
-          - $ref: '#/components/schemas/BlankEnum'
-          - $ref: '#/components/schemas/NullEnum'
-      required:
-      - email
-      - hedgehog_config
-      - id
-      - uuid
-    ProductTourSerializerCreateUpdateOnly:
-      type: object
-      description: Serializer for creating and updating ProductTour.
-      properties:
-        id:
-          type: string
-          format: uuid
-          readOnly: true
-        name:
-          type: string
-          maxLength: 400
-        description:
-          type: string
-        internal_targeting_flag:
-          allOf:
-          - $ref: '#/components/schemas/MinimalFeatureFlag'
-          readOnly: true
-        linked_flag:
-          allOf:
-          - $ref: '#/components/schemas/MinimalFeatureFlag'
-          readOnly: true
-        linked_flag_id:
-          type:
-          - integer
-          - 'null'
-          writeOnly: true
-        targeting_flag_filters:
-          writeOnly: true
-        content: {}
-        auto_launch:
-          type: boolean
-        start_date:
-          type:
-          - string
-          - 'null'
-          format: date-time
-        end_date:
-          type:
-          - string
-          - 'null'
-          format: date-time
-        created_at:
-          type: string
-          format: date-time
-          readOnly: true
-        created_by:
-          allOf:
-          - $ref: '#/components/schemas/UserBasic'
-          readOnly: true
-        updated_at:
-          type: string
-          format: date-time
-          readOnly: true
-        archived:
-          type: boolean
-        creation_context:
-          allOf:
-          - $ref: '#/components/schemas/ProductTourSerializerCreateUpdateOnlyCreationContextEnum'
-          writeOnly: true
-          default: app
-          description: 'Where the tour was created/updated from
-
-
-            * `app` - app
-
-            * `toolbar` - toolbar'
-      required:
-      - created_at
-      - created_by
-      - id
-      - internal_targeting_flag
-      - linked_flag
-      - name
-      - updated_at
-    NullEnum:
-      enum:
-      - null
-    RoleAtOrganizationEnum:
-      enum:
-      - engineering
-      - data
-      - product
-      - founder
-      - leadership
-      - marketing
-      - sales
-      - other
-      type: string
-      description: '* `engineering` - Engineering
-
-        * `data` - Data
-
-        * `product` - Product Management
-
-        * `founder` - Founder
-
-        * `leadership` - Leadership
-
-        * `marketing` - Marketing
-
-        * `sales` - Sales / Success
-
-        * `other` - Other'
-    MinimalFeatureFlag:
-      type: object
-      properties:
-        id:
-          type: integer
-          readOnly: true
-        team_id:
-          type: integer
-          readOnly: true
-        name:
-          type: string
-        key:
-          type: string
-          maxLength: 400
-        filters:
-          type: object
-          additionalProperties: true
-        deleted:
-          type: boolean
-        active:
-          type: boolean
-        ensure_experience_continuity:
-          type:
-          - boolean
-          - 'null'
-        has_encrypted_payloads:
-          type:
-          - boolean
-          - 'null'
-        version:
-          type:
-          - integer
-          - 'null'
-          maximum: 2147483647
-          minimum: -2147483648
-        evaluation_runtime:
-          description: 'Specifies where this feature flag should be evaluated
-
-
-            * `server` - Server
-
-            * `client` - Client
-
-            * `all` - All'
-          oneOf:
-          - $ref: '#/components/schemas/EvaluationRuntimeEnum'
-          - $ref: '#/components/schemas/BlankEnum'
-          - $ref: '#/components/schemas/NullEnum'
-        bucketing_identifier:
-          description: 'Identifier used for bucketing users into rollout and variants
-
-
-            * `distinct_id` - User ID (default)
-
-            * `device_id` - Device ID'
-          oneOf:
-          - $ref: '#/components/schemas/BucketingIdentifierEnum'
-          - $ref: '#/components/schemas/BlankEnum'
-          - $ref: '#/components/schemas/NullEnum'
-        evaluation_contexts:
-          type: array
-          items:
-            type: string
-          readOnly: true
-      required:
-      - evaluation_contexts
-      - id
-      - key
-      - team_id
-    GenerateRequest:
-      type: object
-      properties:
-        title:
-          type: string
-          default: ''
-        goal:
-          type: string
-          default: ''
-        steps:
-          type: array
-          items:
-            type: object
-            additionalProperties: true
-    EvaluationRuntimeEnum:
-      enum:
-      - server
-      - client
-      - all
-      type: string
-      description: '* `server` - Server
-
-        * `client` - Client
-
-        * `all` - All'
   parameters:
     ProjectIdPath:
       in: path

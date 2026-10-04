@@ -201,227 +201,6 @@ paths:
       x-summary-source: derived
 components:
   schemas:
-    StageEnum:
-      enum:
-      - draft
-      - concept
-      - alpha
-      - beta
-      - general-availability
-      - archived
-      type: string
-      description: '* `draft` - draft
-
-        * `concept` - concept
-
-        * `alpha` - alpha
-
-        * `beta` - beta
-
-        * `general-availability` - general availability
-
-        * `archived` - archived'
-    EarlyAccessFeature:
-      type: object
-      properties:
-        id:
-          type: string
-          format: uuid
-          readOnly: true
-        feature_flag:
-          allOf:
-          - $ref: '#/components/schemas/MinimalFeatureFlag'
-          readOnly: true
-        name:
-          type: string
-          description: The name of the early access feature.
-          maxLength: 200
-        description:
-          type: string
-          description: A longer description of what this early access feature does, shown to users in the opt-in UI.
-        stage:
-          allOf:
-          - $ref: '#/components/schemas/StageEnum'
-          description: 'Lifecycle stage. Valid values: draft, concept, alpha, beta, general-availability, archived. Moving to an active stage (alpha/beta/general-availability) enables the feature flag for opted-in users.
-
-
-            * `draft` - draft
-
-            * `concept` - concept
-
-            * `alpha` - alpha
-
-            * `beta` - beta
-
-            * `general-availability` - general availability
-
-            * `archived` - archived'
-        documentation_url:
-          type: string
-          format: uri
-          description: URL to external documentation for this feature. Shown to users in the opt-in UI.
-          maxLength: 800
-        payload:
-          type: object
-          additionalProperties: true
-          description: Feature flag payload for this early access feature
-          readOnly: true
-        created_at:
-          type: string
-          format: date-time
-          readOnly: true
-      required:
-      - created_at
-      - feature_flag
-      - id
-      - name
-      - payload
-      - stage
-    PatchedEarlyAccessFeature:
-      type: object
-      properties:
-        id:
-          type: string
-          format: uuid
-          readOnly: true
-        feature_flag:
-          allOf:
-          - $ref: '#/components/schemas/MinimalFeatureFlag'
-          readOnly: true
-        name:
-          type: string
-          description: The name of the early access feature.
-          maxLength: 200
-        description:
-          type: string
-          description: A longer description of what this early access feature does, shown to users in the opt-in UI.
-        stage:
-          allOf:
-          - $ref: '#/components/schemas/StageEnum'
-          description: 'Lifecycle stage. Valid values: draft, concept, alpha, beta, general-availability, archived. Moving to an active stage (alpha/beta/general-availability) enables the feature flag for opted-in users.
-
-
-            * `draft` - draft
-
-            * `concept` - concept
-
-            * `alpha` - alpha
-
-            * `beta` - beta
-
-            * `general-availability` - general availability
-
-            * `archived` - archived'
-        documentation_url:
-          type: string
-          format: uri
-          description: URL to external documentation for this feature. Shown to users in the opt-in UI.
-          maxLength: 800
-        payload:
-          type: object
-          additionalProperties: true
-          description: Feature flag payload for this early access feature
-          readOnly: true
-        created_at:
-          type: string
-          format: date-time
-          readOnly: true
-    PaginatedEarlyAccessFeatureList:
-      type: object
-      required:
-      - count
-      - results
-      properties:
-        count:
-          type: integer
-          example: 123
-        next:
-          type:
-          - string
-          - 'null'
-          format: uri
-          example: http://api.example.org/accounts/?offset=400&limit=100
-        previous:
-          type:
-          - string
-          - 'null'
-          format: uri
-          example: http://api.example.org/accounts/?offset=200&limit=100
-        results:
-          type: array
-          items:
-            $ref: '#/components/schemas/EarlyAccessFeature'
-    BucketingIdentifierEnum:
-      enum:
-      - distinct_id
-      - device_id
-      type: string
-      description: '* `distinct_id` - User ID (default)
-
-        * `device_id` - Device ID'
-    EarlyAccessFeatureSerializerCreateOnly:
-      type: object
-      properties:
-        id:
-          type: string
-          format: uuid
-          readOnly: true
-        name:
-          type: string
-          description: The name of the early access feature.
-          maxLength: 200
-        description:
-          type: string
-          description: A longer description of what this early access feature does, shown to users in the opt-in UI.
-        stage:
-          allOf:
-          - $ref: '#/components/schemas/StageEnum'
-          description: 'Lifecycle stage. Valid values: draft, concept, alpha, beta, general-availability, archived. Moving to an active stage (alpha/beta/general-availability) enables the feature flag for opted-in users.
-
-
-            * `draft` - draft
-
-            * `concept` - concept
-
-            * `alpha` - alpha
-
-            * `beta` - beta
-
-            * `general-availability` - general availability
-
-            * `archived` - archived'
-        documentation_url:
-          type: string
-          format: uri
-          description: URL to external documentation for this feature. Shown to users in the opt-in UI.
-          maxLength: 800
-        payload:
-          description: Arbitrary JSON metadata associated with this feature.
-        created_at:
-          type: string
-          format: date-time
-          readOnly: true
-        feature_flag_id:
-          type: integer
-          writeOnly: true
-          description: Optional ID of an existing feature flag to link. If omitted, a new flag is auto-created from the feature name. The flag must not already be linked to another feature, must not be group-based, and must not be multivariate.
-        feature_flag:
-          allOf:
-          - $ref: '#/components/schemas/MinimalFeatureFlag'
-          readOnly: true
-        _create_in_folder:
-          type: string
-          writeOnly: true
-          title: ' create in folder'
-      required:
-      - created_at
-      - feature_flag
-      - id
-      - name
-      - stage
-    BlankEnum:
-      enum:
-      - ''
     MinimalFeatureFlag:
       type: object
       properties:
@@ -491,9 +270,6 @@ components:
       - id
       - key
       - team_id
-    NullEnum:
-      enum:
-      - null
     EvaluationRuntimeEnum:
       enum:
       - server
@@ -505,6 +281,230 @@ components:
         * `client` - Client
 
         * `all` - All'
+    PatchedEarlyAccessFeature:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+          readOnly: true
+        feature_flag:
+          allOf:
+          - $ref: '#/components/schemas/MinimalFeatureFlag'
+          readOnly: true
+        name:
+          type: string
+          description: The name of the early access feature.
+          maxLength: 200
+        description:
+          type: string
+          description: A longer description of what this early access feature does, shown to users in the opt-in UI.
+        stage:
+          allOf:
+          - $ref: '#/components/schemas/StageEnum'
+          description: 'Lifecycle stage. Valid values: draft, concept, alpha, beta, general-availability, archived. Moving to an active stage (alpha/beta/general-availability) enables the feature flag for opted-in users.
+
+
+            * `draft` - draft
+
+            * `concept` - concept
+
+            * `alpha` - alpha
+
+            * `beta` - beta
+
+            * `general-availability` - general availability
+
+            * `archived` - archived'
+        documentation_url:
+          type: string
+          format: uri
+          description: URL to external documentation for this feature. Shown to users in the opt-in UI.
+          maxLength: 800
+        payload:
+          type: object
+          additionalProperties: true
+          description: Feature flag payload for this early access feature
+          readOnly: true
+        created_at:
+          type: string
+          format: date-time
+          readOnly: true
+    EarlyAccessFeatureSerializerCreateOnly:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+          readOnly: true
+        name:
+          type: string
+          description: The name of the early access feature.
+          maxLength: 200
+        description:
+          type: string
+          description: A longer description of what this early access feature does, shown to users in the opt-in UI.
+        stage:
+          allOf:
+          - $ref: '#/components/schemas/StageEnum'
+          description: 'Lifecycle stage. Valid values: draft, concept, alpha, beta, general-availability, archived. Moving to an active stage (alpha/beta/general-availability) enables the feature flag for opted-in users.
+
+
+            * `draft` - draft
+
+            * `concept` - concept
+
+            * `alpha` - alpha
+
+            * `beta` - beta
+
+            * `general-availability` - general availability
+
+            * `archived` - archived'
+        documentation_url:
+          type: string
+          format: uri
+          description: URL to external documentation for this feature. Shown to users in the opt-in UI.
+          maxLength: 800
+        payload:
+          description: Arbitrary JSON metadata associated with this feature.
+        created_at:
+          type: string
+          format: date-time
+          readOnly: true
+        feature_flag_id:
+          type: integer
+          writeOnly: true
+          description: Optional ID of an existing feature flag to link. If omitted, a new flag is auto-created from the feature name. The flag must not already be linked to another feature, must not be group-based, and must not be multivariate.
+        feature_flag:
+          allOf:
+          - $ref: '#/components/schemas/MinimalFeatureFlag'
+          readOnly: true
+        _create_in_folder:
+          type: string
+          writeOnly: true
+          title: ' create in folder'
+      required:
+      - created_at
+      - feature_flag
+      - id
+      - name
+      - stage
+    PaginatedEarlyAccessFeatureList:
+      type: object
+      required:
+      - count
+      - results
+      properties:
+        count:
+          type: integer
+          example: 123
+        next:
+          type:
+          - string
+          - 'null'
+          format: uri
+          example: http://api.example.org/accounts/?offset=400&limit=100
+        previous:
+          type:
+          - string
+          - 'null'
+          format: uri
+          example: http://api.example.org/accounts/?offset=200&limit=100
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/EarlyAccessFeature'
+    NullEnum:
+      enum:
+      - null
+    BucketingIdentifierEnum:
+      enum:
+      - distinct_id
+      - device_id
+      type: string
+      description: '* `distinct_id` - User ID (default)
+
+        * `device_id` - Device ID'
+    BlankEnum:
+      enum:
+      - ''
+    EarlyAccessFeature:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+          readOnly: true
+        feature_flag:
+          allOf:
+          - $ref: '#/components/schemas/MinimalFeatureFlag'
+          readOnly: true
+        name:
+          type: string
+          description: The name of the early access feature.
+          maxLength: 200
+        description:
+          type: string
+          description: A longer description of what this early access feature does, shown to users in the opt-in UI.
+        stage:
+          allOf:
+          - $ref: '#/components/schemas/StageEnum'
+          description: 'Lifecycle stage. Valid values: draft, concept, alpha, beta, general-availability, archived. Moving to an active stage (alpha/beta/general-availability) enables the feature flag for opted-in users.
+
+
+            * `draft` - draft
+
+            * `concept` - concept
+
+            * `alpha` - alpha
+
+            * `beta` - beta
+
+            * `general-availability` - general availability
+
+            * `archived` - archived'
+        documentation_url:
+          type: string
+          format: uri
+          description: URL to external documentation for this feature. Shown to users in the opt-in UI.
+          maxLength: 800
+        payload:
+          type: object
+          additionalProperties: true
+          description: Feature flag payload for this early access feature
+          readOnly: true
+        created_at:
+          type: string
+          format: date-time
+          readOnly: true
+      required:
+      - created_at
+      - feature_flag
+      - id
+      - name
+      - payload
+      - stage
+    StageEnum:
+      enum:
+      - draft
+      - concept
+      - alpha
+      - beta
+      - general-availability
+      - archived
+      type: string
+      description: '* `draft` - draft
+
+        * `concept` - concept
+
+        * `alpha` - alpha
+
+        * `beta` - beta
+
+        * `general-availability` - general availability
+
+        * `archived` - archived'
   parameters:
     ProjectIdPath:
       in: path
