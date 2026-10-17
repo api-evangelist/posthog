@@ -362,149 +362,6 @@ paths:
       x-summary-source: derived
 components:
   schemas:
-    PatchedHeatmapScreenshotResponse:
-      type: object
-      properties:
-        id:
-          type: string
-          format: uuid
-          readOnly: true
-        short_id:
-          type: string
-          readOnly: true
-        name:
-          type:
-          - string
-          - 'null'
-          maxLength: 400
-        url:
-          type: string
-          format: uri
-          maxLength: 2000
-        data_url:
-          type:
-          - string
-          - 'null'
-          format: uri
-          description: URL for fetching heatmap data
-          maxLength: 2000
-        target_widths: {}
-        type:
-          $ref: '#/components/schemas/HeatmapScreenshotResponseTypeEnum'
-        status:
-          allOf:
-          - $ref: '#/components/schemas/HeatmapScreenshotResponseStatusEnum'
-          readOnly: true
-        has_content:
-          type: boolean
-          readOnly: true
-        snapshots:
-          type: array
-          items:
-            type: object
-            additionalProperties: true
-          readOnly: true
-        deleted:
-          type: boolean
-        created_by:
-          allOf:
-          - $ref: '#/components/schemas/UserBasic'
-          readOnly: true
-        created_at:
-          type: string
-          format: date-time
-          readOnly: true
-        updated_at:
-          type: string
-          format: date-time
-          readOnly: true
-        exception:
-          type:
-          - string
-          - 'null'
-          readOnly: true
-    PaginatedHeatmapScreenshotResponseList:
-      type: object
-      required:
-      - count
-      - results
-      properties:
-        count:
-          type: integer
-          example: 123
-        next:
-          type:
-          - string
-          - 'null'
-          format: uri
-          example: http://api.example.org/accounts/?offset=400&limit=100
-        previous:
-          type:
-          - string
-          - 'null'
-          format: uri
-          example: http://api.example.org/accounts/?offset=200&limit=100
-        results:
-          type: array
-          items:
-            $ref: '#/components/schemas/HeatmapScreenshotResponse'
-    UserBasic:
-      type: object
-      properties:
-        id:
-          type: integer
-          readOnly: true
-        uuid:
-          type: string
-          format: uuid
-          readOnly: true
-        distinct_id:
-          type:
-          - string
-          - 'null'
-          maxLength: 200
-        first_name:
-          type: string
-          maxLength: 150
-        last_name:
-          type: string
-          maxLength: 150
-        email:
-          type: string
-          format: email
-          title: Email address
-          maxLength: 254
-        is_email_verified:
-          type:
-          - boolean
-          - 'null'
-        hedgehog_config:
-          type:
-          - object
-          - 'null'
-          additionalProperties: true
-          readOnly: true
-        role_at_organization:
-          oneOf:
-          - $ref: '#/components/schemas/RoleAtOrganizationEnum'
-          - $ref: '#/components/schemas/BlankEnum'
-          - $ref: '#/components/schemas/NullEnum'
-      required:
-      - email
-      - hedgehog_config
-      - id
-      - uuid
-    HeatmapScreenshotResponseTypeEnum:
-      enum:
-      - screenshot
-      - iframe
-      - recording
-      type: string
-      description: '* `screenshot` - Screenshot
-
-        * `iframe` - Iframe
-
-        * `recording` - Recording'
     HeatmapScreenshotResponse:
       type: object
       properties:
@@ -577,12 +434,92 @@ components:
       - status
       - updated_at
       - url
-    NullEnum:
-      enum:
-      - null
-    BlankEnum:
-      enum:
-      - ''
+    PaginatedHeatmapScreenshotResponseList:
+      type: object
+      required:
+      - count
+      - results
+      properties:
+        count:
+          type: integer
+          example: 123
+        next:
+          type:
+          - string
+          - 'null'
+          format: uri
+          example: http://api.example.org/accounts/?offset=400&limit=100
+        previous:
+          type:
+          - string
+          - 'null'
+          format: uri
+          example: http://api.example.org/accounts/?offset=200&limit=100
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/HeatmapScreenshotResponse'
+    PatchedHeatmapScreenshotResponse:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+          readOnly: true
+        short_id:
+          type: string
+          readOnly: true
+        name:
+          type:
+          - string
+          - 'null'
+          maxLength: 400
+        url:
+          type: string
+          format: uri
+          maxLength: 2000
+        data_url:
+          type:
+          - string
+          - 'null'
+          format: uri
+          description: URL for fetching heatmap data
+          maxLength: 2000
+        target_widths: {}
+        type:
+          $ref: '#/components/schemas/HeatmapScreenshotResponseTypeEnum'
+        status:
+          allOf:
+          - $ref: '#/components/schemas/HeatmapScreenshotResponseStatusEnum'
+          readOnly: true
+        has_content:
+          type: boolean
+          readOnly: true
+        snapshots:
+          type: array
+          items:
+            type: object
+            additionalProperties: true
+          readOnly: true
+        deleted:
+          type: boolean
+        created_by:
+          allOf:
+          - $ref: '#/components/schemas/UserBasic'
+          readOnly: true
+        created_at:
+          type: string
+          format: date-time
+          readOnly: true
+        updated_at:
+          type: string
+          format: date-time
+          readOnly: true
+        exception:
+          type:
+          - string
+          - 'null'
+          readOnly: true
     RoleAtOrganizationEnum:
       enum:
       - engineering
@@ -609,6 +546,12 @@ components:
         * `sales` - Sales / Success
 
         * `other` - Other'
+    BlankEnum:
+      enum:
+      - ''
+    NullEnum:
+      enum:
+      - null
     HeatmapScreenshotResponseStatusEnum:
       enum:
       - processing
@@ -620,6 +563,63 @@ components:
         * `completed` - Completed
 
         * `failed` - Failed'
+    HeatmapScreenshotResponseTypeEnum:
+      enum:
+      - screenshot
+      - iframe
+      - recording
+      type: string
+      description: '* `screenshot` - Screenshot
+
+        * `iframe` - Iframe
+
+        * `recording` - Recording'
+    UserBasic:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        uuid:
+          type: string
+          format: uuid
+          readOnly: true
+        distinct_id:
+          type:
+          - string
+          - 'null'
+          maxLength: 200
+        first_name:
+          type: string
+          maxLength: 150
+        last_name:
+          type: string
+          maxLength: 150
+        email:
+          type: string
+          format: email
+          title: Email address
+          maxLength: 254
+        is_email_verified:
+          type:
+          - boolean
+          - 'null'
+        hedgehog_config:
+          type:
+          - object
+          - 'null'
+          additionalProperties: true
+          readOnly: true
+        role_at_organization:
+          oneOf:
+          - $ref: '#/components/schemas/RoleAtOrganizationEnum'
+          - $ref: '#/components/schemas/BlankEnum'
+          - $ref: '#/components/schemas/NullEnum'
+      required:
+      - email
+      - hedgehog_config
+      - id
+      - uuid
   parameters:
     EnvironmentIdPath:
       in: path

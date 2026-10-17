@@ -82,18 +82,22 @@ paths:
       summary: Plugin configs logs list
       x-summary-source: derived
 components:
+  parameters:
+    EnvironmentIdPath:
+      in: path
+      name: environment_id
+      required: true
+      schema:
+        type: string
+      description: Deprecated. Use /api/projects/{project_id}/ instead.
+    ProjectIdPath:
+      in: path
+      name: project_id
+      required: true
+      schema:
+        type: string
+      description: Project ID of the project you're trying to access. To find the ID of the project, make a call to /api/projects/.
   schemas:
-    PluginLogEntrySourceEnum:
-      enum:
-      - SYSTEM
-      - PLUGIN
-      - CONSOLE
-      type: string
-      description: '* `SYSTEM` - SYSTEM
-
-        * `PLUGIN` - PLUGIN
-
-        * `CONSOLE` - CONSOLE'
     PluginLogEntry:
       type: object
       properties:
@@ -128,6 +132,17 @@ components:
       - team_id
       - timestamp
       - type
+    PluginLogEntrySourceEnum:
+      enum:
+      - SYSTEM
+      - PLUGIN
+      - CONSOLE
+      type: string
+      description: '* `SYSTEM` - SYSTEM
+
+        * `PLUGIN` - PLUGIN
+
+        * `CONSOLE` - CONSOLE'
     PluginLogEntryTypeEnum:
       enum:
       - DEBUG
@@ -170,21 +185,6 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/PluginLogEntry'
-  parameters:
-    ProjectIdPath:
-      in: path
-      name: project_id
-      required: true
-      schema:
-        type: string
-      description: Project ID of the project you're trying to access. To find the ID of the project, make a call to /api/projects/.
-    EnvironmentIdPath:
-      in: path
-      name: environment_id
-      required: true
-      schema:
-        type: string
-      description: Deprecated. Use /api/projects/{project_id}/ instead.
   securitySchemes:
     PersonalAPIKeyAuth:
       type: http

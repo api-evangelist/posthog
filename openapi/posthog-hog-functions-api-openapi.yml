@@ -1266,57 +1266,116 @@ paths:
       x-summary-source: derived
 components:
   schemas:
-    PatchedHogFunctionRearrange:
-      type: object
-      properties:
-        orders:
-          type: object
-          additionalProperties:
-            type: integer
-          description: Map of hog function UUIDs to their new execution_order values.
-    HogFunctionStatus:
-      type: object
-      properties:
-        state:
-          $ref: '#/components/schemas/HogFunctionStatusStateEnum'
-        tokens:
-          type: integer
-      required:
-      - state
-      - tokens
-    HogFunctionMasking:
-      type: object
-      properties:
-        ttl:
-          type: integer
-          maximum: 86400
-          minimum: 60
-          description: Time-to-live in seconds for the masking cache (60–86400).
-        threshold:
-          type:
-          - integer
-          - 'null'
-          description: Optional threshold count before masking applies.
-        hash:
-          type: string
-          description: Hog expression used to compute the masking hash.
-        bytecode:
-          description: Compiled bytecode for the hash expression. Auto-generated.
-      required:
-      - hash
-      - ttl
-    AppMetricsTotalsResponse:
-      type: object
-      properties:
-        totals:
-          type: object
-          additionalProperties:
-            type: integer
-      required:
-      - totals
-    NullEnum:
+    HogFunctionTypeEnum:
       enum:
-      - null
+      - destination
+      - site_destination
+      - internal_destination
+      - source_webhook
+      - warehouse_source_webhook
+      - site_app
+      - transformation
+      type: string
+      description: '* `destination` - Destination
+
+        * `site_destination` - Site Destination
+
+        * `internal_destination` - Internal Destination
+
+        * `source_webhook` - Source Webhook
+
+        * `warehouse_source_webhook` - Warehouse Source Webhook
+
+        * `site_app` - Site App
+
+        * `transformation` - Transformation'
+    InputsSchemaItemTypeEnum:
+      enum:
+      - string
+      - number
+      - boolean
+      - dictionary
+      - choice
+      - json
+      - integration
+      - integration_field
+      - email
+      - native_email
+      - posthog_assignee
+      - posthog_ticket_tags
+      - posthog_business_hours
+      type: string
+      description: '* `string` - string
+
+        * `number` - number
+
+        * `boolean` - boolean
+
+        * `dictionary` - dictionary
+
+        * `choice` - choice
+
+        * `json` - json
+
+        * `integration` - integration
+
+        * `integration_field` - integration_field
+
+        * `email` - email
+
+        * `native_email` - native_email
+
+        * `posthog_assignee` - posthog_assignee
+
+        * `posthog_ticket_tags` - posthog_ticket_tags
+
+        * `posthog_business_hours` - posthog_business_hours'
+    InputsSchemaItem:
+      type: object
+      properties:
+        type:
+          $ref: '#/components/schemas/InputsSchemaItemTypeEnum'
+        key:
+          type: string
+        label:
+          type: string
+        choices:
+          type: array
+          items:
+            type: object
+            additionalProperties: true
+        required:
+          type: boolean
+          default: false
+        default: {}
+        secret:
+          type: boolean
+          default: false
+        hidden:
+          type: boolean
+          default: false
+        description:
+          type: string
+        integration:
+          type: string
+        integration_key:
+          type: string
+        requires_field:
+          type: string
+        integration_field:
+          type: string
+        requiredScopes:
+          type: string
+        templating:
+          oneOf:
+          - type: boolean
+          - type: string
+            enum:
+            - hog
+            - liquid
+      required:
+      - key
+      - type
     HogFunctionTemplate:
       type: object
       properties:
@@ -1376,6 +1435,115 @@ components:
       - inputs_schema
       - name
       - type
+    PaginatedHogFunctionMinimalList:
+      type: object
+      required:
+      - count
+      - results
+      properties:
+        count:
+          type: integer
+          example: 123
+        next:
+          type:
+          - string
+          - 'null'
+          format: uri
+          example: http://api.example.org/accounts/?offset=400&limit=100
+        previous:
+          type:
+          - string
+          - 'null'
+          format: uri
+          example: http://api.example.org/accounts/?offset=200&limit=100
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/HogFunctionMinimal'
+    UserBasic:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        uuid:
+          type: string
+          format: uuid
+          readOnly: true
+        distinct_id:
+          type:
+          - string
+          - 'null'
+          maxLength: 200
+        first_name:
+          type: string
+          maxLength: 150
+        last_name:
+          type: string
+          maxLength: 150
+        email:
+          type: string
+          format: email
+          title: Email address
+          maxLength: 254
+        is_email_verified:
+          type:
+          - boolean
+          - 'null'
+        hedgehog_config:
+          type:
+          - object
+          - 'null'
+          additionalProperties: true
+          readOnly: true
+        role_at_organization:
+          oneOf:
+          - $ref: '#/components/schemas/RoleAtOrganizationEnum'
+          - $ref: '#/components/schemas/BlankEnum'
+          - $ref: '#/components/schemas/NullEnum'
+      required:
+      - email
+      - hedgehog_config
+      - id
+      - uuid
+    HogFunctionMappingTemplate:
+      type: object
+      properties:
+        name:
+          type: string
+          description: Name of this mapping template.
+        include_by_default:
+          type:
+          - boolean
+          - 'null'
+          description: Whether this mapping is enabled by default.
+        use_all_events_by_default:
+          type:
+          - boolean
+          - 'null'
+          description: Whether this mapping should match all events by default, hiding the event filter UI.
+        filters:
+          description: Event filters specific to this mapping.
+        inputs:
+          description: Input values specific to this mapping.
+        inputs_schema:
+          description: Additional input schema fields specific to this mapping.
+      required:
+      - name
+    HogFunctionFiltersSourceEnum:
+      enum:
+      - events
+      - person-updates
+      - data-warehouse-table
+      type: string
+      description: '* `events` - events
+
+        * `person-updates` - person-updates
+
+        * `data-warehouse-table` - data-warehouse-table'
+    BlankEnum:
+      enum:
+      - ''
     PatchedHogFunction:
       type: object
       properties:
@@ -1503,20 +1671,79 @@ components:
           - 'null'
           format: uuid
           readOnly: true
-    AppMetricsResponse:
+    HogFunctionMinimal:
       type: object
       properties:
-        labels:
-          type: array
-          items:
-            type: string
-        series:
-          type: array
-          items:
-            $ref: '#/components/schemas/AppMetricSeries'
+        id:
+          type: string
+          format: uuid
+          readOnly: true
+        type:
+          type:
+          - string
+          - 'null'
+          readOnly: true
+        name:
+          type:
+          - string
+          - 'null'
+          readOnly: true
+        description:
+          type: string
+          readOnly: true
+        created_at:
+          type: string
+          format: date-time
+          readOnly: true
+        created_by:
+          allOf:
+          - $ref: '#/components/schemas/UserBasic'
+          readOnly: true
+        updated_at:
+          type: string
+          format: date-time
+          readOnly: true
+        enabled:
+          type: boolean
+          readOnly: true
+        hog:
+          type: string
+          readOnly: true
+        filters:
+          readOnly: true
+        icon_url:
+          type:
+          - string
+          - 'null'
+          readOnly: true
+        template:
+          allOf:
+          - $ref: '#/components/schemas/HogFunctionTemplate'
+          readOnly: true
+        status:
+          allOf:
+          - $ref: '#/components/schemas/HogFunctionStatus'
+          readOnly: true
+        execution_order:
+          type:
+          - integer
+          - 'null'
+          readOnly: true
       required:
-      - labels
-      - series
+      - created_at
+      - created_by
+      - description
+      - enabled
+      - execution_order
+      - filters
+      - hog
+      - icon_url
+      - id
+      - name
+      - status
+      - template
+      - type
+      - updated_at
     InputsItem:
       type: object
       properties:
@@ -1536,18 +1763,67 @@ components:
       - bytecode
       - order
       - transpiled
-    AppMetricSeries:
+    AppMetricsTotalsResponse:
+      type: object
+      properties:
+        totals:
+          type: object
+          additionalProperties:
+            type: integer
+      required:
+      - totals
+    Mappings:
       type: object
       properties:
         name:
           type: string
-        values:
+        inputs_schema:
           type: array
           items:
+            $ref: '#/components/schemas/InputsSchemaItem'
+        inputs:
+          type: object
+          additionalProperties:
+            $ref: '#/components/schemas/InputsItem'
+        filters:
+          $ref: '#/components/schemas/HogFunctionFilters'
+    PatchedHogFunctionRearrange:
+      type: object
+      properties:
+        orders:
+          type: object
+          additionalProperties:
             type: integer
-      required:
-      - name
-      - values
+          description: Map of hog function UUIDs to their new execution_order values.
+    RoleAtOrganizationEnum:
+      enum:
+      - engineering
+      - data
+      - product
+      - founder
+      - leadership
+      - marketing
+      - sales
+      - other
+      type: string
+      description: '* `engineering` - Engineering
+
+        * `data` - Data
+
+        * `product` - Product Management
+
+        * `founder` - Founder
+
+        * `leadership` - Leadership
+
+        * `marketing` - Marketing
+
+        * `sales` - Sales / Success
+
+        * `other` - Other'
+    NullEnum:
+      enum:
+      - null
     HogFunctionStatusStateEnum:
       enum:
       - 0
@@ -1568,52 +1844,145 @@ components:
         * `11` - 11
 
         * `12` - 12'
-    UserBasic:
+    HogFunctionTemplatingEnum:
+      enum:
+      - hog
+      - liquid
+      type: string
+      description: '* `hog` - hog
+
+        * `liquid` - liquid'
+    HogFunctionFilters:
       type: object
       properties:
-        id:
-          type: integer
-          readOnly: true
-        uuid:
+        source:
+          allOf:
+          - $ref: '#/components/schemas/HogFunctionFiltersSourceEnum'
+          default: events
+        actions:
+          type: array
+          items:
+            type: object
+            additionalProperties: true
+        events:
+          type: array
+          items:
+            type: object
+            additionalProperties: true
+        data_warehouse:
+          type: array
+          items:
+            type: object
+            additionalProperties: true
+        properties:
+          type: array
+          items:
+            type: object
+            additionalProperties: true
+        bytecode: {}
+        transpiled: {}
+        filter_test_accounts:
+          type: boolean
+        bytecode_error:
           type: string
-          format: uuid
+    AppMetricSeries:
+      type: object
+      properties:
+        name:
+          type: string
+        values:
+          type: array
+          items:
+            type: integer
+      required:
+      - name
+      - values
+    HogFunctionStatus:
+      type: object
+      properties:
+        state:
+          $ref: '#/components/schemas/HogFunctionStatusStateEnum'
+        tokens:
+          type: integer
+      required:
+      - state
+      - tokens
+    HogFunctionMasking:
+      type: object
+      properties:
+        ttl:
+          type: integer
+          maximum: 86400
+          minimum: 60
+          description: Time-to-live in seconds for the masking cache (60–86400).
+        threshold:
+          type:
+          - integer
+          - 'null'
+          description: Optional threshold count before masking applies.
+        hash:
+          type: string
+          description: Hog expression used to compute the masking hash.
+        bytecode:
+          description: Compiled bytecode for the hash expression. Auto-generated.
+      required:
+      - hash
+      - ttl
+    HogFunctionInvocation:
+      type: object
+      properties:
+        configuration:
+          allOf:
+          - $ref: '#/components/schemas/HogFunction'
+          writeOnly: true
+          description: Full function configuration to test.
+        globals:
+          type: object
+          additionalProperties: true
+          writeOnly: true
+          description: Mock global variables available during test invocation.
+        clickhouse_event:
+          type: object
+          additionalProperties: true
+          writeOnly: true
+          description: Mock ClickHouse event data to test the function with.
+        mock_async_functions:
+          type: boolean
+          writeOnly: true
+          default: true
+          description: When true (default), async functions like fetch() are simulated.
+        status:
+          type: string
           readOnly: true
-        distinct_id:
+          description: Invocation result status.
+        logs:
+          type: array
+          items: {}
+          readOnly: true
+          description: Execution logs from the test invocation.
+        invocation_id:
           type:
           - string
           - 'null'
-          maxLength: 200
-        first_name:
-          type: string
-          maxLength: 150
-        last_name:
-          type: string
-          maxLength: 150
-        email:
-          type: string
-          format: email
-          title: Email address
-          maxLength: 254
-        is_email_verified:
-          type:
-          - boolean
-          - 'null'
-        hedgehog_config:
-          type:
-          - object
-          - 'null'
-          additionalProperties: true
-          readOnly: true
-        role_at_organization:
-          oneOf:
-          - $ref: '#/components/schemas/RoleAtOrganizationEnum'
-          - $ref: '#/components/schemas/BlankEnum'
-          - $ref: '#/components/schemas/NullEnum'
+          description: Optional invocation ID for correlation.
       required:
-      - email
-      - hedgehog_config
-      - id
-      - uuid
+      - configuration
+      - logs
+      - status
+    AppMetricsResponse:
+      type: object
+      properties:
+        labels:
+          type: array
+          items:
+            type: string
+        series:
+          type: array
+          items:
+            $ref: '#/components/schemas/AppMetricSeries'
+      required:
+      - labels
+      - series
     HogFunction:
       type: object
       properties:
@@ -1751,383 +2120,7 @@ components:
       - template
       - transpiled
       - updated_at
-    BlankEnum:
-      enum:
-      - ''
-    PaginatedHogFunctionMinimalList:
-      type: object
-      required:
-      - count
-      - results
-      properties:
-        count:
-          type: integer
-          example: 123
-        next:
-          type:
-          - string
-          - 'null'
-          format: uri
-          example: http://api.example.org/accounts/?offset=400&limit=100
-        previous:
-          type:
-          - string
-          - 'null'
-          format: uri
-          example: http://api.example.org/accounts/?offset=200&limit=100
-        results:
-          type: array
-          items:
-            $ref: '#/components/schemas/HogFunctionMinimal'
-    HogFunctionMappingTemplate:
-      type: object
-      properties:
-        name:
-          type: string
-          description: Name of this mapping template.
-        include_by_default:
-          type:
-          - boolean
-          - 'null'
-          description: Whether this mapping is enabled by default.
-        use_all_events_by_default:
-          type:
-          - boolean
-          - 'null'
-          description: Whether this mapping should match all events by default, hiding the event filter UI.
-        filters:
-          description: Event filters specific to this mapping.
-        inputs:
-          description: Input values specific to this mapping.
-        inputs_schema:
-          description: Additional input schema fields specific to this mapping.
-      required:
-      - name
-    InputsSchemaItemTypeEnum:
-      enum:
-      - string
-      - number
-      - boolean
-      - dictionary
-      - choice
-      - json
-      - integration
-      - integration_field
-      - email
-      - native_email
-      - posthog_assignee
-      - posthog_ticket_tags
-      - posthog_business_hours
-      type: string
-      description: '* `string` - string
-
-        * `number` - number
-
-        * `boolean` - boolean
-
-        * `dictionary` - dictionary
-
-        * `choice` - choice
-
-        * `json` - json
-
-        * `integration` - integration
-
-        * `integration_field` - integration_field
-
-        * `email` - email
-
-        * `native_email` - native_email
-
-        * `posthog_assignee` - posthog_assignee
-
-        * `posthog_ticket_tags` - posthog_ticket_tags
-
-        * `posthog_business_hours` - posthog_business_hours'
-    InputsSchemaItem:
-      type: object
-      properties:
-        type:
-          $ref: '#/components/schemas/InputsSchemaItemTypeEnum'
-        key:
-          type: string
-        label:
-          type: string
-        choices:
-          type: array
-          items:
-            type: object
-            additionalProperties: true
-        required:
-          type: boolean
-          default: false
-        default: {}
-        secret:
-          type: boolean
-          default: false
-        hidden:
-          type: boolean
-          default: false
-        description:
-          type: string
-        integration:
-          type: string
-        integration_key:
-          type: string
-        requires_field:
-          type: string
-        integration_field:
-          type: string
-        requiredScopes:
-          type: string
-        templating:
-          oneOf:
-          - type: boolean
-          - type: string
-            enum:
-            - hog
-            - liquid
-      required:
-      - key
-      - type
-    HogFunctionTypeEnum:
-      enum:
-      - destination
-      - site_destination
-      - internal_destination
-      - source_webhook
-      - warehouse_source_webhook
-      - site_app
-      - transformation
-      type: string
-      description: '* `destination` - Destination
-
-        * `site_destination` - Site Destination
-
-        * `internal_destination` - Internal Destination
-
-        * `source_webhook` - Source Webhook
-
-        * `warehouse_source_webhook` - Warehouse Source Webhook
-
-        * `site_app` - Site App
-
-        * `transformation` - Transformation'
-    Mappings:
-      type: object
-      properties:
-        name:
-          type: string
-        inputs_schema:
-          type: array
-          items:
-            $ref: '#/components/schemas/InputsSchemaItem'
-        inputs:
-          type: object
-          additionalProperties:
-            $ref: '#/components/schemas/InputsItem'
-        filters:
-          $ref: '#/components/schemas/HogFunctionFilters'
-    HogFunctionFilters:
-      type: object
-      properties:
-        source:
-          allOf:
-          - $ref: '#/components/schemas/HogFunctionFiltersSourceEnum'
-          default: events
-        actions:
-          type: array
-          items:
-            type: object
-            additionalProperties: true
-        events:
-          type: array
-          items:
-            type: object
-            additionalProperties: true
-        data_warehouse:
-          type: array
-          items:
-            type: object
-            additionalProperties: true
-        properties:
-          type: array
-          items:
-            type: object
-            additionalProperties: true
-        bytecode: {}
-        transpiled: {}
-        filter_test_accounts:
-          type: boolean
-        bytecode_error:
-          type: string
-    HogFunctionTemplatingEnum:
-      enum:
-      - hog
-      - liquid
-      type: string
-      description: '* `hog` - hog
-
-        * `liquid` - liquid'
-    HogFunctionInvocation:
-      type: object
-      properties:
-        configuration:
-          allOf:
-          - $ref: '#/components/schemas/HogFunction'
-          writeOnly: true
-          description: Full function configuration to test.
-        globals:
-          type: object
-          additionalProperties: true
-          writeOnly: true
-          description: Mock global variables available during test invocation.
-        clickhouse_event:
-          type: object
-          additionalProperties: true
-          writeOnly: true
-          description: Mock ClickHouse event data to test the function with.
-        mock_async_functions:
-          type: boolean
-          writeOnly: true
-          default: true
-          description: When true (default), async functions like fetch() are simulated.
-        status:
-          type: string
-          readOnly: true
-          description: Invocation result status.
-        logs:
-          type: array
-          items: {}
-          readOnly: true
-          description: Execution logs from the test invocation.
-        invocation_id:
-          type:
-          - string
-          - 'null'
-          description: Optional invocation ID for correlation.
-      required:
-      - configuration
-      - logs
-      - status
-    HogFunctionMinimal:
-      type: object
-      properties:
-        id:
-          type: string
-          format: uuid
-          readOnly: true
-        type:
-          type:
-          - string
-          - 'null'
-          readOnly: true
-        name:
-          type:
-          - string
-          - 'null'
-          readOnly: true
-        description:
-          type: string
-          readOnly: true
-        created_at:
-          type: string
-          format: date-time
-          readOnly: true
-        created_by:
-          allOf:
-          - $ref: '#/components/schemas/UserBasic'
-          readOnly: true
-        updated_at:
-          type: string
-          format: date-time
-          readOnly: true
-        enabled:
-          type: boolean
-          readOnly: true
-        hog:
-          type: string
-          readOnly: true
-        filters:
-          readOnly: true
-        icon_url:
-          type:
-          - string
-          - 'null'
-          readOnly: true
-        template:
-          allOf:
-          - $ref: '#/components/schemas/HogFunctionTemplate'
-          readOnly: true
-        status:
-          allOf:
-          - $ref: '#/components/schemas/HogFunctionStatus'
-          readOnly: true
-        execution_order:
-          type:
-          - integer
-          - 'null'
-          readOnly: true
-      required:
-      - created_at
-      - created_by
-      - description
-      - enabled
-      - execution_order
-      - filters
-      - hog
-      - icon_url
-      - id
-      - name
-      - status
-      - template
-      - type
-      - updated_at
-    HogFunctionFiltersSourceEnum:
-      enum:
-      - events
-      - person-updates
-      - data-warehouse-table
-      type: string
-      description: '* `events` - events
-
-        * `person-updates` - person-updates
-
-        * `data-warehouse-table` - data-warehouse-table'
-    RoleAtOrganizationEnum:
-      enum:
-      - engineering
-      - data
-      - product
-      - founder
-      - leadership
-      - marketing
-      - sales
-      - other
-      type: string
-      description: '* `engineering` - Engineering
-
-        * `data` - Data
-
-        * `product` - Product Management
-
-        * `founder` - Founder
-
-        * `leadership` - Leadership
-
-        * `marketing` - Marketing
-
-        * `sales` - Sales / Success
-
-        * `other` - Other'
   parameters:
-    ProjectIdPath:
-      in: path
-      name: project_id
-      required: true
-      schema:
-        type: string
-      description: Project ID of the project you're trying to access. To find the ID of the project, make a call to /api/projects/.
     EnvironmentIdPath:
       in: path
       name: environment_id
@@ -2135,6 +2128,13 @@ components:
       schema:
         type: string
       description: Deprecated. Use /api/projects/{project_id}/ instead.
+    ProjectIdPath:
+      in: path
+      name: project_id
+      required: true
+      schema:
+        type: string
+      description: Project ID of the project you're trying to access. To find the ID of the project, make a call to /api/projects/.
   securitySchemes:
     PersonalAPIKeyAuth:
       type: http

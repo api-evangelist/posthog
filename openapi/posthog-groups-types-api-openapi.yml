@@ -124,41 +124,15 @@ paths:
       summary: Groups types update metadata partial update
       x-summary-source: derived
 components:
+  parameters:
+    ProjectIdPath:
+      in: path
+      name: project_id
+      required: true
+      schema:
+        type: string
+      description: Project ID of the project you're trying to access. To find the ID of the project, make a call to /api/projects/.
   schemas:
-    PatchedGroupType:
-      type: object
-      properties:
-        group_type:
-          type: string
-          readOnly: true
-        group_type_index:
-          type: integer
-          readOnly: true
-        name_singular:
-          type:
-          - string
-          - 'null'
-          maxLength: 400
-        name_plural:
-          type:
-          - string
-          - 'null'
-          maxLength: 400
-        detail_dashboard:
-          type:
-          - integer
-          - 'null'
-        default_columns:
-          type:
-          - array
-          - 'null'
-          items:
-            type: string
-        created_at:
-          type:
-          - string
-          - 'null'
-          format: date-time
     GroupType:
       type: object
       properties:
@@ -196,14 +170,40 @@ components:
       required:
       - group_type
       - group_type_index
-  parameters:
-    ProjectIdPath:
-      in: path
-      name: project_id
-      required: true
-      schema:
-        type: string
-      description: Project ID of the project you're trying to access. To find the ID of the project, make a call to /api/projects/.
+    PatchedGroupType:
+      type: object
+      properties:
+        group_type:
+          type: string
+          readOnly: true
+        group_type_index:
+          type: integer
+          readOnly: true
+        name_singular:
+          type:
+          - string
+          - 'null'
+          maxLength: 400
+        name_plural:
+          type:
+          - string
+          - 'null'
+          maxLength: 400
+        detail_dashboard:
+          type:
+          - integer
+          - 'null'
+        default_columns:
+          type:
+          - array
+          - 'null'
+          items:
+            type: string
+        created_at:
+          type:
+          - string
+          - 'null'
+          format: date-time
   securitySchemes:
     PersonalAPIKeyAuth:
       type: http

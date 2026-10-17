@@ -197,27 +197,6 @@ paths:
       x-summary-source: derived
 components:
   schemas:
-    PatchedCustomerProfileConfig:
-      type: object
-      properties:
-        id:
-          type: string
-          format: uuid
-          readOnly: true
-        scope:
-          $ref: '#/components/schemas/CustomerProfileConfigScopeEnum'
-        content: {}
-        sidebar: {}
-        created_at:
-          type: string
-          format: date-time
-          readOnly: true
-        updated_at:
-          type:
-          - string
-          - 'null'
-          format: date-time
-          readOnly: true
     CustomerProfileConfigScopeEnum:
       enum:
       - person
@@ -238,31 +217,6 @@ components:
         * `group_3` - Group 3
 
         * `group_4` - Group 4'
-    PaginatedCustomerProfileConfigList:
-      type: object
-      required:
-      - count
-      - results
-      properties:
-        count:
-          type: integer
-          example: 123
-        next:
-          type:
-          - string
-          - 'null'
-          format: uri
-          example: http://api.example.org/accounts/?offset=400&limit=100
-        previous:
-          type:
-          - string
-          - 'null'
-          format: uri
-          example: http://api.example.org/accounts/?offset=200&limit=100
-        results:
-          type: array
-          items:
-            $ref: '#/components/schemas/CustomerProfileConfig'
     CustomerProfileConfig:
       type: object
       properties:
@@ -289,6 +243,52 @@ components:
       - id
       - scope
       - updated_at
+    PaginatedCustomerProfileConfigList:
+      type: object
+      required:
+      - count
+      - results
+      properties:
+        count:
+          type: integer
+          example: 123
+        next:
+          type:
+          - string
+          - 'null'
+          format: uri
+          example: http://api.example.org/accounts/?offset=400&limit=100
+        previous:
+          type:
+          - string
+          - 'null'
+          format: uri
+          example: http://api.example.org/accounts/?offset=200&limit=100
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/CustomerProfileConfig'
+    PatchedCustomerProfileConfig:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+          readOnly: true
+        scope:
+          $ref: '#/components/schemas/CustomerProfileConfigScopeEnum'
+        content: {}
+        sidebar: {}
+        created_at:
+          type: string
+          format: date-time
+          readOnly: true
+        updated_at:
+          type:
+          - string
+          - 'null'
+          format: date-time
+          readOnly: true
   parameters:
     ProjectIdPath:
       in: path

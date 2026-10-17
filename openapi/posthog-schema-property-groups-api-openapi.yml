@@ -195,7 +195,60 @@ paths:
       x-summary-source: derived
 components:
   schemas:
-    PatchedSchemaPropertyGroup:
+    SchemaPropertyGroupPropertyPropertyTypeEnum:
+      enum:
+      - DateTime
+      - String
+      - Numeric
+      - Boolean
+      - Object
+      type: string
+      description: '* `DateTime` - DateTime
+
+        * `String` - String
+
+        * `Numeric` - Numeric
+
+        * `Boolean` - Boolean
+
+        * `Object` - Object'
+    EventDefinitionBasic:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        name:
+          type: string
+      required:
+      - id
+      - name
+    PaginatedSchemaPropertyGroupList:
+      type: object
+      required:
+      - count
+      - results
+      properties:
+        count:
+          type: integer
+          example: 123
+        next:
+          type:
+          - string
+          - 'null'
+          format: uri
+          example: http://api.example.org/accounts/?offset=400&limit=100
+        previous:
+          type:
+          - string
+          - 'null'
+          format: uri
+          example: http://api.example.org/accounts/?offset=200&limit=100
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/SchemaPropertyGroup'
+    SchemaPropertyGroup:
       type: object
       properties:
         id:
@@ -228,6 +281,45 @@ components:
           allOf:
           - $ref: '#/components/schemas/UserBasic'
           readOnly: true
+      required:
+      - created_at
+      - created_by
+      - events
+      - id
+      - name
+      - updated_at
+    RoleAtOrganizationEnum:
+      enum:
+      - engineering
+      - data
+      - product
+      - founder
+      - leadership
+      - marketing
+      - sales
+      - other
+      type: string
+      description: '* `engineering` - Engineering
+
+        * `data` - Data
+
+        * `product` - Product Management
+
+        * `founder` - Founder
+
+        * `leadership` - Leadership
+
+        * `marketing` - Marketing
+
+        * `sales` - Sales / Success
+
+        * `other` - Other'
+    BlankEnum:
+      enum:
+      - ''
+    NullEnum:
+      enum:
+      - null
     UserBasic:
       type: object
       properties:
@@ -274,7 +366,7 @@ components:
       - hedgehog_config
       - id
       - uuid
-    SchemaPropertyGroup:
+    PatchedSchemaPropertyGroup:
       type: object
       properties:
         id:
@@ -307,47 +399,6 @@ components:
           allOf:
           - $ref: '#/components/schemas/UserBasic'
           readOnly: true
-      required:
-      - created_at
-      - created_by
-      - events
-      - id
-      - name
-      - updated_at
-    NullEnum:
-      enum:
-      - null
-    SchemaPropertyGroupPropertyPropertyTypeEnum:
-      enum:
-      - DateTime
-      - String
-      - Numeric
-      - Boolean
-      - Object
-      type: string
-      description: '* `DateTime` - DateTime
-
-        * `String` - String
-
-        * `Numeric` - Numeric
-
-        * `Boolean` - Boolean
-
-        * `Object` - Object'
-    EventDefinitionBasic:
-      type: object
-      properties:
-        id:
-          type: string
-          format: uuid
-        name:
-          type: string
-      required:
-      - id
-      - name
-    BlankEnum:
-      enum:
-      - ''
     SchemaPropertyGroupProperty:
       type: object
       properties:
@@ -380,57 +431,6 @@ components:
       - name
       - property_type
       - updated_at
-    RoleAtOrganizationEnum:
-      enum:
-      - engineering
-      - data
-      - product
-      - founder
-      - leadership
-      - marketing
-      - sales
-      - other
-      type: string
-      description: '* `engineering` - Engineering
-
-        * `data` - Data
-
-        * `product` - Product Management
-
-        * `founder` - Founder
-
-        * `leadership` - Leadership
-
-        * `marketing` - Marketing
-
-        * `sales` - Sales / Success
-
-        * `other` - Other'
-    PaginatedSchemaPropertyGroupList:
-      type: object
-      required:
-      - count
-      - results
-      properties:
-        count:
-          type: integer
-          example: 123
-        next:
-          type:
-          - string
-          - 'null'
-          format: uri
-          example: http://api.example.org/accounts/?offset=400&limit=100
-        previous:
-          type:
-          - string
-          - 'null'
-          format: uri
-          example: http://api.example.org/accounts/?offset=200&limit=100
-        results:
-          type: array
-          items:
-            $ref: '#/components/schemas/SchemaPropertyGroup'
   parameters:
     ProjectIdPath:
       in: path

@@ -878,91 +878,14 @@ paths:
       x-summary-source: derived
 components:
   schemas:
-    FeatureFlagFilterPropertyGenericSchema:
-      type: object
-      properties:
-        key:
-          type: string
-          description: Property key used in this feature flag condition.
-        type:
-          allOf:
-          - $ref: '#/components/schemas/PropertyGroupTypeEnum'
-          description: 'Property filter type. Common values are ''person'' and ''cohort''.
-
-
-            * `cohort` - cohort
-
-            * `person` - person
-
-            * `group` - group'
-        cohort_name:
-          type:
-          - string
-          - 'null'
-          description: Resolved cohort name for cohort-type filters.
-        group_type_index:
-          type:
-          - integer
-          - 'null'
-          description: Group type index when using group-based filters.
-        value:
-          description: Comparison value for the property filter. Supports strings, numbers, booleans, and arrays.
-        operator:
-          allOf:
-          - $ref: '#/components/schemas/FeatureFlagFilterPropertyGenericSchemaOperatorEnum'
-          description: 'Operator used to compare the property value.
-
-
-            * `exact` - exact
-
-            * `is_not` - is_not
-
-            * `icontains` - icontains
-
-            * `not_icontains` - not_icontains
-
-            * `regex` - regex
-
-            * `not_regex` - not_regex
-
-            * `gt` - gt
-
-            * `gte` - gte
-
-            * `lt` - lt
-
-            * `lte` - lte'
-      required:
-      - key
-      - operator
-      - value
-    ActionEnum:
+    ExistenceOperatorEnum:
       enum:
-      - add
-      - remove
-      - set
+      - is_set
+      - is_not_set
       type: string
-      description: '* `add` - add
+      description: '* `is_set` - is_set
 
-        * `remove` - remove
-
-        * `set` - set'
-    FeatureFlagMultivariateVariantSchema:
-      type: object
-      properties:
-        key:
-          type: string
-          description: Unique key for this variant.
-        name:
-          type: string
-          description: Human-readable name for this variant.
-        rollout_percentage:
-          type: number
-          format: double
-          description: Variant rollout percentage.
-      required:
-      - key
-      - rollout_percentage
+        * `is_not_set` - is_not_set'
     ActivityLogEntry:
       type: object
       properties:
@@ -997,35 +920,622 @@ components:
       - item_id
       - scope
       - user
-    FeatureFlagFilterPropertySemverSchemaOperatorEnum:
+    Merge:
+      type: object
+      properties:
+        type:
+          type: string
+          readOnly: true
+        source:
+          readOnly: true
+        target:
+          readOnly: true
+      required:
+      - source
+      - target
+      - type
+    DependentFlag:
+      type: object
+      properties:
+        id:
+          type: integer
+          description: Feature flag ID
+        key:
+          type: string
+          description: Feature flag key
+        name:
+          type: string
+          description: Feature flag name
+      required:
+      - id
+      - key
+      - name
+    FeatureFlagMultivariateSchema:
+      type: object
+      properties:
+        variants:
+          type: array
+          items:
+            $ref: '#/components/schemas/FeatureFlagMultivariateVariantSchema'
+          description: Variant definitions for multivariate feature flags.
+      required:
+      - variants
+    UserBlastRadiusResponse:
+      type: object
+      properties:
+        affected:
+          type: integer
+          description: Number of entities matching the condition (users or groups depending on group_type_index)
+        total:
+          type: integer
+          description: Total number of entities of this type in the project
+      required:
+      - affected
+      - total
+    BulkUpdateTagsError:
+      type: object
+      properties:
+        id:
+          type: integer
+        reason:
+          type: string
+      required:
+      - id
+      - reason
+    FeatureFlagVersionResponse:
+      type: object
+      description: Feature flag state at a given version plus reconstruction metadata.
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        key:
+          type: string
+          maxLength: 400
+        name:
+          type: string
+        filters:
+          type: object
+          additionalProperties: true
+          readOnly: true
+        active:
+          type: boolean
+        deleted:
+          type: boolean
+        version:
+          type:
+          - integer
+          - 'null'
+          maximum: 2147483647
+          minimum: -2147483648
+        rollback_conditions: {}
+        performed_rollback:
+          type:
+          - boolean
+          - 'null'
+        ensure_experience_continuity:
+          type:
+          - boolean
+          - 'null'
+        has_enriched_analytics:
+          type:
+          - boolean
+          - 'null'
+        is_remote_configuration:
+          type:
+          - boolean
+          - 'null'
+        has_encrypted_payloads:
+          type:
+          - boolean
+          - 'null'
+        evaluation_runtime:
+          description: 'Specifies where this feature flag should be evaluated
+
+
+            * `server` - Server
+
+            * `client` - Client
+
+            * `all` - All'
+          oneOf:
+          - $ref: '#/components/schemas/EvaluationRuntimeEnum'
+          - $ref: '#/components/schemas/BlankEnum'
+          - $ref: '#/components/schemas/NullEnum'
+        bucketing_identifier:
+          description: 'Identifier used for bucketing users into rollout and variants
+
+
+            * `distinct_id` - User ID (default)
+
+            * `device_id` - Device ID'
+          oneOf:
+          - $ref: '#/components/schemas/BucketingIdentifierEnum'
+          - $ref: '#/components/schemas/BlankEnum'
+          - $ref: '#/components/schemas/NullEnum'
+        last_called_at:
+          type:
+          - string
+          - 'null'
+          format: date-time
+          description: Last time this feature flag was called (from $feature_flag_called events)
+        created_at:
+          type: string
+          format: date-time
+        created_by:
+          type:
+          - integer
+          - 'null'
+          readOnly: true
+        is_historical:
+          type: boolean
+          readOnly: true
+          description: False for the current version; true for reconstructed historical versions.
+        version_timestamp:
+          type:
+          - string
+          - 'null'
+          format: date-time
+          readOnly: true
+        modified_by:
+          type:
+          - integer
+          - 'null'
+          readOnly: true
+          description: User from the activity log entry that produced this version.
+      required:
+      - created_by
+      - filters
+      - id
+      - is_historical
+      - key
+      - modified_by
+      - version_timestamp
+    FeatureFlagConditionGroupSchema:
+      type: object
+      properties:
+        properties:
+          type: array
+          items:
+            $ref: '#/components/schemas/FeatureFlagFilterPropertySchema'
+          description: Property conditions for this release condition group.
+        rollout_percentage:
+          type: number
+          format: double
+          description: Rollout percentage for this release condition group.
+        variant:
+          type:
+          - string
+          - 'null'
+          description: Variant key override for multivariate flags.
+        aggregation_group_type_index:
+          type:
+          - integer
+          - 'null'
+          description: Group type index for this condition set. None means person-level aggregation.
+    FeatureFlagFilterPropertySemverSchema:
+      type: object
+      properties:
+        key:
+          type: string
+          description: Property key used in this feature flag condition.
+        type:
+          allOf:
+          - $ref: '#/components/schemas/PropertyGroupTypeEnum'
+          description: 'Property filter type. Common values are ''person'' and ''cohort''.
+
+
+            * `cohort` - cohort
+
+            * `person` - person
+
+            * `group` - group'
+        cohort_name:
+          type:
+          - string
+          - 'null'
+          description: Resolved cohort name for cohort-type filters.
+        group_type_index:
+          type:
+          - integer
+          - 'null'
+          description: Group type index when using group-based filters.
+        operator:
+          allOf:
+          - $ref: '#/components/schemas/FeatureFlagFilterPropertySemverSchemaOperatorEnum'
+          description: 'Semantic version comparison operator.
+
+
+            * `semver_gt` - semver_gt
+
+            * `semver_gte` - semver_gte
+
+            * `semver_lt` - semver_lt
+
+            * `semver_lte` - semver_lte
+
+            * `semver_eq` - semver_eq
+
+            * `semver_neq` - semver_neq
+
+            * `semver_tilde` - semver_tilde
+
+            * `semver_caret` - semver_caret
+
+            * `semver_wildcard` - semver_wildcard'
+        value:
+          type: string
+          description: Semantic version string.
+      required:
+      - key
+      - operator
+      - value
+    FeatureFlagFilterPropertySchema:
+      oneOf:
+      - $ref: '#/components/schemas/FeatureFlagFilterPropertyGenericSchema'
+      - $ref: '#/components/schemas/FeatureFlagFilterPropertyExistsSchema'
+      - $ref: '#/components/schemas/FeatureFlagFilterPropertyDateSchema'
+      - $ref: '#/components/schemas/FeatureFlagFilterPropertySemverSchema'
+      - $ref: '#/components/schemas/FeatureFlagFilterPropertyMultiContainsSchema'
+      - $ref: '#/components/schemas/FeatureFlagFilterPropertyCohortInSchema'
+      - $ref: '#/components/schemas/FeatureFlagFilterPropertyFlagEvaluatesSchema'
+    Detail:
+      type: object
+      properties:
+        id:
+          type: string
+          readOnly: true
+        changes:
+          type: array
+          items:
+            $ref: '#/components/schemas/Change'
+        merge:
+          $ref: '#/components/schemas/Merge'
+        trigger:
+          $ref: '#/components/schemas/Trigger'
+        name:
+          type: string
+          readOnly: true
+        short_id:
+          type: string
+          readOnly: true
+        type:
+          type: string
+          readOnly: true
+      required:
+      - id
+      - name
+      - short_id
+      - type
+    FeatureFlagMultivariateVariantSchema:
+      type: object
+      properties:
+        key:
+          type: string
+          description: Unique key for this variant.
+        name:
+          type: string
+          description: Human-readable name for this variant.
+        rollout_percentage:
+          type: number
+          format: double
+          description: Variant rollout percentage.
+      required:
+      - key
+      - rollout_percentage
+    PropertyGroupTypeEnum:
       enum:
-      - semver_gt
-      - semver_gte
-      - semver_lt
-      - semver_lte
-      - semver_eq
-      - semver_neq
-      - semver_tilde
-      - semver_caret
-      - semver_wildcard
+      - cohort
+      - person
+      - group
       type: string
-      description: '* `semver_gt` - semver_gt
+      description: '* `cohort` - cohort
 
-        * `semver_gte` - semver_gte
+        * `person` - person
 
-        * `semver_lt` - semver_lt
+        * `group` - group'
+    DateOperatorEnum:
+      enum:
+      - is_date_exact
+      - is_date_before
+      - is_date_after
+      type: string
+      description: '* `is_date_exact` - is_date_exact
 
-        * `semver_lte` - semver_lte
+        * `is_date_before` - is_date_before
 
-        * `semver_eq` - semver_eq
+        * `is_date_after` - is_date_after'
+    FeatureFlagFilterPropertyFlagEvaluatesSchemaOperatorEnum:
+      enum:
+      - flag_evaluates_to
+      type: string
+      description: '* `flag_evaluates_to` - flag_evaluates_to'
+    FeatureFlagFilterPropertyMultiContainsSchema:
+      type: object
+      properties:
+        key:
+          type: string
+          description: Property key used in this feature flag condition.
+        type:
+          allOf:
+          - $ref: '#/components/schemas/PropertyGroupTypeEnum'
+          description: 'Property filter type. Common values are ''person'' and ''cohort''.
 
-        * `semver_neq` - semver_neq
 
-        * `semver_tilde` - semver_tilde
+            * `cohort` - cohort
 
-        * `semver_caret` - semver_caret
+            * `person` - person
 
-        * `semver_wildcard` - semver_wildcard'
+            * `group` - group'
+        cohort_name:
+          type:
+          - string
+          - 'null'
+          description: Resolved cohort name for cohort-type filters.
+        group_type_index:
+          type:
+          - integer
+          - 'null'
+          description: Group type index when using group-based filters.
+        operator:
+          allOf:
+          - $ref: '#/components/schemas/FeatureFlagFilterPropertyMultiContainsSchemaOperatorEnum'
+          description: 'Multi-contains operator.
+
+
+            * `icontains_multi` - icontains_multi
+
+            * `not_icontains_multi` - not_icontains_multi'
+        value:
+          type: array
+          items:
+            type: string
+          description: List of strings to evaluate against.
+      required:
+      - key
+      - operator
+      - value
+    BulkUpdateTagsResponse:
+      type: object
+      properties:
+        updated:
+          type: array
+          items:
+            $ref: '#/components/schemas/BulkUpdateTagsItem'
+        skipped:
+          type: array
+          items:
+            $ref: '#/components/schemas/BulkUpdateTagsError'
+      required:
+      - skipped
+      - updated
+    UserBasic:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        uuid:
+          type: string
+          format: uuid
+          readOnly: true
+        distinct_id:
+          type:
+          - string
+          - 'null'
+          maxLength: 200
+        first_name:
+          type: string
+          maxLength: 150
+        last_name:
+          type: string
+          maxLength: 150
+        email:
+          type: string
+          format: email
+          title: Email address
+          maxLength: 254
+        is_email_verified:
+          type:
+          - boolean
+          - 'null'
+        hedgehog_config:
+          type:
+          - object
+          - 'null'
+          additionalProperties: true
+          readOnly: true
+        role_at_organization:
+          oneOf:
+          - $ref: '#/components/schemas/RoleAtOrganizationEnum'
+          - $ref: '#/components/schemas/BlankEnum'
+          - $ref: '#/components/schemas/NullEnum'
+      required:
+      - email
+      - hedgehog_config
+      - id
+      - uuid
+    FeatureFlagFilterPropertyCohortInSchema:
+      type: object
+      properties:
+        key:
+          type: string
+          description: Property key used in this feature flag condition.
+        type:
+          allOf:
+          - $ref: '#/components/schemas/FeatureFlagFilterPropertyCohortInSchemaTypeEnum'
+          description: 'Cohort property type required for in/not_in operators.
+
+
+            * `cohort` - cohort'
+        cohort_name:
+          type:
+          - string
+          - 'null'
+          description: Resolved cohort name for cohort-type filters.
+        group_type_index:
+          type:
+          - integer
+          - 'null'
+          description: Group type index when using group-based filters.
+        operator:
+          allOf:
+          - $ref: '#/components/schemas/FeatureFlagFilterPropertyCohortInSchemaOperatorEnum'
+          description: 'Membership operator for cohort properties.
+
+
+            * `in` - in
+
+            * `not_in` - not_in'
+        value:
+          description: Cohort comparison value (single or list, depending on usage).
+      required:
+      - key
+      - operator
+      - type
+      - value
+    FeatureFlagFiltersSchema:
+      type: object
+      properties:
+        groups:
+          type: array
+          items:
+            $ref: '#/components/schemas/FeatureFlagConditionGroupSchema'
+          description: Release condition groups for the feature flag.
+        multivariate:
+          allOf:
+          - $ref: '#/components/schemas/FeatureFlagMultivariateSchema'
+          description: Multivariate configuration for variant-based rollouts.
+        aggregation_group_type_index:
+          type:
+          - integer
+          - 'null'
+          description: Group type index for group-based feature flags.
+        payloads:
+          type: object
+          additionalProperties:
+            type: string
+          description: Optional payload values keyed by variant key.
+        super_groups:
+          type: array
+          items:
+            type: object
+            additionalProperties: true
+          description: Additional super condition groups used by experiments.
+        feature_enrollment:
+          type:
+          - boolean
+          - 'null'
+          description: Whether this flag has early access feature enrollment enabled. When true, the flag is evaluated against the person property $feature_enrollment/{flag_key}.
+    PatchedFeatureFlagPartialUpdateRequestSchema:
+      type: object
+      properties:
+        key:
+          type: string
+          description: Feature flag key.
+        name:
+          type: string
+          description: Feature flag description (stored in the `name` field for backwards compatibility).
+        filters:
+          allOf:
+          - $ref: '#/components/schemas/FeatureFlagFiltersSchema'
+          description: Feature flag targeting configuration.
+        active:
+          type: boolean
+          description: Whether the feature flag is active.
+        tags:
+          type: array
+          items:
+            type: string
+          description: Organizational tags for this feature flag.
+        evaluation_contexts:
+          type: array
+          items:
+            type: string
+          description: Evaluation contexts that control where this flag evaluates at runtime.
+    ActivityLogPaginatedResponse:
+      type: object
+      description: Response shape for paginated activity log endpoints.
+      properties:
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/ActivityLogEntry'
+        next:
+          type:
+          - string
+          - 'null'
+          format: uri
+        previous:
+          type:
+          - string
+          - 'null'
+          format: uri
+        total_count:
+          type: integer
+      required:
+      - next
+      - previous
+      - results
+      - total_count
+    Change:
+      type: object
+      properties:
+        type:
+          type: string
+          readOnly: true
+        action:
+          type: string
+          readOnly: true
+        field:
+          type: string
+          readOnly: true
+        before:
+          readOnly: true
+        after:
+          readOnly: true
+      required:
+      - action
+      - after
+      - before
+      - field
+      - type
+    UserBlastRadiusRequest:
+      type: object
+      properties:
+        condition:
+          type: object
+          additionalProperties: true
+          description: The release condition to evaluate
+        group_type_index:
+          type:
+          - integer
+          - 'null'
+          description: Group type index for group-based flags (null for person-based flags)
+      required:
+      - condition
+    FeatureFlagFilterPropertyCohortInSchemaOperatorEnum:
+      enum:
+      - in
+      - not_in
+      type: string
+      description: '* `in` - in
+
+        * `not_in` - not_in'
+    EvaluationRuntimeEnum:
+      enum:
+      - server
+      - client
+      - all
+      type: string
+      description: '* `server` - Server
+
+        * `client` - Client
+
+        * `all` - All'
+    BlankEnum:
+      enum:
+      - ''
     BulkUpdateTagsRequest:
       type: object
       properties:
@@ -1237,10 +1747,38 @@ components:
       - updated_at
       - usage_dashboard
       - user_access_level
-    NullEnum:
+    Trigger:
+      type: object
+      properties:
+        job_type:
+          type: string
+          readOnly: true
+        job_id:
+          type: string
+          readOnly: true
+        payload:
+          readOnly: true
+      required:
+      - job_id
+      - job_type
+      - payload
+    FeatureFlagFilterPropertyCohortInSchemaTypeEnum:
       enum:
-      - null
-    FeatureFlagFilterPropertyCohortInSchema:
+      - cohort
+      type: string
+      description: '* `cohort` - cohort'
+    ActionEnum:
+      enum:
+      - add
+      - remove
+      - set
+      type: string
+      description: '* `add` - add
+
+        * `remove` - remove
+
+        * `set` - set'
+    FeatureFlagFilterPropertyFlagEvaluatesSchema:
       type: object
       properties:
         key:
@@ -1248,11 +1786,11 @@ components:
           description: Property key used in this feature flag condition.
         type:
           allOf:
-          - $ref: '#/components/schemas/FeatureFlagFilterPropertyCohortInSchemaTypeEnum'
-          description: 'Cohort property type required for in/not_in operators.
+          - $ref: '#/components/schemas/FeatureFlagFilterPropertyFlagEvaluatesSchemaTypeEnum'
+          description: 'Flag property type required for flag dependency checks.
 
 
-            * `cohort` - cohort'
+            * `flag` - flag'
         cohort_name:
           type:
           - string
@@ -1265,20 +1803,193 @@ components:
           description: Group type index when using group-based filters.
         operator:
           allOf:
-          - $ref: '#/components/schemas/FeatureFlagFilterPropertyCohortInSchemaOperatorEnum'
-          description: 'Membership operator for cohort properties.
+          - $ref: '#/components/schemas/FeatureFlagFilterPropertyFlagEvaluatesSchemaOperatorEnum'
+          description: 'Operator for feature flag dependency evaluation.
 
 
-            * `in` - in
-
-            * `not_in` - not_in'
+            * `flag_evaluates_to` - flag_evaluates_to'
         value:
-          description: Cohort comparison value (single or list, depending on usage).
+          description: Value to compare flag evaluation against.
       required:
       - key
       - operator
       - type
       - value
+    BucketingIdentifierEnum:
+      enum:
+      - distinct_id
+      - device_id
+      type: string
+      description: '* `distinct_id` - User ID (default)
+
+        * `device_id` - Device ID'
+    FeatureFlagFilterPropertyExistsSchema:
+      type: object
+      properties:
+        key:
+          type: string
+          description: Property key used in this feature flag condition.
+        type:
+          allOf:
+          - $ref: '#/components/schemas/PropertyGroupTypeEnum'
+          description: 'Property filter type. Common values are ''person'' and ''cohort''.
+
+
+            * `cohort` - cohort
+
+            * `person` - person
+
+            * `group` - group'
+        cohort_name:
+          type:
+          - string
+          - 'null'
+          description: Resolved cohort name for cohort-type filters.
+        group_type_index:
+          type:
+          - integer
+          - 'null'
+          description: Group type index when using group-based filters.
+        operator:
+          allOf:
+          - $ref: '#/components/schemas/ExistenceOperatorEnum'
+          description: 'Existence operator.
+
+
+            * `is_set` - is_set
+
+            * `is_not_set` - is_not_set'
+        value:
+          description: Optional value. Runtime behavior determines whether this is ignored.
+      required:
+      - key
+      - operator
+    PaginatedFeatureFlagList:
+      type: object
+      required:
+      - count
+      - results
+      properties:
+        count:
+          type: integer
+          example: 123
+        next:
+          type:
+          - string
+          - 'null'
+          format: uri
+          example: http://api.example.org/accounts/?offset=400&limit=100
+        previous:
+          type:
+          - string
+          - 'null'
+          format: uri
+          example: http://api.example.org/accounts/?offset=200&limit=100
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/FeatureFlag'
+    RoleAtOrganizationEnum:
+      enum:
+      - engineering
+      - data
+      - product
+      - founder
+      - leadership
+      - marketing
+      - sales
+      - other
+      type: string
+      description: '* `engineering` - Engineering
+
+        * `data` - Data
+
+        * `product` - Product Management
+
+        * `founder` - Founder
+
+        * `leadership` - Leadership
+
+        * `marketing` - Marketing
+
+        * `sales` - Sales / Success
+
+        * `other` - Other'
+    FeatureFlagFilterPropertyGenericSchemaOperatorEnum:
+      enum:
+      - exact
+      - is_not
+      - icontains
+      - not_icontains
+      - regex
+      - not_regex
+      - gt
+      - gte
+      - lt
+      - lte
+      type: string
+      description: '* `exact` - exact
+
+        * `is_not` - is_not
+
+        * `icontains` - icontains
+
+        * `not_icontains` - not_icontains
+
+        * `regex` - regex
+
+        * `not_regex` - not_regex
+
+        * `gt` - gt
+
+        * `gte` - gte
+
+        * `lt` - lt
+
+        * `lte` - lte'
+    NullEnum:
+      enum:
+      - null
+    FeatureFlagFilterPropertyMultiContainsSchemaOperatorEnum:
+      enum:
+      - icontains_multi
+      - not_icontains_multi
+      type: string
+      description: '* `icontains_multi` - icontains_multi
+
+        * `not_icontains_multi` - not_icontains_multi'
+    FeatureFlagCreationContextEnum:
+      enum:
+      - feature_flags
+      - experiments
+      - surveys
+      - early_access_features
+      - web_experiments
+      - product_tours
+      type: string
+      description: '* `feature_flags` - feature_flags
+
+        * `experiments` - experiments
+
+        * `surveys` - surveys
+
+        * `early_access_features` - early_access_features
+
+        * `web_experiments` - web_experiments
+
+        * `product_tours` - product_tours'
+    FeatureFlagStatusResponse:
+      type: object
+      properties:
+        status:
+          type: string
+          description: 'Flag status: active, stale, deleted, or unknown'
+        reason:
+          type: string
+          description: Human-readable explanation of the status
+      required:
+      - reason
+      - status
     BulkUpdateTagsItem:
       type: object
       properties:
@@ -1291,66 +2002,35 @@ components:
       required:
       - id
       - tags
-    BucketingIdentifierEnum:
+    FeatureFlagFilterPropertySemverSchemaOperatorEnum:
       enum:
-      - distinct_id
-      - device_id
+      - semver_gt
+      - semver_gte
+      - semver_lt
+      - semver_lte
+      - semver_eq
+      - semver_neq
+      - semver_tilde
+      - semver_caret
+      - semver_wildcard
       type: string
-      description: '* `distinct_id` - User ID (default)
+      description: '* `semver_gt` - semver_gt
 
-        * `device_id` - Device ID'
-    LocalEvaluationResponse:
-      type: object
-      properties:
-        flags:
-          type: array
-          items:
-            $ref: '#/components/schemas/MinimalFeatureFlag'
-        group_type_mapping:
-          type: object
-          additionalProperties:
-            type: string
-        cohorts:
-          type: object
-          additionalProperties: true
-          description: Cohort definitions keyed by cohort ID. Each value is a property group structure with 'type' (OR/AND) and 'values' (array of property groups or property filters).
-      required:
-      - cohorts
-      - flags
-      - group_type_mapping
-    FeatureFlagFiltersSchema:
-      type: object
-      properties:
-        groups:
-          type: array
-          items:
-            $ref: '#/components/schemas/FeatureFlagConditionGroupSchema'
-          description: Release condition groups for the feature flag.
-        multivariate:
-          allOf:
-          - $ref: '#/components/schemas/FeatureFlagMultivariateSchema'
-          description: Multivariate configuration for variant-based rollouts.
-        aggregation_group_type_index:
-          type:
-          - integer
-          - 'null'
-          description: Group type index for group-based feature flags.
-        payloads:
-          type: object
-          additionalProperties:
-            type: string
-          description: Optional payload values keyed by variant key.
-        super_groups:
-          type: array
-          items:
-            type: object
-            additionalProperties: true
-          description: Additional super condition groups used by experiments.
-        feature_enrollment:
-          type:
-          - boolean
-          - 'null'
-          description: Whether this flag has early access feature enrollment enabled. When true, the flag is evaluated against the person property $feature_enrollment/{flag_key}.
+        * `semver_gte` - semver_gte
+
+        * `semver_lt` - semver_lt
+
+        * `semver_lte` - semver_lte
+
+        * `semver_eq` - semver_eq
+
+        * `semver_neq` - semver_neq
+
+        * `semver_tilde` - semver_tilde
+
+        * `semver_caret` - semver_caret
+
+        * `semver_wildcard` - semver_wildcard'
     FeatureFlagFilterPropertyDateSchema:
       type: object
       properties:
@@ -1396,36 +2076,51 @@ components:
       - key
       - operator
       - value
-    FeatureFlagFilterPropertyMultiContainsSchemaOperatorEnum:
-      enum:
-      - icontains_multi
-      - not_icontains_multi
-      type: string
-      description: '* `icontains_multi` - icontains_multi
-
-        * `not_icontains_multi` - not_icontains_multi'
-    Merge:
+    LocalEvaluationResponse:
       type: object
       properties:
-        type:
-          type: string
-          readOnly: true
-        source:
-          readOnly: true
-        target:
-          readOnly: true
+        flags:
+          type: array
+          items:
+            $ref: '#/components/schemas/MinimalFeatureFlag'
+        group_type_mapping:
+          type: object
+          additionalProperties:
+            type: string
+        cohorts:
+          type: object
+          additionalProperties: true
+          description: Cohort definitions keyed by cohort ID. Each value is a property group structure with 'type' (OR/AND) and 'values' (array of property groups or property filters).
       required:
-      - source
-      - target
-      - type
-    FeatureFlagFilterPropertyCohortInSchemaOperatorEnum:
-      enum:
-      - in
-      - not_in
-      type: string
-      description: '* `in` - in
-
-        * `not_in` - not_in'
+      - cohorts
+      - flags
+      - group_type_mapping
+    FeatureFlagCreateRequestSchema:
+      type: object
+      properties:
+        key:
+          type: string
+          description: Feature flag key.
+        name:
+          type: string
+          description: Feature flag description (stored in the `name` field for backwards compatibility).
+        filters:
+          allOf:
+          - $ref: '#/components/schemas/FeatureFlagFiltersSchema'
+          description: Feature flag targeting configuration.
+        active:
+          type: boolean
+          description: Whether the feature flag is active.
+        tags:
+          type: array
+          items:
+            type: string
+          description: Organizational tags for this feature flag.
+        evaluation_contexts:
+          type: array
+          items:
+            type: string
+          description: Evaluation contexts that control where this flag evaluates at runtime.
     MinimalFeatureFlag:
       type: object
       properties:
@@ -1495,225 +2190,11 @@ components:
       - id
       - key
       - team_id
-    FeatureFlagStatusResponse:
-      type: object
-      properties:
-        status:
-          type: string
-          description: 'Flag status: active, stale, deleted, or unknown'
-        reason:
-          type: string
-          description: Human-readable explanation of the status
-      required:
-      - reason
-      - status
-    BulkUpdateTagsResponse:
-      type: object
-      properties:
-        updated:
-          type: array
-          items:
-            $ref: '#/components/schemas/BulkUpdateTagsItem'
-        skipped:
-          type: array
-          items:
-            $ref: '#/components/schemas/BulkUpdateTagsError'
-      required:
-      - skipped
-      - updated
-    ActivityLogPaginatedResponse:
-      type: object
-      description: Response shape for paginated activity log endpoints.
-      properties:
-        results:
-          type: array
-          items:
-            $ref: '#/components/schemas/ActivityLogEntry'
-        next:
-          type:
-          - string
-          - 'null'
-          format: uri
-        previous:
-          type:
-          - string
-          - 'null'
-          format: uri
-        total_count:
-          type: integer
-      required:
-      - next
-      - previous
-      - results
-      - total_count
-    DateOperatorEnum:
-      enum:
-      - is_date_exact
-      - is_date_before
-      - is_date_after
-      type: string
-      description: '* `is_date_exact` - is_date_exact
-
-        * `is_date_before` - is_date_before
-
-        * `is_date_after` - is_date_after'
-    Change:
-      type: object
-      properties:
-        type:
-          type: string
-          readOnly: true
-        action:
-          type: string
-          readOnly: true
-        field:
-          type: string
-          readOnly: true
-        before:
-          readOnly: true
-        after:
-          readOnly: true
-      required:
-      - action
-      - after
-      - before
-      - field
-      - type
-    UserBlastRadiusRequest:
-      type: object
-      properties:
-        condition:
-          type: object
-          additionalProperties: true
-          description: The release condition to evaluate
-        group_type_index:
-          type:
-          - integer
-          - 'null'
-          description: Group type index for group-based flags (null for person-based flags)
-      required:
-      - condition
-    DependentFlag:
-      type: object
-      properties:
-        id:
-          type: integer
-          description: Feature flag ID
-        key:
-          type: string
-          description: Feature flag key
-        name:
-          type: string
-          description: Feature flag name
-      required:
-      - id
-      - key
-      - name
-    ExistenceOperatorEnum:
-      enum:
-      - is_set
-      - is_not_set
-      type: string
-      description: '* `is_set` - is_set
-
-        * `is_not_set` - is_not_set'
-    FeatureFlagFilterPropertyCohortInSchemaTypeEnum:
-      enum:
-      - cohort
-      type: string
-      description: '* `cohort` - cohort'
-    FeatureFlagCreationContextEnum:
-      enum:
-      - feature_flags
-      - experiments
-      - surveys
-      - early_access_features
-      - web_experiments
-      - product_tours
-      type: string
-      description: '* `feature_flags` - feature_flags
-
-        * `experiments` - experiments
-
-        * `surveys` - surveys
-
-        * `early_access_features` - early_access_features
-
-        * `web_experiments` - web_experiments
-
-        * `product_tours` - product_tours'
-    FeatureFlagConditionGroupSchema:
-      type: object
-      properties:
-        properties:
-          type: array
-          items:
-            $ref: '#/components/schemas/FeatureFlagFilterPropertySchema'
-          description: Property conditions for this release condition group.
-        rollout_percentage:
-          type: number
-          format: double
-          description: Rollout percentage for this release condition group.
-        variant:
-          type:
-          - string
-          - 'null'
-          description: Variant key override for multivariate flags.
-        aggregation_group_type_index:
-          type:
-          - integer
-          - 'null'
-          description: Group type index for this condition set. None means person-level aggregation.
     FeatureFlagFilterPropertyFlagEvaluatesSchemaTypeEnum:
       enum:
       - flag
       type: string
       description: '* `flag` - flag'
-    FeatureFlagFilterPropertyMultiContainsSchema:
-      type: object
-      properties:
-        key:
-          type: string
-          description: Property key used in this feature flag condition.
-        type:
-          allOf:
-          - $ref: '#/components/schemas/PropertyGroupTypeEnum'
-          description: 'Property filter type. Common values are ''person'' and ''cohort''.
-
-
-            * `cohort` - cohort
-
-            * `person` - person
-
-            * `group` - group'
-        cohort_name:
-          type:
-          - string
-          - 'null'
-          description: Resolved cohort name for cohort-type filters.
-        group_type_index:
-          type:
-          - integer
-          - 'null'
-          description: Group type index when using group-based filters.
-        operator:
-          allOf:
-          - $ref: '#/components/schemas/FeatureFlagFilterPropertyMultiContainsSchemaOperatorEnum'
-          description: 'Multi-contains operator.
-
-
-            * `icontains_multi` - icontains_multi
-
-            * `not_icontains_multi` - not_icontains_multi'
-        value:
-          type: array
-          items:
-            type: string
-          description: List of strings to evaluate against.
-      required:
-      - key
-      - operator
-      - value
     MyFlagsResponse:
       type: object
       properties:
@@ -1723,84 +2204,7 @@ components:
       required:
       - feature_flag
       - value
-    UserBasic:
-      type: object
-      properties:
-        id:
-          type: integer
-          readOnly: true
-        uuid:
-          type: string
-          format: uuid
-          readOnly: true
-        distinct_id:
-          type:
-          - string
-          - 'null'
-          maxLength: 200
-        first_name:
-          type: string
-          maxLength: 150
-        last_name:
-          type: string
-          maxLength: 150
-        email:
-          type: string
-          format: email
-          title: Email address
-          maxLength: 254
-        is_email_verified:
-          type:
-          - boolean
-          - 'null'
-        hedgehog_config:
-          type:
-          - object
-          - 'null'
-          additionalProperties: true
-          readOnly: true
-        role_at_organization:
-          oneOf:
-          - $ref: '#/components/schemas/RoleAtOrganizationEnum'
-          - $ref: '#/components/schemas/BlankEnum'
-          - $ref: '#/components/schemas/NullEnum'
-      required:
-      - email
-      - hedgehog_config
-      - id
-      - uuid
-    FeatureFlagCreateRequestSchema:
-      type: object
-      properties:
-        key:
-          type: string
-          description: Feature flag key.
-        name:
-          type: string
-          description: Feature flag description (stored in the `name` field for backwards compatibility).
-        filters:
-          allOf:
-          - $ref: '#/components/schemas/FeatureFlagFiltersSchema'
-          description: Feature flag targeting configuration.
-        active:
-          type: boolean
-          description: Whether the feature flag is active.
-        tags:
-          type: array
-          items:
-            type: string
-          description: Organizational tags for this feature flag.
-        evaluation_contexts:
-          type: array
-          items:
-            type: string
-          description: Evaluation contexts that control where this flag evaluates at runtime.
-    FeatureFlagFilterPropertyFlagEvaluatesSchemaOperatorEnum:
-      enum:
-      - flag_evaluates_to
-      type: string
-      description: '* `flag_evaluates_to` - flag_evaluates_to'
-    FeatureFlagFilterPropertySemverSchema:
+    FeatureFlagFilterPropertyGenericSchema:
       type: object
       properties:
         key:
@@ -1827,441 +2231,37 @@ components:
           - integer
           - 'null'
           description: Group type index when using group-based filters.
+        value:
+          description: Comparison value for the property filter. Supports strings, numbers, booleans, and arrays.
         operator:
           allOf:
-          - $ref: '#/components/schemas/FeatureFlagFilterPropertySemverSchemaOperatorEnum'
-          description: 'Semantic version comparison operator.
+          - $ref: '#/components/schemas/FeatureFlagFilterPropertyGenericSchemaOperatorEnum'
+          description: 'Operator used to compare the property value.
 
 
-            * `semver_gt` - semver_gt
+            * `exact` - exact
 
-            * `semver_gte` - semver_gte
+            * `is_not` - is_not
 
-            * `semver_lt` - semver_lt
+            * `icontains` - icontains
 
-            * `semver_lte` - semver_lte
+            * `not_icontains` - not_icontains
 
-            * `semver_eq` - semver_eq
+            * `regex` - regex
 
-            * `semver_neq` - semver_neq
+            * `not_regex` - not_regex
 
-            * `semver_tilde` - semver_tilde
+            * `gt` - gt
 
-            * `semver_caret` - semver_caret
+            * `gte` - gte
 
-            * `semver_wildcard` - semver_wildcard'
-        value:
-          type: string
-          description: Semantic version string.
+            * `lt` - lt
+
+            * `lte` - lte'
       required:
       - key
       - operator
       - value
-    BlankEnum:
-      enum:
-      - ''
-    Detail:
-      type: object
-      properties:
-        id:
-          type: string
-          readOnly: true
-        changes:
-          type: array
-          items:
-            $ref: '#/components/schemas/Change'
-        merge:
-          $ref: '#/components/schemas/Merge'
-        trigger:
-          $ref: '#/components/schemas/Trigger'
-        name:
-          type: string
-          readOnly: true
-        short_id:
-          type: string
-          readOnly: true
-        type:
-          type: string
-          readOnly: true
-      required:
-      - id
-      - name
-      - short_id
-      - type
-    FeatureFlagFilterPropertyExistsSchema:
-      type: object
-      properties:
-        key:
-          type: string
-          description: Property key used in this feature flag condition.
-        type:
-          allOf:
-          - $ref: '#/components/schemas/PropertyGroupTypeEnum'
-          description: 'Property filter type. Common values are ''person'' and ''cohort''.
-
-
-            * `cohort` - cohort
-
-            * `person` - person
-
-            * `group` - group'
-        cohort_name:
-          type:
-          - string
-          - 'null'
-          description: Resolved cohort name for cohort-type filters.
-        group_type_index:
-          type:
-          - integer
-          - 'null'
-          description: Group type index when using group-based filters.
-        operator:
-          allOf:
-          - $ref: '#/components/schemas/ExistenceOperatorEnum'
-          description: 'Existence operator.
-
-
-            * `is_set` - is_set
-
-            * `is_not_set` - is_not_set'
-        value:
-          description: Optional value. Runtime behavior determines whether this is ignored.
-      required:
-      - key
-      - operator
-    BulkUpdateTagsError:
-      type: object
-      properties:
-        id:
-          type: integer
-        reason:
-          type: string
-      required:
-      - id
-      - reason
-    EvaluationRuntimeEnum:
-      enum:
-      - server
-      - client
-      - all
-      type: string
-      description: '* `server` - Server
-
-        * `client` - Client
-
-        * `all` - All'
-    FeatureFlagVersionResponse:
-      type: object
-      description: Feature flag state at a given version plus reconstruction metadata.
-      properties:
-        id:
-          type: integer
-          readOnly: true
-        key:
-          type: string
-          maxLength: 400
-        name:
-          type: string
-        filters:
-          type: object
-          additionalProperties: true
-          readOnly: true
-        active:
-          type: boolean
-        deleted:
-          type: boolean
-        version:
-          type:
-          - integer
-          - 'null'
-          maximum: 2147483647
-          minimum: -2147483648
-        rollback_conditions: {}
-        performed_rollback:
-          type:
-          - boolean
-          - 'null'
-        ensure_experience_continuity:
-          type:
-          - boolean
-          - 'null'
-        has_enriched_analytics:
-          type:
-          - boolean
-          - 'null'
-        is_remote_configuration:
-          type:
-          - boolean
-          - 'null'
-        has_encrypted_payloads:
-          type:
-          - boolean
-          - 'null'
-        evaluation_runtime:
-          description: 'Specifies where this feature flag should be evaluated
-
-
-            * `server` - Server
-
-            * `client` - Client
-
-            * `all` - All'
-          oneOf:
-          - $ref: '#/components/schemas/EvaluationRuntimeEnum'
-          - $ref: '#/components/schemas/BlankEnum'
-          - $ref: '#/components/schemas/NullEnum'
-        bucketing_identifier:
-          description: 'Identifier used for bucketing users into rollout and variants
-
-
-            * `distinct_id` - User ID (default)
-
-            * `device_id` - Device ID'
-          oneOf:
-          - $ref: '#/components/schemas/BucketingIdentifierEnum'
-          - $ref: '#/components/schemas/BlankEnum'
-          - $ref: '#/components/schemas/NullEnum'
-        last_called_at:
-          type:
-          - string
-          - 'null'
-          format: date-time
-          description: Last time this feature flag was called (from $feature_flag_called events)
-        created_at:
-          type: string
-          format: date-time
-        created_by:
-          type:
-          - integer
-          - 'null'
-          readOnly: true
-        is_historical:
-          type: boolean
-          readOnly: true
-          description: False for the current version; true for reconstructed historical versions.
-        version_timestamp:
-          type:
-          - string
-          - 'null'
-          format: date-time
-          readOnly: true
-        modified_by:
-          type:
-          - integer
-          - 'null'
-          readOnly: true
-          description: User from the activity log entry that produced this version.
-      required:
-      - created_by
-      - filters
-      - id
-      - is_historical
-      - key
-      - modified_by
-      - version_timestamp
-    FeatureFlagMultivariateSchema:
-      type: object
-      properties:
-        variants:
-          type: array
-          items:
-            $ref: '#/components/schemas/FeatureFlagMultivariateVariantSchema'
-          description: Variant definitions for multivariate feature flags.
-      required:
-      - variants
-    PatchedFeatureFlagPartialUpdateRequestSchema:
-      type: object
-      properties:
-        key:
-          type: string
-          description: Feature flag key.
-        name:
-          type: string
-          description: Feature flag description (stored in the `name` field for backwards compatibility).
-        filters:
-          allOf:
-          - $ref: '#/components/schemas/FeatureFlagFiltersSchema'
-          description: Feature flag targeting configuration.
-        active:
-          type: boolean
-          description: Whether the feature flag is active.
-        tags:
-          type: array
-          items:
-            type: string
-          description: Organizational tags for this feature flag.
-        evaluation_contexts:
-          type: array
-          items:
-            type: string
-          description: Evaluation contexts that control where this flag evaluates at runtime.
-    Trigger:
-      type: object
-      properties:
-        job_type:
-          type: string
-          readOnly: true
-        job_id:
-          type: string
-          readOnly: true
-        payload:
-          readOnly: true
-      required:
-      - job_id
-      - job_type
-      - payload
-    FeatureFlagFilterPropertyFlagEvaluatesSchema:
-      type: object
-      properties:
-        key:
-          type: string
-          description: Property key used in this feature flag condition.
-        type:
-          allOf:
-          - $ref: '#/components/schemas/FeatureFlagFilterPropertyFlagEvaluatesSchemaTypeEnum'
-          description: 'Flag property type required for flag dependency checks.
-
-
-            * `flag` - flag'
-        cohort_name:
-          type:
-          - string
-          - 'null'
-          description: Resolved cohort name for cohort-type filters.
-        group_type_index:
-          type:
-          - integer
-          - 'null'
-          description: Group type index when using group-based filters.
-        operator:
-          allOf:
-          - $ref: '#/components/schemas/FeatureFlagFilterPropertyFlagEvaluatesSchemaOperatorEnum'
-          description: 'Operator for feature flag dependency evaluation.
-
-
-            * `flag_evaluates_to` - flag_evaluates_to'
-        value:
-          description: Value to compare flag evaluation against.
-      required:
-      - key
-      - operator
-      - type
-      - value
-    FeatureFlagFilterPropertySchema:
-      oneOf:
-      - $ref: '#/components/schemas/FeatureFlagFilterPropertyGenericSchema'
-      - $ref: '#/components/schemas/FeatureFlagFilterPropertyExistsSchema'
-      - $ref: '#/components/schemas/FeatureFlagFilterPropertyDateSchema'
-      - $ref: '#/components/schemas/FeatureFlagFilterPropertySemverSchema'
-      - $ref: '#/components/schemas/FeatureFlagFilterPropertyMultiContainsSchema'
-      - $ref: '#/components/schemas/FeatureFlagFilterPropertyCohortInSchema'
-      - $ref: '#/components/schemas/FeatureFlagFilterPropertyFlagEvaluatesSchema'
-    PropertyGroupTypeEnum:
-      enum:
-      - cohort
-      - person
-      - group
-      type: string
-      description: '* `cohort` - cohort
-
-        * `person` - person
-
-        * `group` - group'
-    UserBlastRadiusResponse:
-      type: object
-      properties:
-        affected:
-          type: integer
-          description: Number of entities matching the condition (users or groups depending on group_type_index)
-        total:
-          type: integer
-          description: Total number of entities of this type in the project
-      required:
-      - affected
-      - total
-    RoleAtOrganizationEnum:
-      enum:
-      - engineering
-      - data
-      - product
-      - founder
-      - leadership
-      - marketing
-      - sales
-      - other
-      type: string
-      description: '* `engineering` - Engineering
-
-        * `data` - Data
-
-        * `product` - Product Management
-
-        * `founder` - Founder
-
-        * `leadership` - Leadership
-
-        * `marketing` - Marketing
-
-        * `sales` - Sales / Success
-
-        * `other` - Other'
-    PaginatedFeatureFlagList:
-      type: object
-      required:
-      - count
-      - results
-      properties:
-        count:
-          type: integer
-          example: 123
-        next:
-          type:
-          - string
-          - 'null'
-          format: uri
-          example: http://api.example.org/accounts/?offset=400&limit=100
-        previous:
-          type:
-          - string
-          - 'null'
-          format: uri
-          example: http://api.example.org/accounts/?offset=200&limit=100
-        results:
-          type: array
-          items:
-            $ref: '#/components/schemas/FeatureFlag'
-    FeatureFlagFilterPropertyGenericSchemaOperatorEnum:
-      enum:
-      - exact
-      - is_not
-      - icontains
-      - not_icontains
-      - regex
-      - not_regex
-      - gt
-      - gte
-      - lt
-      - lte
-      type: string
-      description: '* `exact` - exact
-
-        * `is_not` - is_not
-
-        * `icontains` - icontains
-
-        * `not_icontains` - not_icontains
-
-        * `regex` - regex
-
-        * `not_regex` - not_regex
-
-        * `gt` - gt
-
-        * `gte` - gte
-
-        * `lt` - lt
-
-        * `lte` - lte'
   parameters:
     ProjectIdPath:
       in: path

@@ -604,7 +604,42 @@ paths:
       summary: Warehouse tables file create
       x-summary-source: derived
 components:
+  parameters:
+    EnvironmentIdPath:
+      in: path
+      name: environment_id
+      required: true
+      schema:
+        type: string
+      description: Deprecated. Use /api/projects/{project_id}/ instead.
+    ProjectIdPath:
+      in: path
+      name: project_id
+      required: true
+      schema:
+        type: string
+      description: Project ID of the project you're trying to access. To find the ID of the project, make a call to /api/projects/.
   schemas:
+    TableFormatEnum:
+      enum:
+      - CSV
+      - CSVWithNames
+      - Parquet
+      - JSONEachRow
+      - Delta
+      - DeltaS3Wrapper
+      type: string
+      description: '* `CSV` - CSV
+
+        * `CSVWithNames` - CSVWithNames
+
+        * `Parquet` - Parquet
+
+        * `JSONEachRow` - JSON
+
+        * `Delta` - Delta
+
+        * `DeltaS3Wrapper` - DeltaS3Wrapper'
     Table:
       type: object
       description: Mixin for serializers to add user access control fields
@@ -672,35 +707,6 @@ components:
       - name
       - url_pattern
       - user_access_level
-    SimpleExternalDataSourceSerializers:
-      type: object
-      properties:
-        id:
-          type: string
-          format: uuid
-          readOnly: true
-        created_at:
-          type: string
-          format: date-time
-          readOnly: true
-        created_by:
-          type:
-          - integer
-          - 'null'
-          readOnly: true
-        status:
-          type: string
-          readOnly: true
-        source_type:
-          allOf:
-          - $ref: '#/components/schemas/ExternalDataSourceTypeEnum'
-          readOnly: true
-      required:
-      - created_at
-      - created_by
-      - id
-      - source_type
-      - status
     PaginatedTableList:
       type: object
       required:
@@ -726,6 +732,35 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/Table'
+    RoleAtOrganizationEnum:
+      enum:
+      - engineering
+      - data
+      - product
+      - founder
+      - leadership
+      - marketing
+      - sales
+      - other
+      type: string
+      description: '* `engineering` - Engineering
+
+        * `data` - Data
+
+        * `product` - Product Management
+
+        * `founder` - Founder
+
+        * `leadership` - Leadership
+
+        * `marketing` - Marketing
+
+        * `sales` - Sales / Success
+
+        * `other` - Other'
+    BlankEnum:
+      enum:
+      - ''
     ExternalDataSourceTypeEnum:
       enum:
       - Ashby
@@ -1160,81 +1195,6 @@ components:
         * `Plain` - Plain
 
         * `Resend` - Resend'
-    UserBasic:
-      type: object
-      properties:
-        id:
-          type: integer
-          readOnly: true
-        uuid:
-          type: string
-          format: uuid
-          readOnly: true
-        distinct_id:
-          type:
-          - string
-          - 'null'
-          maxLength: 200
-        first_name:
-          type: string
-          maxLength: 150
-        last_name:
-          type: string
-          maxLength: 150
-        email:
-          type: string
-          format: email
-          title: Email address
-          maxLength: 254
-        is_email_verified:
-          type:
-          - boolean
-          - 'null'
-        hedgehog_config:
-          type:
-          - object
-          - 'null'
-          additionalProperties: true
-          readOnly: true
-        role_at_organization:
-          oneOf:
-          - $ref: '#/components/schemas/RoleAtOrganizationEnum'
-          - $ref: '#/components/schemas/BlankEnum'
-          - $ref: '#/components/schemas/NullEnum'
-      required:
-      - email
-      - hedgehog_config
-      - id
-      - uuid
-    Credential:
-      type: object
-      properties:
-        id:
-          type: string
-          format: uuid
-          readOnly: true
-        created_by:
-          allOf:
-          - $ref: '#/components/schemas/UserBasic'
-          readOnly: true
-        created_at:
-          type: string
-          format: date-time
-          readOnly: true
-        access_key:
-          type: string
-          writeOnly: true
-          maxLength: 500
-        access_secret:
-          type: string
-          writeOnly: true
-          maxLength: 500
-      required:
-      - access_key
-      - access_secret
-      - created_at
-      - created_by
-      - id
     NullEnum:
       enum:
       - null
@@ -1293,70 +1253,110 @@ components:
           - 'null'
           readOnly: true
           description: The effective access level the user has for this object
-    BlankEnum:
-      enum:
-      - ''
-    RoleAtOrganizationEnum:
-      enum:
-      - engineering
-      - data
-      - product
-      - founder
-      - leadership
-      - marketing
-      - sales
-      - other
-      type: string
-      description: '* `engineering` - Engineering
-
-        * `data` - Data
-
-        * `product` - Product Management
-
-        * `founder` - Founder
-
-        * `leadership` - Leadership
-
-        * `marketing` - Marketing
-
-        * `sales` - Sales / Success
-
-        * `other` - Other'
-    TableFormatEnum:
-      enum:
-      - CSV
-      - CSVWithNames
-      - Parquet
-      - JSONEachRow
-      - Delta
-      - DeltaS3Wrapper
-      type: string
-      description: '* `CSV` - CSV
-
-        * `CSVWithNames` - CSVWithNames
-
-        * `Parquet` - Parquet
-
-        * `JSONEachRow` - JSON
-
-        * `Delta` - Delta
-
-        * `DeltaS3Wrapper` - DeltaS3Wrapper'
-  parameters:
-    ProjectIdPath:
-      in: path
-      name: project_id
-      required: true
-      schema:
-        type: string
-      description: Project ID of the project you're trying to access. To find the ID of the project, make a call to /api/projects/.
-    EnvironmentIdPath:
-      in: path
-      name: environment_id
-      required: true
-      schema:
-        type: string
-      description: Deprecated. Use /api/projects/{project_id}/ instead.
+    SimpleExternalDataSourceSerializers:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+          readOnly: true
+        created_at:
+          type: string
+          format: date-time
+          readOnly: true
+        created_by:
+          type:
+          - integer
+          - 'null'
+          readOnly: true
+        status:
+          type: string
+          readOnly: true
+        source_type:
+          allOf:
+          - $ref: '#/components/schemas/ExternalDataSourceTypeEnum'
+          readOnly: true
+      required:
+      - created_at
+      - created_by
+      - id
+      - source_type
+      - status
+    Credential:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+          readOnly: true
+        created_by:
+          allOf:
+          - $ref: '#/components/schemas/UserBasic'
+          readOnly: true
+        created_at:
+          type: string
+          format: date-time
+          readOnly: true
+        access_key:
+          type: string
+          writeOnly: true
+          maxLength: 500
+        access_secret:
+          type: string
+          writeOnly: true
+          maxLength: 500
+      required:
+      - access_key
+      - access_secret
+      - created_at
+      - created_by
+      - id
+    UserBasic:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        uuid:
+          type: string
+          format: uuid
+          readOnly: true
+        distinct_id:
+          type:
+          - string
+          - 'null'
+          maxLength: 200
+        first_name:
+          type: string
+          maxLength: 150
+        last_name:
+          type: string
+          maxLength: 150
+        email:
+          type: string
+          format: email
+          title: Email address
+          maxLength: 254
+        is_email_verified:
+          type:
+          - boolean
+          - 'null'
+        hedgehog_config:
+          type:
+          - object
+          - 'null'
+          additionalProperties: true
+          readOnly: true
+        role_at_organization:
+          oneOf:
+          - $ref: '#/components/schemas/RoleAtOrganizationEnum'
+          - $ref: '#/components/schemas/BlankEnum'
+          - $ref: '#/components/schemas/NullEnum'
+      required:
+      - email
+      - hedgehog_config
+      - id
+      - uuid
   securitySchemes:
     PersonalAPIKeyAuth:
       type: http

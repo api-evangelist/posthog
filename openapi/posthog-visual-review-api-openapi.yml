@@ -916,57 +916,237 @@ paths:
       x-summary-source: derived
 components:
   schemas:
-    AddSnapshotsResult:
+    PaginatedRepoList:
       type: object
+      required:
+      - count
+      - results
       properties:
-        added:
+        count:
           type: integer
-        uploads:
+          example: 123
+        next:
+          type:
+          - string
+          - 'null'
+          format: uri
+          example: http://api.example.org/accounts/?offset=400&limit=100
+        previous:
+          type:
+          - string
+          - 'null'
+          format: uri
+          example: http://api.example.org/accounts/?offset=200&limit=100
+        results:
           type: array
           items:
-            $ref: '#/components/schemas/UploadTarget'
+            $ref: '#/components/schemas/Repo'
+    PatchedUpdateRepoRequestInput:
+      type: object
+      properties:
+        baseline_file_paths:
+          type:
+          - object
+          - 'null'
+          additionalProperties:
+            type: string
+        enable_pr_comments:
+          type:
+          - boolean
+          - 'null'
+    QuarantineInput:
+      type: object
+      properties:
+        identifier:
+          type: string
+          maxLength: 512
+        reason:
+          type: string
+          maxLength: 255
+        expires_at:
+          type:
+          - string
+          - 'null'
+          format: date-time
       required:
-      - added
-      - uploads
-    SnapshotHistoryEntry:
+      - identifier
+      - reason
+    CreateRepoInput:
+      type: object
+      properties:
+        repo_full_name:
+          type: string
+        repo_external_id:
+          type:
+          - integer
+          - 'null'
+      required:
+      - repo_full_name
+    SnapshotManifestItem:
+      type: object
+      properties:
+        identifier:
+          type: string
+        content_hash:
+          type: string
+        width:
+          type:
+          - integer
+          - 'null'
+        height:
+          type:
+          - integer
+          - 'null'
+        metadata:
+          type: object
+          additionalProperties: true
+      required:
+      - content_hash
+      - identifier
+    QuarantinedIdentifierEntry:
+      type: object
+      properties:
+        created_by:
+          allOf:
+          - $ref: '#/components/schemas/UserBasicInfo'
+        id:
+          type: string
+          format: uuid
+        identifier:
+          type: string
+        run_type:
+          type: string
+        reason:
+          type: string
+        expires_at:
+          type:
+          - string
+          - 'null'
+          format: date-time
+        created_at:
+          type: string
+          format: date-time
+        updated_at:
+          type: string
+          format: date-time
+      required:
+      - created_at
+      - expires_at
+      - id
+      - identifier
+      - reason
+      - run_type
+      - updated_at
+    BaselineOverview:
+      type: object
+      properties:
+        entries:
+          type: array
+          items:
+            $ref: '#/components/schemas/BaselineEntry'
+        totals:
+          $ref: '#/components/schemas/BaselineTotals'
+        truncated:
+          type: boolean
+        generated_at:
+          type: string
+          format: date-time
+      required:
+      - entries
+      - generated_at
+      - totals
+      - truncated
+    Snapshot:
       type: object
       properties:
         current_artifact:
           allOf:
           - $ref: '#/components/schemas/Artifact'
-        run_id:
+        baseline_artifact:
+          allOf:
+          - $ref: '#/components/schemas/Artifact'
+        diff_artifact:
+          allOf:
+          - $ref: '#/components/schemas/Artifact'
+        reviewed_by:
+          allOf:
+          - $ref: '#/components/schemas/UserBasicInfo'
+        id:
           type: string
           format: uuid
-        snapshot_id:
+        identifier:
           type: string
-          format: uuid
         result:
           type: string
-        branch:
+        classification_reason:
           type: string
-        commit_sha:
-          type: string
-        created_at:
-          type: string
-          format: date-time
-        pr_number:
-          type:
-          - integer
-          - 'null'
         diff_percentage:
           type:
           - number
           - 'null'
           format: double
+        diff_pixel_count:
+          type:
+          - integer
+          - 'null'
         review_state:
           type: string
+        reviewed_at:
+          type:
+          - string
+          - 'null'
+          format: date-time
+        approved_hash:
+          type: string
+        tolerated_hash_id:
+          type:
+          - string
+          - 'null'
+          format: uuid
+        is_quarantined:
+          type: boolean
+        metadata:
+          type: object
+          additionalProperties: true
       required:
-      - branch
-      - commit_sha
-      - created_at
+      - approved_hash
+      - classification_reason
+      - diff_percentage
+      - diff_pixel_count
+      - id
+      - identifier
       - result
-      - run_id
-      - snapshot_id
+      - review_state
+      - reviewed_at
+    Repo:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        team_id:
+          type: integer
+        repo_external_id:
+          type: integer
+        repo_full_name:
+          type: string
+        baseline_file_paths:
+          type: object
+          additionalProperties:
+            type: string
+        enable_pr_comments:
+          type: boolean
+        created_at:
+          type: string
+          format: date-time
+      required:
+      - baseline_file_paths
+      - created_at
+      - enable_pr_comments
+      - id
+      - repo_external_id
+      - repo_full_name
+      - team_id
     CreateRunResult:
       type: object
       properties:
@@ -980,6 +1160,42 @@ components:
       required:
       - run_id
       - uploads
+    BaselineSparklineDay:
+      type: object
+      properties:
+        clean:
+          type: integer
+        tolerated:
+          type: integer
+        changed:
+          type: integer
+        quarantined:
+          type: integer
+      required:
+      - changed
+      - clean
+      - quarantined
+      - tolerated
+    RecomputeResult:
+      type: object
+      properties:
+        run:
+          $ref: '#/components/schemas/Run'
+        counts_changed:
+          type: boolean
+        unresolved:
+          type: integer
+        ci_rerun_triggered:
+          type: boolean
+        ci_rerun_error:
+          type:
+          - string
+          - 'null'
+      required:
+      - ci_rerun_triggered
+      - counts_changed
+      - run
+      - unresolved
     PaginatedSnapshotList:
       type: object
       required:
@@ -1005,48 +1221,6 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/Snapshot'
-    UserBasicInfo:
-      type: object
-      properties:
-        id:
-          type: integer
-        first_name:
-          type: string
-        email:
-          type: string
-      required:
-      - email
-      - first_name
-      - id
-    AddSnapshotsInput:
-      type: object
-      properties:
-        snapshots:
-          type: array
-          items:
-            $ref: '#/components/schemas/SnapshotManifestItem'
-        baseline_hashes:
-          type: object
-          additionalProperties:
-            type: string
-      required:
-      - snapshots
-    ReviewStateCounts:
-      type: object
-      properties:
-        needs_review:
-          type: integer
-        clean:
-          type: integer
-        processing:
-          type: integer
-        stale:
-          type: integer
-      required:
-      - clean
-      - needs_review
-      - processing
-      - stale
     ApproveSnapshotInput:
       type: object
       properties:
@@ -1057,24 +1231,7 @@ components:
       required:
       - identifier
       - new_hash
-    QuarantineInput:
-      type: object
-      properties:
-        identifier:
-          type: string
-          maxLength: 512
-        reason:
-          type: string
-          maxLength: 255
-        expires_at:
-          type:
-          - string
-          - 'null'
-          format: date-time
-      required:
-      - identifier
-      - reason
-    PaginatedRunList:
+    PaginatedToleratedHashEntryList:
       type: object
       required:
       - count
@@ -1098,85 +1255,33 @@ components:
         results:
           type: array
           items:
-            $ref: '#/components/schemas/Run'
-    PatchedUpdateRepoRequestInput:
-      type: object
-      properties:
-        baseline_file_paths:
-          type:
-          - object
-          - 'null'
-          additionalProperties:
-            type: string
-        enable_pr_comments:
-          type:
-          - boolean
-          - 'null'
-    ToleratedHashEntry:
+            $ref: '#/components/schemas/ToleratedHashEntry'
+    Artifact:
       type: object
       properties:
         id:
           type: string
           format: uuid
-        alternate_hash:
+        content_hash:
           type: string
-        baseline_hash:
-          type: string
-        reason:
-          type: string
-        diff_percentage:
+        width:
           type:
-          - number
+          - integer
           - 'null'
-          format: double
-        created_at:
-          type: string
-          format: date-time
-        source_run_id:
+        height:
+          type:
+          - integer
+          - 'null'
+        download_url:
           type:
           - string
           - 'null'
-          format: uuid
       required:
-      - alternate_hash
-      - baseline_hash
-      - created_at
-      - diff_percentage
+      - content_hash
+      - download_url
+      - height
       - id
-      - reason
-      - source_run_id
-    ApproveRunRequestInput:
-      type: object
-      properties:
-        snapshots:
-          type: array
-          items:
-            $ref: '#/components/schemas/ApproveSnapshotInput'
-        approve_all:
-          type: boolean
-        commit_to_github:
-          type: boolean
-    BaselineTotals:
-      type: object
-      properties:
-        by_run_type:
-          type: object
-          additionalProperties:
-            type: integer
-        all_snapshots:
-          type: integer
-        recently_tolerated:
-          type: integer
-        frequently_tolerated:
-          type: integer
-        currently_quarantined:
-          type: integer
-      required:
-      - all_snapshots
-      - by_run_type
-      - currently_quarantined
-      - frequently_tolerated
-      - recently_tolerated
+      - width
     BaselineEntry:
       type: object
       properties:
@@ -1256,247 +1361,140 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/SnapshotHistoryEntry'
-    Repo:
+    ToleratedHashEntry:
       type: object
       properties:
         id:
           type: string
           format: uuid
-        team_id:
-          type: integer
-        repo_external_id:
-          type: integer
-        repo_full_name:
+        alternate_hash:
           type: string
-        baseline_file_paths:
-          type: object
-          additionalProperties:
-            type: string
-        enable_pr_comments:
-          type: boolean
-        created_at:
+        baseline_hash:
           type: string
-          format: date-time
-      required:
-      - baseline_file_paths
-      - created_at
-      - enable_pr_comments
-      - id
-      - repo_external_id
-      - repo_full_name
-      - team_id
-    BaselineOverview:
-      type: object
-      properties:
-        entries:
-          type: array
-          items:
-            $ref: '#/components/schemas/BaselineEntry'
-        totals:
-          $ref: '#/components/schemas/BaselineTotals'
-        truncated:
-          type: boolean
-        generated_at:
-          type: string
-          format: date-time
-      required:
-      - entries
-      - generated_at
-      - totals
-      - truncated
-    UploadTarget:
-      type: object
-      properties:
-        content_hash:
-          type: string
-        url:
-          type: string
-        fields:
-          type: object
-          additionalProperties:
-            type: string
-      required:
-      - content_hash
-      - fields
-      - url
-    Artifact:
-      type: object
-      properties:
-        id:
-          type: string
-          format: uuid
-        content_hash:
-          type: string
-        width:
-          type:
-          - integer
-          - 'null'
-        height:
-          type:
-          - integer
-          - 'null'
-        download_url:
-          type:
-          - string
-          - 'null'
-      required:
-      - content_hash
-      - download_url
-      - height
-      - id
-      - width
-    CreateRepoInput:
-      type: object
-      properties:
-        repo_full_name:
-          type: string
-        repo_external_id:
-          type:
-          - integer
-          - 'null'
-      required:
-      - repo_full_name
-    Snapshot:
-      type: object
-      properties:
-        current_artifact:
-          allOf:
-          - $ref: '#/components/schemas/Artifact'
-        baseline_artifact:
-          allOf:
-          - $ref: '#/components/schemas/Artifact'
-        diff_artifact:
-          allOf:
-          - $ref: '#/components/schemas/Artifact'
-        reviewed_by:
-          allOf:
-          - $ref: '#/components/schemas/UserBasicInfo'
-        id:
-          type: string
-          format: uuid
-        identifier:
-          type: string
-        result:
-          type: string
-        classification_reason:
+        reason:
           type: string
         diff_percentage:
           type:
           - number
           - 'null'
           format: double
-        diff_pixel_count:
-          type:
-          - integer
-          - 'null'
-        review_state:
-          type: string
-        reviewed_at:
-          type:
-          - string
-          - 'null'
-          format: date-time
-        approved_hash:
-          type: string
-        tolerated_hash_id:
-          type:
-          - string
-          - 'null'
-          format: uuid
-        is_quarantined:
-          type: boolean
-        metadata:
-          type: object
-          additionalProperties: true
-      required:
-      - approved_hash
-      - classification_reason
-      - diff_percentage
-      - diff_pixel_count
-      - id
-      - identifier
-      - result
-      - review_state
-      - reviewed_at
-    RecomputeResult:
-      type: object
-      properties:
-        run:
-          $ref: '#/components/schemas/Run'
-        counts_changed:
-          type: boolean
-        unresolved:
-          type: integer
-        ci_rerun_triggered:
-          type: boolean
-        ci_rerun_error:
-          type:
-          - string
-          - 'null'
-      required:
-      - ci_rerun_triggered
-      - counts_changed
-      - run
-      - unresolved
-    QuarantinedIdentifierEntry:
-      type: object
-      properties:
-        created_by:
-          allOf:
-          - $ref: '#/components/schemas/UserBasicInfo'
-        id:
-          type: string
-          format: uuid
-        identifier:
-          type: string
-        run_type:
-          type: string
-        reason:
-          type: string
-        expires_at:
-          type:
-          - string
-          - 'null'
-          format: date-time
         created_at:
           type: string
           format: date-time
-        updated_at:
-          type: string
-          format: date-time
+        source_run_id:
+          type:
+          - string
+          - 'null'
+          format: uuid
       required:
+      - alternate_hash
+      - baseline_hash
       - created_at
-      - expires_at
+      - diff_percentage
       - id
-      - identifier
       - reason
-      - run_type
-      - updated_at
-    PaginatedQuarantinedIdentifierEntryList:
+      - source_run_id
+    AddSnapshotsResult:
       type: object
-      required:
-      - count
-      - results
       properties:
-        count:
+        added:
           type: integer
-          example: 123
-        next:
-          type:
-          - string
-          - 'null'
-          format: uri
-          example: http://api.example.org/accounts/?offset=400&limit=100
-        previous:
-          type:
-          - string
-          - 'null'
-          format: uri
-          example: http://api.example.org/accounts/?offset=200&limit=100
-        results:
+        uploads:
           type: array
           items:
-            $ref: '#/components/schemas/QuarantinedIdentifierEntry'
+            $ref: '#/components/schemas/UploadTarget'
+      required:
+      - added
+      - uploads
+    AddSnapshotsInput:
+      type: object
+      properties:
+        snapshots:
+          type: array
+          items:
+            $ref: '#/components/schemas/SnapshotManifestItem'
+        baseline_hashes:
+          type: object
+          additionalProperties:
+            type: string
+      required:
+      - snapshots
+    SnapshotHistoryEntry:
+      type: object
+      properties:
+        current_artifact:
+          allOf:
+          - $ref: '#/components/schemas/Artifact'
+        run_id:
+          type: string
+          format: uuid
+        snapshot_id:
+          type: string
+          format: uuid
+        result:
+          type: string
+        branch:
+          type: string
+        commit_sha:
+          type: string
+        created_at:
+          type: string
+          format: date-time
+        pr_number:
+          type:
+          - integer
+          - 'null'
+        diff_percentage:
+          type:
+          - number
+          - 'null'
+          format: double
+        review_state:
+          type: string
+      required:
+      - branch
+      - commit_sha
+      - created_at
+      - result
+      - run_id
+      - snapshot_id
+    ReviewStateCounts:
+      type: object
+      properties:
+        needs_review:
+          type: integer
+        clean:
+          type: integer
+        processing:
+          type: integer
+        stale:
+          type: integer
+      required:
+      - clean
+      - needs_review
+      - processing
+      - stale
+    BaselineTotals:
+      type: object
+      properties:
+        by_run_type:
+          type: object
+          additionalProperties:
+            type: integer
+        all_snapshots:
+          type: integer
+        recently_tolerated:
+          type: integer
+        frequently_tolerated:
+          type: integer
+        currently_quarantined:
+          type: integer
+      required:
+      - all_snapshots
+      - by_run_type
+      - currently_quarantined
+      - frequently_tolerated
+      - recently_tolerated
     Run:
       type: object
       properties:
@@ -1566,6 +1564,42 @@ components:
       - run_type
       - status
       - summary
+    PaginatedRunList:
+      type: object
+      required:
+      - count
+      - results
+      properties:
+        count:
+          type: integer
+          example: 123
+        next:
+          type:
+          - string
+          - 'null'
+          format: uri
+          example: http://api.example.org/accounts/?offset=400&limit=100
+        previous:
+          type:
+          - string
+          - 'null'
+          format: uri
+          example: http://api.example.org/accounts/?offset=200&limit=100
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/Run'
+    ApproveRunRequestInput:
+      type: object
+      properties:
+        snapshots:
+          type: array
+          items:
+            $ref: '#/components/schemas/ApproveSnapshotInput'
+        approve_all:
+          type: boolean
+        commit_to_github:
+          type: boolean
     CreateRunInput:
       type: object
       properties:
@@ -1607,56 +1641,32 @@ components:
       - repo_id
       - run_type
       - snapshots
-    BaselineSparklineDay:
+    UploadTarget:
       type: object
       properties:
-        clean:
-          type: integer
-        tolerated:
-          type: integer
-        changed:
-          type: integer
-        quarantined:
-          type: integer
-      required:
-      - changed
-      - clean
-      - quarantined
-      - tolerated
-    PaginatedToleratedHashEntryList:
-      type: object
-      required:
-      - count
-      - results
-      properties:
-        count:
-          type: integer
-          example: 123
-        next:
-          type:
-          - string
-          - 'null'
-          format: uri
-          example: http://api.example.org/accounts/?offset=400&limit=100
-        previous:
-          type:
-          - string
-          - 'null'
-          format: uri
-          example: http://api.example.org/accounts/?offset=200&limit=100
-        results:
-          type: array
-          items:
-            $ref: '#/components/schemas/ToleratedHashEntry'
-    MarkToleratedInput:
-      type: object
-      properties:
-        snapshot_id:
+        content_hash:
           type: string
-          format: uuid
+        url:
+          type: string
+        fields:
+          type: object
+          additionalProperties:
+            type: string
       required:
-      - snapshot_id
-    PaginatedRepoList:
+      - content_hash
+      - fields
+      - url
+    AutoApproveResult:
+      type: object
+      properties:
+        run:
+          $ref: '#/components/schemas/Run'
+        baseline_content:
+          type: string
+      required:
+      - baseline_content
+      - run
+    PaginatedQuarantinedIdentifierEntryList:
       type: object
       required:
       - count
@@ -1680,7 +1690,20 @@ components:
         results:
           type: array
           items:
-            $ref: '#/components/schemas/Repo'
+            $ref: '#/components/schemas/QuarantinedIdentifierEntry'
+    UserBasicInfo:
+      type: object
+      properties:
+        id:
+          type: integer
+        first_name:
+          type: string
+        email:
+          type: string
+      required:
+      - email
+      - first_name
+      - id
     RunSummary:
       type: object
       properties:
@@ -1704,37 +1727,14 @@ components:
       - removed
       - total
       - unchanged
-    SnapshotManifestItem:
+    MarkToleratedInput:
       type: object
       properties:
-        identifier:
+        snapshot_id:
           type: string
-        content_hash:
-          type: string
-        width:
-          type:
-          - integer
-          - 'null'
-        height:
-          type:
-          - integer
-          - 'null'
-        metadata:
-          type: object
-          additionalProperties: true
+          format: uuid
       required:
-      - content_hash
-      - identifier
-    AutoApproveResult:
-      type: object
-      properties:
-        run:
-          $ref: '#/components/schemas/Run'
-        baseline_content:
-          type: string
-      required:
-      - baseline_content
-      - run
+      - snapshot_id
   parameters:
     ProjectIdPath:
       in: path
