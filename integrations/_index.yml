@@ -219,6 +219,72 @@
     builder: Pipedream repo (component)
   status: not-a-workflow
   arazzo: null
+- slug: posthog-github-secret-scanning-partner-program
+  label: GitHub secret scanning partner program
+  partner: github
+  partner_name: GitHub secret scanning partner program
+  category: GitHub platform partnership (security)
+  type: register
+  channel: standard-directory
+  evidence: https://docs.github.com/en/code-security/reference/secret-security/supported-secret-scanning-patterns#supported-provider-patterns
+  source: edge
+  relationship: standard-participant
+  contract_reference:
+    register: GitHub secret scanning partner program (docs.github.com supported-secret-scanning-patterns, 'Partner'
+      column = isPublic in the page's own pattern data)
+    standard: GitHub secret scanning partner program
+    spec_file: null
+    role: secret-scanning-partner
+    registered_name: PostHog
+    register_id: https://docs.github.com/en/code-security/reference/secret-security/supported-secret-scanning-patterns#supported-provider-patterns
+    matched_domain: null
+    matched_by: register-name
+    register_name_note: register-name 'posthog' = posthog; wikidata P856 posthog.com agrees or unheld
+    token_types:
+    - posthog_feature_flags_secure_api_key
+    - posthog_oauth_access_token
+    - posthog_oauth_refresh_token
+    - posthog_personal_api_key
+    context:
+      push_protection: 4
+      validity_check: 0
+    signal_note: 'participation only: GitHub notifies the provider when its token leaks publicly (the provider runs
+      a verification endpoint for the programme); token types and counts are context, never counted'
+    detected_by: sweep-github-marketplace.py
+    detected: '2026-10-21'
+    identity_source: register-name
+    identity_note: register gave only the name; exact normalised match to the repo's apis.yml name, one repo, Wikidata
+      P856 not contradicting (Kin 2026-10-20 decision 2)
+  status: not-a-workflow
+  arazzo: null
+- slug: posthog-mozilla-firefox-add-ons-amo
+  label: Mozilla Firefox Add-ons (AMO)
+  partner_name: Mozilla Firefox Add-ons (AMO)
+  category: browser extension (Firefox Add-ons)
+  type: marketplace
+  marketplace: firefox-add-ons
+  channel: partner-built
+  evidence: https://addons.mozilla.org/en-US/firefox/addon/hedgehog-mode/
+  source: edge
+  relationship: platform-app
+  contract_reference:
+    register: 'Firefox Add-ons (addons.mozilla.org public API v5 search: authors, homepage, support_url)'
+    spec_file: null
+    role: firefox-add-on-publisher
+    registered_name: Richard @ PostHog
+    register_id: https://addons.mozilla.org/api/v5/addons/addon/hedgehog-mode/
+    matched_domain: posthog.com
+    matched_by: domain
+    matched_name: Richard @ PostHog
+    builder: publisher
+    signal_note: ONE edge per provider for the store; listing alone = participation. The AMO author name (builder
+      publisher) or homepage + support_url both on the provider's domain (builder domain-attested) identifies it;
+      extension / user counts are context, never counted. No Mozilla repo in all/*, so no platform-side edge exists
+      to mirror.
+    detected_by: sweep-browser-extension-stores.py
+    detected: '2026-10-21'
+  status: not-a-workflow
+  arazzo: null
 - slug: posthog-splunk-own
   label: Splunk (own)
   partner: splunk
@@ -297,69 +363,16 @@
   relationship: platform-app
   status: not-a-workflow
   arazzo: null
-- slug: posthog-github-secret-scanning-partner-program
-  label: GitHub secret scanning partner program
-  partner: github
-  partner_name: GitHub secret scanning partner program
-  category: GitHub platform partnership (security)
-  type: register
-  channel: standard-directory
-  evidence: https://docs.github.com/en/code-security/reference/secret-security/supported-secret-scanning-patterns#supported-provider-patterns
-  source: edge
-  relationship: standard-participant
-  contract_reference:
-    register: GitHub secret scanning partner program (docs.github.com supported-secret-scanning-patterns, 'Partner'
-      column = isPublic in the page's own pattern data)
-    standard: GitHub secret scanning partner program
-    spec_file: null
-    role: secret-scanning-partner
-    registered_name: PostHog
-    register_id: https://docs.github.com/en/code-security/reference/secret-security/supported-secret-scanning-patterns#supported-provider-patterns
-    matched_domain: null
-    matched_by: register-name
-    register_name_note: register-name 'posthog' = posthog; wikidata P856 posthog.com agrees or unheld
-    token_types:
-    - posthog_feature_flags_secure_api_key
-    - posthog_oauth_access_token
-    - posthog_oauth_refresh_token
-    - posthog_personal_api_key
-    context:
-      push_protection: 4
-      validity_check: 0
-    signal_note: 'participation only: GitHub notifies the provider when its token leaks publicly (the provider runs
-      a verification endpoint for the programme); token types and counts are context, never counted'
-    detected_by: sweep-github-marketplace.py
-    detected: '2026-10-21'
-    identity_source: register-name
-    identity_note: register gave only the name; exact normalised match to the repo's apis.yml name, one repo, Wikidata
-      P856 not contradicting (Kin 2026-10-20 decision 2)
-  status: not-a-workflow
-  arazzo: null
-- slug: posthog-mozilla-firefox-add-ons-amo
-  label: Mozilla Firefox Add-ons (AMO)
-  partner_name: Mozilla Firefox Add-ons (AMO)
-  category: browser extension (Firefox Add-ons)
+- slug: posthog-vercel-own
+  label: Vercel (own)
+  partner: vercel
+  partner_name: Vercel (own)
+  category: Analytics Experimentation Flags
   type: marketplace
-  marketplace: firefox-add-ons
+  marketplace: own
   channel: partner-built
-  evidence: https://addons.mozilla.org/en-US/firefox/addon/hedgehog-mode/
+  evidence: https://vercel.com/marketplace/posthog
   source: edge
   relationship: platform-app
-  contract_reference:
-    register: 'Firefox Add-ons (addons.mozilla.org public API v5 search: authors, homepage, support_url)'
-    spec_file: null
-    role: firefox-add-on-publisher
-    registered_name: Richard @ PostHog
-    register_id: https://addons.mozilla.org/api/v5/addons/addon/hedgehog-mode/
-    matched_domain: posthog.com
-    matched_by: domain
-    matched_name: Richard @ PostHog
-    builder: publisher
-    signal_note: ONE edge per provider for the store; listing alone = participation. The AMO author name (builder
-      publisher) or homepage + support_url both on the provider's domain (builder domain-attested) identifies it;
-      extension / user counts are context, never counted. No Mozilla repo in all/*, so no platform-side edge exists
-      to mirror.
-    detected_by: sweep-browser-extension-stores.py
-    detected: '2026-10-21'
   status: not-a-workflow
   arazzo: null
